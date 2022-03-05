@@ -9,7 +9,7 @@ light:
   - platform: hubspace
     username: USERNAME_HERE
     password: PASSWORD_HERE_OR_secrets.yaml
-       friendlynames:
-	 - lightname1
-	 - lightname2
-'''	 
+      friendlynames:
+	- lightname1
+	- lightname2
+	 
