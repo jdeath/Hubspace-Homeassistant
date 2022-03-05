@@ -19,9 +19,6 @@ def getCodeVerifierAndChallenge():
 def getRefreshCode(userName,passWord):
     URL = "https://accounts.hubspaceconnect.com/auth/realms/thd/protocol/openid-connect/auth"
     
-    # These are linked    
-    #code_challenge = 'JDdBWmN__LJfqDHw9RxD-Ha_0Dj9fmnYIMiq2TGc8sc'
-    #code_verifier = 'QUqzUOTYWzMMRdCsYIntMix_s5p9yBW0fTZStCzWrO0XbDDRX3~r86DYR8IBt64HukWdZm9ZJbA8UJr48cN_R9m85X.pWW5LiVKFoyTSkhQdha3tAFPQNjOjf0xqRtZk'
     [code_challenge,code_verifier] = getCodeVerifierAndChallenge()
     
     # defining a params dict for the parameters to be sent to the API
@@ -268,62 +265,4 @@ async def getConclave(refresh_token,accountId):
     token = r.json().get('tokens')[0].get('token')
     expiresTimestamp = r.json().get('tokens')[0].get('expiresTimestamp')
     
-    # print(host)
-    # print(port)
-    # import websockets,ssl
-    # header = {"login":{"channelId":"df69b232-c564-4121-bc22-c8b6540d3920","accessToken":token,"type":"android","version":"1.0.0","protocol":2,"trace":True}}
-    
-    # print(json.dumps(header))
-    
-    # context = ssl.SSLContext(ssl.PROTOCOL_TLS)
-    # async with websockets.connect("wss://conclave-stream1.afero.net:443",ssl=context) as websocket:
-        # await websocket.send('{}')
-        # websocket.recv()
-        # await websocket.send(json.dumps(header))
-        # await websocket.recv()
-    # import ssl
-    # import websockets
-    
-    # context = ssl.SSLContext(ssl.PROTOCOL_TLS)
-    # websockets.connect("wss://" + host + ":" + str(port),ssl=context)
-    # websockets.send('{}')
-    # websockets.send(json.dumps(header).encode())
-    
-    # data = websockets.recv()
-    # print(data)
-    # context = ssl.SSLContext(ssl.PROTOCOL_TLS)
-    # s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # s_sock = context.wrap_socket(s, server_hostname=host)
-    # s_sock.connect((host, port))
-   
-    # s_sock.send( '{}'.encode())
-    # data = s_sock.recv(1024)
-    # s_sock.send( json.dumps(header).encode())
-    # while True:
-        # data = s_sock.recv(1024)
-        # if len(data) > 0 :
-            # print (data.decode('unicode_escape'))
-
-    # s_sock.close()
-    
-    ###############3
-    # reader, writer = await asyncio.open_connection(host, port)
-    
-    # writer.write( '{}'.encode())
-    # writer.write( json.dumps(header).encode())
-    # await writer.drain()
-
-    # while True:
-        # data = await reader.read(1024)
-        # print(f'Received: {data.decode()!r}')
-
-    # print('Close the connection')
-    # writer.close()
-    # await writer.wait_closed()
-    
-# def test_auth_token(token):
-    # header="Authorization: Bearer " + str(token)
-    # conn = create_connection("ws://conclave-stream1.afero.net:443"+ '/'+ container.uuid, header)
-    # result = conn.recv()
-    # assert result is not None
     
