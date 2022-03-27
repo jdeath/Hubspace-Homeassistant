@@ -11,7 +11,13 @@ import logging
 
 from homeassistant.const import STATE_ON
 from homeassistant.helpers.entity import Entity
-from .const import FUNCTION_CLASS, FUNCTION_INSTANCE, FunctionClass, FunctionInstance, FunctionKey
+from .const import (
+    FUNCTION_CLASS,
+    FUNCTION_INSTANCE,
+    FunctionClass,
+    FunctionInstance,
+    FunctionKey,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -178,19 +184,13 @@ class HubspaceFunctionKeyedObject(HubspaceObject):
     @property
     def function_class(self) -> FunctionClass or None:
         """Identifier for this objects's function class."""
-        return (
-            FunctionClass(self._data[FUNCTION_CLASS])
-            if FUNCTION_CLASS in self._data
-            else None
-        )
+        return self._data[FUNCTION_CLASS] if FUNCTION_CLASS in self._data else None
 
     @property
-    def function_instance(self) -> FunctionInstance or None:
+    def function_instance(self) -> str or None:
         """Identifier for this objects's function instance."""
         return (
-            FunctionInstance(self._data[FUNCTION_INSTANCE])
-            if FUNCTION_INSTANCE in self._data
-            else None
+            self._data[FUNCTION_INSTANCE] if FUNCTION_INSTANCE in self._data else None
         )
 
     @property
@@ -202,7 +202,7 @@ class HubspaceFunctionKeyedObject(HubspaceObject):
 class HubspaceFunction(HubspaceFunctionKeyedObject, HubspaceIdentifiableObject):
     """A Hubspace object which defines a function and its possible values."""
 
-    _values: list[Any] or None
+    _values: list[Any] or None = None
 
     @property
     def type(self) -> str or None:
@@ -237,8 +237,8 @@ class HubspaceEntity(HubspaceIdentifiableObject, Entity):
 
     _function_class: HubspaceFunction = HubspaceFunction
     _state_value_class: HubspaceStateValue = HubspaceStateValue
-    _functions: dict[FunctionKey, HubspaceFunction] or None
-    _states: dict[FunctionKey, _state_value_class] or None
+    _functions: dict[FunctionKey, HubspaceFunction] or None = None
+    _states: dict[FunctionKey, _state_value_class] or None = None
     _skip_next_update = False
 
     def __init__(
@@ -269,7 +269,7 @@ class HubspaceEntity(HubspaceIdentifiableObject, Entity):
         return self._get_state_value(FunctionClass.AVAILABLE, default=True)
 
     @property
-    def functions(self) -> list[HubspaceFunction] or None:
+    def functions(self) -> dict[FunctionKey, HubspaceFunction] or None:
         """Return the functions available for this device."""
         if not self._functions:
             self._functions = {}
@@ -353,4 +353,15 @@ class HubspaceEntity(HubspaceIdentifiableObject, Entity):
         state_value = self.states.get((function_class, function_instance))
         if state_value:
             return state_value.value
+        return default
+
+    def _get_function_values(
+        self,
+        function_class: FunctionClass,
+        function_instance: FunctionInstance = None,
+        default: Any = None,
+    ) -> Any:
+        function = self.functions.get((function_class, function_instance))
+        if function:
+            return function.values
         return default

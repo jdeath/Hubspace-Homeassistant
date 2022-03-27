@@ -85,12 +85,12 @@ class HubspaceLight(LightEntity, HubspaceEntity):
         self.set_state(
             [
                 {
-                    "functionClass": FunctionClass.POWER.value,
-                    "functionInstance": FunctionInstance.LIGHT_POWER.value,
+                    "functionClass": FunctionClass.POWER,
+                    "functionInstance": FunctionInstance.LIGHT_POWER,
                     "value": STATE_ON,
                 },
                 {
-                    "functionClass": FunctionClass.BRIGHTNESS.value,
+                    "functionClass": FunctionClass.BRIGHTNESS,
                     "value": _brightness_to_hubspace(brightness),
                 },
             ]
@@ -101,8 +101,8 @@ class HubspaceLight(LightEntity, HubspaceEntity):
         self.set_state(
             [
                 {
-                    "functionClass": FunctionClass.POWER.value,
-                    "functionInstance": FunctionInstance.LIGHT_POWER.value,
+                    "functionClass": FunctionClass.POWER,
+                    "functionInstance": FunctionInstance.LIGHT_POWER,
                     "value": STATE_OFF,
                 },
             ]

@@ -1,6 +1,6 @@
 ### Installation
 
-Only supports on/off and brightness right now. Cloud polling updates the state every minute. Login may not be robust. May need to reset login/restart homeassistant if it hangs. Investigating usage of HASS's built-in OAuth support.
+Supports most Light and Fan controls. Cloud polling updates the state every minute. Login may not be robust. May need to reset login/restart homeassistant if it hangs. Investigating usage of HASS's built-in OAuth support.
 
 Copy this folder to `<config_dir>/custom_components/hubspace/`.
 

@@ -12,32 +12,22 @@ FUNCTION_CLASS: Final = "functionClass"
 FUNCTION_INSTANCE: Final = "functionInstance"
 
 # Function Classes
-class FunctionClass(Enum):
+class FunctionClass:
     UNSUPPORTED = "unsupported"
     POWER = "power"
     BRIGHTNESS = "brightness"
     FAN_SPEED = "fan-speed"
     AVAILABLE = "available"
-
-    @classmethod
-    def _missing_(cls, value):
-        if value:
-            return FunctionClass.UNSUPPORTED
-        return None
+    TOGGLE = "toggle"
 
 
 # Function Instances
-class FunctionInstance(Enum):
+class FunctionInstance:
     UNSUPPORTED = "unsupported"
     LIGHT_POWER = "light-power"
     FAN_POWER = "fan-power"
     FAN_SPEED = "fan-speed"
-
-    @classmethod
-    def _missing_(cls, value):
-        if value:
-            return FunctionInstance.UNSUPPORTED
-        return None
+    COMFORT_BREEZE = "comfort-breeze"
 
 
 # Function Key
