@@ -16,7 +16,9 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
-from . import DOMAIN, hubspace
+from . import DOMAIN
+from .const import FunctionClass, FunctionInstance
+from .hubspace import HubspaceEntity, HubspaceStateValue
 
 SCAN_INTERVAL = timedelta(seconds=30)
 BASE_INTERVAL = timedelta(seconds=30)
@@ -42,132 +44,66 @@ def setup_platform(
 
     domain_data = hass.data[DOMAIN]
     lights = [
-        HubspaceLight(domain_data["refresh_token"], domain_data["account_id"], child)
+        HubspaceLight(child, domain_data["account_id"], domain_data["refresh_token"])
         for child in domain_data["children"]
         if child.get("semanticDescriptionKey", None) == "light"
     ]
-    if not lights:
-        return
     add_entities(lights, True)
 
 
-class HubspaceLight(LightEntity):
+class HubspaceLightStateValue(HubspaceStateValue):
+    @property
+    def value(self) -> Any or None:
+        if self.function_class == FunctionClass.BRIGHTNESS:
+            return _brightness_to_hass(self._data.get("value"))
+        return super().value
+
+
+class HubspaceLight(LightEntity, HubspaceEntity):
     """Representation of a Hubspace Light."""
 
-    _skip_update: bool = False
-
-    def __init__(self, refresh_token, account_id, light) -> None:
-        """Initialize a HubspaceLight."""
-        self._attr_unique_id = light.get("id", None)
-        self._name = light.get("friendlyName", None)
-        self._refresh_token = refresh_token
-        self._account_id = account_id
-        self._attr_supported_color_modes = [COLOR_MODE_BRIGHTNESS]
-        self._state = hubspace.parse_state(
-            light.get("state", {}),
-            function_class="power",
-            function_instance="light-power",
-            default_value=STATE_OFF,
-        )
-        self._attr_brightness = hubspace.parse_state(
-            light.get("state", {}),
-            function_class="brightness",
-            default_value=255,
-            value_parser=_brightness_to_hass,
-        )
-        self._skip_update = False
+    _state_value_class = HubspaceLightStateValue
 
     @property
-    def name(self) -> str:
-        """Return the display name of this light."""
-        return self._name
+    def supported_color_modes(self) -> set[str] or None:
+        """Flag supported color modes."""
+        return {COLOR_MODE_BRIGHTNESS}
 
     @property
-    def is_on(self) -> bool | None:
-        """Return true if light is on."""
-        return self._state == STATE_ON
+    def is_on(self) -> bool or None:
+        """Return whether the fan is on."""
+        return self._get_state_value(FunctionClass.POWER, FunctionInstance.LIGHT_POWER)
+
+    @property
+    def brightness(self) -> int or None:
+        """Return the brightness of this light between 0..255."""
+        return self._get_state_value(FunctionClass.BRIGHTNESS)
 
     def turn_on(self, **kwargs: Any) -> None:
         """Instruct the light to turn on."""
-        brightness = kwargs.get(ATTR_BRIGHTNESS, self._attr_brightness)
-        state = hubspace.set_state(
-            self._refresh_token,
-            self._account_id,
-            self._attr_unique_id,
-            values=[
+        brightness = kwargs.get(ATTR_BRIGHTNESS, self.brightness)
+        self.set_state(
+            [
                 {
-                    "functionClass": "power",
-                    "functionInstance": "light-power",
-                    "value": "on",
+                    "functionClass": FunctionClass.POWER.value,
+                    "functionInstance": FunctionInstance.LIGHT_POWER.value,
+                    "value": STATE_ON,
                 },
                 {
-                    "functionClass": "brightness",
+                    "functionClass": FunctionClass.BRIGHTNESS.value,
                     "value": _brightness_to_hubspace(brightness),
                 },
-            ],
+            ]
         )
-        if state is not None:
-            self._state = hubspace.parse_state(
-                state,
-                function_class="power",
-                function_instance="light-power",
-                default_value=self._state,
-            )
-            self._attr_brightness = hubspace.parse_state(
-                state,
-                function_class="brightness",
-                default_value=255,
-                value_parser=_brightness_to_hass,
-            )
-            self._skip_update = True
 
     def turn_off(self, **kwargs: Any) -> None:
         """Instruct the light to turn off."""
-        state = hubspace.set_state(
-            self._refresh_token,
-            self._account_id,
-            self._attr_unique_id,
-            values=[
+        self.set_state(
+            [
                 {
-                    "functionClass": "power",
-                    "functionInstance": "light-power",
-                    "value": "off",
+                    "functionClass": FunctionClass.POWER.value,
+                    "functionInstance": FunctionInstance.LIGHT_POWER.value,
+                    "value": STATE_OFF,
                 },
-            ],
+            ]
         )
-        if state is not None:
-            self._state = hubspace.parse_state(
-                state,
-                function_class="power",
-                function_instance="light-power",
-                default_value=self._state,
-            )
-            self._skip_update = True
-
-    @property
-    def should_poll(self):
-        """Turn on polling"""
-        return True
-
-    def update(self) -> None:
-        """Fetch new state data for this light.
-
-        This is the only method that should fetch new data for Home Assistant.
-        """
-        state = hubspace.get_state(
-            self._refresh_token, self._account_id, self._attr_unique_id
-        )
-        if not self._skip_update:
-            self._state = hubspace.parse_state(
-                state,
-                function_class="power",
-                function_instance="light-power",
-                default_value=self._state,
-            )
-            self._attr_brightness = hubspace.parse_state(
-                state,
-                function_class="brightness",
-                default_value=255,
-                value_parser=_brightness_to_hass,
-            )
-        self._skip_update = False

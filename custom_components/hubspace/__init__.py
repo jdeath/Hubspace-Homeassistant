@@ -46,4 +46,5 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
     }
 
     hass.helpers.discovery.load_platform("light", DOMAIN, {}, config)
+    hass.helpers.discovery.load_platform("fan", DOMAIN, {}, config)
     return True
