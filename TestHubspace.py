@@ -277,7 +277,7 @@ def getConclave(refresh_token,accountId):
     
     print(host)
     print(port)
-    header = {"login":{"channelId":"df69b232-c564-4121-bc22-c8b6540d3920","accessToken":token,"type":"android","version":"1.0.0","protocol":2,"trace":True}}
+    header = {"login":{"channelId":"XXXXX","accessToken":token,"type":"android","version":"1.0.0","protocol":2,"trace":True}}
     return token
     # context = ssl.SSLContext(ssl.PROTOCOL_TLS)
     # async with websockets.connect("wss://conclave-stream1.afero.net:443",ssl=context) as websocket:
