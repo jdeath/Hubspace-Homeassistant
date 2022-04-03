@@ -1,5 +1,5 @@
 
-Only supports on/off right now. I would like to update to cloud push, but right now it updates state every minute. Login may not be robust. May need to reset login/restart homeassistant if it hangs. Will add better logic later
+Only supports on/off right now except for the PIR switch, which supports brightness. I would like to update to cloud push, but right now it updates state every minute. Login may not be robust. May need to reset login/restart homeassistant if it hangs. Will add better logic later
 
 ### Installation
 
