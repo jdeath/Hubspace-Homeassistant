@@ -153,8 +153,8 @@ def getChildId(refresh_token,accountId,deviceName):
                 #print(key, val)
                 child = lis.get('id')
                 deviceId = lis.get('deviceId')
-
-    return child
+                model = lis.get('description').get('device').get('model')
+    return child,model
 
 
 def getState(refresh_token,accountId,child,desiredStateName):
