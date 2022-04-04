@@ -8,7 +8,7 @@ import voluptuous as vol
 
 # Import the device class from the component that you want to support
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.light import (ATTR_BRIGHTNESS, PLATFORM_SCHEMA, COLOR_MODE_BRIGHTNESS,
+from homeassistant.components.light import (ATTR_BRIGHTNESS, ATTR_RGB_COLOR, PLATFORM_SCHEMA, COLOR_MODE_BRIGHTNESS, COLOR_MODE_COLOR_TEMP, COLOR_MODE_RGB,
                                             LightEntity)
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
@@ -73,6 +73,13 @@ class HubspaceLight(LightEntity):
         self._childId = None
         self._model = None
         self._brightness = None
+        self._useBrightness = False
+        
+        # colorMode == 'color' || 'white' 
+        self._useColorOrWhite = False
+        self._colorMode = None
+        self._whiteTemp = None
+        self._rgbColor = None
         
         self._refresh_token = hs.getRefreshCode(self._username,self._password)
         self._accountId = hs.getAccountId(self._refresh_token)
@@ -81,6 +88,11 @@ class HubspaceLight(LightEntity):
         # https://www.homedepot.com/p/Commercial-Electric-500-Watt-Single-Pole-Smart-Hubspace-Dimmer-with-Motion-Sensor-White-HPDA311CWB/317249353
         if self._model == 'HPDA311CWB':
             self._useBrightness = True
+            
+        # https://www.homedepot.com/p/Commercial-Electric-4-in-Smart-Hubspace-Color-Selectable-CCT-Integrated-LED-Recessed-Light-Trim-Works-with-Amazon-Alexa-and-Google-538551010/314199717
+        # https://www.homedepot.com/p/Commercial-Electric-6-in-Smart-Hubspace-Ultra-Slim-New-Construction-and-Remodel-RGB-W-LED-Recessed-Kit-Works-with-Amazon-Alexa-and-Google-50292/313556988
+        if self._model == '50291' or self._model == '50292':
+            self._useColorOrWhite = True    
             
     @property
     def name(self) -> str:
@@ -92,6 +104,8 @@ class HubspaceLight(LightEntity):
         """Flag supported color modes."""
         if self._useBrightness:
             return {COLOR_MODE_BRIGHTNESS}
+        elif self._useColorOrWhite:
+            return {COLOR_MODE_RGB}
         else:
             return {COLOR_MODE_ONOFF}
     
@@ -111,6 +125,14 @@ class HubspaceLight(LightEntity):
             brightness = kwargs.get(ATTR_BRIGHTNESS, self._brightness)
             hs.setState(self._refresh_token,self._accountId,self._childId,"brightness",_brightness_to_hubspace(brightness))
         
+        if self._useColorOrWhite and ATTR_RGB_COLOR in kwargs:
+            hs.setRGB(self._refresh_token,self._accountId,self._childId,*kwargs[ATTR_RGB_COLOR])
+    
+    @property
+    def rgb_color(self):
+        """Return the rgb value."""
+        return self._rgbColor
+    
     @property
     def extra_state_attributes(self):
         """Return the state attributes."""
@@ -137,3 +159,6 @@ class HubspaceLight(LightEntity):
         if self._useBrightness:
             self._brightness = _brightness_to_hass(hs.getState(self._refresh_token,self._accountId,self._childId,"brightness"))
         
+        if self._useColorOrWhite:
+            self._colorMode = hs.getState(self._refresh_token,self._accountId,self._childId,'color-mode')
+            self._rgbColor = hs.getRGB(self._refresh_token,self._accountId,self._childId)

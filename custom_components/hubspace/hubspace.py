@@ -265,4 +265,15 @@ async def getConclave(refresh_token,accountId):
     token = r.json().get('tokens')[0].get('token')
     expiresTimestamp = r.json().get('tokens')[0].get('expiresTimestamp')
     
+def setRGB(refresh_token,accountId,child,r,g,b):
+    # assume r,g,b 0-255
+    state = {'color-rgb': { 'r': r, 'b': b, 'g': g}}
+    setState(refresh_token,accountId,child,'color-rgb',state)
+    setState(refresh_token,accountId,child,'color-mode','color')
     
+def getRGB(refresh_token,accountId,child):
+    state = getState(refresh_token,accountId,child,'color-rgb')
+    r = int(state.get('color-rgb').get('r'))
+    g = int(state.get('color-rgb').get('g'))
+    b = int(state.get('color-rgb').get('b'))
+    return (r,g,b)
