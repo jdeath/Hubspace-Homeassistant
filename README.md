@@ -14,7 +14,7 @@ Add the following entry in your `configuration.yaml`:
 light:
   - platform: hubspace
     username: your_hubspace_username (probably your email address)
-    password: your_hubspace_password
+    password: your_hubspace_password (may have issues with ! * % symbols)
     friendlynames:
       - 'BoysRoom' (the name of your light as shown in the app)
       - 'GirlsRoom' (the name of your light as shown in the app)
