@@ -73,6 +73,7 @@ class HubspaceLight(LightEntity):
         self._childId = None
         self._model = None
         self._brightness = None
+        self._useBrightness = False
         
         self._refresh_token = hs.getRefreshCode(self._username,self._password)
         self._accountId = hs.getAccountId(self._refresh_token)
