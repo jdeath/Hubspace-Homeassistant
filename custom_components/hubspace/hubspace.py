@@ -219,7 +219,27 @@ class HubSpace:
 
         #print(desiredStateName + ": " + state)
         return state
+    
+    def getDebugInfo(self,child):
 
+        state = None
+        
+        token = self.getAuthTokenFromRefreshToken()
+        
+        auth_header = {
+            "user-agent": "Dart/2.15 (dart:io)",
+            "host": "semantics2.afero.net",
+            "accept-encoding": "gzip",
+            "authorization": "Bearer " + token,
+        }
+        auth_url = "https://api2.afero.net/v1/accounts/" + self._accountId + "/metadevices/" + child + "/state"
+        auth_data = {}
+        headers = {}
+
+        r = requests.get(auth_url, data=auth_data, headers=auth_header)
+        r.close()
+        return r.json()
+        
     def getPowerState(self,child):
         return self.getState(child,"power")
 

@@ -23,6 +23,8 @@ _LOGGER = logging.getLogger(__name__)
 
 CONF_FRIENDLYNAMES: Final = "friendlynames"
 
+HUBSPACEDEBUG = True
+
 # Validation of the user's configuration
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_USERNAME): cv.string,
@@ -76,6 +78,7 @@ class HubspaceLight(LightEntity):
         self._usePrimaryFunctionInstance = False
         self._hs = hs
         self._deviceId = None
+        self._debugInfo = None
         
         # colorMode == 'color' || 'white' 
         self._useColorOrWhite = False
@@ -149,6 +152,9 @@ class HubspaceLight(LightEntity):
         attr["model"]= self._model
         attr["deviceId"] = self._deviceId
         attr["devbranch"] = True
+        
+        attr["debugInfo"] = self._debugInfo
+        
         return attr
         
     def turn_off(self, **kwargs: Any) -> None:
@@ -167,6 +173,9 @@ class HubspaceLight(LightEntity):
         """
         self._state = self._hs.getPowerState(self._childId)
         
+        if HUBSPACEDEBUG:
+            self._debugInfo = self._hs.getDebugInfo(self._childId)
+            
         if self._useBrightness:
             self._brightness = _brightness_to_hass(self._hs.getState(self._childId,"brightness"))
         
