@@ -191,7 +191,7 @@ class HubSpace:
                     child = lis.get('id')
                     deviceId = lis.get('deviceId')
                     model = lis.get('description').get('device').get('model')
-        return child,model
+        return child,model,deviceId
 
 
     def getState(self,child,desiredStateName):

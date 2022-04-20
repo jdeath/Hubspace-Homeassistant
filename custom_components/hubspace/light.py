@@ -75,6 +75,7 @@ class HubspaceLight(LightEntity):
         self._useBrightness = False
         self._usePrimaryFunctionInstance = False
         self._hs = hs
+        self._deviceId = None
         
         # colorMode == 'color' || 'white' 
         self._useColorOrWhite = False
@@ -82,7 +83,7 @@ class HubspaceLight(LightEntity):
         self._whiteTemp = None
         self._rgbColor = None
         
-        [self._childId, self._model] = self._hs.getChildId(self._name)
+        [self._childId, self._model, self._deviceId] = self._hs.getChildId(self._name)
         
         # https://www.homedepot.com/p/Commercial-Electric-500-Watt-Single-Pole-Smart-Hubspace-Dimmer-with-Motion-Sensor-White-HPDA311CWB/317249353
         if self._model == 'HPDA311CWB':
@@ -101,6 +102,11 @@ class HubspaceLight(LightEntity):
     def name(self) -> str:
         """Return the display name of this light."""
         return self._name
+    
+    @property
+    def unique_id(self) -> str:
+        """Return the display name of this light."""
+        return self._deviceId  
 
     @property
     def supported_color_modes(self) -> set[str] or None:
@@ -141,6 +147,7 @@ class HubspaceLight(LightEntity):
         """Return the state attributes."""
         attr = {}
         attr["model"]= self._model
+        attr["deviceId"] = self._deviceId
         attr["devbranch"] = True
         return attr
         
