@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import logging
 
-#from . import hubspace as hs
 from .hubspace import HubSpace
 import voluptuous as vol
 
@@ -22,13 +21,13 @@ BASE_INTERVAL = timedelta(seconds=60)
 _LOGGER = logging.getLogger(__name__)
 
 CONF_FRIENDLYNAMES: Final = "friendlynames"
-
-HUBSPACEDEBUG = True
+CONF_DEBUG: Final = "debug"
 
 # Validation of the user's configuration
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
-    vol.Optional(CONF_USERNAME): cv.string,
-    vol.Optional(CONF_PASSWORD): cv.string,
+    vol.Required(CONF_USERNAME): cv.string,
+    vol.Required(CONF_PASSWORD): cv.string,
+    vol.Required(CONF_DEBUG, default=False): cv.boolean,
     vol.Required(CONF_FRIENDLYNAMES, default=[]): vol.All(cv.ensure_list, [cv.string]),
 })
 
@@ -51,9 +50,20 @@ def setup_platform(
     
     username = config[CONF_USERNAME]
     password = config.get(CONF_PASSWORD)
-    
+    debug = config.get(CONF_DEBUG)
     hs = HubSpace(username,password)
-    entities = [HubspaceLight(hs, friendlyname) for friendlyname in config.get(CONF_FRIENDLYNAMES)]
+    
+    entities = []
+    for friendlyname in config.get(CONF_FRIENDLYNAMES): 
+    
+        [childId, model, deviceId] = hs.getChildId(friendlyname)
+        
+        if model == 'HPKA315CWB':
+            entities.append(HubspaceOutlet(hs, friendlyname,"1",debug))
+            entities.append(HubspaceOutlet(hs, friendlyname,"2",debug))
+        else:
+            entities.append(HubspaceLight(hs, friendlyname,debug))
+    
     if not entities:
         return
     add_entities(entities, True)
@@ -65,11 +75,12 @@ class HubspaceLight(LightEntity):
     
     
     
-    def __init__(self, hs, friendlyname) -> None:
+    def __init__(self, hs, friendlyname,debug) -> None:
         """Initialize an AwesomeLight."""
         
         self._name = friendlyname
         
+        self._debug = debug
         self._state = 'off'
         self._childId = None
         self._model = None
@@ -173,7 +184,7 @@ class HubspaceLight(LightEntity):
         """
         self._state = self._hs.getPowerState(self._childId)
         
-        if HUBSPACEDEBUG:
+        if self._debug:
             self._debugInfo = self._hs.getDebugInfo(self._childId)
             
         if self._useBrightness:
@@ -182,3 +193,79 @@ class HubspaceLight(LightEntity):
         if self._useColorOrWhite:
             self._colorMode = self._hs.getState(self._childId,'color-mode')
             self._rgbColor = self._hs.getRGB(self._childId)
+
+class HubspaceOutlet(LightEntity):
+    """Representation of an Awesome Light."""
+    
+    
+    
+    def __init__(self, hs, friendlyname,outletIndex,debug) -> None:
+        """Initialize an AwesomeLight."""
+        
+        self._name = friendlyname + "_outlet_" + outletIndex 
+        
+        self._debug = debug
+        self._state = 'off'
+        self._childId = None
+        self._model = None
+        self._brightness = None
+        self._useBrightness = False
+        self._usePrimaryFunctionInstance = False
+        self._hs = hs
+        self._deviceId = None
+        self._debugInfo = None
+        self._outletIndex = outletIndex
+                  
+    @property
+    def name(self) -> str:
+        """Return the display name of this light."""
+        return self._name
+    
+    @property
+    def unique_id(self) -> str:
+        """Return the display name of this light."""
+        return self._deviceId + "_" + self._outletIndex 
+
+    @property
+    def supported_color_modes(self) -> set[str] or None:
+        """Flag supported color modes."""
+        return {COLOR_MODE_ONOFF}
+    
+    @property
+    def is_on(self) -> bool | None:
+        """Return true if light is on."""
+        return self._state == 'on'
+
+    def turn_on(self, **kwargs: Any) -> None:
+        self._hs.setStateInstance(self._childId,'toggle',"outlet-" + self._outletIndex ,'on')
+     
+    
+    @property
+    def extra_state_attributes(self):
+        """Return the state attributes."""
+        attr = {}
+        attr["model"]= self._model
+        attr["deviceId"] = self._deviceId + "_" + self._outletIndex
+        attr["devbranch"] = True
+        
+        attr["debugInfo"] = self._debugInfo
+        
+        return attr
+        
+    def turn_off(self, **kwargs: Any) -> None:
+        """Instruct the light to turn off."""
+        self._hs.setStateInstance(self._childId,'toggle',"outlet-" + self._outletIndex ,'off')
+        
+    @property
+    def should_poll(self):
+        """Turn on polling """
+        return True
+        
+    def update(self) -> None:
+        """Fetch new state data for this light.
+
+        This is the only method that should fetch new data for Home Assistant.
+        """
+        self._state = self._hs.getStateInstance(self._childId,'toggle',"outlet-" + self._outletIndex)
+        
+        

@@ -220,6 +220,32 @@ class HubSpace:
         #print(desiredStateName + ": " + state)
         return state
     
+    def getStateInstance(self,child,desiredStateName,desiredFunctionInstance):
+
+        state = None
+        
+        token = self.getAuthTokenFromRefreshToken()
+        
+        auth_header = {
+            "user-agent": "Dart/2.15 (dart:io)",
+            "host": "semantics2.afero.net",
+            "accept-encoding": "gzip",
+            "authorization": "Bearer " + token,
+        }
+        auth_url = "https://api2.afero.net/v1/accounts/" + self._accountId + "/metadevices/" + child + "/state"
+        auth_data = {}
+        headers = {}
+
+        r = requests.get(auth_url, data=auth_data, headers=auth_header)
+        r.close()
+        for lis in r.json().get('values'):
+            for key,val in lis.items():
+                if key == 'functionClass' and val == desiredStateName and lis.get('functionInstance') == desiredFunctionInstance :
+                    state = lis.get('value')
+
+        #print(desiredStateName + ": " + state)
+        return state
+        
     def getDebugInfo(self,child):
 
         state = None
@@ -286,7 +312,44 @@ class HubSpace:
 
         #print(desiredStateName + ": " + state)
         return state
+        
+    def setStateInstance(self,child,desiredStateName,desiredFunctionInstance,state):
 
+        
+        token = self.getAuthTokenFromRefreshToken()
+        
+        
+        auth_data = {}
+        headers = {}
+        
+        utc_time = self.getUTCTime()
+        payload = {
+            "metadeviceId": str(child),
+            "values": [
+                {
+                    "functionClass": desiredStateName,
+                    "functionInstance": desiredFunctionInstance,
+                    "lastUpdateTime": utc_time,
+                    "value": state
+                }
+            ]
+        }
+        
+        
+        auth_header = {
+            "user-agent": "Dart/2.15 (dart:io)",
+            "host": "semantics2.afero.net",
+            "accept-encoding": "gzip",
+            "authorization": "Bearer " + token,
+            "content-type": "application/json; charset=utf-8",
+        }
+
+
+        auth_url = "https://api2.afero.net/v1/accounts/" + self._accountId + "/metadevices/" + child + "/state"
+        r = requests.put(auth_url, json=payload, headers=auth_header)
+        r.close()
+        
+        
     def setPowerState(self,child,state,needPrimary=False):
         self.setState(child,"power",state,needPrimary)
         
