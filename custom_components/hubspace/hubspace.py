@@ -183,14 +183,20 @@ class HubSpace:
         r = requests.get(auth_url, data=auth_data, headers=auth_header)
         r.close()
         child = None
-
+        model = None
+        deviceId = None
+        
         for lis in r.json():
             for key,val in lis.items():
                 if key == 'friendlyName' and val == deviceName:
                     #print(key, val)
+                    _LOGGER.debug('Printing Possible Error')
+                    _LOGGER.debug(lis)
                     child = lis.get('id')
                     deviceId = lis.get('deviceId')
                     model = lis.get('description').get('device').get('model')
+                    return child,model,deviceId
+                    
         return child,model,deviceId
 
 
