@@ -1,15 +1,26 @@
-Major rewrite. Now it caches tokens for 120s and shares authentication for all lights, thus makes fewer API call
-Supports on/off for a couple types of light strips: 'AL-TP-RGBCW-60-2116, AL-TP-RGBCW-60-2232'
-Trying to get RGB working for: '50291, 50292' , but probably does not work yet. If want to revert to on/off, just edit line 97 to have a made up model name
+Major rewrite. Now it caches tokens for 118s and shares authentication for all lights, thus makes fewer API calls
 
-Only supports on/off right now except for the PIR switch, which supports brightness. I would like to update to cloud push, but right now it updates state every minute. Login may not be robust. May need to reset login/restart homeassistant if it hangs. Will add better logic later
+Supports on/off for a couple types of light strips: 'AL-TP-RGBCW-60-2116, AL-TP-RGBCW-60-2232'
+
+RGB working for: '50291, 50292'. No brigtness or White Colortemp yet
+
+On/Off,Brightness: PIR switch (HPDA311CWB)
+
+Currently working on getting the outlets (HPKA315CWB) to work.
+
+I would like to update to cloud push, but right now polls the state every minute by default (can be overwritten with scan_interval). Please contact me if good with websockets. The websocket system pushes bad data at first, which messses up the connection. I need a way to ignore that data.
+
+Login may not be robust. May need to reset login/restart homeassistant if it hangs. Will add better logic later
+
+Please make an issue if need support for a new model.
 
 ### Installation
-
 
 copy this folder to `<config_dir>/custom_components/hubspace/`.
 
 Add the following entry in your `configuration.yaml`:
+
+Do *not* name your lights in the app the same as a room you have defined or the logic will get tripped up: Office, Bedroom, etc   
 
 ```yaml
 light:
