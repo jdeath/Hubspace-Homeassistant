@@ -11,7 +11,7 @@ light:
   - platform: hubspace
     username: your_hubspace_username (probably your email address)
     password: your_hubspace_password
-    debug: true (use this if want debug output, if you have an unsupported light)
+    debug: true (use this if want debug output, if you have an unsupported light, set false if not needed)
     friendlynames:
       - 'BoysRoom' (the name of your light as shown in the app, rename so don't have spaces in light name)
       - 'GirlsRoom' (the name of your light as shown in the app,rename so don't have spaces in light name)
