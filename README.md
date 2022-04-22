@@ -4,6 +4,8 @@ Supports on/off for a couple types of light strips: 'AL-TP-RGBCW-60-2116, AL-TP-
 
 RGB working for: '50291, 50292'. No brigtness or White Colortemp yet
 
+Light on/off: for '52133, 37833' fan. No brightness or fan control
+
 On/Off,Brightness: PIR switch (HPDA311CWB)
 
 Currently working on getting the outlets (HPKA315CWB) to work.
