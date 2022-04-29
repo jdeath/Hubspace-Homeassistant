@@ -3,13 +3,12 @@ from __future__ import annotations
 
 import logging
 
-from . import hubspace as hs
+from .hubspace import HubSpace
 import voluptuous as vol
 
 # Import the device class from the component that you want to support
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.light import (ATTR_BRIGHTNESS, PLATFORM_SCHEMA, COLOR_MODE_BRIGHTNESS, COLOR_MODE_ONOFF,
-                                            LightEntity)
+from homeassistant.components.light import (ATTR_BRIGHTNESS, ATTR_RGB_COLOR, PLATFORM_SCHEMA, COLOR_MODE_BRIGHTNESS, COLOR_MODE_COLOR_TEMP, COLOR_MODE_RGB, COLOR_MODE_ONOFF, LightEntity)
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -22,11 +21,13 @@ BASE_INTERVAL = timedelta(seconds=60)
 _LOGGER = logging.getLogger(__name__)
 
 CONF_FRIENDLYNAMES: Final = "friendlynames"
+CONF_DEBUG: Final = "debug"
 
 # Validation of the user's configuration
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
-    vol.Optional(CONF_USERNAME): cv.string,
-    vol.Optional(CONF_PASSWORD): cv.string,
+    vol.Required(CONF_USERNAME): cv.string,
+    vol.Required(CONF_PASSWORD): cv.string,
+    vol.Required(CONF_DEBUG, default=False): cv.boolean,
     vol.Required(CONF_FRIENDLYNAMES, default=[]): vol.All(cv.ensure_list, [cv.string]),
 })
 
@@ -49,8 +50,20 @@ def setup_platform(
     
     username = config[CONF_USERNAME]
     password = config.get(CONF_PASSWORD)
+    debug = config.get(CONF_DEBUG)
+    hs = HubSpace(username,password)
     
-    entities = [HubspaceLight(username, password, friendlyname) for friendlyname in config.get(CONF_FRIENDLYNAMES)]
+    entities = []
+    for friendlyname in config.get(CONF_FRIENDLYNAMES): 
+    
+        [childId, model, deviceId] = hs.getChildId(friendlyname)
+        
+        if model == 'HPKA315CWB':
+            entities.append(HubspaceOutlet(hs, friendlyname,"1",debug))
+            entities.append(HubspaceOutlet(hs, friendlyname,"2",debug))
+        else:
+            entities.append(HubspaceLight(hs, friendlyname,debug))
+    
     if not entities:
         return
     add_entities(entities, True)
@@ -62,37 +75,60 @@ class HubspaceLight(LightEntity):
     
     
     
-    def __init__(self, username, password, friendlyname) -> None:
+    def __init__(self, hs, friendlyname,debug) -> None:
         """Initialize an AwesomeLight."""
-        self._username = username
-        self._password = password
+        
         self._name = friendlyname
-        self._refresh_token = None
-        self._accountId = None
+        
+        self._debug = debug
         self._state = 'off'
         self._childId = None
         self._model = None
         self._brightness = None
         self._useBrightness = False
+        self._usePrimaryFunctionInstance = False
+        self._hs = hs
+        self._deviceId = None
+        self._debugInfo = None
         
-        self._refresh_token = hs.getRefreshCode(self._username,self._password)
-        self._accountId = hs.getAccountId(self._refresh_token)
-        [self._childId, self._model] = hs.getChildId(self._refresh_token,self._accountId,self._name)
+        # colorMode == 'color' || 'white' 
+        self._useColorOrWhite = False
+        self._colorMode = None
+        self._whiteTemp = None
+        self._rgbColor = None
+        
+        [self._childId, self._model, self._deviceId] = self._hs.getChildId(self._name)
         
         # https://www.homedepot.com/p/Commercial-Electric-500-Watt-Single-Pole-Smart-Hubspace-Dimmer-with-Motion-Sensor-White-HPDA311CWB/317249353
         if self._model == 'HPDA311CWB':
             self._useBrightness = True
+        
+        #https://www.homedepot.com/p/EcoSmart-16-ft-Smart-Hubspace-RGB-and-Tunable-White-Tape-Light-Works-with-Amazon-Alexa-and-Google-Assistant-AL-TP-RGBCW-60/314680856
+        if self._model == 'AL-TP-RGBCW-60-2116, AL-TP-RGBCW-60-2232' or self._model == 'HPKA315CWB' or self._model == '52133, 37833':
+            self._usePrimaryFunctionInstance = True
+        
+        # https://www.homedepot.com/p/Commercial-Electric-4-in-Smart-Hubspace-Color-Selectable-CCT-Integrated-LED-Recessed-Light-Trim-Works-with-Amazon-Alexa-and-Google-538551010/314199717
+        # https://www.homedepot.com/p/Commercial-Electric-6-in-Smart-Hubspace-Ultra-Slim-New-Construction-and-Remodel-RGB-W-LED-Recessed-Kit-Works-with-Amazon-Alexa-and-Google-50292/313556988
+        if self._model == '50291, 50292':
+            self._useColorOrWhite = True    
             
     @property
     def name(self) -> str:
         """Return the display name of this light."""
         return self._name
+    
+    @property
+    def unique_id(self) -> str:
+        """Return the display name of this light."""
+        return self._deviceId  
 
     @property
     def supported_color_modes(self) -> set[str] or None:
         """Flag supported color modes."""
         if self._useBrightness:
             return {COLOR_MODE_BRIGHTNESS}
+        elif self._useColorOrWhite:
+            return {COLOR_MODE_RGB}
         else:
             return {COLOR_MODE_ONOFF}
     
@@ -107,21 +143,34 @@ class HubspaceLight(LightEntity):
         return self._state == 'on'
 
     def turn_on(self, **kwargs: Any) -> None:
-        state = hs.setPowerState(self._refresh_token,self._accountId,self._childId,"on")
+        state = self._hs.setPowerState(self._childId,"on",self._usePrimaryFunctionInstance)
         if self._useBrightness:
             brightness = kwargs.get(ATTR_BRIGHTNESS, self._brightness)
-            hs.setState(self._refresh_token,self._accountId,self._childId,"brightness",_brightness_to_hubspace(brightness))
+            self._hs.setState(self._childId,"brightness",_brightness_to_hubspace(brightness))
         
+        if self._useColorOrWhite and ATTR_RGB_COLOR in kwargs:
+            self._hs.setRGB(self._childId,*kwargs[ATTR_RGB_COLOR])
+    
+    @property
+    def rgb_color(self):
+        """Return the rgb value."""
+        return self._rgbColor
+    
     @property
     def extra_state_attributes(self):
         """Return the state attributes."""
         attr = {}
         attr["model"]= self._model
+        attr["deviceId"] = self._deviceId
+        attr["devbranch"] = True
+        
+        attr["debugInfo"] = self._debugInfo
+        
         return attr
         
     def turn_off(self, **kwargs: Any) -> None:
         """Instruct the light to turn off."""
-        state = hs.setPowerState(self._refresh_token,self._accountId,self._childId,"off")
+        state = self._hs.setPowerState(self._childId,"off",self._usePrimaryFunctionInstance)
         
     @property
     def should_poll(self):
@@ -133,8 +182,90 @@ class HubspaceLight(LightEntity):
 
         This is the only method that should fetch new data for Home Assistant.
         """
-        self._state = hs.getPowerState(self._refresh_token,self._accountId,self._childId)
+        self._state = self._hs.getPowerState(self._childId)
         
+        if self._debug:
+            self._debugInfo = self._hs.getDebugInfo(self._childId)
+            
         if self._useBrightness:
-            self._brightness = _brightness_to_hass(hs.getState(self._refresh_token,self._accountId,self._childId,"brightness"))
+            self._brightness = _brightness_to_hass(self._hs.getState(self._childId,"brightness"))
+        
+        if self._useColorOrWhite:
+            self._colorMode = self._hs.getState(self._childId,'color-mode')
+            self._rgbColor = self._hs.getRGB(self._childId)
+
+class HubspaceOutlet(LightEntity):
+    """Representation of an Awesome Light."""
+    
+    
+    
+    def __init__(self, hs, friendlyname,outletIndex,debug) -> None:
+        """Initialize an AwesomeLight."""
+        
+        self._name = friendlyname + "_outlet_" + outletIndex 
+        
+        self._debug = debug
+        self._state = 'off'
+        self._childId = None
+        self._model = None
+        self._brightness = None
+        self._useBrightness = False
+        self._usePrimaryFunctionInstance = False
+        self._hs = hs
+        self._deviceId = None
+        self._debugInfo = None
+        self._outletIndex = outletIndex
+                  
+    @property
+    def name(self) -> str:
+        """Return the display name of this light."""
+        return self._name
+    
+    @property
+    def unique_id(self) -> str:
+        """Return the display name of this light."""
+        return self._deviceId + "_" + self._outletIndex 
+
+    @property
+    def supported_color_modes(self) -> set[str] or None:
+        """Flag supported color modes."""
+        return {COLOR_MODE_ONOFF}
+    
+    @property
+    def is_on(self) -> bool | None:
+        """Return true if light is on."""
+        return self._state == 'on'
+
+    def turn_on(self, **kwargs: Any) -> None:
+        self._hs.setStateInstance(self._childId,'toggle',"outlet-" + self._outletIndex ,'on')
+     
+    
+    @property
+    def extra_state_attributes(self):
+        """Return the state attributes."""
+        attr = {}
+        attr["model"]= self._model
+        attr["deviceId"] = self._deviceId + "_" + self._outletIndex
+        attr["devbranch"] = True
+        
+        attr["debugInfo"] = self._debugInfo
+        
+        return attr
+        
+    def turn_off(self, **kwargs: Any) -> None:
+        """Instruct the light to turn off."""
+        self._hs.setStateInstance(self._childId,'toggle',"outlet-" + self._outletIndex ,'off')
+        
+    @property
+    def should_poll(self):
+        """Turn on polling """
+        return True
+        
+    def update(self) -> None:
+        """Fetch new state data for this light.
+
+        This is the only method that should fetch new data for Home Assistant.
+        """
+        self._state = self._hs.getStateInstance(self._childId,'toggle',"outlet-" + self._outletIndex)
+        
         
