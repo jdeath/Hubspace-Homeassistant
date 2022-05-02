@@ -162,7 +162,7 @@ class HubspaceLight(LightEntity):
         attr = {}
         attr["model"]= self._model
         attr["deviceId"] = self._deviceId
-        attr["devbranch"] = True
+        attr["devbranch"] = False
         
         attr["debugInfo"] = self._debugInfo
         
@@ -215,7 +215,9 @@ class HubspaceOutlet(LightEntity):
         self._deviceId = None
         self._debugInfo = None
         self._outletIndex = outletIndex
-                  
+        
+        [self._childId, self._model, self._deviceId] = self._hs.getChildId(friendlyname)
+    
     @property
     def name(self) -> str:
         """Return the display name of this light."""
@@ -246,7 +248,7 @@ class HubspaceOutlet(LightEntity):
         attr = {}
         attr["model"]= self._model
         attr["deviceId"] = self._deviceId + "_" + self._outletIndex
-        attr["devbranch"] = True
+        attr["devbranch"] = False
         
         attr["debugInfo"] = self._debugInfo
         
