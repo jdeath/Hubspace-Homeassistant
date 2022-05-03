@@ -58,6 +58,10 @@ def setup_platform(
     
         [childId, model, deviceId] = hs.getChildId(friendlyname)
         
+        _LOGGER.debug("Switch on Model " + model )
+        _LOGGER.debug("childId" + childId )
+        _LOGGER.debug("deviceId" + deviceId )
+        
         if model == 'HPKA315CWB':
             entities.append(HubspaceOutlet(hs, friendlyname,"1",debug))
             entities.append(HubspaceOutlet(hs, friendlyname,"2",debug))
