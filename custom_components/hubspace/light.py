@@ -63,9 +63,11 @@ def setup_platform(
         _LOGGER.debug("deviceId" + deviceId )
         
         if model == 'HPKA315CWB':
+            _LOGGER.debug("Creating Outlets" )
             entities.append(HubspaceOutlet(hs, friendlyname,"1",debug))
             entities.append(HubspaceOutlet(hs, friendlyname,"2",debug))
         else:
+            _LOGGER.debug("creating lights" )
             entities.append(HubspaceLight(hs, friendlyname,debug))
     
     if not entities:
