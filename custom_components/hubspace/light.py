@@ -56,11 +56,12 @@ def setup_platform(
     entities = []
     for friendlyname in config.get(CONF_FRIENDLYNAMES): 
     
+        _LOGGER.debug("freindlyname " + friendlyname )
         [childId, model, deviceId] = hs.getChildId(friendlyname)
         
         _LOGGER.debug("Switch on Model " + model )
-        _LOGGER.debug("childId" + childId )
-        _LOGGER.debug("deviceId" + deviceId )
+        _LOGGER.debug("childId: " + childId )
+        _LOGGER.debug("deviceId: " + deviceId )
         
         if model == 'HPKA315CWB':
             _LOGGER.debug("Creating Outlets" )

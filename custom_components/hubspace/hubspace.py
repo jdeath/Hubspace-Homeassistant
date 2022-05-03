@@ -169,6 +169,7 @@ class HubSpace:
         
         token = self.getAuthTokenFromRefreshToken()
         
+        _LOGGER.debug("token " + token )
         auth_header = {
             "user-agent": "Dart/2.15 (dart:io)",
             "host": "semantics2.afero.net",
@@ -176,6 +177,7 @@ class HubSpace:
             "authorization": "Bearer " + token,
         }
 
+        _LOGGER.debug("token " + self._accountId )
         auth_url = "https://api2.afero.net/v1/accounts/" + self._accountId + "/metadevices?expansions=state"
 
         auth_data = {}
@@ -190,13 +192,14 @@ class HubSpace:
             for key,val in lis.items():
                 if key == 'friendlyName' and val == deviceName:
                     #print(key, val)
-                    #_LOGGER.debug('Printing Possible Error')
-                    #_LOGGER.debug(lis)
+                    _LOGGER.debug('Printing Possible Error')
+                    _LOGGER.debug(lis)
                     child = lis.get('id')
                     deviceId = lis.get('deviceId')
                     model = lis.get('description').get('device').get('model')
                     return child,model,deviceId
-                    
+        
+        _LOGGER.debug("No model found ")
         return child,model,deviceId
 
 
