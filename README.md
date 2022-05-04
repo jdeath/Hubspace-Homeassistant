@@ -8,13 +8,15 @@ Light on/off: for '52133, 37833' fan. No brightness or fan control
 
 On/Off,Brightness: PIR switch (HPDA311CWB)
 
-Currently working on getting the outlets (HPKA315CWB) to work.
+Outlets (HPKA315CWB) work with on/off.
 
 I would like to update to cloud push, but right now polls the state every minute by default (can be overwritten with scan_interval). Please contact me if good with websockets. The websocket system pushes bad data at first, which messses up the connection. I need a way to ignore that data.
 
 Login may not be robust. May need to reset login/restart homeassistant if it hangs. Will add better logic later
 
 Please make an issue if need support for a new model.
+
+If you are having problems, first try trying the device name in the App. This code fails with names like Office, Bedroom, Fireplace. Make it something unique if having issues.
 
 ### Installation
 
