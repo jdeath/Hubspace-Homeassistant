@@ -197,7 +197,8 @@ class HubSpace:
                     child = lis.get('id')
                     deviceId = lis.get('deviceId')
                     model = lis.get('description').get('device').get('model')
-                    return child,model,deviceId
+                    if model is not None:
+                        return child,model,deviceId
         
         _LOGGER.debug("No model found ")
         return child,model,deviceId

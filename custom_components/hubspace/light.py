@@ -276,5 +276,6 @@ class HubspaceOutlet(LightEntity):
         This is the only method that should fetch new data for Home Assistant.
         """
         self._state = self._hs.getStateInstance(self._childId,'toggle',"outlet-" + self._outletIndex)
-        
+        if self._debug:
+            self._debugInfo = self._hs.getDebugInfo(self._childId)
         
