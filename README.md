@@ -16,7 +16,7 @@ Login may not be robust. May need to reset login/restart homeassistant if it han
 
 Please make an issue if need support for a new model.
 
-If you are having problems, first try trying the device name in the App. This code fails with names like Office, Bedroom, Fireplace. Make it something unique if having issues.
+If you are having problems, first try renaming the device name in the App. This code fails with names like Office, Bedroom, Fireplace. Make it something unique and not the same as a group if having issues. Hopefully this has been fixed, but still could be issues.
 
 ### Installation
 
