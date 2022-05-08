@@ -118,7 +118,12 @@ class HubspaceLight(LightEntity):
         # https://www.homedepot.com/p/Commercial-Electric-6-in-Smart-Hubspace-Ultra-Slim-New-Construction-and-Remodel-RGB-W-LED-Recessed-Kit-Works-with-Amazon-Alexa-and-Google-50292/313556988
         if self._model == '50291, 50292':
             self._useColorOrWhite = True    
-            
+        
+        # https://www.homedepot.com/p/Commercial-Electric-5-in-6-in-Smart-Hubspace-Color-Selectable-CCT-Integrated-LED-Recessed-Light-Trim-Works-with-Amazon-Alexa-and-Google-538561010/314254248
+        if self._model == '538551010, 538561010, 538552010, 538562010':
+            self._useColorOrWhite = True
+            self._useBrightness = True
+        
     @property
     def name(self) -> str:
         """Return the display name of this light."""
