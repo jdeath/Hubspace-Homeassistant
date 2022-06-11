@@ -188,19 +188,23 @@ class HubSpace:
         model = None
         deviceId = None
         
+        #_LOGGER.debug("############ Dumping all info 1 0f 2 #########")
+        #_LOGGER.debug(json.dumps(r.json(), indent=4, sort_keys=True))
+        #_LOGGER.debug("############ End Dump #########")
+        
         for lis in r.json():
             for key,val in lis.items():
                 if key == 'friendlyName' and val == deviceName:
                     #print(key, val)
-                    _LOGGER.debug('Printing Possible Error')
-                    _LOGGER.debug(lis)
+                    #_LOGGER.debug('Printing Possible Error')
+                    #_LOGGER.debug(lis)
                     child = lis.get('id')
                     deviceId = lis.get('deviceId')
                     model = lis.get('description').get('device').get('model')
                     if model is not None:
                         return child,model,deviceId
         
-        _LOGGER.debug("No model found ")
+        #_LOGGER.debug("No model found ")
         return child,model,deviceId
 
 
@@ -268,12 +272,28 @@ class HubSpace:
             "accept-encoding": "gzip",
             "authorization": "Bearer " + token,
         }
+        
+        _LOGGER.debug("token " + self._accountId )
+        auth_url = "https://api2.afero.net/v1/accounts/" + self._accountId + "/metadevices?expansions=state"
+
+        auth_data = {}
+        headers = {}
+        r = requests.get(auth_url, data=auth_data, headers=auth_header)
+        r.close()
+        
+        _LOGGER.debug("############ Dumping all info 1 0f 2 #########")
+        _LOGGER.debug(json.dumps(r.json(), indent=4, sort_keys=True))
+        _LOGGER.debug("############ End Dump #########")
+        
         auth_url = "https://api2.afero.net/v1/accounts/" + self._accountId + "/metadevices/" + child + "/state"
         auth_data = {}
         headers = {}
 
         r = requests.get(auth_url, data=auth_data, headers=auth_header)
         r.close()
+        _LOGGER.debug("############ Dumping all info 2 0f 2 #########")
+        _LOGGER.debug(json.dumps(r.json(), indent=4, sort_keys=True))
+        _LOGGER.debug("############ End Dump #########")
         return r.json()
         
     def getPowerState(self,child):
