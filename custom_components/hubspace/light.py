@@ -67,6 +67,9 @@ def setup_platform(
             _LOGGER.debug("Creating Outlets" )
             entities.append(HubspaceOutlet(hs, friendlyname,"1",debug))
             entities.append(HubspaceOutlet(hs, friendlyname,"2",debug))
+        if model == '52133, 37833':
+            _LOGGER.debug("Creating Fan" )
+            entities.append(HubspaceFan(hs, friendlyname,debug))
         else:
             _LOGGER.debug("creating lights" )
             entities.append(HubspaceLight(hs, friendlyname,debug))
@@ -281,6 +284,82 @@ class HubspaceOutlet(LightEntity):
         This is the only method that should fetch new data for Home Assistant.
         """
         self._state = self._hs.getStateInstance(self._childId,'toggle',"outlet-" + self._outletIndex)
+        if self._debug:
+            self._debugInfo = self._hs.getDebugInfo(self._childId)
+
+class HubspaceFan(LightEntity):
+    """Representation of an Awesome Light."""
+    
+        
+    def __init__(self, hs, friendlynamedebug) -> None:
+        """Initialize an AwesomeLight."""
+        
+        self._name = friendlyname + "_fan" 
+        
+        self._debug = debug
+        self._state = 'off'
+        self._childId = None
+        self._model = None
+        self._brightness = None
+        self._useBrightness = False
+        self._usePrimaryFunctionInstance = False
+        self._hs = hs
+        self._deviceId = None
+        self._debugInfo = None
+        
+        [self._childId, self._model, self._deviceId] = self._hs.getChildId(friendlyname)
+    
+    @property
+    def name(self) -> str:
+        """Return the display name of this light."""
+        return self._name
+    
+    @property
+    def unique_id(self) -> str:
+        """Return the display name of this light."""
+        return self._deviceId + "_fan" 
+
+    @property
+    def supported_color_modes(self) -> set[str] or None:
+        """Flag supported color modes."""
+        return {COLOR_MODE_ONOFF}
+    
+    @property
+    def is_on(self) -> bool | None:
+        """Return true if light is on."""
+        return self._state == 'on'
+
+    def turn_on(self, **kwargs: Any) -> None:
+        self._hs.setStateInstance(self._childId,'power','fan-power','on')
+        self._hs.setStateInstance(self._childId,'fan-speed','fan-speed','fan-speed-50')
+    
+    @property
+    def extra_state_attributes(self):
+        """Return the state attributes."""
+        attr = {}
+        attr["model"]= self._model
+        attr["deviceId"] = self._deviceId + "_fan"
+        attr["devbranch"] = False
+        
+        attr["debugInfo"] = self._debugInfo
+        
+        return attr
+        
+    def turn_off(self, **kwargs: Any) -> None:
+        """Instruct the light to turn off."""
+        self._hs.setStateInstance(self._childId,'power','fan-power','off')
+        
+    @property
+    def should_poll(self):
+        """Turn on polling """
+        return True
+        
+    def update(self) -> None:
+        """Fetch new state data for this light.
+
+        This is the only method that should fetch new data for Home Assistant.
+        """
+        self._state = self._hs.getStateInstance(self._childId,'power','fan-power')
         if self._debug:
             self._debugInfo = self._hs.getDebugInfo(self._childId)
         
