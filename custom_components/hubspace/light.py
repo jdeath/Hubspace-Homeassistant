@@ -386,6 +386,8 @@ class HubspaceFan(LightEntity):
         """
         self._state = self._hs.getStateInstance(self._childId,'power','fan-power')
         fanspeed = self._hs.getStateInstance(self._childId,'fan-speed','fan-speed')
+        brightness = 0
+        
         if fanspeed == 'fan-speed-000':
             brightness = 0
         elif fanspeed == 'fan-speed-025':
@@ -393,7 +395,7 @@ class HubspaceFan(LightEntity):
         elif fanspeed == 'fan-speed-050':
             brightness = 127
         elif fanspeed == 'fan-speed-075':
-            brigtness = 191
+            brightness = 191
         elif fanspeed == 'fan-speed-100':
             brightness = 255
         self._brightness = brightness
