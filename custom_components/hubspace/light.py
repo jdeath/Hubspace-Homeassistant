@@ -291,7 +291,7 @@ class HubspaceFan(LightEntity):
     """Representation of an Awesome Light."""
     
         
-    def __init__(self, hs, friendlynamedebug) -> None:
+    def __init__(self, hs, friendlyname, debug) -> None:
         """Initialize an AwesomeLight."""
         
         self._name = friendlyname + "_fan" 
