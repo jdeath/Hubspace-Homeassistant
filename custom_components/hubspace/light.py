@@ -347,6 +347,7 @@ class HubspaceFan(LightEntity):
         
         self._hs.setStateInstance(self._childId,'fan-speed','fan-speed',speedstring)
     
+    @property
     def supported_color_modes(self) -> set[str] or None:
         """Flag supported color modes."""
         
