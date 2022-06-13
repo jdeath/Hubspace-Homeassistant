@@ -8,7 +8,7 @@ import voluptuous as vol
 
 # Import the device class from the component that you want to support
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.light import (ATTR_BRIGHTNESS, ATTR_RGB_COLOR, PLATFORM_SCHEMA, COLOR_MODE_BRIGHTNESS, COLOR_MODE_COLOR_TEMP, COLOR_MODE_RGB, COLOR_MODE_ONOFF, LightEntity)
+from homeassistant.components.light import (ATTR_BRIGHTNESS, ATTR_RGB_COLOR, PLATFORM_SCHEMA, COLOR_MODE_BRIGHTNESS, COLOR_MODE_COLOR_TEMP, COLOR_MODE_RGB, COLOR_MODE_ONOFF, ColorMode, LightEntity)
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -148,6 +148,16 @@ class HubspaceLight(LightEntity):
             return {COLOR_MODE_ONOFF}
     
     @property
+    def color_mode(self) -> ColorMode:
+        if self._useBrightness:
+            return ColorMode.BRIGHTNESS
+        elif self._useColorOrWhite:
+            return ColorMode.RGB
+        else:
+            return ColorMode.ONOFF
+        
+        
+    @property
     def brightness(self) -> int or None:
         """Return the brightness of this light between 0..255."""
         return self._brightness
@@ -249,6 +259,11 @@ class HubspaceOutlet(LightEntity):
         return {COLOR_MODE_ONOFF}
     
     @property
+    def color_mode(self) -> ColorMode:
+        """Return the color mode of the light."""
+        return ColorMode.ONOFF
+        
+    @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
         return self._state == 'on'
@@ -318,12 +333,7 @@ class HubspaceFan(LightEntity):
     def unique_id(self) -> str:
         """Return the display name of this light."""
         return self._deviceId + "_fan" 
-
-    @property
-    def supported_color_modes(self) -> set[str] or None:
-        """Flag supported color modes."""
-        return {COLOR_MODE_ONOFF}
-    
+     
     @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
@@ -349,10 +359,13 @@ class HubspaceFan(LightEntity):
     
     @property
     def supported_color_modes(self) -> set[str] or None:
-        """Flag supported color modes."""
-        
+        """Flag supported color modes."""    
         return {COLOR_MODE_BRIGHTNESS}
-           
+
+    @property
+    def color_mode(self) -> ColorMode:
+        return ColorMode.BRIGHTNESS
+            
     @property
     def brightness(self) -> int or None:
         """Return the brightness of this light between 0..255."""
