@@ -124,6 +124,7 @@ class HubspaceLight(LightEntity):
         if self._model == '50291, 50292':
             #self._useColorOrWhite = True
             self._usePowerFunctionInstance = 'light-power'
+            self._useBrightness = True
         
         # https://www.homedepot.com/p/Commercial-Electric-5-in-6-in-Smart-Hubspace-Color-Selectable-CCT-Integrated-LED-Recessed-Light-Trim-Works-with-Amazon-Alexa-and-Google-538561010/314254248
         if self._model == '538551010, 538561010, 538552010, 538562010':
