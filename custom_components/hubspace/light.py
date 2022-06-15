@@ -57,17 +57,18 @@ def setup_platform(
     for friendlyname in config.get(CONF_FRIENDLYNAMES): 
     
         _LOGGER.debug("freindlyname " + friendlyname )
-        [childId, model, deviceId] = hs.getChildId(friendlyname)
+        [childId, model, deviceId,deviceClass] = hs.getChildId(friendlyname)
         
         _LOGGER.debug("Switch on Model " + model )
         _LOGGER.debug("childId: " + childId )
         _LOGGER.debug("deviceId: " + deviceId )
+        _LOGGER.debug("deviceClass: " + deviceClass )
         
         if model == 'HPKA315CWB':
             _LOGGER.debug("Creating Outlets" )
             entities.append(HubspaceOutlet(hs, friendlyname,"1",debug))
             entities.append(HubspaceOutlet(hs, friendlyname,"2",debug))
-        if model == '52133, 37833':
+        if model == '52133, 37833' and deviceClass == 'fan':
             _LOGGER.debug("Creating Fan" )
             entities.append(HubspaceFan(hs, friendlyname,debug))
         else:
@@ -106,8 +107,8 @@ class HubspaceLight(LightEntity):
         self._colorMode = None
         self._whiteTemp = None
         self._rgbColor = None
-        
-        [self._childId, self._model, self._deviceId] = self._hs.getChildId(self._name)
+        deviceClass = None
+        [self._childId, self._model, self._deviceId,deviceClass] = self._hs.getChildId(self._name)
         
         # https://www.homedepot.com/p/Commercial-Electric-500-Watt-Single-Pole-Smart-Hubspace-Dimmer-with-Motion-Sensor-White-HPDA311CWB/317249353
         if self._model == 'HPDA311CWB':
@@ -240,8 +241,8 @@ class HubspaceOutlet(LightEntity):
         self._deviceId = None
         self._debugInfo = None
         self._outletIndex = outletIndex
-        
-        [self._childId, self._model, self._deviceId] = self._hs.getChildId(friendlyname)
+        deviceClass = None
+        [self._childId, self._model, self._deviceId,deviceClass] = self._hs.getChildId(friendlyname)
     
     @property
     def name(self) -> str:
@@ -322,7 +323,8 @@ class HubspaceFan(LightEntity):
         self._deviceId = None
         self._debugInfo = None
         
-        [self._childId, self._model, self._deviceId] = self._hs.getChildId(friendlyname)
+        deviceClass = None
+        [self._childId, self._model, self._deviceId,deviceClass] = self._hs.getChildId(friendlyname)
     
     @property
     def name(self) -> str:
@@ -342,7 +344,7 @@ class HubspaceFan(LightEntity):
     def turn_on(self, **kwargs: Any) -> None:
         self._hs.setStateInstance(self._childId,'power','fan-power','on')
         
-        # Homeassistant uses 0-25
+        # Homeassistant uses 0-255
         brightness = kwargs.get(ATTR_BRIGHTNESS, self._brightness)
         brightnessPercent = _brightness_to_hubspace(brightness)
         if brightnessPercent < 30:

@@ -187,7 +187,7 @@ class HubSpace:
         child = None
         model = None
         deviceId = None
-        
+        deviceClass = None
         #_LOGGER.debug("############ Dumping all info 1 0f 2 #########")
         #_LOGGER.debug(json.dumps(r.json(), indent=4, sort_keys=True))
         #_LOGGER.debug("############ End Dump #########")
@@ -201,11 +201,12 @@ class HubSpace:
                     child = lis.get('id')
                     deviceId = lis.get('deviceId')
                     model = lis.get('description').get('device').get('model')
-                    if model is not None:
-                        return child,model,deviceId
+                    deviceClass = lis.get('description').get('device').get('deviceClass')
+                    if model is not None and deviceClass is not None:
+                        return child,model,deviceId, deviceClass
         
         #_LOGGER.debug("No model found ")
-        return child,model,deviceId
+        return child,model,deviceId,deviceClass
 
 
     def getState(self,child,desiredStateName):
