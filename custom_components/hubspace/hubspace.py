@@ -90,7 +90,7 @@ class HubSpace:
         code = re.search('&code=(.+?)$', location).group(1)
 
         auth_url = "https://accounts.hubspaceconnect.com/auth/realms/thd/protocol/openid-connect/token"
-
+        
         auth_header = {
             "Content-Type": "application/x-www-form-urlencoded",
             "user-agent": "Dart/2.15 (dart:io)",
@@ -300,12 +300,10 @@ class HubSpace:
     def getPowerState(self,child):
         return self.getState(child,"power")
 
-    def setState(self,child,desiredStateName,state,needPrimary=False):
-
-        
+    def setState(self,child,desiredStateName,state,instanceField=None):
+   
         token = self.getAuthTokenFromRefreshToken()
-        
-        
+                
         auth_data = {}
         headers = {}
         
@@ -321,8 +319,8 @@ class HubSpace:
             ]
         }
         
-        if needPrimary:
-            payload["values"][0]["functionInstance"] = "primary"
+        if instanceField is not None:
+            payload["values"][0]["functionInstance"] = instanceField
         
         auth_header = {
             "user-agent": "Dart/2.15 (dart:io)",
@@ -381,8 +379,8 @@ class HubSpace:
         r.close()
         
         
-    def setPowerState(self,child,state,needPrimary=False):
-        self.setState(child,"power",state,needPrimary)
+    def setPowerState(self,child,state,powerFunctionInstance=None):
+        self.setState(child,"power",state,powerFunctionInstance)
         
      
     async def getConclave(self):
