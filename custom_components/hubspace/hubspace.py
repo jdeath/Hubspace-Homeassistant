@@ -321,8 +321,7 @@ class HubSpace:
         
         if instanceField is not None:
             payload["values"][0]["functionInstance"] = instanceField
-        
-        _LOGGER.debug("setting state with instance: " + instanceField )
+            _LOGGER.debug("setting state with instance: " + instanceField )
         
         auth_header = {
             "user-agent": "Dart/2.15 (dart:io)",
