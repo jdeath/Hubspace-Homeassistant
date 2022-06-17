@@ -6,7 +6,7 @@ RGB working for: '50291, 50292'. No brigtness or White Colortemp yet
 
 RGB (and maybe brightness) working for: '538551010, 538561010, 538552010, 538562010'
 
-Light on/off/dim and fan on/off/low/med/high/hight: for '52133, 37833' fan. Fan speed is controlled like a light dimmer.
+Light on/off/dim and fan on/off/low/med/high/full for '52133, 37833' fan. Fan speed is controlled like a light dimmer.
 
 On/Off,Brightness: PIR switch (HPDA311CWB)
 
