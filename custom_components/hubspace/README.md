@@ -47,3 +47,29 @@ logger:
 
 ```
 you may already have the top two lines, just need to add the buttom two
+
+### Fan Support
+Since the fan is implimted as a light with a dimmer, you can use a template to make it appear as a fan. From a user:
+```
+# Example configuration.yaml entry
+fan:
+  - platform: template
+    fans:
+      living_room_fan::
+        friendly_name: "Fan"
+        value_template: "{{ states('light.ceilingfan_fan') }}"
+        percentage_template: "{{ (state_attr('light.ceilingfan_fan', 'brightness') / 255 * 100) | int }}"
+        turn_on:
+          service: homeassistant.turn_on
+          entity_id: light.ceilingfan_fan
+        turn_off:
+          service: homeassistant.turn_off
+          entity_id: light.ceilingfan_fan
+        set_percentage:
+          service: light.turn_on
+          entity_id: light.ceilingfan_fan
+          data_template:
+            brightness: "{{ ( percentage / 100 * 255) | int }}"
+        speed_count: 4
+        
+```
