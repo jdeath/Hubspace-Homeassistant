@@ -14,6 +14,10 @@ Outlets (HPKA315CWB) work with on/off.
 
 I would like to update to cloud push, but right now polls the state every minute by default (can be overwritten with scan_interval). Please contact me if good with websockets. The websocket system pushes bad data at first, which messses up the connection. I need a way to ignore that data.
 
+_Thanks to everyone having starred my repo! To star it click on the image below, then it will be on top right. Thanks!_
+
+[![Stargazers repo roster for @jdeath/Hubspace-Homeassistant](https://reporoster.com/stars/jdeath/Hubspace-Homeassistant)](https://github.com/jdeath/hubspace-homeassistant/stargazers)
+
 ### Installation
 
 copy this folder to `<config_dir>/custom_components/hubspace/`.
