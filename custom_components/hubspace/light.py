@@ -73,7 +73,6 @@ def setup_platform(
             entities.append(HubspaceTransformer(hs, friendlyname,"1",debug))
             entities.append(HubspaceTransformer(hs, friendlyname,"2",debug))
             entities.append(HubspaceTransformer(hs, friendlyname,"3",debug))
-            entities.append(HubspaceTransformer(hs, friendlyname,"4",debug))
         elif model == '52133, 37833':
             _LOGGER.debug("Creating Fan" )
             entities.append(HubspaceFan(hs, friendlyname,debug))
