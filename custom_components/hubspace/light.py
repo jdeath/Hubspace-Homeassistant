@@ -68,9 +68,17 @@ def setup_platform(
             _LOGGER.debug("Creating Outlets" )
             entities.append(HubspaceOutlet(hs, friendlyname,"1",debug))
             entities.append(HubspaceOutlet(hs, friendlyname,"2",debug))
-        if model == '52133, 37833' and deviceClass == 'fan':
+        elif model == 'HB-200-1215WIFIB':
+            _LOGGER.debug("Creating Transformers" )
+            entities.append(HubspaceTransformer(hs, friendlyname,"1",debug))
+            entities.append(HubspaceTransformer(hs, friendlyname,"2",debug))
+            entities.append(HubspaceTransformer(hs, friendlyname,"3",debug))
+            entities.append(HubspaceTransformer(hs, friendlyname,"4",debug))
+        elif model == '52133, 37833':
             _LOGGER.debug("Creating Fan" )
             entities.append(HubspaceFan(hs, friendlyname,debug))
+            _LOGGER.debug("Creating Light" )
+            entities.append(HubspaceLight(hs, friendlyname,debug))
         else:
             _LOGGER.debug("creating lights" )
             entities.append(HubspaceLight(hs, friendlyname,debug))
@@ -425,4 +433,96 @@ class HubspaceFan(LightEntity):
         
         if self._debug:
             self._debugInfo = self._hs.getDebugInfo(self._childId)
+
+class HubspaceTransformer(LightEntity):
+    """Representation of an Awesome Light."""
+    
+    
+    
+    def __init__(self, hs, friendlyname,outletIndex,debug) -> None:
+        """Initialize an AwesomeLight."""
         
+        self._name = friendlyname + "_transformer_" + outletIndex 
+        
+        self._debug = debug
+        self._state = 'off'
+        self._childId = None
+        self._model = None
+        self._brightness = None
+        self._useBrightness = False
+        self._usePrimaryFunctionInstance = False
+        self._hs = hs
+        self._deviceId = None
+        self._debugInfo = None
+        self._watts = None
+        self._volts = None
+        
+        self._outletIndex = outletIndex
+        deviceClass = None
+        [self._childId, self._model, self._deviceId,deviceClass] = self._hs.getChildId(friendlyname)
+    
+    @property
+    def name(self) -> str:
+        """Return the display name of this light."""
+        return self._name
+    
+    @property
+    def unique_id(self) -> str:
+        """Return the display name of this light."""
+        return self._deviceId + "_" + self._outletIndex 
+
+    @property
+    def supported_color_modes(self) -> set[str] or None:
+        """Flag supported color modes."""
+        return {COLOR_MODE_ONOFF}
+    
+    @property
+    def color_mode(self) -> ColorMode:
+        """Return the color mode of the light."""
+        return ColorMode.ONOFF
+        
+    @property
+    def is_on(self) -> bool | None:
+        """Return true if light is on."""
+        return self._state == 'on'
+
+    def turn_on(self, **kwargs: Any) -> None:
+        self._hs.setStateInstance(self._childId,'toggle',"zone-" + self._outletIndex ,'on')
+     
+    
+    @property
+    def extra_state_attributes(self):
+        """Return the state attributes."""
+        attr = {}
+        attr["model"]= self._model
+        attr["deviceId"] = self._deviceId + "_" + self._outletIndex
+        attr["devbranch"] = False
+        attr["watts"] = self._watts
+        attr["volts"] = self._volts
+        
+        attr["debugInfo"] = self._debugInfo
+        
+        return attr
+        
+    def turn_off(self, **kwargs: Any) -> None:
+        """Instruct the light to turn off."""
+        self._hs.setStateInstance(self._childId,'toggle',"zone-" + self._outletIndex ,'off')
+        
+    @property
+    def should_poll(self):
+        """Turn on polling """
+        return True
+        
+    def update(self) -> None:
+        """Fetch new state data for this light.
+
+        This is the only method that should fetch new data for Home Assistant.
+        """
+        self._state = self._hs.getStateInstance(self._childId,'toggle',"zone-" + self._outletIndex)
+        
+        if self._outletIndex == 1:
+            self._watts = self._hs.getState(self._childId,'watts')
+            self._volts = self._hs.getState(self._childId,'output-voltage-switch')
+            
+        if self._debug:
+            self._debugInfo = self._hs.getDebugInfo(self._childId)
