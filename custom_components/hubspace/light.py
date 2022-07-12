@@ -284,7 +284,7 @@ class HubspaceOutlet(LightEntity):
 
     def turn_on(self, **kwargs: Any) -> None:
         self._hs.setStateInstance(self._childId,'toggle',"outlet-" + self._outletIndex ,'on')
-     
+        self.update()
     
     @property
     def extra_state_attributes(self):
@@ -301,6 +301,7 @@ class HubspaceOutlet(LightEntity):
     def turn_off(self, **kwargs: Any) -> None:
         """Instruct the light to turn off."""
         self._hs.setStateInstance(self._childId,'toggle',"outlet-" + self._outletIndex ,'off')
+        self.update()
         
     @property
     def should_poll(self):
@@ -487,8 +488,8 @@ class HubspaceTransformer(LightEntity):
 
     def turn_on(self, **kwargs: Any) -> None:
         self._hs.setStateInstance(self._childId,'toggle',"zone-" + self._outletIndex ,'on')
-     
-    
+        self.update()
+        
     @property
     def extra_state_attributes(self):
         """Return the state attributes."""
@@ -506,6 +507,7 @@ class HubspaceTransformer(LightEntity):
     def turn_off(self, **kwargs: Any) -> None:
         """Instruct the light to turn off."""
         self._hs.setStateInstance(self._childId,'toggle',"zone-" + self._outletIndex ,'off')
+        self.update()
         
     @property
     def should_poll(self):
@@ -519,7 +521,7 @@ class HubspaceTransformer(LightEntity):
         """
         self._state = self._hs.getStateInstance(self._childId,'toggle',"zone-" + self._outletIndex)
         
-        if self._outletIndex == 1:
+        if self._outletIndex == '1':
             self._watts = self._hs.getState(self._childId,'watts')
             self._volts = self._hs.getState(self._childId,'output-voltage-switch')
             
