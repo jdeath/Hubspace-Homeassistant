@@ -10,7 +10,9 @@ Light on/off/dim and fan on/off/low/med/high/full for '52133, 37833' fan. Fan sp
 
 On/Off,Brightness: PIR switch (HPDA311CWB)
 
-Outlets (HPKA315CWB) work with on/off.
+Outlets (HPKA315CWB) work with on/off on both outputs.
+
+Landscape Transformer works with on/off on all 3 outputs. System-wide Watts and voltage available as attribute in first output entity
 
 I would like to update to cloud push, but right now polls the state every minute by default (can be overwritten with scan_interval). Please contact me if good with websockets. The websocket system pushes bad data at first, which messses up the connection. I need a way to ignore that data.
 
@@ -53,7 +55,7 @@ logger:
 you may already have the top two lines, just need to add the buttom two
 
 ### Fan Support
-Since the fan is implimted as a light with a dimmer, you can use a template to make it appear as a fan. From a user:
+Since the fan is implimented as a light with a dimmer, you can use a template to make it appear as a fan. From a user:
 ```
 # Example configuration.yaml entry
 fan:
@@ -77,3 +79,11 @@ fan:
         speed_count: 4
         
 ```
+
+### Transformer Support
+System-wide watt and voltage setting available as attribute in the first output entity. Get watts in lovelace with a card with this entry:
+```
+- entity: Friendlyname_transformer_1
+  type: attribute
+  attribute: watts
+  ```
