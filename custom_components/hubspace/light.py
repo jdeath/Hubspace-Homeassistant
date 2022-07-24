@@ -8,7 +8,7 @@ import voluptuous as vol
 
 # Import the device class from the component that you want to support
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.light import (ATTR_BRIGHTNESS, ATTR_RGB_COLOR, PLATFORM_SCHEMA, COLOR_MODE_BRIGHTNESS, COLOR_MODE_COLOR_TEMP, COLOR_MODE_RGB, COLOR_MODE_ONOFF, ColorMode, LightEntity)
+from homeassistant.components.light import (ATTR_BRIGHTNESS, ATTR_RGB_COLOR, PLATFORM_SCHEMA, ColorMode, COLOR_MODES_COLOR, LightEntity)
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -61,10 +61,10 @@ def setup_platform(
     
     entities = []
     for friendlyname in config.get(CONF_FRIENDLYNAMES): 
-    
-        _LOGGER.debug("freindlyname " + friendlyname )
+
+        _LOGGER.debug("friendlyname " + friendlyname )
         [childId, model, deviceId,deviceClass] = hs.getChildId(friendlyname)
-        
+
         _LOGGER.debug("Switch on Model " + model )
         _LOGGER.debug("childId: " + childId )
         _LOGGER.debug("deviceId: " + deviceId )
@@ -110,24 +110,24 @@ class HubspaceLight(LightEntity):
         self._childId = None
         self._model = None
         self._brightness = None
-        self._useBrightness = False
         self._usePowerFunctionInstance = None
         self._hs = hs
         self._deviceId = None
         self._debugInfo = None
-        
+
         # colorMode == 'color' || 'white' 
-        self._useColorOrWhite = False
         self._colorMode = None
         self._whiteTemp = None
         self._rgbColor = None
         deviceClass = None
         [self._childId, self._model, self._deviceId,deviceClass] = self._hs.getChildId(self._name)
-        
+
+        self._supported_color_modes = []
+
         # https://www.homedepot.com/p/Commercial-Electric-500-Watt-Single-Pole-Smart-Hubspace-Dimmer-with-Motion-Sensor-White-HPDA311CWB/317249353
         if self._model == 'HPDA311CWB':
-            self._useBrightness = True
-        
+            self._supported_color_modes.extend([ColorMode.BRIGHTNESS])
+
         #https://www.homedepot.com/p/EcoSmart-16-ft-Smart-Hubspace-RGB-and-Tunable-White-Tape-Light-Works-with-Amazon-Alexa-and-Google-Assistant-AL-TP-RGBCW-60/314680856
         if self._model == 'AL-TP-RGBCW-60-2116, AL-TP-RGBCW-60-2232' or self._model == 'HPKA315CWB':
             self._usePowerFunctionInstance = 'primary'
@@ -135,18 +135,18 @@ class HubspaceLight(LightEntity):
         # https://www.homedepot.com/p/Commercial-Electric-4-in-Smart-Hubspace-Color-Selectable-CCT-Integrated-LED-Recessed-Light-Trim-Works-with-Amazon-Alexa-and-Google-538551010/314199717
         # https://www.homedepot.com/p/Commercial-Electric-6-in-Smart-Hubspace-Ultra-Slim-New-Construction-and-Remodel-RGB-W-LED-Recessed-Kit-Works-with-Amazon-Alexa-and-Google-50292/313556988
         if self._model == '50291, 50292':
-            self._useColorOrWhite = True
-            self._useBrightness = True
+            self._supported_color_modes.extend([ColorMode.RGB, ColorMode.WHITE])
         
         #fan
         if self._model == '52133, 37833':
             self._usePowerFunctionInstance = 'light-power'
-            self._useBrightness = True
+            self._supported_color_modes.extend([ColorMode.BRIGHTNESS])
+
         # https://www.homedepot.com/p/Commercial-Electric-5-in-6-in-Smart-Hubspace-Color-Selectable-CCT-Integrated-LED-Recessed-Light-Trim-Works-with-Amazon-Alexa-and-Google-538561010/314254248
         if self._model == '538551010, 538561010, 538552010, 538562010':
-            self._useColorOrWhite = True
-            self._useBrightness = True
-        
+            self._supported_color_modes.extend([ColorMode.RGB, ColorMode.WHITE])
+
+
     @property
     def name(self) -> str:
         """Return the display name of this light."""
@@ -155,28 +155,19 @@ class HubspaceLight(LightEntity):
     @property
     def unique_id(self) -> str:
         """Return the display name of this light."""
-        return self._deviceId  
+        return self._deviceId
 
     @property
-    def supported_color_modes(self) -> set[str] or None:
-        """Flag supported color modes."""
-        if self._useBrightness:
-            return {COLOR_MODE_BRIGHTNESS}
-        elif self._useColorOrWhite:
-            return {COLOR_MODE_RGB}
-        else:
-            return {COLOR_MODE_ONOFF}
-    
-    @property
     def color_mode(self) -> ColorMode:
-        if self._useBrightness:
-            return ColorMode.BRIGHTNESS
-        elif self._useColorOrWhite:
+        if self._colorMode == "color":
             return ColorMode.RGB
-        else:
-            return ColorMode.ONOFF
-        
-        
+        return self._colorMode
+
+    @property
+    def supported_color_modes(self) -> set[ColorMode]:
+        """Flag supported color modes."""
+        return {*self._supported_color_modes}
+
     @property
     def brightness(self) -> int or None:
         """Return the brightness of this light between 0..255."""
@@ -189,13 +180,14 @@ class HubspaceLight(LightEntity):
 
     def turn_on(self, **kwargs: Any) -> None:
         state = self._hs.setPowerState(self._childId,"on",self._usePowerFunctionInstance)
-        if self._useBrightness:
+
+        if ATTR_BRIGHTNESS in kwargs and (ColorMode.ONOFF not in self._supported_color_modes):
             brightness = kwargs.get(ATTR_BRIGHTNESS, self._brightness)
             self._hs.setState(self._childId,"brightness",_brightness_to_hubspace(brightness))
-        
-        if self._useColorOrWhite and ATTR_RGB_COLOR in kwargs:
+
+        if ATTR_RGB_COLOR in kwargs and any(mode in COLOR_MODES_COLOR for mode in self._supported_color_modes):
             self._hs.setRGB(self._childId,*kwargs[ATTR_RGB_COLOR])
-    
+
     @property
     def rgb_color(self):
         """Return the rgb value."""
@@ -231,13 +223,14 @@ class HubspaceLight(LightEntity):
         
         if self._debug:
             self._debugInfo = self._hs.getDebugInfo(self._childId)
-            
-        if self._useBrightness:
+
+        # ColorMode.ONOFF is the only color mode that doesn't support brightness
+        if ColorMode.ONOFF not in self._supported_color_modes:
             self._brightness = _brightness_to_hass(self._hs.getState(self._childId,"brightness"))
-        
-        if self._useColorOrWhite:
-            self._colorMode = self._hs.getState(self._childId,'color-mode')
+
+        if any(mode in COLOR_MODES_COLOR for mode in self._supported_color_modes):
             self._rgbColor = self._hs.getRGB(self._childId)
+            self._colorMode = self._hs.getState(self._childId,'color-mode')
 
 class HubspaceOutlet(LightEntity):
     """Representation of an Awesome Light."""
@@ -254,7 +247,6 @@ class HubspaceOutlet(LightEntity):
         self._childId = None
         self._model = None
         self._brightness = None
-        self._useBrightness = False
         self._usePrimaryFunctionInstance = False
         self._hs = hs
         self._deviceId = None
@@ -274,15 +266,15 @@ class HubspaceOutlet(LightEntity):
         return self._deviceId + "_" + self._outletIndex 
 
     @property
-    def supported_color_modes(self) -> set[str] or None:
-        """Flag supported color modes."""
-        return {COLOR_MODE_ONOFF}
-    
-    @property
     def color_mode(self) -> ColorMode:
         """Return the color mode of the light."""
         return ColorMode.ONOFF
-        
+
+    @property
+    def supported_color_modes(self) -> set[ColorMode]:
+        """Flag supported color modes."""
+        return {self.color_mode}
+
     @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
@@ -337,7 +329,6 @@ class HubspaceFan(LightEntity):
         self._childId = None
         self._model = None
         self._brightness = None
-        self._useBrightness = False
         self._usePrimaryFunctionInstance = False
         self._hs = hs
         self._deviceId = None
@@ -355,7 +346,7 @@ class HubspaceFan(LightEntity):
     def unique_id(self) -> str:
         """Return the display name of this light."""
         return self._deviceId + "_fan" 
-     
+
     @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
@@ -378,16 +369,16 @@ class HubspaceFan(LightEntity):
         speedstring = 'fan-speed-' + speed
         
         self._hs.setStateInstance(self._childId,'fan-speed','fan-speed',speedstring)
-    
-    @property
-    def supported_color_modes(self) -> set[str] or None:
-        """Flag supported color modes."""    
-        return {COLOR_MODE_BRIGHTNESS}
 
     @property
     def color_mode(self) -> ColorMode:
         return ColorMode.BRIGHTNESS
-            
+
+    @property
+    def supported_color_modes(self) -> set[ColorMode]:
+        """Flag supported color modes."""
+        return {self.color_mode}
+
     @property
     def brightness(self) -> int or None:
         """Return the brightness of this light between 0..255."""
@@ -455,7 +446,6 @@ class HubspaceTransformer(LightEntity):
         self._childId = None
         self._model = None
         self._brightness = None
-        self._useBrightness = False
         self._usePrimaryFunctionInstance = False
         self._hs = hs
         self._deviceId = None
@@ -478,15 +468,15 @@ class HubspaceTransformer(LightEntity):
         return self._deviceId + "_" + self._outletIndex 
 
     @property
-    def supported_color_modes(self) -> set[str] or None:
-        """Flag supported color modes."""
-        return {COLOR_MODE_ONOFF}
-    
-    @property
     def color_mode(self) -> ColorMode:
         """Return the color mode of the light."""
         return ColorMode.ONOFF
-        
+
+    @property
+    def supported_color_modes(self) -> set[ColorMode]:
+        """Flag supported color modes."""
+        return {self.color_mode}
+
     @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
