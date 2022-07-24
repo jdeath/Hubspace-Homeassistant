@@ -15,6 +15,9 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 from datetime import timedelta
 
+# Import exceptions from the requests module
+import requests.exceptions
+
 SCAN_INTERVAL = timedelta(seconds=60)
 BASE_INTERVAL = timedelta(seconds=60)
 
@@ -51,7 +54,10 @@ def setup_platform(
     username = config[CONF_USERNAME]
     password = config.get(CONF_PASSWORD)
     debug = config.get(CONF_DEBUG)
-    hs = HubSpace(username,password)
+    try:
+        hs = HubSpace(username,password)
+    except requests.exceptions.ReadTimeout as ex:
+        raise PlatformNotReady(f"Connection error while connecting to hubspace: {ex}") from ex
     
     entities = []
     for friendlyname in config.get(CONF_FRIENDLYNAMES): 
