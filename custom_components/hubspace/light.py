@@ -152,6 +152,12 @@ class HubspaceLight(LightEntity):
         if self._model == '538551010, 538561010, 538552010, 538562010':
             self._supported_color_modes.extend([ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE])
 
+        # https://www.homedepot.com/p/Hampton-Bay-Lakeshore-13-in-Matte-Black-Smart-Hubspace-CCT-and-RGB-Selectable-LED-Flush-Mount-SMACADER-MAGB01/317216753
+        if self._model == 'SMACADER-MAGD01, SMACADER-MAGB01, SMACADER-MAGW01, CAD1aERMAGW26, CAD1aERMAGP26, CAD1aERMAGA26':
+            self._supported_color_modes.extend([ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE])
+            self._max_mireds = 370
+            self._min_mireds = 154
+
 
     @property
     def name(self) -> str:
