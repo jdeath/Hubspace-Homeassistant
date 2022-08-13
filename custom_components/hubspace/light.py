@@ -88,6 +88,11 @@ def setup_platform(
             entities.append(HubspaceFan(hs, friendlyname,debug))
             _LOGGER.debug("Creating Light" )
             entities.append(HubspaceLight(hs, friendlyname,debug))
+        elif model == '76278, 37278':
+            _LOGGER.debug("Creating Fan" )
+            entities.append(HubspaceFan(hs, friendlyname,debug))
+            _LOGGER.debug("Creating Light" )
+            entities.append(HubspaceLight(hs, friendlyname,debug))    
         else:
             _LOGGER.debug("creating lights" )
             entities.append(HubspaceLight(hs, friendlyname,debug))
@@ -144,7 +149,7 @@ class HubspaceLight(LightEntity):
             self._supported_color_modes.extend([ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE])
         
         #fan
-        if self._model == '52133, 37833':
+        if self._model == '52133, 37833' or self._model == '76278, 37278':
             self._usePowerFunctionInstance = 'light-power'
             self._supported_color_modes.extend([ColorMode.BRIGHTNESS])
 
