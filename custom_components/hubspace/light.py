@@ -74,7 +74,7 @@ def setup_platform(
         _LOGGER.debug("deviceId: " + deviceId )
         _LOGGER.debug("deviceClass: " + deviceClass )
         
-        if model == 'HPKA315CWB':
+        if model == 'HPKA315CWB' or deviceClass == 'power-outlet':
             _LOGGER.debug("Creating Outlets" )
             entities.append(HubspaceOutlet(hs, friendlyname,"1",debug))
             entities.append(HubspaceOutlet(hs, friendlyname,"2",debug))
@@ -140,8 +140,9 @@ class HubspaceLight(LightEntity):
             self._supported_color_modes.extend([ColorMode.BRIGHTNESS])
 
         #https://www.homedepot.com/p/EcoSmart-16-ft-Smart-Hubspace-RGB-and-Tunable-White-Tape-Light-Works-with-Amazon-Alexa-and-Google-Assistant-AL-TP-RGBCW-60/314680856
-        if self._model == 'AL-TP-RGBCW-60-2116, AL-TP-RGBCW-60-2232' or self._model == 'HPKA315CWB':
+        if self._model == 'AL-TP-RGBCW-60-2116, AL-TP-RGBCW-60-2232' or self._model == 'HPKA315CWB' or self._model =='HPPA52CWBA023':
             self._usePowerFunctionInstance = 'primary'
+            self._supported_color_modes.extend([ColorMode.RGB, ColorMode.WHITE])
         
         # https://www.homedepot.com/p/Commercial-Electric-4-in-Smart-Hubspace-Color-Selectable-CCT-Integrated-LED-Recessed-Light-Trim-Works-with-Amazon-Alexa-and-Google-538551010/314199717
         # https://www.homedepot.com/p/Commercial-Electric-6-in-Smart-Hubspace-Ultra-Slim-New-Construction-and-Remodel-RGB-W-LED-Recessed-Kit-Works-with-Amazon-Alexa-and-Google-50292/313556988
