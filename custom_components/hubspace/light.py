@@ -257,6 +257,8 @@ class HubspaceLight(LightEntity):
             self._color_temp = _convert_color_temp(kwargs[ATTR_COLOR_TEMP])
             self._hs.setState(self._childId,"color-temperature",self._color_temp)
 
+        self.update()
+        
     @property
     def rgb_color(self):
         """Return the rgb value."""
@@ -277,6 +279,7 @@ class HubspaceLight(LightEntity):
     def turn_off(self, **kwargs: Any) -> None:
         """Instruct the light to turn off."""
         state = self._hs.setPowerState(self._childId,"off",self._usePowerFunctionInstance)
+        self.update()
         
     @property
     def should_poll(self):
@@ -441,6 +444,7 @@ class HubspaceFan(LightEntity):
         speedstring = 'fan-speed-' + speed
         
         self._hs.setStateInstance(self._childId,'fan-speed','fan-speed',speedstring)
+        self.update()
 
     @property
     def color_mode(self) -> ColorMode:
@@ -472,6 +476,7 @@ class HubspaceFan(LightEntity):
         """Instruct the light to turn off."""
         self._hs.setStateInstance(self._childId,'power','fan-power','off')
         self._hs.setStateInstance(self._childId,'fan-speed','fan-speed','fan-speed-000')
+        self.update()
         
     @property
     def should_poll(self):
