@@ -24,6 +24,7 @@ BASE_INTERVAL = timedelta(seconds=60)
 _LOGGER = logging.getLogger(__name__)
 
 CONF_FRIENDLYNAMES: Final = "friendlynames"
+CONF_ROOMNAMES: Final = "roomnames"
 CONF_DEBUG: Final = "debug"
 
 # Validation of the user's configuration
@@ -32,6 +33,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_PASSWORD): cv.string,
     vol.Required(CONF_DEBUG, default=False): cv.boolean,
     vol.Required(CONF_FRIENDLYNAMES, default=[]): vol.All(cv.ensure_list, [cv.string]),
+    vol.Required(CONF_ROOMNAMES, default=[]): vol.All(cv.ensure_list, [cv.string]),
 })
 
 def _brightness_to_hass(value):
@@ -44,6 +46,32 @@ def _brightness_to_hubspace(value):
 def _convert_color_temp(value):
         return 1000000 // int(value)
 
+def _add_entity(entities, hs, model, deviceClass, friendlyName, debug):
+
+        if model == 'HPKA315CWB' or deviceClass == 'power-outlet':
+            _LOGGER.debug("Creating Outlets" )
+            entities.append(HubspaceOutlet(hs, friendlyName,"1",debug))
+            entities.append(HubspaceOutlet(hs, friendlyName,"2",debug))
+        elif model == 'HB-200-1215WIFIB':
+            _LOGGER.debug("Creating Transformers" )
+            entities.append(HubspaceTransformer(hs, friendlyName,"1",debug))
+            entities.append(HubspaceTransformer(hs, friendlyName,"2",debug))
+            entities.append(HubspaceTransformer(hs, friendlyName,"3",debug))
+        elif model == '52133, 37833':
+            _LOGGER.debug("Creating Fan" )
+            entities.append(HubspaceFan(hs, friendlyName,debug))
+            _LOGGER.debug("Creating Light" )
+            entities.append(HubspaceLight(hs, friendlyName,debug))
+        elif model == '76278, 37278':
+            _LOGGER.debug("Creating Fan" )
+            entities.append(HubspaceFan(hs, friendlyName,debug))
+            _LOGGER.debug("Creating Light" )
+            entities.append(HubspaceLight(hs, friendlyName,debug))
+        else:
+            _LOGGER.debug("creating lights" )
+            entities.append(HubspaceLight(hs, friendlyName,debug))
+
+        return entities
 
 def setup_platform(
     hass: HomeAssistant,
@@ -64,38 +92,34 @@ def setup_platform(
         raise PlatformNotReady(f"Connection error while connecting to hubspace: {ex}") from ex
     
     entities = []
-    for friendlyname in config.get(CONF_FRIENDLYNAMES): 
+    for friendlyName in config.get(CONF_FRIENDLYNAMES):
 
-        _LOGGER.debug("friendlyname " + friendlyname )
-        [childId, model, deviceId,deviceClass] = hs.getChildId(friendlyname)
+        _LOGGER.debug("friendlyName " + friendlyName )
+        [childId, model, deviceId, deviceClass] = hs.getChildId(friendlyName)
 
         _LOGGER.debug("Switch on Model " + model )
         _LOGGER.debug("childId: " + childId )
         _LOGGER.debug("deviceId: " + deviceId )
         _LOGGER.debug("deviceClass: " + deviceClass )
         
-        if model == 'HPKA315CWB' or deviceClass == 'power-outlet':
-            _LOGGER.debug("Creating Outlets" )
-            entities.append(HubspaceOutlet(hs, friendlyname,"1",debug))
-            entities.append(HubspaceOutlet(hs, friendlyname,"2",debug))
-        elif model == 'HB-200-1215WIFIB':
-            _LOGGER.debug("Creating Transformers" )
-            entities.append(HubspaceTransformer(hs, friendlyname,"1",debug))
-            entities.append(HubspaceTransformer(hs, friendlyname,"2",debug))
-            entities.append(HubspaceTransformer(hs, friendlyname,"3",debug))
-        elif model == '52133, 37833':
-            _LOGGER.debug("Creating Fan" )
-            entities.append(HubspaceFan(hs, friendlyname,debug))
-            _LOGGER.debug("Creating Light" )
-            entities.append(HubspaceLight(hs, friendlyname,debug))
-        elif model == '76278, 37278':
-            _LOGGER.debug("Creating Fan" )
-            entities.append(HubspaceFan(hs, friendlyname,debug))
-            _LOGGER.debug("Creating Light" )
-            entities.append(HubspaceLight(hs, friendlyname,debug))    
-        else:
-            _LOGGER.debug("creating lights" )
-            entities.append(HubspaceLight(hs, friendlyname,debug))
+        entities = _add_entity(entities, hs, model, deviceClass, friendlyName, debug)
+
+    for roomName in config.get(CONF_ROOMNAMES):
+
+        _LOGGER.debug("roomName " + roomName )
+        children = hs.getChildrenFromRoom(roomName)
+
+        for childId in children:
+
+            _LOGGER.debug("childId " + childId )
+            [childId, model, deviceId, deviceClass, friendlyName] = hs.getChildInfoById(childId)
+
+            _LOGGER.debug("Switch on Model " + model )
+            _LOGGER.debug("deviceId: " + deviceId )
+            _LOGGER.debug("deviceClass: " + deviceClass )
+            _LOGGER.debug("friendlyName: " + friendlyName )
+
+            entities = _add_entity(entities, hs, model, deviceClass, friendlyName, debug)
     
     if not entities:
         return
@@ -111,6 +135,8 @@ class HubspaceLight(LightEntity):
     def __init__(self, hs, friendlyname,debug) -> None:
         """Initialize an AwesomeLight."""
         
+        _LOGGER.debug("Light Name: " )
+        _LOGGER.debug(friendlyname)
         self._name = friendlyname
 
         

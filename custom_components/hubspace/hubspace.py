@@ -165,8 +165,8 @@ class HubSpace:
         accountId = r.json().get('accountAccess')[0].get('account').get('accountId')
         return accountId
 
-    def getChildId(self,deviceName):
-        
+    def getMetadeviceInfo(self):
+
         token = self.getAuthTokenFromRefreshToken()
         
         _LOGGER.debug("token " + token )
@@ -184,17 +184,70 @@ class HubSpace:
         headers = {}
         r = requests.get(auth_url, data=auth_data, headers=auth_header)
         r.close()
+
+        return r
+
+    def getChildrenFromRoom(self, roomName):
+
+        response = self.getMetadeviceInfo()
+
+        children = None
+
+        for lis in response.json():
+            for key,val in lis.items():
+                if key == 'friendlyName' and val == roomName:
+                    if lis.get('typeId') == 'metadevice.room':
+                        children = lis.get('children')
+                        _LOGGER.debug('Room Children')
+                        _LOGGER.debug(children)
+                        return children
+
+        _LOGGER.debug("No children found ")
+        return children
+
+    def getChildInfoById(self, childId):
+
+        response = self.getMetadeviceInfo()
+
         child = None
         model = None
         deviceId = None
         deviceClass = None
-        #_LOGGER.debug("############ Dumping all info 1 0f 2 #########")
-        #_LOGGER.debug(json.dumps(r.json(), indent=4, sort_keys=True))
-        #_LOGGER.debug("############ End Dump #########")
-        
-        for lis in r.json():
+        friendlyName = None
+
+        for lis in response.json():
             for key,val in lis.items():
-                if key == 'friendlyName' and val == deviceName:
+                if key == 'id' and val == childId and lis.get('typeId') == 'metadevice.device':
+                    #print(key, val)
+                    #_LOGGER.debug('getChildInfoById match')
+                    #_LOGGER.debug(lis)
+                    child = lis.get('id')
+                    deviceId = lis.get('deviceId')
+                    model = lis.get('description').get('device').get('model')
+                    deviceClass = lis.get('description').get('device').get('deviceClass')
+                    friendlyName = lis.get('friendlyName')
+                    if model is not None and deviceClass is not None:
+                        return child,model,deviceId,deviceClass,friendlyName
+
+        #_LOGGER.debug("No model found ")
+        return child,model,deviceId,deviceClass,friendlyName
+
+    def getChildId(self,deviceName):
+
+        response = self.getMetadeviceInfo()
+
+        child = None
+        model = None
+        deviceId = None
+        deviceClass = None
+
+        #_LOGGER.debug("############ Dumping all info 1 0f 2 #########")
+        #_LOGGER.debug(json.dumps(response.json(), indent=4, sort_keys=True))
+        #_LOGGER.debug("############ End Dump #########")
+
+        for lis in response.json():
+            for key,val in lis.items():
+                if key == 'friendlyName' and val == deviceName and lis.get('typeId') == 'metadevice.device':
                     #print(key, val)
                     #_LOGGER.debug('Printing Possible Error')
                     #_LOGGER.debug(lis)
@@ -265,22 +318,7 @@ class HubSpace:
 
         state = None
         
-        token = self.getAuthTokenFromRefreshToken()
-        
-        auth_header = {
-            "user-agent": "Dart/2.15 (dart:io)",
-            "host": "semantics2.afero.net",
-            "accept-encoding": "gzip",
-            "authorization": "Bearer " + token,
-        }
-        
-        _LOGGER.debug("token " + self._accountId )
-        auth_url = "https://api2.afero.net/v1/accounts/" + self._accountId + "/metadevices?expansions=state"
-
-        auth_data = {}
-        headers = {}
-        r = requests.get(auth_url, data=auth_data, headers=auth_header)
-        r.close()
+        r = self.getMetadeviceInfo()
         
         _LOGGER.debug("############ Dumping all info 1 0f 2 #########")
         _LOGGER.debug(json.dumps(r.json(), indent=4, sort_keys=True))
