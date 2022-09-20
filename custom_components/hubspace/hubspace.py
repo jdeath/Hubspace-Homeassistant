@@ -324,9 +324,16 @@ class HubSpace:
         _LOGGER.debug(json.dumps(r.json(), indent=4, sort_keys=True))
         _LOGGER.debug("############ End Dump #########")
         
+        token = self.getAuthTokenFromRefreshToken()
         auth_url = "https://api2.afero.net/v1/accounts/" + self._accountId + "/metadevices/" + child + "/state"
+        auth_header = {
+            "user-agent": "Dart/2.15 (dart:io)",
+            "host": "semantics2.afero.net",
+            "accept-encoding": "gzip",
+            "authorization": "Bearer " + token,
+        }
+        
         auth_data = {}
-        headers = {}
 
         r = requests.get(auth_url, data=auth_data, headers=auth_header)
         r.close()
