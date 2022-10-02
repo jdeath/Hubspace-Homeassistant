@@ -48,7 +48,7 @@ def _convert_color_temp(value):
 
 def _add_entity(entities, hs, model, deviceClass, friendlyName, debug):
 
-        if model == 'HPKA315CWB' or deviceClass == 'power-outlet':
+        if model == 'HPKA315CWB' or model == 'HPPA52CWBA023':
             _LOGGER.debug("Creating Outlets" )
             entities.append(HubspaceOutlet(hs, friendlyName,"1",debug))
             entities.append(HubspaceOutlet(hs, friendlyName,"2",debug))
