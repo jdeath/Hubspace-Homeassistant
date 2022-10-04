@@ -37,28 +37,34 @@ light:
     password: your_hubspace_password
     debug: true (use this if want debug output, if you have an unsupported light, set false if not needed)
     friendlynames:
-      - 'BoysRoom' (the name of your light as shown in the app)
-      - 'GirlsRoom' (the name of your light as shown in the app)
+      - 'BoysLight' (the name of your light as shown in the app)
+      - 'GirlsLight' (the name of your light as shown in the app)
+    roomnames:
+      - 'BoysRoom' (the name of your room as shown in the app)
 ```
 
+The roomnames is optional, and freindlynames is not needed if used. It will add all devices in the room you made in the hubspace app. No support for this will be given, as added by a PR and not tested by me, but should work.
 
 ### Troubleshooting
 If you are having problems, first try renaming the device name in the App. Do not use spaces in the name of your lights. This code may also fail with names like Office, Bedroom, Fireplace. Make it something unique and not the same as a group. Hopefully this has been fixed, but still could be issues.
 
 Also be sure to check the friendlyname of your light. It must match *exactly* as shown in the app, including uppercase/lowercase. Requiring the case to match may be a recent change by Hubspace
 
+If you have a fan, just add the name of the parent device from the hubspace app. Do not the seperate names for the light and fan. This is just how it works.
+
 ### Support for a new model
-Please make an issue if want support for a new model. I will need your help to test. Get the item loaded in homeassistant as above. Set debug:true in configuration as shown above. Click on the entity in homeassistant, expand the attributes, and send me the model and debug fields. Best to PM me these on the homeassistant forums, as there is semi-private information in them. Send me these fields with the light set to on/off/etc (you may need to use the app). If that doesn't work, I may need better debug logs. Then you can add in your configuration.yaml (not in the hubspace section). Then you email me your homassistant.log 
+Please make a github issue if want support for a new model. I will need your help to test. Get the item loaded in homeassistant as above. Set debug:true in configuration as shown above. Click on the entity in homeassistant, expand the attributes, and send me the model and debug fields. Best to PM me these on the homeassistant forums, as there is semi-private information in them. Send me these fields with the light set to on/off/etc (you may need to use the app). If that doesn't work, I may need better debug logs. Then you can add in your configuration.yaml (not in the hubspace section). Then you email me your homassistant.log 
 ```
 logger:
   default: error
   logs:
     custom_components.hubspace: debug
-
 ```
 you may already have the top two lines, just need to add the buttom two
 
 ### Fan Support
+If you have a fan, just add the name of the parent device from the hubspace app. Do not the seperate names for the light and fan. This is just how it works.
+
 Since the fan is implimented as a light with a dimmer, you can use a template to make it appear as a fan. From a user:
 ```
 # Example configuration.yaml entry
@@ -80,8 +86,7 @@ fan:
           entity_id: light.ceilingfan_fan
           data_template:
             brightness: "{{ ( percentage / 100 * 255) | int }}"
-        speed_count: 4
-        
+        speed_count: 4   
 ```
 
 ### Transformer Support
