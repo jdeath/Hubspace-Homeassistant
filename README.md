@@ -4,7 +4,7 @@ Major rewrite. Now it caches tokens for 118s and shares authentication for all l
 
 Supports on/off for a couple types of light strips: 'AL-TP-RGBCW-60-2116, AL-TP-RGBCW-60-2232'
 
-RGB working for: '50291, 50292'. No brigtness or White Colortemp yet
+RGB working for: '50291, 50292' and 11PR38120RGBWH1. No brigtness or White Colortemp yet
 
 RGB (and maybe brightness) working for: '538551010, 538561010, 538552010, 538562010'
 
