@@ -13,7 +13,7 @@ Light on/off/dim and fan on/off/low/med/high/full for '52133, 37833' fan. Fan sp
 On/Off,Brightness: PIR switch (HPDA311CWB)
 
 Outlets (HPKA315CWB) work with on/off on both outputs.
-Sinlgle outlet (HPPA51CWB and HPPA11AWBA023) models handled correctely
+Single outlet (HPPA51CWB and HPPA11AWBA023) models handled correctly
 
 Landscape Transformer works with on/off on all 3 outputs. System-wide Watts and voltage available as attribute in first output entity
 
