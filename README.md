@@ -1,5 +1,9 @@
 [![Stargazers repo roster for @jdeath/Hubspace-Homeassistant](https://git-lister.onrender.com/api/stars/jdeath/Hubspace-Homeassistant?limit=30)](https://github.com/jdeath/Hubspace-Homeassistant/stargazers)
 
+Please ask support questions in homeassistant forums: https://community.home-assistant.io/t/add-support-for-hubspace-by-afero/306645
+
+99% of the issues are your freindlyname is incorrect. Use issue tracker for support of new devices.
+
 Major rewrite. Now it caches tokens for 118s and shares authentication for all lights, thus makes fewer API calls
 
 Supports on/off for a couple types of light strips: 'AL-TP-RGBCW-60-2116, AL-TP-RGBCW-60-2232'
