@@ -2,7 +2,7 @@
 
 Please ask support questions in homeassistant forums: https://community.home-assistant.io/t/add-support-for-hubspace-by-afero/306645
 
-99% of the issues are your freindlyname is incorrect. Please use the issue section only for support of new devices.
+99% of the issues are your friendlyname is incorrect, see Troubleshooting section below. Please use the issue section only for support of new devices.
 
 Major rewrite. Now it caches tokens for 118s and shares authentication for all lights, thus makes fewer API calls
 
