@@ -52,7 +52,7 @@ light:
 
 The roomnames is optional, and friendlynames is not needed if used. It will add all devices in the room you made in the hubspace app. No support for this will be given, as added by a PR and not tested by me, but should work.
 
-Friendlyname is listed in the Hubspace App. Click the Device, Click the Gear, Under Genereal will list Product Name which is the friendlyname. The Room is the roomname if you prefer to add it that way.
+Friendlyname is listed in the Hubspace App. Click the Device, Click the Gear, Under General will list "Product Name" which is the friendlyname. The Room is the roomname if you prefer to add it that way.
 
 ### Troubleshooting
 If you are having problems, first try renaming the device name in the App. Do not use spaces in the name of your lights. This code may also fail with names like Office, Bedroom, Fireplace. Make it something unique and not the same as a group. Hopefully this has been fixed, but still could be issues.
