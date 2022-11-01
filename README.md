@@ -23,6 +23,8 @@ Landscape Transformer (HB-200-1215WIFIB) works with on/off on all 3 outputs. Sys
 
 I would like to update to cloud push, but right now polls the state every minute by default (can be overwritten with scan_interval). Please contact me if good with websockets. The websocket system pushes bad data at first, which messses up the connection. I need a way to ignore that data.
 
+Looking for help to add a service, so users can send arbitary commands. The commands are simple to figure out looking at debug: true information while making changes using the app, but coding into the integration is hard. This would open up a lot more capability.
+
 _Thanks to everyone having starred my repo! To star it click on the image below, then it will be on top right. Thanks!_
 
 [![Stargazers repo roster for @jdeath/Hubspace-Homeassistant](https://reporoster.com/stars/jdeath/Hubspace-Homeassistant)](https://github.com/jdeath/hubspace-homeassistant/stargazers)
