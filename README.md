@@ -19,7 +19,7 @@ On/Off,Brightness: PIR switch (HPDA311CWB)
 Outlets (HPKA315CWB) work with on/off on both outputs.
 Single outlet (HPPA51CWB and HPPA11AWBA023) models handled correctly
 
-Landscape Transformer works with on/off on all 3 outputs. System-wide Watts and voltage available as attribute in first output entity
+Landscape Transformer (HB-200-1215WIFIB) works with on/off on all 3 outputs. System-wide Watts and voltage available as attribute in first output entity
 
 I would like to update to cloud push, but right now polls the state every minute by default (can be overwritten with scan_interval). Please contact me if good with websockets. The websocket system pushes bad data at first, which messses up the connection. I need a way to ignore that data.
 
