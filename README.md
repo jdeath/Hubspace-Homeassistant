@@ -59,9 +59,9 @@ If you are having problems, first try renaming the device name in the App. Do no
 
 Also be sure to check the friendlyname of your light. It must match *exactly* as shown in the app, including uppercase/lowercase. Requiring the case to match may be a recent change by Hubspace
 
-If you have a fan, just add the name of the parent device from the hubspace app. Do not add the seperate names for the light and fan. This is just how it works.
+If you have a combo fan/light, just add the name of the parent device from the hubspace app. Do not add the seperate names for the light and fan. The integration will make a light.friendlyname (the light) and light.friendlyname_fan (the fan)
 
-If you have an outlet or a transfomer, just add the name of the parent device from the hubspace app. Do not add the seperate outlets/transformer names in the app. The integration wil figure it out and make entities called light.friendlyname_outlet_X or light.freindlyname_transformer_X where X is 1,2,3 depending on how many outputs in has.
+If you have an outlet or a transfomer, just add the name of the parent device from the hubspace app. Do not add the seperate outlet's/transformer's names. The integration will figure it out and make entities called light.friendlyname_outlet_X or light.freindlyname_transformer_X where X is 1,2,3 depending on how many outputs in has.
 
 ### Support for a new model
 Please make a github issue if want support for a new model. I will need your help to test. Get the item loaded in homeassistant as above. Set debug:true in configuration as shown above. Click on the entity in homeassistant, expand the attributes, and send me the model and debug fields. Best to PM me these on the homeassistant forums, as there is semi-private information in them. Send me these fields with the light set to on/off/etc (you may need to use the app). If that doesn't work, I may need better debug logs. Then you can add in your configuration.yaml (not in the hubspace section). Then you email me your homassistant.log 
