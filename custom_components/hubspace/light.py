@@ -203,7 +203,7 @@ class HubspaceLight(LightEntity):
         #  https://www.homedepot.com/p/EcoSmart-120-Watt-Equivalent-Smart-Hubspace-PAR38-Color-Changing-CEC-LED-Light-Bulb-with-Voice-Control-1-Bulb-11PR38120RGBWH1/318411934
         if self._model == '50291, 50292' or self._model == '11PR38120RGBWH1':
             self._supported_color_modes.extend([ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE])
-            self._max_mireds = 370
+            self._max_mireds = 454
             self._min_mireds = 154
             
         #fan
