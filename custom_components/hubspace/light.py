@@ -7,7 +7,7 @@ from .hubspace import HubSpace
 import voluptuous as vol
 
 # Import the device class from the component that you want to support
-import homeassistant.helpers.config_validation as cv
+from homeassistant.helpers import config_validation as cv, entity_platform, service
 from homeassistant.components.light import (ATTR_BRIGHTNESS, ATTR_RGB_COLOR, ATTR_WHITE, ATTR_COLOR_TEMP, PLATFORM_SCHEMA, ColorMode, COLOR_MODES_COLOR, LightEntity)
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
@@ -36,6 +36,20 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_ROOMNAMES, default=[]): vol.All(cv.ensure_list, [cv.string]),
 })
 
+async def async_setup_entry(hass, entry):
+    """Set up the media player platform for Sonos."""
+
+    platform = entity_platform.async_get_current_platform()
+
+    platform.async_register_entity_service(
+        SERVICE_SET_STATE,
+        {
+            vol.Required('field_name'): cv.string,
+            vol.Required('field_value'): cv.string,
+        },
+        "set_state",
+    )
+    
 def _brightness_to_hass(value):
         return int(value) * 255 // 100
 
@@ -72,6 +86,8 @@ def _add_entity(entities, hs, model, deviceClass, friendlyName, debug):
             entities.append(HubspaceLight(hs, friendlyName,debug))
 
         return entities
+
+
 
 def setup_platform(
     hass: HomeAssistant,
@@ -124,13 +140,21 @@ def setup_platform(
     if not entities:
         return
     add_entities(entities, True)
-    # Setup connection with devices/cloud
     
+    # platform = self.platform
 
+    # # This will call Entity.set_sleep_timer(sleep_time=VALUE)
+    # platform.async_register_entity_service(
+        # SERVICE_SET_STATE,
+        # {
+            # vol.Required('field_name'): cv.string,
+            # vol.Required('field_value'): cv.string,
+        # },
+        # "set_state",
+    # )
+        
 class HubspaceLight(LightEntity):
     """Representation of an Awesome Light."""
-    
-    
     
     def __init__(self, hs, friendlyname,debug) -> None:
         """Initialize an AwesomeLight."""
@@ -179,7 +203,9 @@ class HubspaceLight(LightEntity):
         #  https://www.homedepot.com/p/EcoSmart-120-Watt-Equivalent-Smart-Hubspace-PAR38-Color-Changing-CEC-LED-Light-Bulb-with-Voice-Control-1-Bulb-11PR38120RGBWH1/318411934
         if self._model == '50291, 50292' or self._model == '11PR38120RGBWH1':
             self._supported_color_modes.extend([ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE])
-        
+            self._max_mireds = 370
+            self._min_mireds = 154
+            
         #fan
         if self._model == '52133, 37833' or self._model == '76278, 37278':
             self._usePowerFunctionInstance = 'light-power'
@@ -188,7 +214,8 @@ class HubspaceLight(LightEntity):
         # https://www.homedepot.com/p/Commercial-Electric-5-in-6-in-Smart-Hubspace-Color-Selectable-CCT-Integrated-LED-Recessed-Light-Trim-Works-with-Amazon-Alexa-and-Google-538561010/314254248
         if self._model == '538551010, 538561010, 538552010, 538562010':
             self._supported_color_modes.extend([ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE])
-
+            self._max_mireds = 370
+            self._min_mireds = 154
         # https://www.homedepot.com/p/Hampton-Bay-Lakeshore-13-in-Matte-Black-Smart-Hubspace-CCT-and-RGB-Selectable-LED-Flush-Mount-SMACADER-MAGB01/317216753
         if self._model == 'SMACADER-MAGD01, SMACADER-MAGB01, SMACADER-MAGW01, CAD1aERMAGW26, CAD1aERMAGP26, CAD1aERMAGA26':
             self._supported_color_modes.extend([ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE])
@@ -242,6 +269,9 @@ class HubspaceLight(LightEntity):
         """Return true if light is on."""
         return self._state == 'on'
 
+    def set_send_state(self, field_name,field_state) -> None:
+        self._hs.setState(self._childId,field_name,field_state)
+        
     def turn_on(self, **kwargs: Any) -> None:
         state = self._hs.setPowerState(self._childId,"on",self._usePowerFunctionInstance)
 
