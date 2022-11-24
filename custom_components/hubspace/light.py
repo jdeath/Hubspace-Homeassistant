@@ -51,6 +51,8 @@ async def async_setup_entry(hass, entry):
     )
     
 def _brightness_to_hass(value):
+        if value is None:
+            value = 0
         return int(value) * 255 // 100
 
 
@@ -58,6 +60,8 @@ def _brightness_to_hubspace(value):
         return value * 100 // 255
 
 def _convert_color_temp(value):
+        if isinstance(value, str) and value.endswith('K'):
+            value = value[:-1]
         return 1000000 // int(value)
 
 def _add_entity(entities, hs, model, deviceClass, friendlyName, debug):
@@ -180,6 +184,8 @@ class HubspaceLight(LightEntity):
         self._min_mireds = None
         self._max_mireds = None
         self._rgbColor = None
+        self._temperature_choices = None
+        self._temperature_suffix = None
         deviceClass = None
         [self._childId, self._model, self._deviceId,deviceClass] = self._hs.getChildId(self._name)
 
@@ -209,7 +215,11 @@ class HubspaceLight(LightEntity):
         #fan
         if self._model == '52133, 37833' or self._model == '76278, 37278':
             self._usePowerFunctionInstance = 'light-power'
-            self._supported_color_modes.extend([ColorMode.BRIGHTNESS])
+            self._supported_color_modes.extend([ColorMode.BRIGHTNESS, ColorMode.COLOR_TEMP, ColorMode.WHITE])
+            self._max_mireds = 371
+            self._min_mireds = 153
+            self._temperature_choices = (2700, 3000, 3500, 4000, 5000, 6500)
+            self._temperature_suffix = 'K'
 
         # https://www.homedepot.com/p/Commercial-Electric-5-in-6-in-Smart-Hubspace-Color-Selectable-CCT-Integrated-LED-Recessed-Light-Trim-Works-with-Amazon-Alexa-and-Google-538561010/314254248
         if self._model == '538551010, 538561010, 538552010, 538562010':
@@ -290,7 +300,12 @@ class HubspaceLight(LightEntity):
 
         if ATTR_COLOR_TEMP in kwargs and (any(mode in COLOR_MODES_COLOR for mode in self._supported_color_modes) or ColorMode.COLOR_TEMP in self._supported_color_modes):
             self._color_temp = _convert_color_temp(kwargs[ATTR_COLOR_TEMP])
-            self._hs.setState(self._childId,"color-temperature",self._color_temp)
+            if self._temperature_choices is not None:
+                self._color_temp = self._temperature_choices[min(range(len(self._temperature_choices)), key = lambda i: abs(self._temperature_choices[i]-self._color_temp))]
+            if self._temperature_suffix is not None:
+                self._hs.setState(self._childId, "color-temperature", str(self._color_temp) + self._temperature_suffix)
+            else:
+                self._hs.setState(self._childId,"color-temperature",self._color_temp)
 
         self.update()
         
@@ -341,6 +356,8 @@ class HubspaceLight(LightEntity):
         if any(mode in COLOR_MODES_COLOR for mode in self._supported_color_modes) or ColorMode.COLOR_TEMP in self._supported_color_modes:
             self._colorMode = self._hs.getState(self._childId,'color-mode')
             self._color_temp = self._hs.getState(self._childId,'color-temperature')
+            if self._temperature_suffix is not None and isinstance(self._color_temp, str) and self._color_temp.endswith(self._temperature_suffix):
+                self._color_temp = self._color_temp[:-len(self._temperature_suffix)]
 
 class HubspaceOutlet(LightEntity):
     """Representation of an Awesome Light."""
