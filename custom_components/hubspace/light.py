@@ -197,7 +197,7 @@ class HubspaceLight(LightEntity):
 
         # https://www.homedepot.com/p/Defiant-15-Amp-120-Volt-Smart-Hubspace-Outdoor-Single-Outlet-Wi-Fi-Bluetooth-Plug-HPPA51CWB/316341409
         # https://www.homedepot.com/p/Defiant-15-Amp-120-Volt-Smart-Hubspace-Wi-Fi-Bluetooth-Plug-with-1-Outlet-HPPA11AWB/315636834
-        if self._model == 'HPPA51CWB' or self._model == 'HPPA11AWBA023' or self._model == 'HPSA11CWB':
+        if self._model == 'HPPA51CWB' or self._model == 'HPPA11AWBA023' or self._model == 'HPSA11CWB' or self._model == 'HPPA11CWB':
             self._supported_color_modes.extend([ColorMode.ONOFF])
         #https://www.homedepot.com/p/EcoSmart-16-ft-Smart-Hubspace-RGB-and-Tunable-White-Tape-Light-Works-with-Amazon-Alexa-and-Google-Assistant-AL-TP-RGBCW-60/314680856
         if self._model == 'AL-TP-RGBCW-60-2116, AL-TP-RGBCW-60-2232' or self._model == 'HPKA315CWB' or self._model =='HPPA52CWBA023':
