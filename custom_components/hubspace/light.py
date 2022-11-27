@@ -231,7 +231,10 @@ class HubspaceLight(LightEntity):
             self._supported_color_modes.extend([ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE])
             self._max_mireds = 370
             self._min_mireds = 154
-
+        
+        # If model not found, use On/Off Only as a failsafe
+        if not self._supported_color_modes:
+            self._supported_color_modes.extend([ColorMode.ONOFF])
 
     @property
     def name(self) -> str:
