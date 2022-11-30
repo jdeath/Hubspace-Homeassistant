@@ -62,6 +62,8 @@ def _brightness_to_hubspace(value):
 def _convert_color_temp(value):
         if isinstance(value, str) and value.endswith('K'):
             value = value[:-1]
+        if value is None:
+            value = 1
         return 1000000 // int(value)
 
 def _add_entity(entities, hs, model, deviceClass, friendlyName, debug):
