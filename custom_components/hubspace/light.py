@@ -295,7 +295,7 @@ class HubspaceLight(LightEntity):
     @property
     def unique_id(self) -> str:
         """Return the display name of this light."""
-        return self._deviceId
+        return self._childId
 
     @property
     def color_mode(self) -> ColorMode:
@@ -445,7 +445,7 @@ class HubspaceOutlet(LightEntity):
     @property
     def unique_id(self) -> str:
         """Return the display name of this light."""
-        return self._deviceId + "_" + self._outletIndex 
+        return self._childId + "_" + self._outletIndex 
 
     @property
     def color_mode(self) -> ColorMode:
@@ -530,7 +530,7 @@ class HubspaceFan(LightEntity):
     @property
     def unique_id(self) -> str:
         """Return the display name of this light."""
-        return self._deviceId + "_fan" 
+        return self._childId
 
     @property
     def is_on(self) -> bool | None:
@@ -652,7 +652,7 @@ class HubspaceTransformer(LightEntity):
     @property
     def unique_id(self) -> str:
         """Return the display name of this light."""
-        return self._deviceId + "_" + self._outletIndex 
+        return self._childId + "_" + self._outletIndex 
 
     @property
     def color_mode(self) -> ColorMode:
