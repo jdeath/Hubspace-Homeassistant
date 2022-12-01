@@ -162,7 +162,7 @@ def setup_platform(
                     try:
                         _LOGGER.debug(f"Found toggle with id {toggle.get('id')} and instance {toggle.get('functionInstance')}")
                         outletIndex = toggle.get('functionInstance').split('-')[1]
-                        entities.append(HubspaceOutlet(hs, friendlyName, outletIndex, debug, childId, model, deviceId, deviceClass)
+                        entities.append(HubspaceOutlet(hs, friendlyName, outletIndex, debug, childId, model, deviceId, deviceClass))
                     except IndexError:
                         _LOGGER.debug('Error extracting outlet index')
             # TODO: Add support for Transformer device here: need a log to determine the deviceClass
@@ -172,7 +172,7 @@ def setup_platform(
                     try:
                         _LOGGER.debug(f"Found toggle with id {toggle.get('id')} and instance {toggle.get('functionInstance')}")
                         outletIndex = toggle.get('functionInstance').split('-')[1]
-                        entities.append(HubspaceTransformer(hs, friendlyName, outletIndex, debug, childId, model, deviceId, deviceClass)
+                        entities.append(HubspaceTransformer(hs, friendlyName, outletIndex, debug, childId, model, deviceId, deviceClass))
                     except IndexError:
                         _LOGGER.debug('Error extracting outlet index')
             '''
