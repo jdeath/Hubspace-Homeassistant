@@ -575,7 +575,10 @@ class HubspaceFan(LightEntity):
         """Return the state attributes."""
         attr = {}
         attr["model"]= self._model
-        attr["deviceId"] = self._deviceId + "_fan"
+        if self._name.endswith("_fan"):
+            attr["deviceId"] = self._deviceId + "_fan"
+        else:
+            attr["deviceId"] = self._deviceId
         attr["devbranch"] = False
         
         attr["debugInfo"] = self._debugInfo
