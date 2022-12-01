@@ -152,7 +152,6 @@ def setup_platform(
             _LOGGER.debug("deviceClass: " + deviceClass )
             _LOGGER.debug("friendlyName: " + friendlyName )
             
-            entities = _add_entity(entities, hs, model, deviceClass, friendlyName, debug)
             if deviceClass == 'fan':
                 entities.append(HubspaceFan(hs, friendlyName, debug, childId, model, deviceId, deviceClass))
             elif deviceClass == 'light':
