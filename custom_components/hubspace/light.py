@@ -143,6 +143,40 @@ def setup_platform(
 
             entities = _add_entity(entities, hs, model, deviceClass, friendlyName, debug)
     
+    if config.get(CONF_FRIENDLYNAMES) == [] and config.get(CONF_ROOMNAMES) == []:
+        _LOGGER.debug('Attempting automatic discovery')
+        for [childId, model, deviceId, deviceClass, friendlyName] in hs.discoverDeviceIds():
+            _LOGGER.debug("childId " + childId )
+            _LOGGER.debug("Switch on Model " + model )
+            _LOGGER.debug("deviceId: " + deviceId )
+            _LOGGER.debug("deviceClass: " + deviceClass )
+            _LOGGER.debug("friendlyName: " + friendlyName )
+            
+            entities = _add_entity(entities, hs, model, deviceClass, friendlyName, debug)
+            if deviceClass == 'fan':
+                entities.append(HubspaceFan(hs, friendlyName, debug, childId, model, deviceId, deviceClass))
+            elif deviceClass == 'light':
+                entities.append(HubspaceLight(hs, friendlyName, debug, childId, model, deviceId, deviceClass))
+            elif deviceClass == 'power-outlet':
+                for toggle in hs.getFunctions(childId, 'toggle'):
+                    try:
+                        _LOGGER.debug(f"Found toggle with id {toggle.get('id')} and instance {toggle.get('functionInstance')}")
+                        outletIndex = toggle.get('functionInstance').split('-')[1]
+                        entities.append(HubspaceOutlet(hs, friendlyName, outletIndex, debug, childId, model, deviceId, deviceClass)
+                    except IndexError:
+                        _LOGGER.debug('Error extracting outlet index')
+            # TODO: Add support for Transformer device here: need a log to determine the deviceClass
+            '''
+            elif deviceClass == 'power-transformer???'
+                for toggle in hs.getFunctions(childId, 'toggle'):
+                    try:
+                        _LOGGER.debug(f"Found toggle with id {toggle.get('id')} and instance {toggle.get('functionInstance')}")
+                        outletIndex = toggle.get('functionInstance').split('-')[1]
+                        entities.append(HubspaceTransformer(hs, friendlyName, outletIndex, debug, childId, model, deviceId, deviceClass)
+                    except IndexError:
+                        _LOGGER.debug('Error extracting outlet index')
+            '''
+    
     if not entities:
         return
     add_entities(entities, True)
@@ -162,7 +196,7 @@ def setup_platform(
 class HubspaceLight(LightEntity):
     """Representation of an Awesome Light."""
     
-    def __init__(self, hs, friendlyname,debug) -> None:
+    def __init__(self, hs, friendlyname, debug, childId = None, model = None, deviceId = None, deviceClass = None) -> None:
         """Initialize an AwesomeLight."""
         
         _LOGGER.debug("Light Name: " )
@@ -172,12 +206,12 @@ class HubspaceLight(LightEntity):
         
         self._debug = debug
         self._state = 'off'
-        self._childId = None
-        self._model = None
+        self._childId = childId
+        self._model = model
         self._brightness = None
         self._usePowerFunctionInstance = None
         self._hs = hs
-        self._deviceId = None
+        self._deviceId = deviceId
         self._debugInfo = None
 
         # colorMode == 'color' || 'white' 
@@ -188,8 +222,8 @@ class HubspaceLight(LightEntity):
         self._rgbColor = None
         self._temperature_choices = None
         self._temperature_suffix = None
-        deviceClass = None
-        [self._childId, self._model, self._deviceId,deviceClass] = self._hs.getChildId(self._name)
+        if None in (childId, model, deviceId, deviceClass):
+            [self._childId, self._model, self._deviceId, deviceClass] = self._hs.getChildId(self._name)
 
         self._supported_color_modes = []
 
@@ -217,11 +251,26 @@ class HubspaceLight(LightEntity):
         #fan
         if self._model == '52133, 37833' or self._model == '76278, 37278':
             self._usePowerFunctionInstance = 'light-power'
-            self._supported_color_modes.extend([ColorMode.BRIGHTNESS, ColorMode.COLOR_TEMP, ColorMode.WHITE])
-            self._max_mireds = 371
-            self._min_mireds = 153
-            self._temperature_choices = (2700, 3000, 3500, 4000, 5000, 6500)
+            self._supported_color_modes.extend([ColorMode.BRIGHTNESS])
             self._temperature_suffix = 'K'
+            self._temperature_choices = []
+            for colorTemperature in self._hs.getFunctions(self._deviceId, 'color-temperature'):
+                for value in colorTemperature.get('values'):
+                    temperatureName = value.get('name')
+                    if isinstance(temperatureName, str) and temperatureName.endswith(self._temperature_suffix):
+                        try:
+                            temperatureValue = int(temperatureName[:-len(self._temperature_suffix)])
+                        except ValueError:
+                            _LOGGER.debug(f"Can't convert temperatureName {temperatureName} to int")
+                            temperatureValue = None
+                        if temperatureValue is not None and temperatureValue not in self._temperature_choices:
+                            self._temperature_choices.append(temperatureValue)
+            if len(self._temperature_choices):
+                self._supported_color_modes.extend([ColorMode.COLOR_TEMP, ColorMode.WHITE])
+                self._max_mireds = 1000000//min(self._temperature_choices) + 1
+                self._min_mireds = 1000000//max(self._temperature_choices)
+            else:
+                self._temperature_choices = None
 
         # https://www.homedepot.com/p/Commercial-Electric-5-in-6-in-Smart-Hubspace-Color-Selectable-CCT-Integrated-LED-Recessed-Light-Trim-Works-with-Amazon-Alexa-and-Google-538561010/314254248
         if self._model == '538551010, 538561010, 538552010, 538562010':
@@ -369,23 +418,24 @@ class HubspaceOutlet(LightEntity):
     
     
     
-    def __init__(self, hs, friendlyname,outletIndex,debug) -> None:
+    def __init__(self, hs, friendlyname, outletIndex, debug, childId = None, model = None, deviceId = None, deviceClass = None) -> None:
         """Initialize an AwesomeLight."""
         
         self._name = friendlyname + "_outlet_" + outletIndex 
         
         self._debug = debug
         self._state = 'off'
-        self._childId = None
-        self._model = None
+        self._childId = childId
+        self._model = model
         self._brightness = None
         self._usePrimaryFunctionInstance = False
         self._hs = hs
-        self._deviceId = None
+        self._deviceId = deviceId
         self._debugInfo = None
         self._outletIndex = outletIndex
-        deviceClass = None
-        [self._childId, self._model, self._deviceId,deviceClass] = self._hs.getChildId(friendlyname)
+
+        if None in (childId, model, deviceId, deviceClass):
+            [self._childId, self._model, self._deviceId, deviceClass] = self._hs.getChildId(friendlyname)
     
     @property
     def name(self) -> str:
@@ -451,23 +501,26 @@ class HubspaceFan(LightEntity):
     """Representation of an Awesome Light."""
     
         
-    def __init__(self, hs, friendlyname, debug) -> None:
+    def __init__(self, hs, friendlyname, debug, childId = None, model = None, deviceId = None, deviceClass = None) -> None:
         """Initialize an AwesomeLight."""
         
-        self._name = friendlyname + "_fan" 
+        if None in (childId, model, deviceId, deviceClass):
+            self._name = friendlyname + "_fan" 
+        else:
+            self._name = friendlyname
         
         self._debug = debug
         self._state = 'off'
-        self._childId = None
-        self._model = None
+        self._childId = childId
+        self._model = model
         self._brightness = None
         self._usePrimaryFunctionInstance = False
         self._hs = hs
-        self._deviceId = None
+        self._deviceId = deviceId
         self._debugInfo = None
         
-        deviceClass = None
-        [self._childId, self._model, self._deviceId,deviceClass] = self._hs.getChildId(friendlyname)
+        if None in (childId, model, deviceId, deviceClass):
+            [self._childId, self._model, self._deviceId, deviceClass] = self._hs.getChildId(friendlyname)
     
     @property
     def name(self) -> str:
@@ -570,26 +623,26 @@ class HubspaceTransformer(LightEntity):
     
     
     
-    def __init__(self, hs, friendlyname,outletIndex,debug) -> None:
+    def __init__(self, hs, friendlyname, outletIndex, debug, childId = None, model = None, deviceId = None, deviceClass = None) -> None:
         """Initialize an AwesomeLight."""
         
         self._name = friendlyname + "_transformer_" + outletIndex 
         
         self._debug = debug
         self._state = 'off'
-        self._childId = None
-        self._model = None
+        self._childId = childId
+        self._model = model
         self._brightness = None
         self._usePrimaryFunctionInstance = False
         self._hs = hs
-        self._deviceId = None
+        self._deviceId = deviceId
         self._debugInfo = None
         self._watts = None
         self._volts = None
         
         self._outletIndex = outletIndex
-        deviceClass = None
-        [self._childId, self._model, self._deviceId,deviceClass] = self._hs.getChildId(friendlyname)
+        if None in (childId, model, deviceId, deviceClass):
+            [self._childId, self._model, self._deviceId, deviceClass] = self._hs.getChildId(friendlyname)
     
     @property
     def name(self) -> str:
