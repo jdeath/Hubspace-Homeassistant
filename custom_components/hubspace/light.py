@@ -164,9 +164,7 @@ def setup_platform(
                         entities.append(HubspaceOutlet(hs, friendlyName, outletIndex, debug, childId, model, deviceId, deviceClass))
                     except IndexError:
                         _LOGGER.debug('Error extracting outlet index')
-            # TODO: Add support for Transformer device here: need a log to determine the deviceClass
-            '''
-            elif deviceClass == 'power-transformer???'
+            elif deviceClass == 'landscape-transformer'
                 for toggle in hs.getFunctions(childId, 'toggle'):
                     try:
                         _LOGGER.debug(f"Found toggle with id {toggle.get('id')} and instance {toggle.get('functionInstance')}")
@@ -174,7 +172,6 @@ def setup_platform(
                         entities.append(HubspaceTransformer(hs, friendlyName, outletIndex, debug, childId, model, deviceId, deviceClass))
                     except IndexError:
                         _LOGGER.debug('Error extracting outlet index')
-            '''
     
     if not entities:
         return
