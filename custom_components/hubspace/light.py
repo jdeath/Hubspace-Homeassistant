@@ -154,7 +154,7 @@ def setup_platform(
             
             if deviceClass == 'fan':
                 entities.append(HubspaceFan(hs, friendlyName, debug, childId, model, deviceId, deviceClass))
-            elif deviceClass == 'light':
+            elif deviceClass == 'light' or deviceClass == 'switch':
                 entities.append(HubspaceLight(hs, friendlyName, debug, childId, model, deviceId, deviceClass))
             elif deviceClass == 'power-outlet':
                 for toggle in hs.getFunctions(childId, 'toggle'):
