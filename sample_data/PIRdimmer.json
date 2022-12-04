@@ -694,7 +694,7 @@
                 {
                     "functionClass": "wifi-mac-address",
                     "lastUpdateTime": 0,
-                    "value": "8076d1a1add4"
+                    "value": "XXX"
                 },
                 {
                     "functionClass": "geo-coordinates",
@@ -724,7 +724,7 @@
                 {
                     "functionClass": "ble-mac-address",
                     "lastUpdateTime": 0,
-                    "value": "3e3d4c143983"
+                    "value": "mac"
                 }
             ]
         },
