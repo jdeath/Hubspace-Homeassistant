@@ -261,6 +261,26 @@ class HubSpace:
         #_LOGGER.debug("No model found ")
         return child,model,deviceId,deviceClass
 
+    def discoverDeviceIds(self):
+        response = self.getMetadeviceInfo()
+                
+        for lis in response.json():
+            if lis.get('typeId') == 'metadevice.device':
+                child = lis.get('id')
+                deviceId = lis.get('deviceId')
+                model = lis.get('description', {}).get('device', {}).get('model')
+                deviceClass = lis.get('description', {}).get('device', {}).get('deviceClass')
+                friendlyName = lis.get('friendlyName')
+                yield child, model, deviceId, deviceClass, friendlyName
+
+    def getFunctions(self, deviceId, functionClass):
+        response = self.getMetadeviceInfo()
+        
+        for lis in response.json():
+            if lis.get('deviceId') == deviceId:
+                for function in lis.get('description', {}).get('functions', []):
+                    if function.get('functionClass') == functionClass:
+                        yield function
 
     def getState(self,child,desiredStateName):
 
