@@ -4,7 +4,7 @@ Please ask support questions in homeassistant forums: https://community.home-ass
 
 ### Breaking Change:
 
-Thanks to @dloveall this release will automatically discover most devices. Specifying your freindlynames is still possible, but this now find most models attached to your account. There may be some that are not auto discovered.
+Thanks to @dloveall this release will automatically discover most devices. Specifying your freindlynames is still possible, but this now finds most models attached to your account. There may be some that are not auto discovered.
 
 Since some of the internals were changed, so your light name may change. For instance, light.friendlyname might turn into light.freindlyname_2
 
