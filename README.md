@@ -2,6 +2,16 @@
 
 Please ask support questions in homeassistant forums: https://community.home-assistant.io/t/add-support-for-hubspace-by-afero/306645
 
+### Breaking Change:
+
+Thanks to @dloveall this release will automatically discover most devices. Specifying your freindlynames is still possible, but this now find most models attached to your account. There may be some that are not auto discovered.
+
+Since some of the internals were changed, so your light name may change. For instance, light.friendlyname might turn into light.freindlyname_2
+
+To solve this, go to Settings->Devices and Services->Entities
+find the light.friendlyname and delete it. then find the light.freindlyname_2 and rename it light.freindlyname
+
+### Information :
 99% of the issues are your friendlyname is incorrect, see Troubleshooting section below. Please use the issue section only for support of new devices.
 
 Major rewrite. Now it caches tokens for 118s and shares authentication for all lights, thus makes fewer API calls
@@ -44,11 +54,11 @@ light:
   - platform: hubspace
     username: your_hubspace_username (probably your email address)
     password: your_hubspace_password
-    debug: true (use this if want debug output, if you have an unsupported light, set false if not needed)
-    friendlynames:
+    debug: false (use true if want debug output, if you have an unsupported light. set false if not needed)
+    friendlynames: (optional after v1.70)
       - 'BoysLight' (the name of your light as shown in the app)
       - 'GirlsLight' (the name of your light as shown in the app)
-    roomnames:
+    roomnames: (optional)
       - 'BoysRoom' (the name of your room as shown in the app)
 ```
 
