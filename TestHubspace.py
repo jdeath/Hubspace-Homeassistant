@@ -7,7 +7,11 @@ import hashlib
 import base64
 import os
 import asyncio
-
+import argparse
+import getpass
+import sys
+import uuid
+import random
 
 def getCodeVerifierAndChallenge():
     code_verifier = base64.urlsafe_b64encode(os.urandom(40)).decode('utf-8')
@@ -82,7 +86,7 @@ def getRefreshCode(userName,passWord):
     headers = {}
     r = requests.post(auth_url, data=auth_data, headers=auth_header)
     refresh_token = r.json().get('refresh_token')
-    print(refresh_token)
+    #print(refresh_token)
     return refresh_token
 
 
@@ -125,7 +129,7 @@ def getAccountId(refresh_token):
     accountId = r.json().get('accountAccess')[0].get('account').get('accountId')
     return accountId
 
-def getChildId(refresh_token,accountId,deviceName):
+def getChildId(refresh_token,accountId,deviceName, onlyPrintAnonymizedJson = False):
     
     token = getAuthTokenFromRefreshToken(refresh_token)
     
@@ -144,9 +148,10 @@ def getChildId(refresh_token,accountId,deviceName):
     child = None
     deviceId = None
     
-    
-    #print(json.dumps(r.json(), indent=4, sort_keys=True))
-    #quit()
+    if onlyPrintAnonymizedJson:
+        print('UUIDs, times, locations, names, MACs, and SSIDs have been redacted or randomized below.')
+        print(anonymize_json(json.dumps(r.json(), indent=4, sort_keys=True)))
+        return None, None, None
     
     #print(r.json())
     for lis in r.json():
@@ -331,22 +336,70 @@ def test_auth_token(token):
     result = conn.recv()
     assert result is not None
 
-# Edit below here
-# If you do not know your light name, they will be printed before script crashes
+def anonymize_json(infile):
+    # Replace UUIDs
+    uuid_re = re.compile('[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}')
+    unique_uuids = set(re.findall(uuid_re, infile))
+    for unique_uuid in unique_uuids:
+    	infile = infile.replace(unique_uuid, str(uuid.uuid4()))
+    
+    # Replace Times
+    # 13 digits includes dates since late 2001
+    # Keep times in relative order, add random value less than ~15 minutes
+    time_re = re.compile('[0-9]{13}')
+    unique_times = sorted(set(re.findall(time_re, infile)))
+    random_increasing_offset = random.randint(1, 1000000)
+    for unique_time in unique_times:
+    	infile = infile.replace(unique_time, str(int(unique_time) + random_increasing_offset))
+    	random_increasing_offset += random.randint(1, 1000000)
+    
+    # Replace Lat / Long
+    latlong_re = re.compile('"(-?[0-9]{1,3}\.[0-9]*)"')
+    unique_latlongs = set(re.findall(latlong_re, infile))
+    for unique_latlong in unique_latlongs:
+    	infile = infile.replace(unique_latlong, str(random.random()))
+    
+    # Replace Friendly Names
+    friendlyname_re = re.compile('"friendlyName": "([^"]*)"')
+    unique_friendlynames = set(re.findall(friendlyname_re, infile))
+    i = 0
+    for unique_friendlyname in unique_friendlynames:
+    	infile = infile.replace(unique_friendlyname, 'Friendly Name ' + str(i))
+    	i += 1
+    
+    # Replace MACs
+    mac_re = re.compile('"([0-9a-f]{12})"')
+    unique_macs = set(re.findall(mac_re, infile))
+    for unique_mac in unique_macs:
+    	infile = infile.replace(unique_mac, '%12x' % random.randrange(16**12))
+    
+    # Replace SSIDs
+    ssid_re = re.compile('"wifi-ssid",.*?"value": "(.*?)"', re.DOTALL)
+    unique_ssids = set(re.findall(ssid_re, infile))
+    i = 0
+    for unique_ssid in unique_ssids:
+    	infile = infile.replace(unique_ssid, "SSID" + str(i))
+    	i += 1
 
-user = 'you@email.com'
-passwd = 'yourassword'
-lightname = 'boysroom'
+    return infile
+
+parser = argparse.ArgumentParser(description = 'Test connection to Hubspace server')
+
+parser.add_argument('--username', '-u', required = False)
+parser.add_argument('--password', '-p', required = False)
+args = parser.parse_args()
+user = input('Hubspace Username: ') if args.username is None else args.username
+passwd = getpass.getpass() if args.password is None else args.password
 
 refresh_token = getRefreshCode(user,passwd)
 
 accountId = getAccountId(refresh_token)
 
 
-[child, deviceId,model] = getChildId(refresh_token,accountId,lightname)
-print(child)
-print(model)
-getState(refresh_token,accountId,child,"power")
+[child, deviceId,model] = getChildId(refresh_token,accountId, None, onlyPrintAnonymizedJson = True)
+#print(child)
+#print(model)
+#getState(refresh_token,accountId,child,"power")
 #setState(refresh_token,accountId,child,"power","on")    
 #setPowerState(refresh_token,accountId,child,"on")
 
