@@ -7,7 +7,8 @@ import hashlib
 import base64
 import os
 import asyncio
-
+import argparse
+import getpass
 
 def getCodeVerifierAndChallenge():
     code_verifier = base64.urlsafe_b64encode(os.urandom(40)).decode('utf-8')
@@ -82,7 +83,7 @@ def getRefreshCode(userName,passWord):
     headers = {}
     r = requests.post(auth_url, data=auth_data, headers=auth_header)
     refresh_token = r.json().get('refresh_token')
-    print(refresh_token)
+    #print(refresh_token)
     return refresh_token
 
 
@@ -125,7 +126,7 @@ def getAccountId(refresh_token):
     accountId = r.json().get('accountAccess')[0].get('account').get('accountId')
     return accountId
 
-def getChildId(refresh_token,accountId,deviceName):
+def getChildId(refresh_token,accountId,deviceName, printJsonOnly = False):
     
     token = getAuthTokenFromRefreshToken(refresh_token)
     
@@ -144,9 +145,9 @@ def getChildId(refresh_token,accountId,deviceName):
     child = None
     deviceId = None
     
-    
-    #print(json.dumps(r.json(), indent=4, sort_keys=True))
-    #quit()
+    if printJsonOnly:
+        print(json.dumps(r.json(), indent=4, sort_keys=True))
+        return None, None, None
     
     #print(r.json())
     for lis in r.json():
@@ -331,22 +332,23 @@ def test_auth_token(token):
     result = conn.recv()
     assert result is not None
 
-# Edit below here
-# If you do not know your light name, they will be printed before script crashes
+parser = argparse.ArgumentParser(description = 'Test connection to Hubspace server')
 
-user = 'you@email.com'
-passwd = 'yourassword'
-lightname = 'boysroom'
+parser.add_argument('--username', '-u', required = False)
+parser.add_argument('--password', '-p', required = False)
+args = parser.parse_args()
+user = input('Hubspace Username: ') if args.username is None else args.username
+passwd = getpass.getpass() if args.password is None else args.password
 
 refresh_token = getRefreshCode(user,passwd)
 
 accountId = getAccountId(refresh_token)
 
 
-[child, deviceId,model] = getChildId(refresh_token,accountId,lightname)
-print(child)
-print(model)
-getState(refresh_token,accountId,child,"power")
+[child, deviceId,model] = getChildId(refresh_token,accountId, None, printJsonOnly = True)
+#print(child)
+#print(model)
+#getState(refresh_token,accountId,child,"power")
 #setState(refresh_token,accountId,child,"power","on")    
 #setPowerState(refresh_token,accountId,child,"on")
 
