@@ -76,7 +76,12 @@ If you have a combo fan/light, just add the name of the parent device from the h
 If you have an outlet or a transfomer, just add the name of the parent device from the hubspace app. Do not add the seperate outlet's/transformer's names. The integration will figure it out and make entities called light.friendlyname_outlet_X or light.freindlyname_transformer_X where X is 1,2,3 depending on how many outputs in has.
 
 ### Support for a new model
-Please make a github issue if want support for a new model. I will need your help to test. Get the item loaded in homeassistant as above. Set debug:true in configuration as shown above. Click on the entity in homeassistant, expand the attributes, and send me the model and debug fields. Best to PM me these on the homeassistant forums, as there is semi-private information in them. Send me these fields with the light set to on/off/etc (you may need to use the app). If that doesn't work, I may need better debug logs. Then you can add in your configuration.yaml (not in the hubspace section). Then you email me your homassistant.log 
+
+Please make a github issue if want support for a new model. I will need your help to test.
+
+Easiest way to help is to download the Testhubspace.py (https://raw.githubusercontent.com/jdeath/Hubspace-Homeassistant/main/TestHubspace.py) and run it. It will prompt you for your hubspace username and password. It will output data, which you should copy and paste into the GitHub issue. The output has been anonymized, personal information has been removed or randomized.
+
+If cannot run python3, get the entity loaded in homeassistant. Set debug:true in configuration as shown above. Click on the entity in homeassistant, expand the attributes, and send me the model and debug fields. This information is *not* anonymized. Best to PM me these on the homeassistant forums, as there is semi-private information in them. Send me these fields with the light set to on/off/etc (you may need to use the app). If that doesn't work, I may need better debug logs. Then you can add in your configuration.yaml (not in the hubspace section). Then you email me your homassistant.log 
 ```
 logger:
   default: error
