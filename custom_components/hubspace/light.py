@@ -157,7 +157,7 @@ def setup_platform(
             elif deviceClass == 'light' or deviceClass == 'switch':
                 entities.append(HubspaceLight(hs, friendlyName, debug, childId, model, deviceId, deviceClass))
             elif deviceClass == 'power-outlet':
-                for toggle in hs.getFunctions(deviceId, 'toggle'):
+                for toggle in hs.getFunctions(childId, 'toggle'):
                     try:
                         _LOGGER.debug(f"Found toggle with id {toggle.get('id')} and instance {toggle.get('functionInstance')}")
                         outletIndex = toggle.get('functionInstance').split('-')[1]
@@ -165,7 +165,7 @@ def setup_platform(
                     except IndexError:
                         _LOGGER.debug('Error extracting outlet index')
             elif deviceClass == 'landscape-transformer':
-                for toggle in hs.getFunctions(deviceId, 'toggle'):
+                for toggle in hs.getFunctions(childId, 'toggle'):
                     try:
                         _LOGGER.debug(f"Found toggle with id {toggle.get('id')} and instance {toggle.get('functionInstance')}")
                         outletIndex = toggle.get('functionInstance').split('-')[1]
@@ -250,7 +250,7 @@ class HubspaceLight(LightEntity):
             self._supported_color_modes.extend([ColorMode.BRIGHTNESS])
             self._temperature_suffix = 'K'
             self._temperature_choices = []
-            for colorTemperature in self._hs.getFunctions(self._deviceId, 'color-temperature'):
+            for colorTemperature in self._hs.getFunctions(self._childId, 'color-temperature'):
                 for value in colorTemperature.get('values'):
                     temperatureName = value.get('name')
                     if isinstance(temperatureName, str) and temperatureName.endswith(self._temperature_suffix):
