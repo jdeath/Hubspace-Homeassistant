@@ -151,7 +151,7 @@ def setup_platform(
             _LOGGER.debug("deviceId: " + deviceId )
             _LOGGER.debug("deviceClass: " + deviceClass )
             _LOGGER.debug("friendlyName: " + friendlyName )
-            _LOGGER.debug("functions: " + functions )
+            _LOGGER.debug("functions: " + str(functions))
             
             if deviceClass == 'fan':
                 entities.append(HubspaceFan(hs, friendlyName, debug, childId, model, deviceId, deviceClass))
