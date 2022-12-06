@@ -157,7 +157,7 @@ def setup_platform(
             elif deviceClass == 'light' or deviceClass == 'switch':
                 entities.append(HubspaceLight(hs, friendlyName, debug, childId, model, deviceId, deviceClass))
             elif deviceClass == 'power-outlet':
-                for toggle in hs.getFunctions(childId, 'toggle'):
+                for toggle in hs.getFunctions(deviceId, 'toggle'):
                     try:
                         _LOGGER.debug(f"Found toggle with id {toggle.get('id')} and instance {toggle.get('functionInstance')}")
                         outletIndex = toggle.get('functionInstance').split('-')[1]
@@ -165,7 +165,7 @@ def setup_platform(
                     except IndexError:
                         _LOGGER.debug('Error extracting outlet index')
             elif deviceClass == 'landscape-transformer':
-                for toggle in hs.getFunctions(childId, 'toggle'):
+                for toggle in hs.getFunctions(deviceId, 'toggle'):
                     try:
                         _LOGGER.debug(f"Found toggle with id {toggle.get('id')} and instance {toggle.get('functionInstance')}")
                         outletIndex = toggle.get('functionInstance').split('-')[1]
