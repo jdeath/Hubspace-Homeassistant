@@ -271,7 +271,8 @@ class HubSpace:
                 model = lis.get('description', {}).get('device', {}).get('model')
                 deviceClass = lis.get('description', {}).get('device', {}).get('deviceClass')
                 friendlyName = lis.get('friendlyName')
-                yield child, model, deviceId, deviceClass, friendlyName
+                functions = lis.get('description', {}).get('functions', [])
+                yield child, model, deviceId, deviceClass, friendlyName, functions
 
     def getFunctions(self, id, functionClass):
         response = self.getMetadeviceInfo()
