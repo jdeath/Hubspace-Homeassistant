@@ -1,0 +1,354 @@
+[
+    {
+        "children": [
+            "eb171ae3-0a17-4b18-8fda-cb6aaa62f014",
+            "f93e3a2d-7f24-40d8-9c23-8760e4c5cd27"
+        ],
+        "createdTimestampMs": 0,
+        "friendlyName": "Friendly Name 2",
+        "id": "878b2dfd-fff0-4e18-b74a-b3c7b54be2db",
+        "locale": "en_US",
+        "typeId": "metadevice.home",
+        "updatedTimestampMs": 0,
+        "version": 1
+    },
+    {
+        "children": [
+            "f93e3a2d-7f24-40d8-9c23-8760e4c5cd27"
+        ],
+        "createdTimestampMs": 0,
+        "friendlyDescription": "",
+        "friendlyName": "Friendly Name 0",
+        "id": "eb171ae3-0a17-4b18-8fda-cb6aaa62f014",
+        "image": "wallpaper01.jpg",
+        "locale": "en_US",
+        "tag": "",
+        "typeId": "metadevice.room",
+        "updatedTimestampMs": 0,
+        "version": 1
+    },
+    {
+        "children": [],
+        "createdTimestampMs": 0,
+        "description": {
+            "createdTimestampMs": 1606272962738,
+            "defaultImage": "smart-outlet",
+            "descriptions": [],
+            "device": {
+                "defaultName": "Outlet",
+                "deviceClass": "power-outlet",
+                "manufacturerName": "Commercial Electric",
+                "model": "HPKA315CWB",
+                "profileId": "35ce4144-62b0-4bc5-b634-2511e94e27f7",
+                "type": "device"
+            },
+            "functions": [
+                {
+                    "createdTimestampMs": 1606276337578,
+                    "functionClass": "toggle",
+                    "functionInstance": "outlet-2",
+                    "id": "441e9a87-06a3-47d8-87ea-52ac3f09b6e3",
+                    "schedulable": true,
+                    "type": "category",
+                    "updatedTimestampMs": 1606276337578,
+                    "values": [
+                        {
+                            "createdTimestampMs": 1606278197634,
+                            "deviceValues": [
+                                {
+                                    "createdTimestampMs": 1606278365225,
+                                    "id": "388770df-c905-486b-8920-69028a85f42a",
+                                    "key": "3",
+                                    "type": "attribute",
+                                    "updatedTimestampMs": 1606278365225,
+                                    "value": "1"
+                                }
+                            ],
+                            "id": "804376cd-09ca-4c11-9d82-bb6271a6c8fd",
+                            "name": "on",
+                            "range": {},
+                            "updatedTimestampMs": 1606278197634
+                        },
+                        {
+                            "createdTimestampMs": 1606276663767,
+                            "deviceValues": [
+                                {
+                                    "createdTimestampMs": 1606277377901,
+                                    "id": "816f3abf-716e-4687-bc7b-07a8d0086d17",
+                                    "key": "3",
+                                    "type": "attribute",
+                                    "updatedTimestampMs": 1606277377901,
+                                    "value": "0"
+                                }
+                            ],
+                            "id": "74c5ad3e-2e96-4fc4-8dfb-09d726d7eebd",
+                            "name": "off",
+                            "range": {},
+                            "updatedTimestampMs": 1606276663767
+                        }
+                    ]
+                },
+                {
+                    "createdTimestampMs": 1606273033735,
+                    "functionClass": "power",
+                    "id": "c1ed8865-355e-4f3f-9c15-26d8de2261af",
+                    "schedulable": true,
+                    "type": "category",
+                    "updatedTimestampMs": 1606273033735,
+                    "values": [
+                        {
+                            "createdTimestampMs": 1606274005063,
+                            "deviceValues": [
+                                {
+                                    "createdTimestampMs": 1606274217532,
+                                    "id": "35e9c6db-059d-40cc-9bf5-686862983575",
+                                    "key": "1",
+                                    "type": "attribute",
+                                    "updatedTimestampMs": 1606274217532,
+                                    "value": "1"
+                                }
+                            ],
+                            "id": "d9907860-9b79-464e-823b-9181a523a158",
+                            "name": "on",
+                            "range": {},
+                            "updatedTimestampMs": 1606274005063
+                        },
+                        {
+                            "createdTimestampMs": 1606273341335,
+                            "deviceValues": [
+                                {
+                                    "createdTimestampMs": 1606273382464,
+                                    "id": "fedabf54-26e2-4a03-acfe-c3f9c90e9c9e",
+                                    "key": "1",
+                                    "type": "attribute",
+                                    "updatedTimestampMs": 1606273382464,
+                                    "value": "0"
+                                }
+                            ],
+                            "id": "0ce1b511-48ca-4cef-b98e-c290044af483",
+                            "name": "off",
+                            "range": {},
+                            "updatedTimestampMs": 1606273341335
+                        }
+                    ]
+                },
+                {
+                    "createdTimestampMs": 1606281120274,
+                    "functionClass": "timer",
+                    "functionInstance": "outlet-2",
+                    "id": "b8625fda-519f-4ac7-b0c6-8f651dad4088",
+                    "schedulable": false,
+                    "type": "numeric",
+                    "updatedTimestampMs": 1606281120274,
+                    "values": [
+                        {
+                            "createdTimestampMs": 1606281200541,
+                            "deviceValues": [
+                                {
+                                    "createdTimestampMs": 1606281425893,
+                                    "id": "84fa4814-eed0-45ee-94c6-e8e25978dbdc",
+                                    "key": "51",
+                                    "type": "attribute",
+                                    "updatedTimestampMs": 1606281425893
+                                }
+                            ],
+                            "id": "7f147397-5afd-4e7c-8a5b-e9e8fa3ade46",
+                            "name": "timer-2",
+                            "range": {
+                                "max": 1440,
+                                "min": 0,
+                                "step": 1
+                            },
+                            "updatedTimestampMs": 1606281200541
+                        }
+                    ]
+                },
+                {
+                    "createdTimestampMs": 1606279079078,
+                    "functionClass": "timer",
+                    "functionInstance": "outlet-1",
+                    "id": "78c5fcff-43b3-4565-b650-9964ea8c5095",
+                    "schedulable": false,
+                    "type": "numeric",
+                    "updatedTimestampMs": 1606279079078,
+                    "values": [
+                        {
+                            "createdTimestampMs": 1606279636159,
+                            "deviceValues": [
+                                {
+                                    "createdTimestampMs": 1606280475984,
+                                    "id": "f0881977-ee32-4ddb-84bf-22a49787566e",
+                                    "key": "50",
+                                    "type": "attribute",
+                                    "updatedTimestampMs": 1606280475984
+                                }
+                            ],
+                            "id": "091c2109-c818-44e6-85f7-f30e38c481df",
+                            "name": "timer-1",
+                            "range": {
+                                "max": 1440,
+                                "min": 0,
+                                "step": 1
+                            },
+                            "updatedTimestampMs": 1606279636159
+                        }
+                    ]
+                },
+                {
+                    "createdTimestampMs": 1606274219109,
+                    "functionClass": "toggle",
+                    "functionInstance": "outlet-1",
+                    "id": "f0965e95-2866-4e0f-8d87-af8701c37fd6",
+                    "schedulable": true,
+                    "type": "category",
+                    "updatedTimestampMs": 1606274219109,
+                    "values": [
+                        {
+                            "createdTimestampMs": 1606274322861,
+                            "deviceValues": [
+                                {
+                                    "createdTimestampMs": 1606274386401,
+                                    "id": "e630ce24-87ee-4d10-aef5-cb4c965c9c90",
+                                    "key": "2",
+                                    "type": "attribute",
+                                    "updatedTimestampMs": 1606274386401,
+                                    "value": "0"
+                                }
+                            ],
+                            "id": "133e4cb8-8d32-48ec-897f-3d216c67a25b",
+                            "name": "off",
+                            "range": {},
+                            "updatedTimestampMs": 1606274322861
+                        },
+                        {
+                            "createdTimestampMs": 1606274775571,
+                            "deviceValues": [
+                                {
+                                    "createdTimestampMs": 1606275484730,
+                                    "id": "6efa1c1e-ee95-4b8a-ac9c-e5b7fda2febc",
+                                    "key": "2",
+                                    "type": "attribute",
+                                    "updatedTimestampMs": 1606275484730,
+                                    "value": "1"
+                                }
+                            ],
+                            "id": "e7cdd2e9-5e12-4f57-8bb0-52ba9bad1201",
+                            "name": "on",
+                            "range": {},
+                            "updatedTimestampMs": 1606274775571
+                        }
+                    ]
+                }
+            ],
+            "hints": [],
+            "id": "e600e450-d974-4024-b0b0-e9b82425d278",
+            "updatedTimestampMs": 1606272962738,
+            "version": 1
+        },
+        "deviceId": "8d51eb1e06db9c8c",
+        "friendlyDescription": "",
+        "friendlyName": "Friendly Name 1",
+        "id": "f93e3a2d-7f24-40d8-9c23-8760e4c5cd27",
+        "image": "smart-outlet",
+        "locale": "en_US",
+        "state": {
+            "metadeviceId": "f93e3a2d-7f24-40d8-9c23-8760e4c5cd27",
+            "values": [
+                {
+                    "functionClass": "toggle",
+                    "functionInstance": "outlet-2",
+                    "lastUpdateTime": 1670240976523,
+                    "value": "on"
+                },
+                {
+                    "functionClass": "power",
+                    "lastUpdateTime": 1670240018793,
+                    "value": "on"
+                },
+                {
+                    "functionClass": "timer",
+                    "functionInstance": "outlet-2",
+                    "lastUpdateTime": 1665813019194,
+                    "value": 0
+                },
+                {
+                    "functionClass": "timer",
+                    "functionInstance": "outlet-1",
+                    "lastUpdateTime": 1665812491829,
+                    "value": 0
+                },
+                {
+                    "functionClass": "toggle",
+                    "functionInstance": "outlet-1",
+                    "lastUpdateTime": 1670299134662,
+                    "value": "off"
+                },
+                {
+                    "functionClass": "wifi-ssid",
+                    "lastUpdateTime": 1665813553210,
+                    "value": "SSID0"
+                },
+                {
+                    "functionClass": "wifi-rssi",
+                    "lastUpdateTime": 1670152287006,
+                    "value": -30
+                },
+                {
+                    "functionClass": "wifi-steady-state",
+                    "lastUpdateTime": 1670217800677,
+                    "value": "connected"
+                },
+                {
+                    "functionClass": "wifi-setup-state",
+                    "lastUpdateTime": 1670217875001,
+                    "value": "connected"
+                },
+                {
+                    "functionClass": "wifi-mac-address",
+                    "lastUpdateTime": 0,
+                    "value": "92b7bfc3a00c"
+                },
+                {
+                    "functionClass": "geo-coordinates",
+                    "functionInstance": "system-device-location",
+                    "lastUpdateTime": 1665814296075,
+                    "value": {
+                        "geo-coordinates": {
+                            "latitude": "0.6737102417524943",
+                            "longitude": "0.97892892925275"
+                        }
+                    }
+                },
+                {
+                    "functionClass": "scheduler-flags",
+                    "lastUpdateTime": 1668943635636,
+                    "value": 1
+                },
+                {
+                    "functionClass": "available",
+                    "lastUpdateTime": 1670303067972,
+                    "value": true
+                },
+                {
+                    "functionClass": "visible",
+                    "lastUpdateTime": 1670303067972,
+                    "value": true
+                },
+                {
+                    "functionClass": "direct",
+                    "lastUpdateTime": 1670303067972,
+                    "value": true
+                },
+                {
+                    "functionClass": "ble-mac-address",
+                    "lastUpdateTime": 0,
+                    "value": "eb1e06db9c8c"
+                }
+            ]
+        },
+        "tag": "",
+        "typeId": "metadevice.device",
+        "updatedTimestampMs": 0,
+        "version": 1
+    }
+]
