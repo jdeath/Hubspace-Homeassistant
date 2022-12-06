@@ -178,7 +178,7 @@ def setup_platform(
     
     if not entities:
         return
-    add_entities(entities, True)
+    add_entities(entities)
     
     # platform = self.platform
 
