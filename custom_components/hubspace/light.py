@@ -255,19 +255,18 @@ class HubspaceLight(LightEntity):
             self._supported_color_modes.extend([ColorMode.BRIGHTNESS])
             self._temperature_suffix = 'K'
             self._temperature_choices = []
-            if functions is not None:
-                for function in functions:
-                    if function.get('functionClass') == 'color-temperature':
-                        for value in function.get('values'):
-                            temperatureName = value.get('name')
-                            if isinstance(temperatureName, str) and temperatureName.endswith(self._temperature_suffix):
-                                try:
-                                    temperatureValue = int(temperatureName[:-len(self._temperature_suffix)])
-                                except ValueError:
-                                    _LOGGER.debug(f"Can't convert temperatureName {temperatureName} to int")
-                                    temperatureValue = None
-                                if temperatureValue is not None and temperatureValue not in self._temperature_choices:
-                                    self._temperature_choices.append(temperatureValue)
+            for function in functions:
+                if function.get('functionClass') == 'color-temperature':
+                    for value in function.get('values'):
+                        temperatureName = value.get('name')
+                        if isinstance(temperatureName, str) and temperatureName.endswith(self._temperature_suffix):
+                            try:
+                                temperatureValue = int(temperatureName[:-len(self._temperature_suffix)])
+                            except ValueError:
+                                _LOGGER.debug(f"Can't convert temperatureName {temperatureName} to int")
+                                temperatureValue = None
+                            if temperatureValue is not None and temperatureValue not in self._temperature_choices:
+                                self._temperature_choices.append(temperatureValue)
             if len(self._temperature_choices):
                 self._supported_color_modes.extend([ColorMode.COLOR_TEMP, ColorMode.WHITE])
                 self._max_mireds = 1000000//min(self._temperature_choices) + 1
