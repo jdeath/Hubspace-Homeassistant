@@ -223,6 +223,8 @@ class HubspaceLight(LightEntity):
         self._temperature_suffix = None
         if None in (childId, model, deviceId, deviceClass):
             [self._childId, self._model, self._deviceId, deviceClass] = self._hs.getChildId(self._name)
+        if functions is None:
+            functions = self._hs.getFunctions(self._childId)
 
         self._supported_color_modes = []
 
