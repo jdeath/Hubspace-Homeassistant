@@ -145,37 +145,40 @@ def setup_platform(
     
     if config.get(CONF_FRIENDLYNAMES) == [] and config.get(CONF_ROOMNAMES) == []:
         _LOGGER.debug('Attempting automatic discovery')
-        for [childId, model, deviceId, deviceClass, friendlyName] in hs.discoverDeviceIds():
+        for [childId, model, deviceId, deviceClass, friendlyName, functions] in hs.discoverDeviceIds():
             _LOGGER.debug("childId " + childId )
             _LOGGER.debug("Switch on Model " + model )
             _LOGGER.debug("deviceId: " + deviceId )
             _LOGGER.debug("deviceClass: " + deviceClass )
             _LOGGER.debug("friendlyName: " + friendlyName )
+            _LOGGER.debug("functions: " + str(functions))
             
             if deviceClass == 'fan':
                 entities.append(HubspaceFan(hs, friendlyName, debug, childId, model, deviceId, deviceClass))
             elif deviceClass == 'light' or deviceClass == 'switch':
-                entities.append(HubspaceLight(hs, friendlyName, debug, childId, model, deviceId, deviceClass))
+                entities.append(HubspaceLight(hs, friendlyName, debug, childId, model, deviceId, deviceClass, functions))
             elif deviceClass == 'power-outlet':
-                for toggle in hs.getFunctions(childId, 'toggle'):
-                    try:
-                        _LOGGER.debug(f"Found toggle with id {toggle.get('id')} and instance {toggle.get('functionInstance')}")
-                        outletIndex = toggle.get('functionInstance').split('-')[1]
-                        entities.append(HubspaceOutlet(hs, friendlyName, outletIndex, debug, childId, model, deviceId, deviceClass))
-                    except IndexError:
-                        _LOGGER.debug('Error extracting outlet index')
+                for function in functions:
+                    if function.get('functionClass') == 'toggle':
+                        try:
+                            _LOGGER.debug(f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}")
+                            outletIndex = function.get('functionInstance').split('-')[1]
+                            entities.append(HubspaceOutlet(hs, friendlyName, outletIndex, debug, childId, model, deviceId, deviceClass))
+                        except IndexError:
+                            _LOGGER.debug('Error extracting outlet index')
             elif deviceClass == 'landscape-transformer':
-                for toggle in hs.getFunctions(childId, 'toggle'):
-                    try:
-                        _LOGGER.debug(f"Found toggle with id {toggle.get('id')} and instance {toggle.get('functionInstance')}")
-                        outletIndex = toggle.get('functionInstance').split('-')[1]
-                        entities.append(HubspaceTransformer(hs, friendlyName, outletIndex, debug, childId, model, deviceId, deviceClass))
-                    except IndexError:
-                        _LOGGER.debug('Error extracting outlet index')
+                for function in functions:
+                    if function.get('functionClass') == 'toggle':
+                        try:
+                            _LOGGER.debug(f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}")
+                            outletIndex = function.get('functionInstance').split('-')[1]
+                            entities.append(HubspaceTransformer(hs, friendlyName, outletIndex, debug, childId, model, deviceId, deviceClass))
+                        except IndexError:
+                            _LOGGER.debug('Error extracting outlet index')
     
     if not entities:
         return
-    add_entities(entities, True)
+    add_entities(entities)
     
     # platform = self.platform
 
@@ -192,7 +195,7 @@ def setup_platform(
 class HubspaceLight(LightEntity):
     """Representation of an Awesome Light."""
     
-    def __init__(self, hs, friendlyname, debug, childId = None, model = None, deviceId = None, deviceClass = None) -> None:
+    def __init__(self, hs, friendlyname, debug, childId = None, model = None, deviceId = None, deviceClass = None, functions = None) -> None:
         """Initialize an AwesomeLight."""
         
         _LOGGER.debug("Light Name: " )
@@ -220,6 +223,8 @@ class HubspaceLight(LightEntity):
         self._temperature_suffix = None
         if None in (childId, model, deviceId, deviceClass):
             [self._childId, self._model, self._deviceId, deviceClass] = self._hs.getChildId(self._name)
+        if functions is None:
+            functions = self._hs.getFunctions(self._childId)
 
         self._supported_color_modes = []
 
@@ -250,17 +255,18 @@ class HubspaceLight(LightEntity):
             self._supported_color_modes.extend([ColorMode.BRIGHTNESS])
             self._temperature_suffix = 'K'
             self._temperature_choices = []
-            for colorTemperature in self._hs.getFunctions(self._deviceId, 'color-temperature'):
-                for value in colorTemperature.get('values'):
-                    temperatureName = value.get('name')
-                    if isinstance(temperatureName, str) and temperatureName.endswith(self._temperature_suffix):
-                        try:
-                            temperatureValue = int(temperatureName[:-len(self._temperature_suffix)])
-                        except ValueError:
-                            _LOGGER.debug(f"Can't convert temperatureName {temperatureName} to int")
-                            temperatureValue = None
-                        if temperatureValue is not None and temperatureValue not in self._temperature_choices:
-                            self._temperature_choices.append(temperatureValue)
+            for function in functions:
+                if function.get('functionClass') == 'color-temperature':
+                    for value in function.get('values'):
+                        temperatureName = value.get('name')
+                        if isinstance(temperatureName, str) and temperatureName.endswith(self._temperature_suffix):
+                            try:
+                                temperatureValue = int(temperatureName[:-len(self._temperature_suffix)])
+                            except ValueError:
+                                _LOGGER.debug(f"Can't convert temperatureName {temperatureName} to int")
+                                temperatureValue = None
+                            if temperatureValue is not None and temperatureValue not in self._temperature_choices:
+                                self._temperature_choices.append(temperatureValue)
             if len(self._temperature_choices):
                 self._supported_color_modes.extend([ColorMode.COLOR_TEMP, ColorMode.WHITE])
                 self._max_mireds = 1000000//min(self._temperature_choices) + 1

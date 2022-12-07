@@ -271,14 +271,18 @@ class HubSpace:
                 model = lis.get('description', {}).get('device', {}).get('model')
                 deviceClass = lis.get('description', {}).get('device', {}).get('deviceClass')
                 friendlyName = lis.get('friendlyName')
-                yield child, model, deviceId, deviceClass, friendlyName
+                functions = lis.get('description', {}).get('functions', [])
+                yield child, model, deviceId, deviceClass, friendlyName, functions
 
-    def getFunctions(self, deviceId, functionClass):
+    def getFunctions(self, id, functionClass = None):
         response = self.getMetadeviceInfo()
         
         for lis in response.json():
-            if lis.get('deviceId') == deviceId:
-                for function in lis.get('description', {}).get('functions', []):
+            if lis.get('id') == id:
+                functions = lis.get('description', {}).get('functions', [])
+                if functionClass is None:
+                    return functions
+                for function in functions:
                     if function.get('functionClass') == functionClass:
                         yield function
 
