@@ -29,6 +29,8 @@ On/Off,Brightness: PIR switch (HPDA311CWB)
 Outlets (HPKA315CWB) work with on/off on both outputs.
 Single outlet (HPPA51CWB and HPPA11AWBA023) models handled correctly
 
+Support for 4 outlet LTS-4G-W strip
+
 Single non-dimming lightswitch (HPSA11CWB) works
 
 Landscape Transformer (HB-200-1215WIFIB) works with on/off on all 3 outputs. System-wide Watts and voltage available as attribute in first output entity
