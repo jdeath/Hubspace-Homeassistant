@@ -72,6 +72,12 @@ def _add_entity(entities, hs, model, deviceClass, friendlyName, debug):
             _LOGGER.debug("Creating Outlets" )
             entities.append(HubspaceOutlet(hs, friendlyName,"1",debug))
             entities.append(HubspaceOutlet(hs, friendlyName,"2",debug))
+        elif model == 'LTS-4G-W':
+            _LOGGER.debug("Creating Outlets" )
+            entities.append(HubspaceOutlet(hs, friendlyName,"1",debug))
+            entities.append(HubspaceOutlet(hs, friendlyName,"2",debug))
+            entities.append(HubspaceOutlet(hs, friendlyName,"3",debug))
+            entities.append(HubspaceOutlet(hs, friendlyName,"4",debug))
         elif model == 'HB-200-1215WIFIB':
             _LOGGER.debug("Creating Transformers" )
             entities.append(HubspaceTransformer(hs, friendlyName,"1",debug))
