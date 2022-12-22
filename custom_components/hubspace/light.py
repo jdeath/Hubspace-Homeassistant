@@ -93,6 +93,9 @@ def _add_entity(entities, hs, model, deviceClass, friendlyName, debug):
             entities.append(HubspaceFan(hs, friendlyName,debug))
             _LOGGER.debug("Creating Light" )
             entities.append(HubspaceLight(hs, friendlyName,debug))
+        elif deviceClass == 'door-lock' and model == 'TBD':
+            _LOGGER.debug("Creating Lock" )
+            entities.append(HubspaceLock(hs, friendlyName,debug))
         else:
             _LOGGER.debug("creating lights" )
             entities.append(HubspaceLight(hs, friendlyName,debug))
@@ -721,3 +724,94 @@ class HubspaceTransformer(LightEntity):
             
         if self._debug:
             self._debugInfo = self._hs.getDebugInfo(self._childId)
+
+class HubspaceLock(LightEntity):
+    """Representation of an Awesome Light."""
+    
+    def __init__(self, hs, friendlyname, debug, childId = None, model = None, deviceId = None, deviceClass = None) -> None:
+        """Initialize an AwesomeLight."""
+        
+        self._name = friendlyname
+        
+        self._debug = debug
+        self._state = 'unlocked'
+        self._childId = childId
+        self._model = model
+        self._brightness = None
+        self._usePrimaryFunctionInstance = False
+        self._hs = hs
+        self._deviceId = deviceId
+        self._debugInfo = None
+        self._watts = None
+        self._volts = None
+        
+        if None in (childId, model, deviceId, deviceClass):
+            [self._childId, self._model, self._deviceId, deviceClass] = self._hs.getChildId(friendlyname)
+    
+    @property
+    def name(self) -> str:
+        """Return the display name of this light."""
+        return self._name
+    
+    @property
+    def unique_id(self) -> str:
+        """Return the display name of this light."""
+        return self._childId
+
+    @property
+    def color_mode(self) -> ColorMode:
+        """Return the color mode of the light."""
+        return ColorMode.ONOFF
+
+    @property
+    def supported_color_modes(self) -> set[ColorMode]:
+        """Flag supported color modes."""
+        return {self.color_mode}
+
+    @property
+    def is_on(self) -> bool | None:
+        """Return true if light is on."""
+        return self._state == 'locked'
+
+    def turn_on(self, **kwargs: Any) -> None:
+        self._hs.setState(self._childId,'lock-control','locked')
+        self.update()
+        
+    @property
+    def extra_state_attributes(self):
+        """Return the state attributes."""
+        attr = {}
+        attr["model"]= self._model
+        attr["deviceId"] = self._deviceId
+        attr["devbranch"] = False
+        attr["battery-level"] = self._batterylevel 
+        attr["last-event"] = self._lastevent
+        
+        attr["debugInfo"] = self._debugInfo
+        
+        return attr
+        
+    def turn_off(self, **kwargs: Any) -> None:
+        """Instruct the light to turn off."""
+        self._hs.setState(self._childId,'lock-control','unlocked')
+        self.update()
+        
+    @property
+    def should_poll(self):
+        """Turn on polling """
+        return True
+        
+    def update(self) -> None:
+        """Fetch new state data for this light.
+
+        This is the only method that should fetch new data for Home Assistant.
+        """
+        self._state = self._hs.getState(self._childId,'lock-control')
+        
+        if self._outletIndex == '1':
+            self._batterylevel = self._hs.getState(self._childId,'battery-level')
+            self._lastevent = self._hs.getState(self._childId,'last-event')
+            
+        if self._debug:
+            self._debugInfo = self._hs.getDebugInfo(self._childId)
+            
