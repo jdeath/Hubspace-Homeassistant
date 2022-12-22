@@ -35,6 +35,8 @@ Single non-dimming lightswitch (HPSA11CWB) works
 
 Landscape Transformer (HB-200-1215WIFIB) works with on/off on all 3 outputs. System-wide Watts and voltage available as attribute in first output entity
 
+Hubspace WiFi Deadbolt support: On=Lock, Off=Unlocked . Auto discover does not yet work, so freindlyname is required
+
 I would like to update to cloud push, but right now polls the state every minute by default (can be overwritten with scan_interval). Please contact me if good with websockets. The websocket system pushes bad data at first, which messses up the connection. I need a way to ignore that data.
 
 Looking for help to add a service, so users can send arbitary commands. The commands are simple to figure out looking at debug: true information while making changes using the app, but coding into the integration is hard. This would open up a lot more capability, such as setting timers, changing occupancy modes, fan and light effects, etc.
