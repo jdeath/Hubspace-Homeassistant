@@ -742,9 +742,9 @@ class HubspaceLock(LightEntity):
         self._hs = hs
         self._deviceId = deviceId
         self._debugInfo = None
-        self._watts = None
-        self._volts = None
-        
+        self._batterylevel = None
+        self._lastevent = None
+         
         if None in (childId, model, deviceId, deviceClass):
             [self._childId, self._model, self._deviceId, deviceClass] = self._hs.getChildId(friendlyname)
     
