@@ -774,8 +774,8 @@ class HubspaceLock(LightEntity):
         return self._state == 'locked'
 
     def turn_on(self, **kwargs: Any) -> None:
-        #self._hs.setState(self._childId,'lock-control','locked')
-        self._hs.setState(self._childId,'direction-check','start')
+        self._hs.setState(self._childId,'lock-control','locking')
+        #self._hs.setState(self._childId,'direction-check','start')
         self.update()
         
     @property
@@ -794,8 +794,8 @@ class HubspaceLock(LightEntity):
         
     def turn_off(self, **kwargs: Any) -> None:
         """Instruct the light to turn off."""
-        #self._hs.setState(self._childId,'lock-control','unlocked')
-        self._hs.setState(self._childId,'direction-check','start')
+        self._hs.setState(self._childId,'lock-control','unlocking')
+        #self._hs.setState(self._childId,'direction-check','start')
         self.update()
         
     @property
