@@ -808,9 +808,9 @@ class HubspaceLock(LightEntity):
         """
         self._state = self._hs.getState(self._childId,'lock-control')
         
-        if self._outletIndex == '1':
-            self._batterylevel = self._hs.getState(self._childId,'battery-level')
-            self._lastevent = self._hs.getState(self._childId,'last-event')
+        
+        self._batterylevel = self._hs.getState(self._childId,'battery-level')
+        self._lastevent = self._hs.getState(self._childId,'last-event')
             
         if self._debug:
             self._debugInfo = self._hs.getDebugInfo(self._childId)
