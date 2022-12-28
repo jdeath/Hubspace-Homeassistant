@@ -254,7 +254,7 @@ class HubspaceLight(LightEntity):
         # https://www.homedepot.com/p/Commercial-Electric-6-in-Smart-Hubspace-Ultra-Slim-New-Construction-and-Remodel-RGB-W-LED-Recessed-Kit-Works-with-Amazon-Alexa-and-Google-50292/313556988
         #  https://www.homedepot.com/p/EcoSmart-120-Watt-Equivalent-Smart-Hubspace-PAR38-Color-Changing-CEC-LED-Light-Bulb-with-Voice-Control-1-Bulb-11PR38120RGBWH1/318411934
         # https://www.homedepot.com/p/EcoSmart-60-Watt-Equivalent-Smart-Hubspace-A19-Color-Changing-CEC-LED-Light-Bulb-with-Voice-Control-1-Bulb-11A19060WRGBWH1/318411935
-        if self._model == '50291, 50292' or self._model == '11PR38120RGBWH1' or self._model == '11A19060WRGBH1':
+        if self._model == '50291, 50292' or self._model == '11PR38120RGBWH1' or self._model == '11A21100WRGBWH1':
             self._supported_color_modes.extend([ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE])
             self._max_mireds = 454
             self._min_mireds = 154
