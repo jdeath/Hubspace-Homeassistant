@@ -128,3 +128,5 @@ System-wide watt and voltage setting available as attribute in the first output 
   type: attribute
   attribute: watts
   ```
+  
+[![Star History Chart](https://api.star-history.com/svg?repos=jdeath/Hubspace-Homeassistant&type=Date)](https://star-history.com/#jdeath/Hubspace-Homeassistant&Date)
