@@ -145,7 +145,7 @@ target:
   
 You do this is the Developers Tools -> Services window. The GUI can be used to choose an entity.
 
-How do you find out what the value, functionClass and functionInstance should be? Look at the output of running TestHubspace.py on your device. If you look around, you will see what your light supports in the "values" field. See https://github.com/jdeath/Hubspace-Homeassistant/blob/main/sample_data/11A21100WRGBWH1.json#L686 . The functionInstance is optional, as not all commands require it. There are some example files in the sample_data/ directory of the repo
+How do you find out what the value, functionClass and functionInstance should be? Look at the output of running TestHubspace.py on your device. If you look around, you will see what your light supports in the "values" field. See https://github.com/jdeath/Hubspace-Homeassistant/blob/main/sample_data/11A21100WRGBWH1.json#L686 . The functionInstance is optional, as not all commands require it. There are some example outputs of TestHubspace.py in the sample_data/ directory of the repo. If you cannot run the TestHubspace.py, then turn on debugging (debug: true in your light: setup). Change the setting in the app, and look at the entity attributes in homeassistant. You should be able to see an entry that has the value, functionClass, etc.
 
 You can make a button in lovelace to send any command you want. The lovelace GUI will do most of this, but not fill in the data correctly. A working example to turn a light on:
 ```
