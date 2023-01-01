@@ -1,0 +1,22 @@
+send_command:
+  description: Send a Command To Hubspace Cloud
+  target:
+    entity:
+      integration: hubspace
+      domain: light
+  fields:
+    value:
+      name: value
+      description: value you want to send
+      required: true
+      example: "on"
+    functionClass:
+      name: functionClass
+      description: functionClass you want to send
+      required: true
+      example: "power"  
+    functionInstance:
+      name: functionInstance
+      description: functionInstance you want to send
+      required: false
+      example: "primary"

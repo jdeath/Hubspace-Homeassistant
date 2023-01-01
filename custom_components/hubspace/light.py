@@ -36,19 +36,6 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_ROOMNAMES, default=[]): vol.All(cv.ensure_list, [cv.string]),
 })
 
-async def async_setup_entry(hass, entry):
-    """Set up the media player platform for Sonos."""
-
-    platform = entity_platform.async_get_current_platform()
-
-    platform.async_register_entity_service(
-        SERVICE_SET_STATE,
-        {
-            vol.Required('field_name'): cv.string,
-            vol.Required('field_value'): cv.string,
-        },
-        "set_state",
-    )
     
 def _brightness_to_hass(value):
         if value is None:
@@ -111,9 +98,10 @@ def setup_platform(
     discovery_info: DiscoveryInfoType | None = None
 ) -> None:
     """Set up the Awesome Light platform."""
+    
     # Assign configuration variables.
     # The configuration check takes care they are present.
-    
+        
     username = config[CONF_USERNAME]
     password = config.get(CONF_PASSWORD)
     debug = config.get(CONF_DEBUG)
@@ -189,30 +177,31 @@ def setup_platform(
         return
     add_entities(entities)
     
-    #def my_service(call: ServiceCall) -> None:
-    #    """My first service."""
-    #    
-    #    _LOGGER.debug("platform: " + platform)
-    #    
-    #    entity_id = call.data['entity_id'][0]
-    #    entity = self.component.get_entity(entity_id)
-    #    _LOGGER.debug("name: " + entity.name())
-    #    #self._hs.setState(self._childId,"color-temperature",self._color_temp)
+    
+    def my_service(call: ServiceCall) -> None:
+        """My first service."""
+        _LOGGER.info("Received data" +  str(call.data))
+        
+        entity_ids = call.data['entity_id']       
+        functionClass = call.data['functionClass']
+        value = call.data['value']
+        
+        if 'functionInstance' in call.data:
+            functionInstance = call.data['functionInstance']
+        else:
+            functionInstance = None
+        
+        for entity_id in entity_ids:
+            _LOGGER.info("entity_id: " + str(entity_id))
+            for i in entities:
+                if i.entity_id == entity_id:
+                    _LOGGER.info("Found Entity")
+                    i.send_command(functionClass,value,functionInstance)
+            
 
     # Register our service with Home Assistant.
-    #hass.services.register("hubspace", 'send_command', my_service)
-
-    # platform = self.platform
-
-    # # This will call Entity.set_sleep_timer(sleep_time=VALUE)
-    # platform.async_register_entity_service(
-        # SERVICE_SET_STATE,
-        # {
-            # vol.Required('field_name'): cv.string,
-            # vol.Required('field_value'): cv.string,
-        # },
-        # "set_state",
-    # )
+    hass.services.register("hubspace", 'send_command', my_service)
+    
         
 class HubspaceLight(LightEntity):
     """Representation of an Awesome Light."""
@@ -311,7 +300,22 @@ class HubspaceLight(LightEntity):
         # If model not found, use On/Off Only as a failsafe
         if not self._supported_color_modes:
             self._supported_color_modes.extend([ColorMode.ONOFF])
+    
+    async def async_setup_entry(hass, entry):
+        """Set up the media player platform for Sonos."""
 
+        platform = entity_platform.async_get_current_platform()
+
+        platform.async_register_entity_service(
+            "send_command",
+            {
+                vol.Required('functionClass'): cv.string,
+                vol.Required('value'): cv.string,
+                vol.Optional('functionInstance'): cv.string,
+            },
+            "send_command",
+        )
+    
     @property
     def name(self) -> str:
         """Return the display name of this light."""
@@ -358,6 +362,9 @@ class HubspaceLight(LightEntity):
         """Return true if light is on."""
         return self._state == 'on'
 
+    def send_command(self, field_name,field_state,functionInstance=None) -> None:
+        self._hs.setState(self._childId,field_name,field_state,functionInstance)
+        
     def set_send_state(self, field_name,field_state) -> None:
         self._hs.setState(self._childId,field_name,field_state)
         
@@ -414,6 +421,7 @@ class HubspaceLight(LightEntity):
     def should_poll(self):
         """Turn on polling """
         return True
+    
         
     def update(self) -> None:
         """Fetch new state data for this light.
