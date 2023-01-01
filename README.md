@@ -143,8 +143,22 @@ target:
   entity_id: light.yourlightname  
   ```
   
-You do this is the Developers Tools -> Services window. The GUI can be used to choose an entity. I think you can make a button call a service, but not sure how. Please post an example in the issues section if you know how.
+You do this is the Developers Tools -> Services window. The GUI can be used to choose an entity.
 
 How do you find out what the value, functionClass and functionInstance should be? Look at the output of running TestHubspace.py on your device. If you look around, you will see what your light supports in the "values" field. See https://github.com/jdeath/Hubspace-Homeassistant/blob/main/sample_data/11A21100WRGBWH1.json#L686 . The functionInstance is optional, as not all commands require it. There are some example files in the sample_data/ directory of the repo
 
+You can make a button in lovelace to send any command you want. The lovelace GUI will do most of this, but not fill in the data correctly. A working example to turn a light on:
+```
+show_name: true
+show_icon: true
+type: button
+tap_action:
+  action: call-service
+  service: hubspace.send_command
+  data:
+    value: 'on'
+    functionClass: power
+  target:
+    entity_id: light.yourlightname
+```
 [![Star History Chart](https://api.star-history.com/svg?repos=jdeath/Hubspace-Homeassistant&type=Date)](https://star-history.com/#jdeath/Hubspace-Homeassistant&Date)
