@@ -2,7 +2,9 @@
 
 Please ask support questions in homeassistant forums: https://community.home-assistant.io/t/add-support-for-hubspace-by-afero/306645
 
+
 ### Breaking Change:
+Now supports services for capabily not provided by the itegration. See Services section below
 
 Thanks to @dloveall this release will automatically discover most devices. Specifying your freindlynames is still possible, but this now finds most models attached to your account. There may be some that are not auto discovered.
 
@@ -128,5 +130,21 @@ System-wide watt and voltage setting available as attribute in the first output 
   type: attribute
   attribute: watts
   ```
+### Services:
+The integration now has the capability to send a service. You may want this if there is a capability you want, but it not supported by the integration.
+For example, if you want to send the rainbow effect:
+```
+service: hubspace.send_command
+data:
+  value: "rainbow"
+  functionClass: color-sequence
+  functionInstance: custom
+target:
+  entity_id: light.yourlightname  
+  ```
   
+You do this is the Developers Tools -> Services window. The GUI can be used to choose an entity. I think you can make a button call a service, but not sure how. Please post an example in the issues section if you know how.
+
+How do you find out what the value, functionClass and functionInstance should be? Look at the output of running TestHubspace.py on your device. If you look around, you will see what your light supports in the "values" field. See https://github.com/jdeath/Hubspace-Homeassistant/blob/main/sample_data/11A21100WRGBWH1.json#L686 . The functionInstance is optional, as not all commands require it. There are some example files in the sample_data/ directory of the repo
+
 [![Star History Chart](https://api.star-history.com/svg?repos=jdeath/Hubspace-Homeassistant&type=Date)](https://star-history.com/#jdeath/Hubspace-Homeassistant&Date)
