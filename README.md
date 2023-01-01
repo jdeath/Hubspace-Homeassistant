@@ -131,8 +131,8 @@ System-wide watt and voltage setting available as attribute in the first output 
   attribute: watts
   ```
 ### Services:
-The integration now has the capability to send a service. You may want this if there is a capability you want, but it not supported by the integration.
-For example, if you want to send the rainbow effect:
+The integration now has the capability to send a service. You may want this if there is a capability that is not supported by the integration.
+For example, if you want to send the rainbow effect to your rgb light:
 ```
 service: hubspace.send_command
 data:
@@ -142,7 +142,16 @@ data:
 target:
   entity_id: light.yourlightname  
   ```
-  
+For example, if you want to send the comfort breeze effect to your fan:
+```
+service: hubspace.send_command
+data:
+  value: "enabled"
+  functionClass: toggle
+  functionInstance: comfort-breeze
+target:
+  entity_id: light.yourlightname  
+  ```  
 You do this is the Developers Tools -> Services window. The GUI can be used to choose an entity.
 
 How do you find out what the value, functionClass and functionInstance should be? Look at the output of running TestHubspace.py on your device. If you look around, you will see what your light supports in the "values" field. See https://github.com/jdeath/Hubspace-Homeassistant/blob/main/sample_data/11A21100WRGBWH1.json#L686 . The functionInstance is optional, as not all commands require it. There are some example outputs of TestHubspace.py in the sample_data/ directory of the repo. If you cannot run the TestHubspace.py, then turn on debugging (debug: true in your light: setup). Change the setting in the app, and look at the entity attributes in homeassistant. You should be able to see an entry that has the value, functionClass, etc.
