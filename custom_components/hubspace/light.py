@@ -10,7 +10,7 @@ import voluptuous as vol
 from homeassistant.helpers import config_validation as cv, entity_platform, service
 from homeassistant.components.light import (ATTR_BRIGHTNESS, ATTR_RGB_COLOR, ATTR_WHITE, ATTR_COLOR_TEMP, PLATFORM_SCHEMA, ColorMode, COLOR_MODES_COLOR, LightEntity)
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 from datetime import timedelta
@@ -189,6 +189,19 @@ def setup_platform(
         return
     add_entities(entities)
     
+    #def my_service(call: ServiceCall) -> None:
+    #    """My first service."""
+    #    
+    #    _LOGGER.debug("platform: " + platform)
+    #    
+    #    entity_id = call.data['entity_id'][0]
+    #    entity = self.component.get_entity(entity_id)
+    #    _LOGGER.debug("name: " + entity.name())
+    #    #self._hs.setState(self._childId,"color-temperature",self._color_temp)
+
+    # Register our service with Home Assistant.
+    #hass.services.register("hubspace", 'send_command', my_service)
+
     # platform = self.platform
 
     # # This will call Entity.set_sleep_timer(sleep_time=VALUE)
@@ -254,7 +267,7 @@ class HubspaceLight(LightEntity):
         # https://www.homedepot.com/p/Commercial-Electric-6-in-Smart-Hubspace-Ultra-Slim-New-Construction-and-Remodel-RGB-W-LED-Recessed-Kit-Works-with-Amazon-Alexa-and-Google-50292/313556988
         #  https://www.homedepot.com/p/EcoSmart-120-Watt-Equivalent-Smart-Hubspace-PAR38-Color-Changing-CEC-LED-Light-Bulb-with-Voice-Control-1-Bulb-11PR38120RGBWH1/318411934
         # https://www.homedepot.com/p/EcoSmart-60-Watt-Equivalent-Smart-Hubspace-A19-Color-Changing-CEC-LED-Light-Bulb-with-Voice-Control-1-Bulb-11A19060WRGBWH1/318411935
-        if self._model == '50291, 50292' or self._model == '11PR38120RGBWH1' or self._model == '11A21100WRGBWH1':
+        if self._model == '50291, 50292' or self._model == '11PR38120RGBWH1' or self._model == '11A21100WRGBWH1' or self._model == '11A19060WRGBWH1':
             self._supported_color_modes.extend([ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE])
             self._max_mireds = 454
             self._min_mireds = 154
