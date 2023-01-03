@@ -563,7 +563,7 @@ class HubspaceFan(LightEntity):
     @property
     def unique_id(self) -> str:
         """Return the display name of this light."""
-        return self._childId
+        return self._childId + "_fan"
 
     @property
     def is_on(self) -> bool | None:
