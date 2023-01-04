@@ -103,7 +103,7 @@ Since the fan is implimented as a light with a dimmer, you can use a template to
 fan:
   - platform: template
     fans:
-      living_room_fan::
+      living_room_fan:
         friendly_name: "Fan"
         value_template: "{{ states('light.ceilingfan_fan') }}"
         percentage_template: "{{ (state_attr('light.ceilingfan_fan', 'brightness') / 255 * 100) | int }}"
