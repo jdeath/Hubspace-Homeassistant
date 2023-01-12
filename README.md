@@ -75,7 +75,7 @@ If you are having problems, first try renaming the device name in the App. Do no
 
 Also be sure to check the friendlyname of your light. It must match *exactly* as shown in the app, including uppercase/lowercase. Requiring the case to match may be a recent change by Hubspace
 
-If you have a combo fan/light, just add the name of the parent device from the hubspace app. Do not add the seperate names for the light and fan. The integration will make a light.friendlyname (the light) and light.friendlyname_fan (the fan)
+If you have a combo fan/light, it is confirmed to work best if you do not use friendlyname or roomnames. The automatic scan should pick it up. If you must use friendlyname, just add the name of the parent device from the hubspace app. Do not add the seperate names for the light and fan. The integration will make a light.friendlyname (the light) and light.friendlyname_fan (the fan). Better handling is a work in progress.
 
 If you have an outlet or a transfomer, just add the name of the parent device from the hubspace app. Do not add the seperate outlet's/transformer's names. The integration will figure it out and make entities called light.friendlyname_outlet_X or light.freindlyname_transformer_X where X is 1,2,3 depending on how many outputs in has.
 
@@ -95,7 +95,7 @@ logger:
 you may already have the top two lines, just need to add the buttom two
 
 ### Fan Support
-If you have a fan, just add the name of the parent device from the hubspace app. Do not add the seperate names for the light and fan. This is just how it works.
+If you have a fan, just add the name of the parent device from the hubspace app. Do not add the seperate names for the light and fan. This is just how it works. Users have said the autoscan works best, so do not use friendlyname or roomnames
 
 Since the fan is implimented as a light with a dimmer, you can use a template to make it appear as a fan. From a user:
 ```
