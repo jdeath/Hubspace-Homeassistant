@@ -47,9 +47,11 @@ _Thanks to everyone having starred my repo! To star it click on the image below,
 
 ### Installation
 
-copy this folder to `<config_dir>/custom_components/hubspace/`.
+Preferred method: Add this repo as a custom repository in HACS. Add the hubspace integration
 
-Add the following entry in your `configuration.yaml`:
+Manual method: copy the hubspace/ folder in the repo to `<config_dir>/custom_components/hubspace/`.
+
+For either method, add the following entry in your `configuration.yaml`:
 
 Do *not* name your lights in the app the same as a room you have defined or the logic will get tripped up: Office, Bedroom, etc   
 
@@ -66,7 +68,7 @@ light:
       - 'BoysRoom' (the name of your room as shown in the app)
 ```
 
-The roomnames is optional, and friendlynames is not needed if used. It will add all devices in the room you made in the hubspace app. No support for this will be given, as added by a PR and not tested by me, but should work.
+freindlynames is optional now, the integration should automatically find most lights. If it does not work, specify the friendlynames. The roomnames is optional, and friendlynames is not needed if used. It will add all devices in the room you made in the hubspace app. No support for this will be given, as added by a PR and not tested by me, but should work.
 
 Friendlyname is listed in the Hubspace App. Click the Device, Click the Gear, Under General will list "Product Name" which is the friendlyname. The Room is the roomname if you prefer to add it that way.
 
