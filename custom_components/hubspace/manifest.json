@@ -1,10 +1,11 @@
 {
   "domain": "hubspace",
   "name": "hubspace",
-  "documentation": "https://raw.githubusercontent.com/jdeath/Hubspace-Homeassistant/main/custom_components/hubspace/README.md",
-  "dependencies": [],
   "codeowners": [],
-  "requirements": [],
+  "dependencies": [],
+  "documentation": "https://raw.githubusercontent.com/jdeath/Hubspace-Homeassistant/main/custom_components/hubspace/README.md",
   "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/jdeath/Hubspace-Homeassistant/issues",
+  "requirements": [],
   "version": "1.0"
 }
