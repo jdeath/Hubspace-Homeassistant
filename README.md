@@ -99,7 +99,7 @@ you may already have the top two lines, just need to add the buttom two
 ### Fan Support
 If you have a fan, just add the name of the parent device from the hubspace app. Do not add the seperate names for the light and fan. This is just how it works. Users have said the autoscan works best, so do not use friendlyname or roomnames
 
-Since the fan is implimented as a light with a dimmer, you can use a template to make it appear as a fan. Replace "light.ceilingfan_fan" below with the name of your fran. Confirm you can use the fan before you make the template.  From a user, no support possible:
+Since the fan is implimented as a light with a dimmer, you can use a template to make it appear as a fan. Replace "light.ceilingfan_fan" below with the name of your fan. Confirm you can use the fan before you make the template.  This is optional, only if you really want homeassistant to show the light as a fan entity. From a user, no support possible:
 ```
 # Example configuration.yaml entry
 fan:
