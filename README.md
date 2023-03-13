@@ -55,17 +55,18 @@ For either method, add the following entry in your `configuration.yaml`:
 
 Do *not* name your lights in the app the same as a room you have defined or the logic will get tripped up: Office, Bedroom, etc   
 
+the notes in () are comments, REMOVE them from your yaml
 ```yaml
 light:
   - platform: hubspace
-    username: your_hubspace_username (probably your email address)
+    username: your_hubspace_username #(probably your email address)
     password: your_hubspace_password
-    debug: false (use true if want debug output, if you have an unsupported light. set false if not needed)
-    friendlynames: (optional after v1.70)
-      - 'BoysLight' (the name of your light as shown in the app)
-      - 'GirlsLight' (the name of your light as shown in the app)
-    roomnames: (optional)
-      - 'BoysRoom' (the name of your room as shown in the app)
+    debug: false #(use true if want debug output, if you have an unsupported light. set false if not needed)
+    friendlynames: #(optional after v1.70)
+      - 'BoysLight' #(the name of your light as shown in the app)
+      - 'GirlsLight' #(the name of your light as shown in the app)
+    roomnames: #(optional)
+      - 'BoysRoom' #(the name of your room as shown in the app)
 ```
 
 freindlynames is optional now, the integration should automatically find most lights. If it does not work, specify the friendlynames. The roomnames is optional, and friendlynames is not needed if used. It will add all devices in the room you made in the hubspace app. No support for this will be given, as added by a PR and not tested by me, but should work.
@@ -99,7 +100,7 @@ you may already have the top two lines, just need to add the buttom two
 ### Fan Support
 If you have a fan, just add the name of the parent device from the hubspace app. Do not add the seperate names for the light and fan. This is just how it works. Users have said the autoscan works best, so do not use friendlyname or roomnames
 
-Since the fan is implimented as a light with a dimmer, you can use a template to make it appear as a fan. Replace "light.ceilingfan_fan" below with the name of your fan. Confirm you can use the fan before you make the template.  This is optional, only if you really want homeassistant to show the light as a fan entity. From a user, no support possible:
+Since the fan is implimented as a light with a dimmer, you can use a template to make it appear as a fan. Replace "light.ceilingfan_fan" below with the name of your fan. Confirm you can use the fan before you make the template.  This is optional, only if you really want homeassistant to show the light as a fan entity. This was provided by a user, no support possible. Again, this is optional, only do this once you can control the fan entity normally before hand.
 ```
 # Example configuration.yaml entry
 fan:
@@ -132,7 +133,9 @@ System-wide watt and voltage setting available as attribute in the first output 
   ```
 
 ## Lock support
-The lock "light" will also report the battery status and last operation in the attributues. If you want to have the light show up as a lock in HA, make a template (but the battery is only available on the light). In your configuration.yaml add this (assumes your light is light.door_lock), click the magnifing glass in top right of HA, then hit >Temp to reload the template entity 
+The lock "light" will also report the battery status and last operation in the attributues. Optional: If you want to have the light show up as a lock in HA, make a template (but the battery is only available on the light). In your configuration.yaml add this (assumes your light is light.door_lock), click the magnifing glass in top right of HA, then hit >Temp to reload the template entity . Again, this is optional, only do this once you can control the light entity normally before hand.
+
+Belore example assumes the freindlyname of your lock is door_lock (so it true homeassistant name is light.door_lock)
 ```
 lock:
   - platform: template
