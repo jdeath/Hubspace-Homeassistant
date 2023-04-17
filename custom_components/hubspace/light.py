@@ -95,6 +95,11 @@ def _add_entity(entities, hs, model, deviceClass, friendlyName, debug):
         entities.append(HubspaceFan(hs, friendlyName, debug))
         _LOGGER.debug("Creating Light")
         entities.append(HubspaceLight(hs, friendlyName, debug))
+    elif model == "DriskolFan":
+        _LOGGER.debug("Creating Fan")
+        entities.append(HubspaceFan(hs, friendlyName, debug))
+        _LOGGER.debug("Creating Light")
+        entities.append(HubspaceLight(hs, friendlyName, debug))    
     elif deviceClass == "door-lock" and model == "TBD":
         _LOGGER.debug("Creating Lock")
         entities.append(HubspaceLock(hs, friendlyName, debug))
@@ -136,7 +141,10 @@ def setup_platform(
         _LOGGER.debug("childId: " + childId)
         _LOGGER.debug("deviceId: " + deviceId)
         _LOGGER.debug("deviceClass: " + deviceClass)
-
+        
+        if deviceClass == "fan" and model == "":
+            model == "DriskolFan"
+            
         entities = _add_entity(entities, hs, model, deviceClass, friendlyName, debug)
 
     for roomName in config.get(CONF_ROOMNAMES):
@@ -155,7 +163,10 @@ def setup_platform(
             _LOGGER.debug("deviceId: " + deviceId)
             _LOGGER.debug("deviceClass: " + deviceClass)
             _LOGGER.debug("friendlyName: " + friendlyName)
-
+            
+            if deviceClass == "fan" and model == "":
+                model == "DriskolFan"
+            
             entities = _add_entity(
                 entities, hs, model, deviceClass, friendlyName, debug
             )
@@ -178,6 +189,8 @@ def setup_platform(
             _LOGGER.debug("functions: " + str(functions))
 
             if deviceClass == "fan":
+                if model == "":
+                    model == "DriskolFan"
                 entities.append(
                     HubspaceFan(
                         hs, friendlyName, debug, childId, model, deviceId, deviceClass
@@ -358,7 +371,7 @@ class HubspaceLight(LightEntity):
             self._min_mireds = 154
 
         # fan
-        if self._model == "52133, 37833" or self._model == "76278, 37278":
+        if self._model == "52133, 37833" or self._model == "76278, 37278" or self._model == "" or self._model == "DriskolFan":
             self._usePowerFunctionInstance = "light-power"
             self._supported_color_modes.extend([ColorMode.BRIGHTNESS])
             self._temperature_suffix = "K"
@@ -758,16 +771,30 @@ class HubspaceFan(LightEntity):
         # Homeassistant uses 0-255
         brightness = kwargs.get(ATTR_BRIGHTNESS, self._brightness)
         brightnessPercent = _brightness_to_hubspace(brightness)
-        if brightnessPercent < 30:
-            speed = "025"
-        elif brightnessPercent < 60:
-            speed = "050"
-        elif brightnessPercent < 85:
-            speed = "075"
+        if self._model not "DriskolFan":
+            if brightnessPercent < 30:
+                speed = "025"
+            elif brightnessPercent < 60:
+                speed = "050"
+            elif brightnessPercent < 85:
+                speed = "075"
+            else:
+                speed = "100"
+            speedstring = "fan-speed-" + speed
         else:
-            speed = "100"
-        speedstring = "fan-speed-" + speed
-
+            if brightnessPercent < 40:
+                speed = "020"
+            elif brightnessPercent < 50:
+                speed = "040"
+            elif brightnessPercent < 70:
+                speed = "060"
+            elif brightnessPercent < 90:
+                speed = "080"
+            else:
+                speed = "100"
+            speedstring = "fan-speed-5-" + speed
+            
+            
         self._hs.setStateInstance(self._childId, "fan-speed", "fan-speed", speedstring)
         #self.update()
 
@@ -803,9 +830,14 @@ class HubspaceFan(LightEntity):
     def turn_off(self, **kwargs: Any) -> None:
         """Instruct the light to turn off."""
         self._hs.setStateInstance(self._childId, "power", "fan-power", "off")
-        self._hs.setStateInstance(
-            self._childId, "fan-speed", "fan-speed", "fan-speed-000"
-        )
+        if self._model not "DriskolFan":
+            self._hs.setStateInstance(
+                self._childId, "fan-speed", "fan-speed", "fan-speed-000"
+            )
+        else:
+            self._hs.setStateInstance(
+                self._childId, "fan-speed", "fan-speed", "fan-speed-5-000"
+            )
         #self.update()
 
     @property
@@ -832,6 +864,20 @@ class HubspaceFan(LightEntity):
             brightness = 191
         elif fanspeed == "fan-speed-100":
             brightness = 255
+            
+        if fanspeed == "fan-speed-5-000":
+            brightness = 0
+        elif fanspeed == "fan-speed-5-020":
+            brightness = 51
+        elif fanspeed == "fan-speed-5-040":
+            brightness = 102
+        elif fanspeed == "fan-speed-5-60":
+            brightness = 153
+        elif fanspeed == "fan-speed-5-80":
+            brightness = 204    
+        elif fanspeed == "fan-speed-100":
+            brightness = 255
+            
         self._brightness = brightness
 
         if self._debug:
