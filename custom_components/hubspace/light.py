@@ -771,7 +771,7 @@ class HubspaceFan(LightEntity):
         # Homeassistant uses 0-255
         brightness = kwargs.get(ATTR_BRIGHTNESS, self._brightness)
         brightnessPercent = _brightness_to_hubspace(brightness)
-        if self._model not "DriskolFan":
+        if self._model != "DriskolFan":
             if brightnessPercent < 30:
                 speed = "025"
             elif brightnessPercent < 60:
@@ -830,7 +830,7 @@ class HubspaceFan(LightEntity):
     def turn_off(self, **kwargs: Any) -> None:
         """Instruct the light to turn off."""
         self._hs.setStateInstance(self._childId, "power", "fan-power", "off")
-        if self._model not "DriskolFan":
+        if self._model != "DriskolFan":
             self._hs.setStateInstance(
                 self._childId, "fan-speed", "fan-speed", "fan-speed-000"
             )
