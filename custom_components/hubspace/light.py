@@ -644,7 +644,22 @@ class HubspaceOutlet(LightEntity):
                 self._deviceId,
                 deviceClass,
             ] = self._hs.getChildId(friendlyname)
+    
+    async def async_setup_entry(hass, entry):
+        """Set up the media player platform for Sonos."""
 
+        platform = entity_platform.async_get_current_platform()
+
+        platform.async_register_entity_service(
+            "send_command",
+            {
+                vol.Required("functionClass"): cv.string,
+                vol.Required("value"): cv.string,
+                vol.Optional("functionInstance"): cv.string,
+            },
+            "send_command",
+        )
+        
     @property
     def name(self) -> str:
         """Return the display name of this light."""
@@ -664,7 +679,13 @@ class HubspaceOutlet(LightEntity):
     def supported_color_modes(self) -> set[ColorMode]:
         """Flag supported color modes."""
         return {self.color_mode}
+    
+    def send_command(self, field_name, field_state, functionInstance=None) -> None:
+        self._hs.setState(self._childId, field_name, field_state, functionInstance)
 
+    def set_send_state(self, field_name, field_state) -> None:
+        self._hs.setState(self._childId, field_name, field_state)
+        
     @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
@@ -750,6 +771,21 @@ class HubspaceFan(LightEntity):
                 deviceClass,
             ] = self._hs.getChildId(friendlyname)
 
+    async def async_setup_entry(hass, entry):
+        """Set up the media player platform for Sonos."""
+
+        platform = entity_platform.async_get_current_platform()
+
+        platform.async_register_entity_service(
+            "send_command",
+            {
+                vol.Required("functionClass"): cv.string,
+                vol.Required("value"): cv.string,
+                vol.Optional("functionInstance"): cv.string,
+            },
+            "send_command",
+        )
+        
     @property
     def name(self) -> str:
         """Return the display name of this light."""
@@ -760,6 +796,12 @@ class HubspaceFan(LightEntity):
         """Return the display name of this light."""
         return self._childId + "_fan"
 
+    def send_command(self, field_name, field_state, functionInstance=None) -> None:
+        self._hs.setState(self._childId, field_name, field_state, functionInstance)
+
+    def set_send_state(self, field_name, field_state) -> None:
+        self._hs.setState(self._childId, field_name, field_state)
+        
     @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
@@ -923,6 +965,27 @@ class HubspaceTransformer(LightEntity):
                 deviceClass,
             ] = self._hs.getChildId(friendlyname)
 
+    async def async_setup_entry(hass, entry):
+        """Set up the media player platform for Sonos."""
+
+        platform = entity_platform.async_get_current_platform()
+
+        platform.async_register_entity_service(
+            "send_command",
+            {
+                vol.Required("functionClass"): cv.string,
+                vol.Required("value"): cv.string,
+                vol.Optional("functionInstance"): cv.string,
+            },
+            "send_command",
+        )
+        
+    def send_command(self, field_name, field_state, functionInstance=None) -> None:
+        self._hs.setState(self._childId, field_name, field_state, functionInstance)
+
+    def set_send_state(self, field_name, field_state) -> None:
+        self._hs.setState(self._childId, field_name, field_state)
+        
     @property
     def name(self) -> str:
         """Return the display name of this light."""
@@ -1033,7 +1096,28 @@ class HubspaceLock(LightEntity):
                 self._deviceId,
                 deviceClass,
             ] = self._hs.getChildId(friendlyname)
+    
+    async def async_setup_entry(hass, entry):
+        """Set up the media player platform for Sonos."""
 
+        platform = entity_platform.async_get_current_platform()
+
+        platform.async_register_entity_service(
+            "send_command",
+            {
+                vol.Required("functionClass"): cv.string,
+                vol.Required("value"): cv.string,
+                vol.Optional("functionInstance"): cv.string,
+            },
+            "send_command",
+        )
+    
+    def send_command(self, field_name, field_state, functionInstance=None) -> None:
+        self._hs.setState(self._childId, field_name, field_state, functionInstance)
+
+    def set_send_state(self, field_name, field_state) -> None:
+        self._hs.setState(self._childId, field_name, field_state)
+    
     @property
     def name(self) -> str:
         """Return the display name of this light."""
