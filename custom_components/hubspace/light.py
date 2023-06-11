@@ -143,7 +143,7 @@ def setup_platform(
         _LOGGER.debug("deviceClass: " + deviceClass)
         
         if deviceClass == "fan" and model == "":
-            model == "DriskolFan"
+            model = "DriskolFan"
             
         entities = _add_entity(entities, hs, model, deviceClass, friendlyName, debug)
 
@@ -165,7 +165,7 @@ def setup_platform(
             _LOGGER.debug("friendlyName: " + friendlyName)
             
             if deviceClass == "fan" and model == "":
-                model == "DriskolFan"
+                model = "DriskolFan"
             
             entities = _add_entity(
                 entities, hs, model, deviceClass, friendlyName, debug
@@ -190,7 +190,7 @@ def setup_platform(
 
             if deviceClass == "fan":
                 if model == "":
-                    model == "DriskolFan"
+                    model = "DriskolFan"
                 entities.append(
                     HubspaceFan(
                         hs, friendlyName, debug, childId, model, deviceId, deviceClass
