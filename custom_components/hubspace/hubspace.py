@@ -253,7 +253,7 @@ class HubSpace:
                     friendlyName = lis.get("friendlyName")
                     if model is not None and deviceClass is not None:
                         if deviceClass == "fan" and model == "":
-                            model == "DriskolFan"
+                            model = "DriskolFan"
                         return child, model, deviceId, deviceClass, friendlyName
 
         # _LOGGER.debug("No model found ")
@@ -290,7 +290,7 @@ class HubSpace:
                     )
                     if model is not None and deviceClass is not None:
                         if deviceClass == "fan" and model == "":
-                            model == "DriskolFan"
+                            model = "DriskolFan"
                         return child, model, deviceId, deviceClass
 
         # _LOGGER.debug("No model found ")
