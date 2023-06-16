@@ -253,7 +253,7 @@ class HubSpace:
                     friendlyName = lis.get("friendlyName")
                     if model is not None and deviceClass is not None:
                         if deviceClass == "fan" and model == "":
-                            model = "DriskolFan"
+                            model == "DriskolFan"
                         return child, model, deviceId, deviceClass, friendlyName
 
         # _LOGGER.debug("No model found ")
@@ -288,9 +288,12 @@ class HubSpace:
                     deviceClass = (
                         lis.get("description").get("device").get("deviceClass")
                     )
+                    defaultName = lis.get("description").get("device").get("defaultName")
                     if model is not None and deviceClass is not None:
                         if deviceClass == "fan" and model == "":
-                            model = "DriskolFan"
+                            model == "DriskolFan"
+                        if deviceClass == "power-outlet" and defaultName == "Smart Stake Timer":
+                            model == "Smart Stake Timer"    
                         return child, model, deviceId, deviceClass
 
         # _LOGGER.debug("No model found ")
@@ -309,6 +312,7 @@ class HubSpace:
                 )
                 friendlyName = lis.get("friendlyName")
                 functions = lis.get("description", {}).get("functions", [])
+                defaultName = lis.get("description").get("device").get("defaultName")
                 yield child, model, deviceId, deviceClass, friendlyName, functions
 
     def getFunctions(self, id, functionClass=None):
