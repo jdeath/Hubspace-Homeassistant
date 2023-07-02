@@ -143,7 +143,7 @@ def setup_platform(
         _LOGGER.debug("deviceClass: " + deviceClass)
         
         if deviceClass == "fan" and model == "":
-            model = "DriskolFan"
+            model == "DriskolFan"
             
         entities = _add_entity(entities, hs, model, deviceClass, friendlyName, debug)
 
@@ -165,7 +165,7 @@ def setup_platform(
             _LOGGER.debug("friendlyName: " + friendlyName)
             
             if deviceClass == "fan" and model == "":
-                model = "DriskolFan"
+                model == "DriskolFan"
             
             entities = _add_entity(
                 entities, hs, model, deviceClass, friendlyName, debug
@@ -190,7 +190,7 @@ def setup_platform(
 
             if deviceClass == "fan":
                 if model == "":
-                    model = "DriskolFan"
+                    model == "DriskolFan"
                 entities.append(
                     HubspaceFan(
                         hs, friendlyName, debug, childId, model, deviceId, deviceClass
@@ -407,7 +407,7 @@ class HubspaceLight(LightEntity):
                 self._temperature_choices = None
 
         # https://www.homedepot.com/p/Commercial-Electric-5-in-6-in-Smart-Hubspace-Color-Selectable-CCT-Integrated-LED-Recessed-Light-Trim-Works-with-Amazon-Alexa-and-Google-538561010/314254248
-        if self._model == "538551010, 538561010, 538552010, 538562010" or self._model == "G19226":
+        if self._model == "538551010, 538561010, 538552010, 538562010" or self._model == "G19226" or self._model == "HB-10521-HS" or self._model == "17122-HS-WT":
             self._supported_color_modes.extend(
                 [ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE]
             )
@@ -913,9 +913,9 @@ class HubspaceFan(LightEntity):
             brightness = 51
         elif fanspeed == "fan-speed-5-040":
             brightness = 102
-        elif fanspeed == "fan-speed-5-060":
+        elif fanspeed == "fan-speed-5-60":
             brightness = 153
-        elif fanspeed == "fan-speed-5-080":
+        elif fanspeed == "fan-speed-5-80":
             brightness = 204    
         elif fanspeed == "fan-speed-100":
             brightness = 255
