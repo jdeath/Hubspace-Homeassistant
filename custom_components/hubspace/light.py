@@ -347,13 +347,20 @@ class HubspaceLight(LightEntity):
             self._supported_color_modes.extend([ColorMode.ONOFF])
         # https://www.homedepot.com/p/EcoSmart-16-ft-Smart-Hubspace-RGB-and-Tunable-White-Tape-Light-Works-with-Amazon-Alexa-and-Google-Assistant-AL-TP-RGBCW-60/314680856
         if (
-            self._model == "AL-TP-RGBCW-60-2116, AL-TP-RGBCW-60-2232"
-            or self._model == "HPKA315CWB"
+            self._model == "HPKA315CWB"
             or self._model == "HPPA52CWBA023"
         ):
             self._usePowerFunctionInstance = "primary"
             self._supported_color_modes.extend([ColorMode.RGB, ColorMode.WHITE])
-
+        
+        if (
+            self._model == "AL-TP-RGBCW-60-2116, AL-TP-RGBCW-60-2232"
+        ):
+            self._usePowerFunctionInstance = "primary"
+            self._supported_color_modes.extend([ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE])
+            self._max_mireds = 454
+            self._min_mireds = 154
+            
         # https://www.homedepot.com/p/Commercial-Electric-4-in-Smart-Hubspace-Color-Selectable-CCT-Integrated-LED-Recessed-Light-Trim-Works-with-Amazon-Alexa-and-Google-538551010/314199717
         # https://www.homedepot.com/p/Commercial-Electric-6-in-Smart-Hubspace-Ultra-Slim-New-Construction-and-Remodel-RGB-W-LED-Recessed-Kit-Works-with-Amazon-Alexa-and-Google-50292/313556988
         #  https://www.homedepot.com/p/EcoSmart-120-Watt-Equivalent-Smart-Hubspace-PAR38-Color-Changing-CEC-LED-Light-Bulb-with-Voice-Control-1-Bulb-11PR38120RGBWH1/318411934
