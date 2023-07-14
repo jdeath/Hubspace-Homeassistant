@@ -95,7 +95,7 @@ def _add_entity(entities, hs, model, deviceClass, friendlyName, debug):
         entities.append(HubspaceFan(hs, friendlyName, debug))
         _LOGGER.debug("Creating Light")
         entities.append(HubspaceLight(hs, friendlyName, debug))
-    elif model == "DriskolFan":
+    elif model == "DriskolFan" or model == "ZandraFan":
         _LOGGER.debug("Creating Fan")
         entities.append(HubspaceFan(hs, friendlyName, debug))
         _LOGGER.debug("Creating Light")
@@ -430,7 +430,17 @@ class HubspaceLight(LightEntity):
             )
             self._max_mireds = 370
             self._min_mireds = 154
-
+        
+        if (
+            self._model == "ZandraFan"
+        ):
+            self._supported_color_modes.extend(
+                [ColorMode.COLOR_TEMP, ColorMode.BRIGHTNESS, ColorMode.WHITE]
+            )
+            self._usePowerFunctionInstance = "light-power"
+            self._max_mireds = 370
+            self._min_mireds = 154
+            
         # If model not found, use On/Off Only as a failsafe
         if not self._supported_color_modes:
             self._supported_color_modes.extend([ColorMode.ONOFF])
