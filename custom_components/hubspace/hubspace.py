@@ -254,7 +254,7 @@ class HubSpace:
                     if model is not None and deviceClass is not None:
                         if deviceClass == "fan" and model == "":
                             model == "DriskolFan"
-                        if deviceClass == "fan" and model == "TBD":
+                        if (deviceClass == "fan" or deviceClass == "ceiling-fan") and model == "TBD":
                             model == "ZandraFan"    
                         return child, model, deviceId, deviceClass, friendlyName
 
@@ -293,7 +293,7 @@ class HubSpace:
                     if model is not None and deviceClass is not None:
                         if deviceClass == "fan" and model == "":
                             model == "DriskolFan"
-                        if deviceClass == "fan" and model == "TBD":
+                        if (deviceClass == "fan" or deviceClass == "ceiling-fan") and model == "TBD":
                             model == "ZandraFan"      
                         return child, model, deviceId, deviceClass
 
