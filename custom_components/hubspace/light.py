@@ -96,9 +96,9 @@ def _add_entity(entities, hs, model, deviceClass, friendlyName, debug):
         _LOGGER.debug("Creating Light")
         entities.append(HubspaceLight(hs, friendlyName, debug))
     elif model == "DriskolFan" or model == "ZandraFan":
-        _LOGGER.debug("Creating Fan")
+        _LOGGER.debug("Creating Driskol/Zandra Fan")
         entities.append(HubspaceFan(hs, friendlyName, debug))
-        _LOGGER.debug("Creating Light")
+        _LOGGER.debug("Creating Driskol/Zandra Light")
         entities.append(HubspaceLight(hs, friendlyName, debug))    
     elif deviceClass == "door-lock" and model == "TBD":
         _LOGGER.debug("Creating Lock")
