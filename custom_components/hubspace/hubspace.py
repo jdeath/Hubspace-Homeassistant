@@ -258,6 +258,8 @@ class HubSpace:
                             model = "DriskolFan"
                         if (deviceClass == "fan" or deviceClass == "ceiling-fan") and model == "TBD":
                             model = "ZandraFan"
+                        if deviceClass == "light" and model == "TBD":
+                            model = "ZandraLight"    
                             _LOGGER.debug("replaced model")
                         return child, model, deviceId, deviceClass, friendlyName
 
@@ -300,6 +302,8 @@ class HubSpace:
                             model = "DriskolFan"
                         if (deviceClass == "fan" or deviceClass == "ceiling-fan") and model == "TBD":
                             model = "ZandraFan"
+                        if deviceClass == "light" and model == "TBD":
+                            model = "ZandraLight"    
                             _LOGGER.debug("replaced")
                         return child, model, deviceId, deviceClass
 
@@ -326,6 +330,8 @@ class HubSpace:
                         model = "DriskolFan"
                     if (deviceClass == "fan" or deviceClass == "ceiling-fan") and model == "TBD":
                         model = "ZandraFan"
+                    if deviceClass == "light" and model == "TBD":
+                        model = "ZandraLight"    
                         _LOGGER.debug("replaced")
                 yield child, model, deviceId, deviceClass, friendlyName, functions
 
