@@ -137,7 +137,7 @@ def setup_platform(
         _LOGGER.debug("friendlyName " + friendlyName)
         [childId, model, deviceId, deviceClass] = hs.getChildId(friendlyName)
 
-        _LOGGER.debug("Switch on Model " + model)
+        _LOGGER.debug("Line 140 - Switch on Model " + model)
         _LOGGER.debug("childId: " + childId)
         _LOGGER.debug("deviceId: " + deviceId)
         _LOGGER.debug("deviceClass: " + deviceClass)
@@ -159,7 +159,7 @@ def setup_platform(
                 childId
             )
 
-            _LOGGER.debug("Switch on Model " + model)
+            _LOGGER.debug("Line 162 Switch on Model " + model)
             _LOGGER.debug("deviceId: " + deviceId)
             _LOGGER.debug("deviceClass: " + deviceClass)
             _LOGGER.debug("friendlyName: " + friendlyName)
@@ -182,7 +182,7 @@ def setup_platform(
             functions,
         ] in hs.discoverDeviceIds():
             _LOGGER.debug("childId " + childId)
-            _LOGGER.debug("Switch on Model " + model)
+            _LOGGER.debug("Line 185 Switch on Model " + model)
             _LOGGER.debug("deviceId: " + deviceId)
             _LOGGER.debug("deviceClass: " + deviceClass)
             _LOGGER.debug("friendlyName: " + friendlyName)
