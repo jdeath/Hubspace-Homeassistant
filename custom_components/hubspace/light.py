@@ -95,11 +95,12 @@ def _add_entity(entities, hs, model, deviceClass, friendlyName, debug):
         entities.append(HubspaceFan(hs, friendlyName, debug))
         _LOGGER.debug("Creating Light")
         entities.append(HubspaceLight(hs, friendlyName, debug))
-    elif model == "DriskolFan" or model == "ZandraFan":
-        _LOGGER.debug("Creating Driskol/Zandra Fan")
+    elif model == "DriskolFan":
+        _LOGGER.debug("Creating Driskol Fan")
         entities.append(HubspaceFan(hs, friendlyName, debug))
-        _LOGGER.debug("Creating Driskol/Zandra Light")
-        entities.append(HubspaceLight(hs, friendlyName, debug))    
+        entities.append(HubspaceLight(hs, friendlyName, debug))
+    elif model == "DriskolFan":
+        entities.append(HubspaceFan(hs, friendlyName, debug))
     elif deviceClass == "door-lock" and model == "TBD":
         _LOGGER.debug("Creating Lock")
         entities.append(HubspaceLock(hs, friendlyName, debug))
@@ -432,7 +433,7 @@ class HubspaceLight(LightEntity):
             self._min_mireds = 154
         
         if (
-            self._model == "ZandraFan"
+            self._model == "ZandraLight"
         ):
             self._supported_color_modes.extend(
                 [ColorMode.COLOR_TEMP, ColorMode.BRIGHTNESS, ColorMode.WHITE]
