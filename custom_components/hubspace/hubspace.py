@@ -255,9 +255,9 @@ class HubSpace:
                     _LOGGER.debug("deviceClass " + deviceClass)
                     if model is not None and deviceClass is not None:
                         if deviceClass == "fan" and model == "":
-                            model == "DriskolFan"
+                            model = "DriskolFan"
                         if (deviceClass == "fan" or deviceClass == "ceiling-fan") and model == "TBD":
-                            model == "ZandraFan"
+                            model = "ZandraFan"
                             _LOGGER.debug("replaced model")
                         return child, model, deviceId, deviceClass, friendlyName
 
@@ -297,9 +297,9 @@ class HubSpace:
                     _LOGGER.debug("deviceClass " + deviceClass)
                     if model is not None and deviceClass is not None:
                         if deviceClass == "fan" and model == "":
-                            model == "DriskolFan"
+                            model = "DriskolFan"
                         if (deviceClass == "fan" or deviceClass == "ceiling-fan") and model == "TBD":
-                            model == "ZandraFan"
+                            model = "ZandraFan"
                             _LOGGER.debug("replaced")
                         return child, model, deviceId, deviceClass
 
@@ -323,9 +323,9 @@ class HubSpace:
                 _LOGGER.debug("322 deviceClass " + deviceClass)
                 if model is not None and deviceClass is not None:
                     if deviceClass == "fan" and model == "":
-                        model == "DriskolFan"
+                        model = "DriskolFan"
                     if (deviceClass == "fan" or deviceClass == "ceiling-fan") and model == "TBD":
-                        model == "ZandraFan"
+                        model = "ZandraFan"
                         _LOGGER.debug("replaced")
                 yield child, model, deviceId, deviceClass, friendlyName, functions
 
