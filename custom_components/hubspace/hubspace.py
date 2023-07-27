@@ -313,6 +313,11 @@ class HubSpace:
                 )
                 friendlyName = lis.get("friendlyName")
                 functions = lis.get("description", {}).get("functions", [])
+                if model is not None and deviceClass is not None:
+                    if deviceClass == "fan" and model == "":
+                        model == "DriskolFan"
+                    if (deviceClass == "fan" or deviceClass == "ceiling-fan") and model == "TBD":
+                        model == "ZandraFan"
                 yield child, model, deviceId, deviceClass, friendlyName, functions
 
     def getFunctions(self, id, functionClass=None):
