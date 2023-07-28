@@ -832,7 +832,7 @@ class HubspaceFan(LightEntity):
         # Homeassistant uses 0-255
         brightness = kwargs.get(ATTR_BRIGHTNESS, self._brightness)
         brightnessPercent = _brightness_to_hubspace(brightness)
-        if self._model != "DriskolFan":
+        if self._model != "DriskolFan" and self._model != "ZandraFan":
             if brightnessPercent < 30:
                 speed = "025"
             elif brightnessPercent < 60:
@@ -842,7 +842,8 @@ class HubspaceFan(LightEntity):
             else:
                 speed = "100"
             speedstring = "fan-speed-" + speed
-        else:
+        
+        if self._model == "DriskolFan":
             if brightnessPercent < 40:
                 speed = "020"
             elif brightnessPercent < 50:
@@ -854,7 +855,21 @@ class HubspaceFan(LightEntity):
             else:
                 speed = "100"
             speedstring = "fan-speed-5-" + speed
-            
+
+        if self._model == "ZandraFan":
+            if brightnessPercent < 20:
+                speed = "016"
+            elif brightnessPercent < 40:
+                speed = "033"
+            elif brightnessPercent < 55:
+                speed = "050"
+            elif brightnessPercent < 70:
+                speed = "066"
+            elif brightnessPercent < 90:
+                speed = "083"
+            else:
+                speed = "100"
+            speedstring = "fan-speed-6-" + speed
             
         self._hs.setStateInstance(self._childId, "fan-speed", "fan-speed", speedstring)
         #self.update()
