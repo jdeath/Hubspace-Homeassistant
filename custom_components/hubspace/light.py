@@ -906,14 +906,18 @@ class HubspaceFan(LightEntity):
     def turn_off(self, **kwargs: Any) -> None:
         """Instruct the light to turn off."""
         self._hs.setStateInstance(self._childId, "power", "fan-power", "off")
-        if self._model != "DriskolFan":
+        if self._model != "DriskolFan" and self._model != "ZandraFan":
             self._hs.setStateInstance(
                 self._childId, "fan-speed", "fan-speed", "fan-speed-000"
             )
-        else:
+        if self._model == "DriskolFan":
             self._hs.setStateInstance(
                 self._childId, "fan-speed", "fan-speed", "fan-speed-5-000"
             )
+        if self._model == "ZandraFan":
+            self._hs.setStateInstance(
+                self._childId, "fan-speed", "fan-speed", "fan-speed-6-000"
+            )    
         #self.update()
 
     @property
