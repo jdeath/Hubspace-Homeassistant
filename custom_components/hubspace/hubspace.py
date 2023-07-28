@@ -495,13 +495,15 @@ class HubSpace:
         )
         r = requests.put(auth_url, json=payload, headers=auth_header)
         r.close()
-        for lis in r.json().get("values"):
-            for key, val in lis.items():
-                if key == "functionClass" and val == desiredStateName:
-                    state = lis.get("value")
+        return state
+        
+        #for lis in r.json().get("values"):
+        #    for key, val in lis.items():
+        #        if key == "functionClass" and val == desiredStateName:
+        #            state = lis.get("value")
 
         # print(desiredStateName + ": " + state)
-        return state
+        #return state
 
     def setStateInstance(self, child, desiredStateName, desiredFunctionInstance, state):
 
