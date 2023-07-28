@@ -563,6 +563,7 @@ class HubspaceLight(LightEntity):
                     str(self._color_temp) + self._temperature_suffix,
                 )
             else:
+                _LOGGER.debug("Setting color temp:" + self._color_temp )
                 self._hs.setState(self._childId, "color-temperature", self._color_temp)
 
     @property
