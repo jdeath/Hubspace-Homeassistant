@@ -379,7 +379,7 @@ class HubspaceLight(LightEntity):
             self._min_mireds = 154
 
         # fan
-        if self._model == "52133, 37833" or self._model == "76278, 37278" or self._model == "" or self._model == "DriskolFan":
+        if self._model == "52133, 37833" or self._model == "76278, 37278" or self._model == "" or self._model == "DriskolFan" or self._model == "ZandraLight":
             self._usePowerFunctionInstance = "light-power"
             self._supported_color_modes.extend([ColorMode.BRIGHTNESS])
             self._temperature_suffix = "K"
@@ -429,16 +429,6 @@ class HubspaceLight(LightEntity):
             self._supported_color_modes.extend(
                 [ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE]
             )
-            self._max_mireds = 370
-            self._min_mireds = 154
-        
-        if (
-            self._model == "ZandraLight"
-        ):
-            self._supported_color_modes.extend(
-                [ColorMode.COLOR_TEMP, ColorMode.BRIGHTNESS, ColorMode.WHITE]
-            )
-            self._usePowerFunctionInstance = "light-power"
             self._max_mireds = 370
             self._min_mireds = 154
             
