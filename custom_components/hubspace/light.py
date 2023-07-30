@@ -945,7 +945,7 @@ class HubspaceFan(LightEntity):
             brightness = 153
         elif fanspeed == "fan-speed-5-080":
             brightness = 204    
-        elif fanspeed == "fan-speed-100":
+        elif fanspeed == "fan-speed-5-100":
             brightness = 255
         
         if fanspeed == "fan-speed-6-000":
