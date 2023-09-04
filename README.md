@@ -43,6 +43,8 @@ Hubspace/Defiant WiFi Deadbolt support: On=Lock, Off=Unlocked . Auto discover do
 
 I would like to update to cloud push, but right now polls the state every minute by default (can be overwritten with scan_interval). Please contact me if good with websockets. The websocket system pushes bad data at first, which messses up the connection. I need a way to ignore that data.
 
+Could use an expert to make everything async. I tried to convert it over, but could not get it working.
+
 _Thanks to everyone having starred my repo! To star it click on the image below, then it will be on top right. Thanks!_
 
 [![Stargazers repo roster for @jdeath/Hubspace-Homeassistant](https://reporoster.com/stars/jdeath/Hubspace-Homeassistant)](https://github.com/jdeath/hubspace-homeassistant/stargazers)
