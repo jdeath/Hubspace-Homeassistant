@@ -184,7 +184,7 @@ class HubSpace:
 
         token = self.getAuthTokenFromRefreshToken()
 
-        #_LOGGER.debug("token " + token)
+        _LOGGER.debug("token " + token)
         auth_header = {
             "user-agent": "Dart/2.15 (dart:io)",
             "host": "semantics2.afero.net",
@@ -192,7 +192,7 @@ class HubSpace:
             "authorization": "Bearer " + token,
         }
 
-        #_LOGGER.debug("token " + self._accountId)
+        _LOGGER.debug("token " + self._accountId)
         auth_url = (
             "https://api2.afero.net/v1/accounts/"
             + self._accountId
@@ -251,16 +251,17 @@ class HubSpace:
                         lis.get("description").get("device").get("deviceClass")
                     )
                     friendlyName = lis.get("friendlyName")
-                    _LOGGER.debug("model " + model)
-                    _LOGGER.debug("deviceClass " + deviceClass)
+                    defaultName = (
+                        lis.get("description").get("device").get("defaultName")
+                    )
                     if model is not None and deviceClass is not None:
                         if deviceClass == "fan" and model == "":
                             model = "DriskolFan"
-                        if (deviceClass == "fan" or deviceClass == "ceiling-fan") and model == "TBD":
-                            model = "ZandraFan"
-                        if deviceClass == "light" and model == "TBD":
-                            model = "ZandraLight"    
-                            _LOGGER.debug("replaced model")
+                        if deviceClass == "fan" and model == "TBD":
+                            model = "ZandraFan"    
+                        if defaultName == "Smart Stake Timer":
+                            model = "YardStake"
+                            deviceClass = "light"
                         return child, model, deviceId, deviceClass, friendlyName
 
         # _LOGGER.debug("No model found ")
@@ -295,16 +296,17 @@ class HubSpace:
                     deviceClass = (
                         lis.get("description").get("device").get("deviceClass")
                     )
-                    _LOGGER.debug("296 model " + model)
-                    _LOGGER.debug("deviceClass " + deviceClass)
+                    defaultName = (
+                        lis.get("description").get("device").get("defaultName")
+                    )
                     if model is not None and deviceClass is not None:
                         if deviceClass == "fan" and model == "":
                             model = "DriskolFan"
-                        if (deviceClass == "fan" or deviceClass == "ceiling-fan") and model == "TBD":
+                        if deviceClass == "fan" and model == "TBD":
                             model = "ZandraFan"
-                        if deviceClass == "light" and model == "TBD":
-                            model = "ZandraLight"    
-                            _LOGGER.debug("replaced")
+                        if defaultName == "Smart Stake Timer":
+                            model = "YardStake"
+                            deviceClass = "light"
                         return child, model, deviceId, deviceClass
 
         # _LOGGER.debug("No model found ")
@@ -323,16 +325,6 @@ class HubSpace:
                 )
                 friendlyName = lis.get("friendlyName")
                 functions = lis.get("description", {}).get("functions", [])
-                _LOGGER.debug("322 model " + model)
-                _LOGGER.debug("322 deviceClass " + deviceClass)
-                if model is not None and deviceClass is not None:
-                    if deviceClass == "fan" and model == "":
-                        model = "DriskolFan"
-                    if (deviceClass == "fan" or deviceClass == "ceiling-fan") and model == "TBD":
-                        model = "ZandraFan"
-                    if deviceClass == "light" and model == "TBD":
-                        model = "ZandraLight"    
-                        _LOGGER.debug("replaced")
                 yield child, model, deviceId, deviceClass, friendlyName, functions
 
     def getFunctions(self, id, functionClass=None):
@@ -495,15 +487,13 @@ class HubSpace:
         )
         r = requests.put(auth_url, json=payload, headers=auth_header)
         r.close()
-        return state
-        
-        #for lis in r.json().get("values"):
-        #    for key, val in lis.items():
-        #        if key == "functionClass" and val == desiredStateName:
-        #            state = lis.get("value")
+        for lis in r.json().get("values"):
+            for key, val in lis.items():
+                if key == "functionClass" and val == desiredStateName:
+                    state = lis.get("value")
 
         # print(desiredStateName + ": " + state)
-        #return state
+        return state
 
     def setStateInstance(self, child, desiredStateName, desiredFunctionInstance, state):
 
