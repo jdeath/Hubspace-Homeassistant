@@ -370,6 +370,8 @@ class HubSpace:
             for key, val in lis.items():
                 if key == "functionClass" and val == desiredStateName:
                     state = lis.get("value")
+                if key == "functionClass" and val == "available" and list.get("value") == "false":
+                    return None
 
         # print(desiredStateName + ": " + state)
         return state
@@ -400,6 +402,8 @@ class HubSpace:
         r.close()
         for lis in r.json().get("values"):
             for key, val in lis.items():
+                if key == "functionClass" and val == "available" and list.get("value") == "false":
+                    return None
                 if (
                     key == "functionClass"
                     and val == desiredStateName
