@@ -577,6 +577,9 @@ class HubSpace:
 
     def getRGB(self, child):
         state = self.getState(child, "color-rgb")
+        if state is None:
+            return None
+            
         r = int(state.get("color-rgb").get("r"))
         g = int(state.get("color-rgb").get("g"))
         b = int(state.get("color-rgb").get("b"))
