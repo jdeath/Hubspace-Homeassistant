@@ -502,7 +502,10 @@ class HubspaceLight(LightEntity):
     @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
-        return self._state == "on"
+        if self._state is None:
+            return None
+        else:    
+            return self._state == "on"
 
     def send_command(self, field_name, field_state, functionInstance=None) -> None:
         self._hs.setState(self._childId, field_name, field_state, functionInstance)
@@ -704,7 +707,10 @@ class HubspaceOutlet(LightEntity):
     @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
-        return self._state == "on"
+        if self._state is None:
+            return None
+        else:    
+            return self._state == "on"
 
     def turn_on(self, **kwargs: Any) -> None:
         self._hs.setStateInstance(
@@ -820,7 +826,10 @@ class HubspaceFan(LightEntity):
     @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
-        return self._state == "on"
+        if self._state is None:
+            return None
+        else:    
+            return self._state == "on"
 
     def turn_on(self, **kwargs: Any) -> None:
         self._hs.setStateInstance(self._childId, "power", "fan-power", "on")
@@ -1024,7 +1033,10 @@ class HubspaceTransformer(LightEntity):
     @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
-        return self._state == "on"
+        if self._state is None:
+            return None
+        else:    
+            return self._state == "on"
 
     def turn_on(self, **kwargs: Any) -> None:
         self._hs.setStateInstance(
@@ -1156,7 +1168,10 @@ class HubspaceLock(LightEntity):
     @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
-        return self._state == "locked"
+        if self._state is None:
+            return None
+        else:    
+            return self._state == "locked"
 
     def turn_on(self, **kwargs: Any) -> None:
         self._hs.setState(self._childId, "lock-control", "locking")
