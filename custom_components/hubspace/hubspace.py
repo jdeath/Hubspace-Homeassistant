@@ -366,13 +366,14 @@ class HubSpace:
 
         r = requests.get(auth_url, data=auth_data, headers=auth_header)
         r.close()
-        for lis in r.json().get("values"):
-            for key, val in lis.items():
-                if key == "functionClass" and val == desiredStateName:
-                    state = lis.get("value")
-                if key == "functionClass" and val == "available" and not lis.get("value"):
-                    return None 
-                    #return None
+        if r.ok:
+            for lis in r.json().get("values"):
+                for key, val in lis.items():
+                    if key == "functionClass" and val == desiredStateName:
+                        state = lis.get("value")
+                    if key == "functionClass" and val == "available" and not lis.get("value"):
+                        return None 
+                        #return None
 
         # print(desiredStateName + ": " + state)
         return state
@@ -401,16 +402,17 @@ class HubSpace:
 
         r = requests.get(auth_url, data=auth_data, headers=auth_header)
         r.close()
-        for lis in r.json().get("values"):
-            for key, val in lis.items():
-                if key == "functionClass" and val == "available" and not lis.get("value"):
-                    return None  
-                if (
-                    key == "functionClass"
-                    and val == desiredStateName
-                    and lis.get("functionInstance") == desiredFunctionInstance
-                ):
-                    state = lis.get("value")
+        if r.ok:
+            for lis in r.json().get("values"):
+                for key, val in lis.items():
+                    if key == "functionClass" and val == "available" and not lis.get("value"):
+                        return None  
+                    if (
+                        key == "functionClass"
+                        and val == desiredStateName
+                        and lis.get("functionInstance") == desiredFunctionInstance
+                    ):
+                        state = lis.get("value")
 
         # print(desiredStateName + ": " + state)
         return state
