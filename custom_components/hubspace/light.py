@@ -95,7 +95,7 @@ def _add_entity(entities, hs, model, deviceClass, friendlyName, debug):
         entities.append(HubspaceFan(hs, friendlyName, debug))
         _LOGGER.debug("Creating Light")
         entities.append(HubspaceLight(hs, friendlyName, debug))
-    elif model == "DriskolFan" or model == "ZandraFan":
+    elif model == "DriskolFan" or model == "ZandraFan" or model == "TagerFan":
         _LOGGER.debug("Creating Fan")
         entities.append(HubspaceFan(hs, friendlyName, debug))
         _LOGGER.debug("Creating Light")
@@ -837,17 +837,9 @@ class HubspaceFan(LightEntity):
         # Homeassistant uses 0-255
         brightness = kwargs.get(ATTR_BRIGHTNESS, self._brightness)
         brightnessPercent = _brightness_to_hubspace(brightness)
-        if self._model != "DriskolFan":
-            if brightnessPercent < 30:
-                speed = "025"
-            elif brightnessPercent < 60:
-                speed = "050"
-            elif brightnessPercent < 85:
-                speed = "075"
-            else:
-                speed = "100"
-            speedstring = "fan-speed-" + speed
-        else:
+        
+        
+        if self._model == "DriskolFan":
             if brightnessPercent < 40:
                 speed = "020"
             elif brightnessPercent < 50:
@@ -859,8 +851,37 @@ class HubspaceFan(LightEntity):
             else:
                 speed = "100"
             speedstring = "fan-speed-5-" + speed
-            
-            
+        elif self._model == "TagerFan":    
+            if brightnessPercent < 25:
+                speed = "020"
+            elif brightnessPercent < 35:
+                speed = "030"
+            elif brightnessPercent < 45:
+                speed = "040" 
+            elif brightnessPercent < 55:
+                speed = "050"    
+            elif brightnessPercent < 65:
+                speed = "060"
+            elif brightnessPercent < 75:
+                speed = "070"
+            elif brightnessPercent < 85:
+                speed = "080"
+            elif brightnessPercent < 95:
+                speed = "090"
+            else:
+                speed = "100"
+            speedstring = "fan-speed-9-" + speed
+        else:
+            if brightnessPercent < 30:
+                speed = "025"
+            elif brightnessPercent < 60:
+                speed = "050"
+            elif brightnessPercent < 85:
+                speed = "075"
+            else:
+                speed = "100"
+            speedstring = "fan-speed-" + speed
+        
         self._hs.setStateInstance(self._childId, "fan-speed", "fan-speed", speedstring)
         #self.update()
 
@@ -942,6 +963,28 @@ class HubspaceFan(LightEntity):
         elif fanspeed == "fan-speed-5-80":
             brightness = 204    
         elif fanspeed == "fan-speed-100":
+            brightness = 255
+        
+        # For Tager Fan
+        if fanspeed == "fan-speed-000":
+            brightness = 0
+        elif fanspeed == "fan-speed-9-020":
+            brightness = 50
+        elif fanspeed == "fan-speed-9-030":
+            brightness = 75
+        elif fanspeed == "fan-speed-9-040":
+            brightness = 100
+        elif fanspeed == "fan-speed-9-050":
+            brightness = 125    
+        elif fanspeed == "fan-speed-9-060":
+            brightness = 150
+        elif fanspeed == "fan-speed-9-070":
+            brightness = 175    
+        elif fanspeed == "fan-speed-9-080":
+            brightness = 200
+        elif fanspeed == "fan-speed-9-090":
+            brightness = 225
+        elif fanspeed == "fan-speed-9-100":
             brightness = 255
             
         self._brightness = brightness

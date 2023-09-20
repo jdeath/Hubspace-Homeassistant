@@ -254,11 +254,16 @@ class HubSpace:
                     defaultName = (
                         lis.get("description").get("device").get("defaultName")
                     )
-                    if model is not None and deviceClass is not None:
-                        if deviceClass == "fan" and model == "":
+                    defaultImage = (
+                        lis.get("description").get("device").get("defaultImage")
+                    )
+                    if model is not None and deviceClass is not None and defaultName is not None and defaultImage is not None:
+                        if deviceClass == "fan" and model == "" and defaultImage == "ceiling-fan-snyder-park-icon":
                             model = "DriskolFan"
                         if deviceClass == "fan" and model == "TBD":
-                            model = "ZandraFan"    
+                            model = "ZandraFan"
+                        if deviceClass == "fan" and model == "" and defaultImage == "ceiling-fan-slender-icon":    
+                            model = "TagerFan"
                         if defaultName == "Smart Stake Timer":
                             model = "YardStake"
                             deviceClass = "light"
@@ -299,11 +304,16 @@ class HubSpace:
                     defaultName = (
                         lis.get("description").get("device").get("defaultName")
                     )
-                    if model is not None and deviceClass is not None:
-                        if deviceClass == "fan" and model == "":
+                    defaultImage = (
+                        lis.get("description").get("device").get("defaultImage")
+                    )
+                    if model is not None and deviceClass is not None and defaultName is not None and defaultImage is not None:
+                        if deviceClass == "fan" and model == "" and defaultImage == "ceiling-fan-snyder-park-icon":
                             model = "DriskolFan"
                         if deviceClass == "fan" and model == "TBD":
                             model = "ZandraFan"
+                        if deviceClass == "fan" and model == "" and defaultImage == "ceiling-fan-slender-icon":    
+                            model = "TagerFan"
                         if defaultName == "Smart Stake Timer":
                             model = "YardStake"
                             deviceClass = "light"
