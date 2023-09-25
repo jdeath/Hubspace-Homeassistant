@@ -262,11 +262,13 @@ class HubSpace:
                             model = "DriskolFan"
                         if deviceClass == "fan" and model == "TBD":
                             model = "ZandraFan"
-                        if deviceClass == "fan" and model == "" and defaultImage == "ceiling-fan-slender-icon":    
+                        if deviceClass == "fan" and model == "" and defaultImage == "ceiling-fan-slender-icon":
                             model = "TagerFan"
                         if defaultName == "Smart Stake Timer":
                             model = "YardStake"
                             deviceClass = "light"
+                        if defaultImage == "a19-e26-color-cct-60w-smd-frosted-icon":
+                            model = "12A19060WRGBWH2"
                         return child, model, deviceId, deviceClass, friendlyName
 
         # _LOGGER.debug("No model found ")
@@ -312,11 +314,13 @@ class HubSpace:
                             model = "DriskolFan"
                         if deviceClass == "fan" and model == "TBD":
                             model = "ZandraFan"
-                        if deviceClass == "fan" and model == "" and defaultImage == "ceiling-fan-slender-icon":    
+                        if deviceClass == "fan" and model == "" and defaultImage == "ceiling-fan-slender-icon":
                             model = "TagerFan"
                         if defaultName == "Smart Stake Timer":
                             model = "YardStake"
                             deviceClass = "light"
+                        if defaultImage == "a19-e26-color-cct-60w-smd-frosted-icon":
+                            model = "12A19060WRGBWH2"    
                         return child, model, deviceId, deviceClass
 
         # _LOGGER.debug("No model found ")

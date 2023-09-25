@@ -368,6 +368,7 @@ class HubspaceLight(LightEntity):
             or self._model == "11PR38120RGBWH1"
             or self._model == "11A21100WRGBWH1"
             or self._model == "11A19060WRGBWH1"
+            or self._model == "12A19060WRGBWH2"
         ):
             self._supported_color_modes.extend(
                 [ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE]
