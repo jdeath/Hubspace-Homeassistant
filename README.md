@@ -4,23 +4,23 @@ Please ask support questions in homeassistant forums: https://community.home-ass
 
 
 ### Breaking Change:
-Now supports services for capabily not provided by the itegration. See Services section below
+Now supports services for capability not provided by the integration. See Services section below
 
-Thanks to @dloveall this release will automatically discover most devices. Specifying your freindlynames is still possible, but this now finds most models attached to your account. There may be some that are not auto discovered.
+Thanks to @dloveall this release will automatically discover most devices. Specifying your friendlynames is still possible, but this now finds most models attached to your account. There may be some that are not auto discovered.
 
-Since some of the internals were changed, so your light name may change. For instance, light.friendlyname might turn into light.freindlyname_2
+Since some of the internals were changed, so your light name may change. For instance, light.friendlyname might turn into light.friendlyname_2
 
 To solve this, go to Settings->Devices and Services->Entities
-find the light.friendlyname and delete it. then find the light.freindlyname_2 and rename it light.freindlyname
+find the light.friendlyname and delete it. then find the light.friendlyname_2 and rename it light.friendlyname
 
 ### Information :
-99% of the issues are your friendlyname is incorrect, see Troubleshooting section below. Please use the issue section only for support of new devices.
+99% of the issues are that your friendlyname is incorrect, see Troubleshooting section below. Please use the issue section only for support of new devices.
 
 Major rewrite. Now it caches tokens for 118s and shares authentication for all lights, thus makes fewer API calls
 
 Supports on/off for a couple types of light strips: 'AL-TP-RGBCW-60-2116, AL-TP-RGBCW-60-2232'
 
-RGB working for: '50291, 50292' and 11PR38120RGBWH1. No brigtness or White Colortemp yet
+RGB working for: '50291, 50292' and 11PR38120RGBWH1. No brightness or White Colortemp yet
 
 RGB (and maybe brightness) working for: '538551010, 538561010, 538552010, 538562010'
 
@@ -39,13 +39,13 @@ Landscape Transformer (HB-200-1215WIFIB) works with on/off on all 3 outputs. Sys
 
 Support for outdoor string lights: HB-10521-HS and maybe HB-17122-HS-WT
 
-Hubspace/Defiant WiFi Deadbolt support: On=Lock, Off=Unlocked . Auto discover does not yet work, so friendlyname is required. Recommend using a template entity to shows up as a lock to Home Assistant, see below. I plan to make a local Bluetooth integration for the lock, but making slow progress.
+Hubspace/Defiant WiFi Deadbolt support: On=Lock, Off=Unlocked . Auto discover does not yet work, so friendlyname is required. Recommend using a template entity to show up as a lock to Home Assistant, see below. I plan to make a local Bluetooth integration for the lock, but making slow progress.
 
-I would like to update to cloud push, but right now polls the state every minute by default (can be overwritten with scan_interval). Please contact me if good with websockets. The websocket system pushes bad data at first, which messses up the connection. I need a way to ignore that data.
+I would like to update to cloud push, but right now polls the state every minute by default (can be overwritten with scan_interval). Please contact me if you're good with websockets. The websocket system pushes bad data at first, which messses up the connection. I need a way to ignore that data.
 
 Could use an expert to make everything async. I tried to convert it over, but could not get it working.
 
-_Thanks to everyone having starred my repo! To star it click on the image below, then it will be on top right. Thanks!_
+_Thanks to everyone who starred my repo! To star it click on the image below, then it will be on top right. Thanks!_
 
 [![Stargazers repo roster for @jdeath/Hubspace-Homeassistant](https://reporoster.com/stars/jdeath/Hubspace-Homeassistant)](https://github.com/jdeath/hubspace-homeassistant/stargazers)
 
@@ -73,7 +73,7 @@ light:
       - 'BoysRoom' #(the name of your room as shown in the app)
 ```
 
-freindlynames is optional now, the integration should automatically find most lights. If it does not work, specify the friendlynames. The roomnames is optional, and friendlynames is not needed if used. It will add all devices in the room you made in the hubspace app. No support for this will be given, as added by a PR and not tested by me, but should work.
+friendlynames is optional now, the integration should automatically find most lights. If it does not work, specify the friendlynames. The roomnames is optional, and friendlynames is not needed if used. It will add all devices in the room you made in the hubspace app. No support for this will be given, as added by a PR and not tested by me, but should work.
 
 Friendlyname is listed in the Hubspace App. Click the Device, Click the Gear, Under General will list "Product Name" which is the friendlyname. The Room is the roomname if you prefer to add it that way.
 
@@ -82,13 +82,13 @@ If you are having problems, first try renaming the device name in the App. Do no
 
 Also be sure to check the friendlyname of your light. It must match *exactly* as shown in the app, including uppercase/lowercase. Requiring the case to match may be a recent change by Hubspace
 
-If you have a combo fan/light, it is confirmed to work best if you do not use friendlyname or roomnames. The automatic scan should pick it up. If you must use friendlyname, just add the name of the parent device from the hubspace app. Do not add the seperate names for the light and fan. The integration will make a light.friendlyname (the light) and light.friendlyname_fan (the fan). Better handling is a work in progress.
+If you have a combo fan/light, it is confirmed to work best if you do not use friendlyname or roomnames. The automatic scan should pick it up. If you must use friendlyname, just add the name of the parent device from the hubspace app. Do not add separate names for the light and fan. The integration will make a light.friendlyname (the light) and light.friendlyname_fan (the fan). Better handling is a work in progress.
 
-If you have an outlet or a transfomer, just add the name of the parent device from the hubspace app. Do not add the seperate outlet's/transformer's names. The integration will figure it out and make entities called light.friendlyname_outlet_X or light.freindlyname_transformer_X where X is 1,2,3 depending on how many outputs in has.
+If you have an outlet or transfomer, just add the name of the parent device from the hubspace app. Do not add the separate outlet's/transformer's names. The integration will figure it out and make entities called light.friendlyname_outlet_X or light.friendlyname_transformer_X where X is 1,2,3 depending on how many outputs in has.
 
 ### Support for a new model
 
-Please make a github issue if want support for a new model. I will need your help to test.
+Please make a github issue if you want support for a new model. I will need your help to test.
 
 Easiest way to help is to download the Testhubspace.py (https://raw.githubusercontent.com/jdeath/Hubspace-Homeassistant/main/TestHubspace.py) and run it. It will prompt you for your hubspace username and password. It will output data, which you should copy and paste into the GitHub issue. The output has been anonymized, personal information has been removed or randomized.
 
@@ -102,9 +102,9 @@ logger:
 you may already have the top two lines, just need to add the buttom two
 
 ### Fan Support
-If you have a fan, just add the name of the parent device from the hubspace app. Do not add the seperate names for the light and fan. This is just how it works. Users have said the autoscan works best, so do not use friendlyname or roomnames
+If you have a fan, just add the name of the parent device from the hubspace app. Do not add separate names for the light and fan. This is just how it works. Users have said the autoscan works best, so do not use friendlyname or roomnames
 
-Since the fan is implimented as a light with a dimmer, you can use a template to make it appear as a fan. Replace "light.ceilingfan_fan" below with the name of your fan. Confirm you can use the fan before you make the template.  This is optional, only if you really want homeassistant to show the light as a fan entity. This was provided by a user, no support possible. Again, this is optional, only do this once you can control the fan entity normally before hand.
+Since the fan is implemented as a light with a dimmer, you can use a template to make it appear as a fan. Replace "light.ceilingfan_fan" below with the name of your fan. Confirm you can use the fan before you make the template.  This is optional, only if you really want homeassistant to show the light as a fan entity. This was provided by a user, no support possible. Again, this is optional, only do this once you can control the fan entity normally before hand.
 ```
 # Example configuration.yaml entry
 fan:
@@ -137,9 +137,9 @@ System-wide watt and voltage setting available as attribute in the first output 
   ```
 
 ## Lock support
-The lock "light" will also report the battery status and last operation in the attributues. Optional: If you want to have the light show up as a lock in HA, make a template (but the battery is only available on the light). In your configuration.yaml add this (assumes your light is light.door_lock), click the magnifing glass in top right of HA, then hit >Temp to reload the template entity . Again, this is optional, only do this once you can control the light entity normally before hand.
+The lock "light" will also report the battery status and last operation in the attributes. Optional: If you want to have the light show up as a lock in HA, make a template (but the battery is only available on the light). In your configuration.yaml add this (assumes your light is light.door_lock), click the magnifying glass in top right of HA, then hit >Temp to reload the template entity . Again, this is optional, only do this once you can control the light entity normally before hand.
 
-Belore example assumes the freindlyname of your lock is door_lock (so it true homeassistant name is light.door_lock)
+Belore example assumes the friendlyname of your lock is door_lock (so it true homeassistant name is light.door_lock)
 ```
 lock:
   - platform: template
