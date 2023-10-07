@@ -317,7 +317,7 @@ class HubspaceLight(LightEntity):
         self._rgbColor = None
         self._temperature_choices = None
         self._temperature_suffix = None
-        if None in (childId, model, deviceId, deviceClass):
+        if None in (childId, model, deviceId, deviceClass) or "" in (childId, model, deviceId, deviceClass):
             [
                 self._childId,
                 self._model,
