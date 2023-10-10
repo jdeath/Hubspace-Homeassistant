@@ -3,7 +3,7 @@
   "name": "hubspace",
   "codeowners": ["@jdeath"],
   "dependencies": [],
-  "documentation": "https://raw.githubusercontent.com/jdeath/Hubspace-Homeassistant/main/custom_components/hubspace/README.md",
+  "documentation": "https://github.com/jdeath/Hubspace-Homeassistant/blob/main/README.md",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/jdeath/Hubspace-Homeassistant/issues",
   "requirements": [],
