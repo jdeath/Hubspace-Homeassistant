@@ -29,7 +29,7 @@ import requests.exceptions
 
 SCAN_INTERVAL = timedelta(seconds=60)
 BASE_INTERVAL = timedelta(seconds=60)
-
+SERVICE_NAME = "send_command"
 _LOGGER = logging.getLogger(__name__)
 
 CONF_FRIENDLYNAMES: Final = "friendlynames"
@@ -258,7 +258,7 @@ def setup_platform(
     def my_service(call: ServiceCall) -> None:
         """My first service."""
         _LOGGER.info("Received data" + str(call.data))
-
+        name = SERVICE_NAME
         entity_ids = call.data["entity_id"]
         functionClass = call.data["functionClass"]
         value = call.data["value"]
