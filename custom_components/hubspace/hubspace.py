@@ -258,7 +258,7 @@ class HubSpace:
                         lis.get("description").get("defaultImage")
                     )
                     if model is not None and deviceClass is not None and defaultName is not None and defaultImage is not None:
-                        if deviceClass == "fan" and model == "" and defaultImage == "ceiling-fan-snyder-park-icon":
+                        if model == "" and defaultImage == "ceiling-fan-snyder-park-icon":
                             model = "DriskolFan"
                         if deviceClass == "fan" and model == "TBD":
                             model = "ZandraFan"
@@ -310,7 +310,7 @@ class HubSpace:
                         lis.get("description").get("defaultImage")
                     )
                     if model is not None and deviceClass is not None and defaultName is not None and defaultImage is not None:
-                        if deviceClass == "fan" and model == "" and defaultImage == "ceiling-fan-snyder-park-icon":
+                        if model == "" and defaultImage == "ceiling-fan-snyder-park-icon":
                             model = "DriskolFan"
                         if deviceClass == "fan" and model == "TBD":
                             model = "ZandraFan"
