@@ -92,7 +92,7 @@ If you have a combo fan/light, it is confirmed to work best if you do not use fr
 
 If you have an outlet or transfomer, just add the name of the parent device from the hubspace app. Do not add the separate outlet's/transformer's names. The integration will figure it out and make entities called light.friendlyname_outlet_X or light.friendlyname_transformer_X where X is 1,2,3 depending on how many outputs in has.
 
-This integrations polls the cloud for updates. So, it will take time to register a change.
+This integrations polls the cloud for updates. So, it will take time to register a change in the UI. Just wait 30-60 seconds and it should sync up. If anyone can offer a solution, let me know.
 ### Support for a new model
 
 Please make a github issue if you want support for a new model. I will need your help to test.
