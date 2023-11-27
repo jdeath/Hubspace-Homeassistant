@@ -97,7 +97,17 @@ This integrations polls the cloud for updates. So, it will take time to register
 
 Please make a github issue if you want support for a new model. I will need your help to test.
 
-Easiest way to help is to download the Testhubspace.py (https://raw.githubusercontent.com/jdeath/Hubspace-Homeassistant/main/TestHubspace.py) and run it. It will prompt you for your hubspace username and password. It will output data, which you should copy and paste into the GitHub issue. The output has been anonymized, personal information has been removed or randomized.
+Easiest way to help is to download the Testhubspace.py (https://raw.githubusercontent.com/jdeath/Hubspace-Homeassistant/main/TestHubspace.py) and run it (may need to run `pip install requests` first). It will prompt you for your hubspace username and password. It will output data, which you should copy and paste into the GitHub issue. The output has been anonymized, personal information has been removed or randomized.
+
+To run right in homeassistant: Install the Advanced SSH & Web Terminal addon if you have not already
+Start a terminal session from your homeassistant and go to homeassistant directory (used to be called config)
+`cd homeassistant`
+download the file:
+`wget https://raw.githubusercontent.com/jdeath/Hubspace-Homeassistant/main/TestHubspace.py`
+install requests module if not alread installed:
+`pip install requests`
+run script:
+`python TestHubspace.py`
 
 If cannot run python3, get the entity loaded in homeassistant. Set debug:true in configuration as shown above. Click on the entity in homeassistant, expand the attributes, and send me the model and debug fields. This information is *not* anonymized. Best to PM me these on the homeassistant forums, as there is semi-private information in them. Send me these fields with the light set to on/off/etc (you may need to use the app). If that doesn't work, I may need better debug logs. Then you can add in your configuration.yaml (not in the hubspace section). Then you email me your homassistant.log 
 ```
