@@ -57,6 +57,8 @@ _Thanks to everyone who starred my repo! To star it click on the image below, th
 
 Preferred method: Add this repo as a custom repository in [HACS](https://hacs.xyz/). Add the hubspace integration.
 
+Directions to manually add a repo are here: `https://hacs.xyz/docs/faq/custom_repositories`
+
 Manual method: copy the hubspace/ folder in the repo to `<config_dir>/custom_components/hubspace/`.
 
 For either method, add the following entry in your `configuration.yaml`:
