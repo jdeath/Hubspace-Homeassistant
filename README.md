@@ -57,7 +57,14 @@ _Thanks to everyone who starred my repo! To star it click on the image below, th
 
 Preferred method: Add this repo as a custom repository in [HACS](https://hacs.xyz/). Add the hubspace integration.
 
-Directions to manually add a repo are here: `https://hacs.xyz/docs/faq/custom_repositories`
+Clicking this badge should add the repo for you:
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jdeath&repository=Hubspace-Homeassistant&category=integration)
+
+Manually add repo:
+Adding a custom repo directions `https://hacs.xyz/docs/faq/custom_repositories/`  
+Use the custom repo link `https://github.com/jdeath/Hubspace-Homeassistant` 
+Select the category type `integration`  
+Then once it's there (still in HACS) click the INSTALL button  
 
 Manual method: copy the hubspace/ folder in the repo to `<config_dir>/custom_components/hubspace/`.
 
