@@ -3,7 +3,7 @@
 Please ask support questions in homeassistant forums: https://community.home-assistant.io/t/add-support-for-hubspace-by-afero/306645
 
 ### Background
-If you can find another device that works for your needs, I would highly recommend doing so over Hubspace devices. This integration is meant to give basic functionality. Hubspace devices are not good devices for integration with Home Assistant as it stands. If a good coder takes the integration over, maybe it could work better.
+If you can find another device that works for your needs, I would highly recommend doing so over Hubspace devices. This integration is meant to give basic functionality. Hubspace devices are not good devices for integration with Home Assistant as it stands. If a good coder takes the integration over, maybe it could work better. The main issue is updates are slow and the UI can be unresponsive to any changes.
 
 Hubspace devices are 100% reliant on the cloud for homeassistant. If Hubspace goes out of business, they will be useless. Some devices have a Bluetooth fall back (many devices use a custom unflashable ESP32-based chip), which the Hubspace app can control, but I have not been able to reverse engineer the BLE protocol. A better coder/BLE expert might figure it out. You could probably solder in your own ESP or ESP32 and use with ESPHome/Tasmota if you are skilled.
 
