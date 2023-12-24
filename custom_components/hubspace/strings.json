@@ -1,0 +1,22 @@
+{
+  "services": {
+    "send_command": {
+      "name": "Send Command",
+      "description": "Sends a custom hubspace API command.",
+      "fields": {
+        "value": {
+          "name": "value",
+          "description": "The value you want to send"
+        },
+        "functionClass": {
+          "name": "functionClass",
+          "description": "functionClass you want to send"
+        },
+         "functionInstance": {
+          "name": "functionInstance",
+          "description": "functionInstance you want to send"
+        }
+      }
+    }
+  }
+}
