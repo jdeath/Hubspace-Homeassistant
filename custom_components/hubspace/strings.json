@@ -1,4 +1,5 @@
 {
+  "title": "Hubspace",
   "services": {
     "send_command": {
       "name": "Send Command",
