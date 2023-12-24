@@ -5,15 +5,15 @@
       "description": "Sends a custom hubspace API command.",
       "fields": {
         "value": {
-          "name": "value",
+          "name": "Value",
           "description": "The value you want to send"
         },
         "functionClass": {
-          "name": "functionClass",
+          "name": "FunctionClass",
           "description": "functionClass you want to send"
         },
          "functionInstance": {
-          "name": "functionInstance",
+          "name": "FunctionInstance",
           "description": "functionInstance you want to send"
         }
       }
