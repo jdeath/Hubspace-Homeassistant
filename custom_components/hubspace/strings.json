@@ -8,12 +8,12 @@
           "name": "Value",
           "description": "The value you want to send"
         },
-        "functionClass": {
-          "name": "FunctionClass",
+        "function_class": {
+          "name": "Function Class",
           "description": "functionClass you want to send"
         },
-         "functionInstance": {
-          "name": "FunctionInstance",
+         "function_instance": {
+          "name": "Function Instance",
           "description": "functionInstance you want to send"
         }
       }
