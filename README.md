@@ -43,6 +43,8 @@ Landscape Transformer (HB-200-1215WIFIB) works with on/off on all 3 outputs. Sys
 
 Support for outdoor string lights: HB-10521-HS and maybe HB-17122-HS-WT
 
+Support for L08557 outdoor RGBW Stake Light and Smart Outdoor Power Stake
+
 Hubspace/Defiant WiFi Deadbolt support: On=Lock, Off=Unlocked . Auto discover does not yet work, so friendlyname is required. Recommend using a template entity to show up as a lock to Home Assistant, see below. I plan to make a local Bluetooth integration for the lock, but making slow progress.
 
 I would like to update to cloud push, but right now polls the state every minute by default (can be overwritten with scan_interval). Please contact me if you're good with websockets. The websocket system pushes bad data at first, which messses up the connection. I need a way to ignore that data.
