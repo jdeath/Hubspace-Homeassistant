@@ -429,6 +429,15 @@ class HubspaceLight(LightEntity):
             )
             self._max_mireds = 370
             self._min_mireds = 154
+        # https://www.homedepot.com/p/Hampton-Bay-10-Watt-Equivalent-Low-Voltage-Black-LED-Outdoor-Landscape-Spotlight-with-Smart-App-Control-3-Pack-Powered-by-Hubspace-L08557/318145795
+        if (
+            self._model == "L08557"
+        ):
+            self._supported_color_modes.extend(
+                [ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE]
+            )
+            self._max_mireds = 370
+            self._min_mireds = 154
         
         if (
             self._model == "ZandraFan"
