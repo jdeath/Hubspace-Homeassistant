@@ -45,7 +45,7 @@ Support for outdoor string lights: HB-10521-HS and maybe HB-17122-HS-WT
 
 Support for L08557 outdoor RGBW Stake Light and Smart Outdoor Power Stake
 
-Hubspace/Defiant WiFi Deadbolt support: On=Lock, Off=Unlocked . Auto discover does not yet work, so friendlyname is required. Recommend using a template entity to show up as a lock to Home Assistant, see below. I plan to make a local Bluetooth integration for the lock, but making slow progress.
+Hubspace/Defiant WiFi Deadbolt support: On=Lock, Off=Unlocked . Auto discover does not yet work for the luck nor the plug it comes with, so friendlynames are required. Recommend using a template entity to show up as a lock to Home Assistant, see below. I plan to make a local Bluetooth integration for the lock, but making slow progress.
 
 I would like to update to cloud push, but right now polls the state every minute by default (can be overwritten with scan_interval). Please contact me if you're good with websockets. The websocket system pushes bad data at first, which messses up the connection. I need a way to ignore that data.
 
@@ -88,14 +88,16 @@ light:
       - 'BoysRoom' #(the name of your room as shown in the app)
 ```
 
-friendlynames is optional now, the integration should automatically find most lights. If it does not work, specify the friendlynames. The roomnames is optional, and friendlynames is not needed if used. It will add all devices in the room you made in the hubspace app. No support for this will be given, as added by a PR and not tested by me, but should work.
+friendlynames is mostly optional now, the integration should automatically find most lights. If it does not work, specify the friendlynames. The roomnames is optional, and friendlynames is not needed if used. It will add all devices in the room you made in the hubspace app. No support for this will be given, as added by a PR and not tested by me, but should work.
 
 Friendlyname is listed in the Hubspace App. Click the Device, Click the Gear, Under General will list "Product Name" which is the friendlyname. The Room is the roomname if you prefer to add it that way.
 
 If detected, your light will show up as a HomeAssistant Entity (not a Device) named `light.<friendlyname>` i.e. `light.boyslight`. You'll need to edit and assign it to the HomeAssistant Area that you prefer. Finally you'll probably want to edit your dashboard and add the entity to it.
 
 ### Troubleshooting
-If you are having problems, first try renaming the device name in the App. Do not use spaces in the name of your lights. This code may also fail with names like Office, Bedroom, Fireplace. Make it something unique and not the same as a group. Hopefully this has been fixed, but still could be issues.
+If you are having problems, first try renaming the device name in the App. Do not use spaces or special characters like & in the name of your lights. This code may also fail with names like Office, Bedroom, Fireplace. Make it something unique and not the same as a group. Hopefully this has been fixed, but still could be issues.
+
+Be sure you are specifcally adding the freindlynames of your lights in the configruation.yaml. The autoscan does not work for all, so you must add the friendlyname into the configuration.yaml before requesting help.
 
 Also be sure to check the friendlyname of your light. It must match *exactly* as shown in the app, including uppercase/lowercase. Requiring the case to match may be a recent change by Hubspace
 
