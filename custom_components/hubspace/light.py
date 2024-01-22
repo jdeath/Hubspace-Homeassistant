@@ -136,14 +136,16 @@ def setup_platform(
 
         _LOGGER.debug("friendlyName " + friendlyName)
         [childId, model, deviceId, deviceClass] = hs.getChildId(friendlyName)
+        
+        if deviceClass == "fan" and model == "":
+            model = "DriskolFan"
+            _LOGGER.debug("Unknown model fan, setting as Driskol")
+            _LOGGER.debug("If your fan is not a Driskol, raise an issue")
 
         _LOGGER.debug("Switch on Model " + model)
         _LOGGER.debug("childId: " + childId)
         _LOGGER.debug("deviceId: " + deviceId)
         _LOGGER.debug("deviceClass: " + deviceClass)
-        
-        if deviceClass == "fan" and model == "":
-            model == "DriskolFan"
             
         entities = _add_entity(entities, hs, model, deviceClass, friendlyName, debug)
 
@@ -187,7 +189,9 @@ def setup_platform(
 
             if deviceClass == "fan":
                 if model == "":
-                    model == "DriskolFan"
+                    model = "DriskolFan"
+                    _LOGGER.debug("Unknown model fan, setting as Driskol")
+                    _LOGGER.debug("If your fan is not a Driskol, raise an issue")
                 entities.append(
                     HubspaceFan(
                         hs, friendlyName, debug, childId, model, deviceId, deviceClass
@@ -977,9 +981,9 @@ class HubspaceFan(LightEntity):
             brightness = 51
         elif fanspeed == "fan-speed-5-040":
             brightness = 102
-        elif fanspeed == "fan-speed-5-60":
+        elif fanspeed == "fan-speed-5-060":
             brightness = 153
-        elif fanspeed == "fan-speed-5-80":
+        elif fanspeed == "fan-speed-5-080":
             brightness = 204    
         elif fanspeed == "fan-speed-100":
             brightness = 255
