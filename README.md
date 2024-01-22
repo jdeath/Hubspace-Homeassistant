@@ -95,9 +95,10 @@ Friendlyname is listed in the Hubspace App. Click the Device, Click the Gear, Un
 If detected, your light will show up as a HomeAssistant Entity (not a Device) named `light.<friendlyname>` i.e. `light.boyslight`. You'll need to edit and assign it to the HomeAssistant Area that you prefer. Finally you'll probably want to edit your dashboard and add the entity to it.
 
 ### Troubleshooting
-If you are having problems, first try renaming the device name in the App. Do not use spaces or special characters like & in the name of your lights. This code may also fail with names like Office, Bedroom, Fireplace. Make it something unique and not the same as a group. Hopefully this has been fixed, but still could be issues.
 
-Be sure you are specifcally adding the freindlynames of your lights in the configruation.yaml. The autoscan does not work for all, so you must add the friendlyname into the configuration.yaml before requesting help.
+Be sure you are specifcally adding the freindlynames of your lights in the configruation.yaml. The autoscan does not work for all, so you **must add the friendlyname into the configuration.yaml before requesting help**.
+
+If you are having problems, first try renaming the device name in the App. Do not use spaces or special characters like & in the name of your lights. This code may also fail with names like Office, Bedroom, Fireplace. Make it something unique and not the same as a group. Hopefully this has been fixed, but still could be issues.
 
 Also be sure to check the friendlyname of your light. It must match *exactly* as shown in the app, including uppercase/lowercase. Requiring the case to match may be a recent change by Hubspace
 
