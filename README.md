@@ -113,7 +113,7 @@ This integrations polls the cloud for updates. So, it will take time to register
 
 Please make a github issue if you want support for a new model. I will need your help to test.
 
-Easiest way to help is to download the Testhubspace.py (https://raw.githubusercontent.com/jdeath/Hubspace-Homeassistant/main/TestHubspace.py) and run it (may need to run `pip install requests` first). It will prompt you for your hubspace username and password. It will output data, which you should copy and paste into the GitHub issue. The output has been anonymized, personal information has been removed or randomized.
+Easiest way to help is to download the Testhubspace.py (https://raw.githubusercontent.com/jdeath/Hubspace-Homeassistant/main/TestHubspace.py) and run it (may need to run `pip install requests` or 'python3 -m pip install requests' first). It will prompt you for your hubspace username and password. It will output data, which you should copy and paste into the GitHub issue. The output has been anonymized, personal information has been removed or randomized.
 
 To run right in homeassistant: Install the Advanced SSH & Web Terminal addon if you have not already
 Start a terminal session from your homeassistant and go to homeassistant directory (used to be called config)
