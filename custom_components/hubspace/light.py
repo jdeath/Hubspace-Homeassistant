@@ -95,7 +95,7 @@ def _add_entity(entities, hs, model, deviceClass, friendlyName, debug):
         entities.append(HubspaceFan(hs, friendlyName, debug))
         _LOGGER.debug("Creating Light")
         entities.append(HubspaceLight(hs, friendlyName, debug))
-    elif model == "DriskolFan" or model == "ZandraFan" or model == "TagerFan":
+    elif model == "DriskolFan" or model == "ZandraFan" or model == "TagerFan" or model == "VinwoodFan":
         _LOGGER.debug("Creating Fan")
         entities.append(HubspaceFan(hs, friendlyName, debug))
         _LOGGER.debug("Creating Light")
@@ -451,7 +451,16 @@ class HubspaceLight(LightEntity):
             )
             self._max_mireds = 370
             self._min_mireds = 154
-        
+        # https://www.homedepot.com/p/Home-Decorators-Collection-Vinwood-56-in-Indoor-White-Color-Changing-LED-Brushed-Nickel-Smart-Hubspace-Ceiling-Fan-with-Remote-Control-56002/320816365
+        if (
+            self._model == "VinwoodFan"
+        ):
+            self._supported_color_modes.extend(
+                [ColorMode.BRIGHTNESS]
+            )
+            self._usePowerFunctionInstance = "light-power"
+            self._max_mireds = 370
+            self._min_mireds = 154
         if (
             self._model == "ZandraFan"
         ):

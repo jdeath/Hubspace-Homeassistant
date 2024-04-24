@@ -260,6 +260,8 @@ class HubSpace:
                     if model is not None and deviceClass is not None and defaultName is not None and defaultImage is not None:
                         if model == "" and defaultImage == "ceiling-fan-snyder-park-icon":
                             model = "DriskolFan"
+                        if model == "" and defaultImage == "ceiling-fan-vinings-icon":
+                            model = "VinwoodFan"
                         if deviceClass == "fan" and model == "TBD":
                             model = "ZandraFan"
                         if deviceClass == "fan" and model == "" and defaultImage == "ceiling-fan-slender-icon":
@@ -312,6 +314,8 @@ class HubSpace:
                     if model is not None and deviceClass is not None and defaultName is not None and defaultImage is not None:
                         if model == "" and defaultImage == "ceiling-fan-snyder-park-icon":
                             model = "DriskolFan"
+                        if model == "" and defaultImage == "ceiling-fan-vinings-icon":
+                            model = "VinwoodFan"
                         if deviceClass == "fan" and model == "TBD":
                             model = "ZandraFan"
                         if deviceClass == "fan" and model == "" and defaultImage == "ceiling-fan-slender-icon":
