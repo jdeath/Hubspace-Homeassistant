@@ -206,6 +206,25 @@ class HubSpace:
 
         return r
 
+    def getModelFromMetadata(self, model, deviceClass, defaultName, defaultImage):
+        if model is not None and deviceClass is not None and defaultName is not None and defaultImage is not None:
+            if model == "" and defaultImage == "ceiling-fan-snyder-park-icon":
+                model = "DriskolFan"
+            if model == "" and defaultImage == "ceiling-fan-vinings-icon":
+                model = "VinwoodFan"
+            if deviceClass == "fan" and model == "TBD":
+                model = "ZandraFan"
+            if deviceClass == "fan" and model == "" and defaultImage == "ceiling-fan-slender-icon":
+                model = "TagerFan"
+            if defaultName == "Smart Stake Timer":
+                model = "YardStake"
+                deviceClass = "light"
+            if defaultImage == "a19-e26-color-cct-60w-smd-frosted-icon":
+                model = "12A19060WRGBWH2"
+        else:
+            _LOGGER.debug("One of the metadata is type None")
+        return model, deviceClass, defaultName, defaultImage
+
     def getChildrenFromRoom(self, roomName):
 
         response = self.getMetadeviceInfo()
@@ -338,11 +357,14 @@ class HubSpace:
                 child = lis.get("id")
                 deviceId = lis.get("deviceId")
                 model = lis.get("description", {}).get("device", {}).get("model")
-                deviceClass = (
-                    lis.get("description", {}).get("device", {}).get("deviceClass")
-                )
+                deviceClass = lis.get("description", {}).get("device", {}).get("deviceClass")
+                defaultName = lis.get("description").get("device").get("defaultName")
+                defaultImage = lis.get("description").get("defaultImage")
                 friendlyName = lis.get("friendlyName")
                 functions = lis.get("description", {}).get("functions", [])
+
+                # Update variables based on metadata
+                model, deviceClass, defaultName, defaultImage = self.getModelFromMetadata(model, deviceClass, defaultName, defaultImage)
                 yield child, model, deviceId, deviceClass, friendlyName, functions
 
     def getFunctions(self, id, functionClass=None):
