@@ -390,7 +390,9 @@ class HubspaceLight(LightEntity):
             self._min_mireds = 154
 
         # fan
-        if self._model == "52133, 37833" or self._model == "76278, 37278" or self._model == "DriskolFan":
+        # https://www.homedepot.com/p/Home-Decorators-Collection-Driskol-60-in-White-Color-Changing-LED-Matte-Black-Smart-Ceiling-Fan-with-Light-Kit-and-Remote-Powered-by-Hubspace-56052/319830774
+        # https://www.homedepot.com/p/Home-Decorators-Collection-Vinwood-56-in-Indoor-White-Color-Changing-LED-Brushed-Nickel-Smart-Hubspace-Ceiling-Fan-with-Remote-Control-56002/320816365
+        if self._model == "52133, 37833" or self._model == "76278, 37278" or self._model == "DriskolFan" or self._model == "VinwoodFan":
             self._usePowerFunctionInstance = "light-power"
             self._supported_color_modes.extend([ColorMode.BRIGHTNESS])
             self._temperature_suffix = "K"
@@ -449,16 +451,6 @@ class HubspaceLight(LightEntity):
             self._supported_color_modes.extend(
                 [ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE]
             )
-            self._max_mireds = 370
-            self._min_mireds = 154
-        # https://www.homedepot.com/p/Home-Decorators-Collection-Vinwood-56-in-Indoor-White-Color-Changing-LED-Brushed-Nickel-Smart-Hubspace-Ceiling-Fan-with-Remote-Control-56002/320816365
-        if (
-            self._model == "VinwoodFan"
-        ):
-            self._supported_color_modes.extend(
-                [ColorMode.BRIGHTNESS]
-            )
-            self._usePowerFunctionInstance = "light-power"
             self._max_mireds = 370
             self._min_mireds = 154
         if (
