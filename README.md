@@ -28,7 +28,7 @@ RGB working for: '50291, 50292' and 11PR38120RGBWH1. No brightness or White Colo
 
 RGB (and maybe brightness) working for: '538551010, 538561010, 538552010, 538562010'
 
-Light on/off/dim and fan on/off/low/med/high/full for '52133, 37833' fan and "Driskol 60 inch Fan" and "Zandra". Fan speed is controlled like a light dimmer. Fans are a real pain to support!
+Light on/off/dim and fan on/off/low/med/high/full for '52133, 37833' fan and "Driskol 60 inch Fan" and "Zandra" and "Vinwood". Fan speed is controlled like a light dimmer. Fans are a real pain to support!
 
 On/Off,Brightness: PIR switch (HPDA311CWB)
 
@@ -44,6 +44,8 @@ Landscape Transformer (HB-200-1215WIFIB) works with on/off on all 3 outputs. Sys
 Support for outdoor string lights: HB-10521-HS and maybe HB-17122-HS-WT
 
 Support for L08557 outdoor RGBW Stake Light and Smart Outdoor Power Stake
+
+Support for Husky Smart Watering Timer.
 
 Hubspace/Defiant WiFi Deadbolt support: On=Lock, Off=Unlocked . Auto discover does not yet work for the luck nor the plug it comes with, so friendlynames are required. Recommend using a template entity to show up as a lock to Home Assistant, see below. I plan to make a local Bluetooth integration for the lock, but making slow progress.
 
