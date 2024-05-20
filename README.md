@@ -193,7 +193,7 @@ lock:
 ```
 
 ### Services:
-The integration now has the capability to send a service. You may want this if there is a capability that is not supported by the integration. However, do not use this service, if just want to turn lights on/off or anything else supported by the standard light service (rgb, brightness, colortemp, etc) use the standard light.turn_on , light.turn_off for that.`https://www.home-assistant.io/integrations/light/#service-lightturn_on`. 
+The integration now has the capability to send a service. You may want this if there is a capability that is not supported by the integration. However, **do not use this service, if just want to turn lights on/off or anything else supported by the standard light service** (rgb, brightness, colortemp, etc) use the standard light.turn_on , light.turn_off for that.`https://www.home-assistant.io/integrations/light/#service-lightturn_on`. 
 For example, if you want to send the rainbow effect to your rgb light:
 ```
 service: hubspace.send_command
