@@ -280,50 +280,6 @@ def setup_platform(
                             )
                         except IndexError:
                             _LOGGER.debug("Error extracting outlet index")
-            elif deviceClass == "smart-plug":
-                for function in functions:
-                    if function.get("functionClass") == "toggle":
-                        try:
-                            _LOGGER.debug(
-                                f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}"
-                            )
-                            outletIndex = function.get("functionInstance").split("-")[1]
-                            entities.append(
-                                HubspaceOutlet(
-                                    hs,
-                                    friendlyName,
-                                    outletIndex,
-                                    debug,
-                                    childId,
-                                    model,
-                                    deviceId,
-                                    deviceClass,
-                                )
-                            )
-                        except IndexError:
-                            _LOGGER.debug("Error extracting outlet index")
-            elif deviceClass == "smart-indoor-plug":
-                for function in functions:
-                    if function.get("functionClass") == "toggle":
-                        try:
-                            _LOGGER.debug(
-                                f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}"
-                            )
-                            outletIndex = function.get("functionInstance").split("-")[1]
-                            entities.append(
-                                HubspaceOutlet(
-                                    hs,
-                                    friendlyName,
-                                    outletIndex,
-                                    debug,
-                                    childId,
-                                    model,
-                                    deviceId,
-                                    deviceClass,
-                                )
-                            )
-                        except IndexError:
-                            _LOGGER.debug("Error extracting outlet index")
 
 
     if not entities:
