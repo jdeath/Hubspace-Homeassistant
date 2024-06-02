@@ -103,7 +103,7 @@ def _add_entity(entities, hs, model, deviceClass, friendlyName, debug):
     elif deviceClass == "door-lock" and model == "TBD":
         _LOGGER.debug("Creating Lock")
         entities.append(HubspaceLock(hs, friendlyName, debug))
-    elif model == "water-timer":
+    elif deviceClass == "water-timer":
         _LOGGER.debug("Creating WaterTimer")
         entities.append(HubspaceWaterTimer(hs, friendlyName, "1", debug))
         entities.append(HubspaceWaterTimer(hs, friendlyName, "2", debug))
@@ -268,6 +268,50 @@ def setup_platform(
                             outletIndex = function.get("functionInstance").split("-")[1]
                             entities.append(
                                 HubspaceWaterTimer(
+                                    hs,
+                                    friendlyName,
+                                    outletIndex,
+                                    debug,
+                                    childId,
+                                    model,
+                                    deviceId,
+                                    deviceClass,
+                                )
+                            )
+                        except IndexError:
+                            _LOGGER.debug("Error extracting outlet index")
+            elif deviceClass == "smart-plug":
+                for function in functions:
+                    if function.get("functionClass") == "toggle":
+                        try:
+                            _LOGGER.debug(
+                                f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}"
+                            )
+                            outletIndex = function.get("functionInstance").split("-")[1]
+                            entities.append(
+                                HubspaceOutlet(
+                                    hs,
+                                    friendlyName,
+                                    outletIndex,
+                                    debug,
+                                    childId,
+                                    model,
+                                    deviceId,
+                                    deviceClass,
+                                )
+                            )
+                        except IndexError:
+                            _LOGGER.debug("Error extracting outlet index")
+            elif deviceClass == "smart-indoor-plug":
+                for function in functions:
+                    if function.get("functionClass") == "toggle":
+                        try:
+                            _LOGGER.debug(
+                                f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}"
+                            )
+                            outletIndex = function.get("functionInstance").split("-")[1]
+                            entities.append(
+                                HubspaceOutlet(
                                     hs,
                                     friendlyName,
                                     outletIndex,
@@ -711,7 +755,7 @@ class HubspaceOutlet(LightEntity):
                 self._childId,
                 self._model,
                 self._deviceId,
-                self._deviceClass,
+                deviceClass,
             ] = self._hs.getChildId(friendlyname)
     
     async def async_setup_entry(hass, entry):
@@ -1344,7 +1388,7 @@ class HubspaceWaterTimer(LightEntity):
                 self._childId,
                 self._model,
                 self._deviceId,
-                self._deviceClass,
+                deviceClass,
             ] = self._hs.getChildId(friendlyname)
 
     async def async_setup_entry(hass, entry):
