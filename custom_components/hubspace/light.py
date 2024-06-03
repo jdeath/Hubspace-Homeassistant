@@ -104,9 +104,9 @@ def _add_entity(entities, hs, model, deviceClass, friendlyName, debug):
         _LOGGER.debug("Creating Lock")
         entities.append(HubspaceLock(hs, friendlyName, debug))
     elif deviceClass == "water-timer":
-       _LOGGER.debug("Creating WaterTimer")
-       entities.append(HubspaceWaterTimer(hs, friendlyName, "1", debug))
-       entities.append(HubspaceWaterTimer(hs, friendlyName, "2", debug))
+        _LOGGER.debug("Creating WaterTimer")
+        entities.append(HubspaceWaterTimer(hs, friendlyName, "1", debug))
+        entities.append(HubspaceWaterTimer(hs, friendlyName, "2", debug))
     else:
         _LOGGER.debug("creating lights")
         entities.append(HubspaceLight(hs, friendlyName, debug))
@@ -246,6 +246,28 @@ def setup_platform(
                             outletIndex = function.get("functionInstance").split("-")[1]
                             entities.append(
                                 HubspaceTransformer(
+                                    hs,
+                                    friendlyName,
+                                    outletIndex,
+                                    debug,
+                                    childId,
+                                    model,
+                                    deviceId,
+                                    deviceClass,
+                                )
+                            )
+                        except IndexError:
+                            _LOGGER.debug("Error extracting outlet index")
+            elif deviceClass == "water-timer":
+                for function in functions:
+                    if function.get("functionClass") == "toggle":
+                        try:
+                            _LOGGER.debug(
+                                f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}"
+                            )
+                            outletIndex = function.get("functionInstance").split("-")[1]
+                            entities.append(
+                                HubspaceWaterTimer(
                                     hs,
                                     friendlyName,
                                     outletIndex,
