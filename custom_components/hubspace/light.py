@@ -95,7 +95,7 @@ def _add_entity(entities, hs, model, deviceClass, friendlyName, debug):
         entities.append(HubspaceFan(hs, friendlyName, debug))
         _LOGGER.debug("Creating Light")
         entities.append(HubspaceLight(hs, friendlyName, debug))
-    elif model == "DriskolFan" or model == "ZandraFan" or model == "TagerFan" or model == "VinwoodFan":
+    elif model == "DriskolFan" or model == "ZandraFan" or model == "TagerFan" or model == "VinwoodFan" or model == "CF2003":
         _LOGGER.debug("Creating Fan")
         entities.append(HubspaceFan(hs, friendlyName, debug))
         _LOGGER.debug("Creating Light")
@@ -281,7 +281,6 @@ def setup_platform(
                         except IndexError:
                             _LOGGER.debug("Error extracting outlet index")
 
-
     if not entities:
         return
     add_entities(entities)
@@ -419,7 +418,7 @@ class HubspaceLight(LightEntity):
         # fan
         # https://www.homedepot.com/p/Home-Decorators-Collection-Driskol-60-in-White-Color-Changing-LED-Matte-Black-Smart-Ceiling-Fan-with-Light-Kit-and-Remote-Powered-by-Hubspace-56052/319830774
         # https://www.homedepot.com/p/Home-Decorators-Collection-Vinwood-56-in-Indoor-White-Color-Changing-LED-Brushed-Nickel-Smart-Hubspace-Ceiling-Fan-with-Remote-Control-56002/320816365
-        if self._model == "52133, 37833" or self._model == "76278, 37278" or self._model == "DriskolFan" or self._model == "VinwoodFan":
+        if self._model == "52133, 37833" or self._model == "76278, 37278" or self._model == "DriskolFan" or self._model == "VinwoodFan" or self._model == "CF2003":
             self._usePowerFunctionInstance = "light-power"
             self._supported_color_modes.extend([ColorMode.BRIGHTNESS])
             self._temperature_suffix = "K"
@@ -902,6 +901,20 @@ class HubspaceFan(LightEntity):
             else:
                 speed = "100"
             speedstring = "fan-speed-5-" + speed
+        elif self._model == "CF2003":
+            if brightnessPercent < 20:
+                speed = "016"
+            if brightnessPercent < 40:
+                speed = "033"    
+            elif brightnessPercent < 55:
+                speed = "050"
+            elif brightnessPercent < 75:
+                speed = "066"
+            elif brightnessPercent < 90:
+                speed = "083"
+            else:
+                speed = "100"
+            speedstring = "fan-speed-6-" + speed    
         elif self._model == "TagerFan":    
             if brightnessPercent < 25:
                 speed = "020"
@@ -1015,6 +1028,21 @@ class HubspaceFan(LightEntity):
             brightness = 204    
         elif fanspeed == "fan-speed-100":
             brightness = 255
+            
+        if fanspeed == "fan-speed-6-000":
+            brightness = 0
+        elif fanspeed == "fan-speed-6-016":
+            brightness = 51
+        elif fanspeed == "fan-speed-6-033":
+            brightness = 102
+        elif fanspeed == "fan-speed-6-050":
+            brightness = 128    
+        elif fanspeed == "fan-speed-6-066":
+            brightness = 153
+        elif fanspeed == "fan-speed-6-083":
+            brightness = 204    
+        elif fanspeed == "fan-speed-6-100":
+            brightness = 255    
         
         # For Tager Fan
         if fanspeed == "fan-speed-000":
