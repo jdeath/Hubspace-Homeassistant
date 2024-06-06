@@ -28,7 +28,7 @@ RGB working for: '50291, 50292' and 11PR38120RGBWH1. No brightness or White Colo
 
 RGB (and maybe brightness) working for: '538551010, 538561010, 538552010, 538562010'
 
-Light on/off/dim and fan on/off/low/med/high/full for '52133, 37833' fan and "Driskol 60 inch Fan" and "Zandra" and "Vinwood". Fan speed is controlled like a light dimmer. Fans are a real pain to support!
+Light on/off/dim and fan on/off/low/med/high/full for '52133, 37833' fan and "Driskol 60 inch Fan" and "Zandra" and "Vinwood" and "Nevali". Fan speed is controlled like a light dimmer. Fans are a real pain to support!
 
 On/Off,Brightness: PIR switch (HPDA311CWB)
 
