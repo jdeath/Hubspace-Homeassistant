@@ -915,6 +915,14 @@ class HubspaceFan(LightEntity):
             else:
                 speed = "100"
             speedstring = "fan-speed-6-" + speed    
+        elif self._model == "NevaliFan":
+            if brightnessPercent < 40:
+                speed = "033"    
+            elif brightnessPercent < 75:
+                speed = "066"
+            else:
+                speed = "100"
+            speedstring = "fan-speed-3-" + speed
         elif self._model == "TagerFan":    
             if brightnessPercent < 25:
                 speed = "020"
@@ -1043,7 +1051,16 @@ class HubspaceFan(LightEntity):
             brightness = 204    
         elif fanspeed == "fan-speed-6-100":
             brightness = 255    
-        
+
+        if fanspeed == "fan-speed-000":
+            brightness = 0
+        elif fanspeed == "fan-speed-3-033":
+            brightness = 102
+        elif fanspeed == "fan-speed-3-066":
+            brightness = 153
+        elif fanspeed == "fan-speed-3-100":
+            brightness = 255
+            
         # For Tager Fan
         if fanspeed == "fan-speed-000":
             brightness = 0
