@@ -212,8 +212,10 @@ class HubSpace:
                 model = "DriskolFan"
             if model == "" and defaultImage == "ceiling-fan-vinings-icon":
                 model = "VinwoodFan"
-            if deviceClass == "fan" and model == "TBD":
-                model = "ZandraFan"
+            if deviceClass == "fan" and model == "TBD" and defaultImage == "ceiling-fan-chandra-icon":
+                model = "ZandraFan
+            if deviceClass == "fan" and model == "TBD" and defaultImage == "ceiling-fan-ac-cct-dardanus-icon":
+                model = "NevaliFan"    
             if deviceClass == "fan" and model == "" and defaultImage == "ceiling-fan-slender-icon":
                 model = "TagerFan"
             if defaultName == "Smart Stake Timer":
@@ -281,8 +283,10 @@ class HubSpace:
                             model = "DriskolFan"
                         if model == "" and defaultImage == "ceiling-fan-vinings-icon":
                             model = "VinwoodFan"
-                        if deviceClass == "fan" and model == "TBD":
-                            model = "ZandraFan"
+                        if deviceClass == "fan" and model == "TBD" and defaultImage == "ceiling-fan-chandra-icon":
+                            model = "ZandraFan
+                        if deviceClass == "fan" and model == "TBD" and defaultImage == "ceiling-fan-ac-cct-dardanus-icon":
+                            model = "NevaliFan"
                         if deviceClass == "fan" and model == "" and defaultImage == "ceiling-fan-slender-icon":
                             model = "TagerFan"
                         if defaultName == "Smart Stake Timer":
