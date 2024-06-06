@@ -95,7 +95,7 @@ def _add_entity(entities, hs, model, deviceClass, friendlyName, debug):
         entities.append(HubspaceFan(hs, friendlyName, debug))
         _LOGGER.debug("Creating Light")
         entities.append(HubspaceLight(hs, friendlyName, debug))
-    elif model == "DriskolFan" or model == "ZandraFan" or model == "TagerFan" or model == "VinwoodFan" or model == "CF2003":
+    elif model == "DriskolFan" or model == "ZandraFan" or model == "TagerFan" or model == "VinwoodFan" or model == "CF2003" or model == "NevaliFan":
         _LOGGER.debug("Creating Fan")
         entities.append(HubspaceFan(hs, friendlyName, debug))
         _LOGGER.debug("Creating Light")
