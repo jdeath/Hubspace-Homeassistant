@@ -148,7 +148,7 @@ fan:
       living_room_fan:
         friendly_name: "Fan"
         value_template: "{{ states('light.ceilingfan_fan') }}"
-        percentage_template: "{{ (state_attr('light.ceilingfan_fan', 'brightness') / 255 * 100) | int }}"
+        percentage_template: "{{ ((state_attr('light.ceilingfan_fan', 'brightness') | int(0)) / 255 * 100) | int }}"
         turn_on:
           service: homeassistant.turn_on
           entity_id: light.ceilingfan_fan
