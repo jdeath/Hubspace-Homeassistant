@@ -67,11 +67,10 @@ def mock_ex1_getChildId(friendly_name):
 
 
 @pytest.mark.parametrize(
-    "entities,model,device_class,friendly_name,expected",
+    "model,device_class,friendly_name,expected",
     [
         # Outlet - 2 port
         (
-            [],
             "HPKA315CWB",
             "Doesnt Matter",
             "Outlet - 2 Port",
@@ -92,7 +91,6 @@ def mock_ex1_getChildId(friendly_name):
         ),
         # Outlet - 4 port
         (
-            [],
             "LTS-4G-W",
             "Doesnt Matter",
             "Outlet - 4 Port",
@@ -125,7 +123,6 @@ def mock_ex1_getChildId(friendly_name):
         ),
         # Transformer
         (
-            [],
             "HB-200-1215WIFIB",
             "Doesnt Matter",
             "Transformer",
@@ -152,7 +149,6 @@ def mock_ex1_getChildId(friendly_name):
         ),
         # Fan
         (
-            [],
             "52133, 37833",
             "Doesnt Matter",
             "Fan with Light",
@@ -167,7 +163,6 @@ def mock_ex1_getChildId(friendly_name):
         ),
         # Fan
         (
-            [],
             "76278, 37278",
             "Doesnt Matter",
             "Fan with Light",
@@ -182,7 +177,6 @@ def mock_ex1_getChildId(friendly_name):
         ),
         # Fan
         (
-            [],
             "ZandraFan",
             "Doesnt Matter",
             "Fan with Light",
@@ -197,7 +191,6 @@ def mock_ex1_getChildId(friendly_name):
         ),
         # Door Lock
         (
-            [],
             "TBD",
             "door-lock",
             "Door Lock",
@@ -209,7 +202,6 @@ def mock_ex1_getChildId(friendly_name):
         ),
         # Water Timer
         (
-            [],
             "Doesnt Matter",
             "water-timer",
             "Water Timer",
@@ -230,7 +222,6 @@ def mock_ex1_getChildId(friendly_name):
         ),
         # Anything else just becomes a light
         (
-            [],
             "Doesnt Matter",
             "Doesnt Matter",
             "im-a-light",
@@ -240,35 +231,12 @@ def mock_ex1_getChildId(friendly_name):
                 ),
             ],
         ),
-        # Add a light when entities already exist
-        # Anything else just becomes a light
-        (
-            [
-                generate_device_with_mocked_hubspace(
-                    light.HubspaceLight, friendlyname="im-a-light1", debug=True
-                ),
-            ],
-            "Doesnt Matter",
-            "Doesnt Matter",
-            "im-a-light2",
-            [
-                generate_device_with_mocked_hubspace(
-                    light.HubspaceLight, friendlyname="im-a-light1", debug=True
-                ),
-                generate_device_with_mocked_hubspace(
-                    light.HubspaceLight, friendlyname="im-a-light2", debug=True
-                ),
-            ],
-        ),
     ],
 )
-# entities: list, hs: HubSpace, model: str, deviceClass: str, friendlyName: str, debug: bool
-def test__add_entity(
-    entities, model, device_class, friendly_name, expected, mocked_hubspace
-):
+def test_create_entity(model, device_class, friendly_name, expected, mocked_hubspace):
     mocked_hubspace.getChildId.return_value = MOCKED_CHILD_DATA
-    light._add_entity(
-        entities, mocked_hubspace, model, device_class, friendly_name, True
+    entities = light.create_entity(
+        mocked_hubspace, model, device_class, friendly_name, True
     )
     assert len(entities) == len(expected)
     for ind, entity in enumerate(entities):
@@ -276,57 +244,47 @@ def test__add_entity(
 
 
 @pytest.mark.parametrize(
-    "config,getChildID,expected_entities",
+    "friendly_names,room_names,getChildID,expected_entities",
     [
         # Single Device
         (
-            {
-                CONF_USERNAME: "cool",
-                CONF_PASSWORD: "beans",
-                light.CONF_FRIENDLYNAMES: ["test-light-1"],
-                light.CONF_ROOMNAMES: [],
-                light.CONF_DEBUG: True,
-            },
+            ["test-light-1"],
+            [],
             mock_ex1_getChildId,
             [
                 generate_device_with_mocked_hubspace(
                     light.HubspaceLight,
                     friendlyname="test-light-1",
                     debug=True,
-                    childId="childId1",
-                    model="HPPA51CWB",
-                    deviceId="some-cool-light",
+                    childId=MOCKED_TEST_DATA["test-light-1"][0],
+                    model=MOCKED_TEST_DATA["test-light-1"][1],
+                    deviceId=MOCKED_TEST_DATA["test-light-1"][2],
                     deviceClass="DoesntMatter",
                 ),
             ],
         ),
         # Multiple Devices
         (
-            {
-                CONF_USERNAME: "cool",
-                CONF_PASSWORD: "beans",
-                light.CONF_FRIENDLYNAMES: ["test-light-1", "test-outlet-1"],
-                light.CONF_ROOMNAMES: [],
-                light.CONF_DEBUG: True,
-            },
+            ["test-light-1", "test-outlet-1"],
+            [],
             mock_ex1_getChildId,
             [
                 generate_device_with_mocked_hubspace(
                     light.HubspaceLight,
                     friendlyname="test-light-1",
                     debug=True,
-                    childId="childId1",
-                    model="HPPA51CWB",
-                    deviceId="some-cool-light",
+                    childId=MOCKED_TEST_DATA["test-light-1"][0],
+                    model=MOCKED_TEST_DATA["test-light-1"][1],
+                    deviceId=MOCKED_TEST_DATA["test-light-1"][2],
                     deviceClass="DoesntMatter",
                 ),
                 generate_device_with_mocked_hubspace(
                     light.HubspaceOutlet,
                     friendlyname="test-outlet-1",
                     debug=True,
-                    childId="childId2",
-                    model="HPPA51CWB",
-                    deviceId="some-cool-switch",
+                    childId=MOCKED_TEST_DATA["test-outlet-1"][0],
+                    model=MOCKED_TEST_DATA["test-outlet-1"][1],
+                    deviceId=MOCKED_TEST_DATA["test-outlet-1"][2],
                     deviceClass="DoesntMatter",
                     outletIndex="1",
                 ),
@@ -334,9 +292,9 @@ def test__add_entity(
                     light.HubspaceOutlet,
                     friendlyname="test-outlet-1",
                     debug=True,
-                    childId="childId2",
-                    model="HPPA51CWB",
-                    deviceId="some-cool-switch",
+                    childId=MOCKED_TEST_DATA["test-outlet-1"][0],
+                    model=MOCKED_TEST_DATA["test-outlet-1"][1],
+                    deviceId=MOCKED_TEST_DATA["test-outlet-1"][2],
                     deviceClass="DoesntMatter",
                     outletIndex="2",
                 ),
@@ -344,19 +302,17 @@ def test__add_entity(
         ),
     ],
 )
-def test_setup_platform_manual(
-    config, getChildID, expected_entities, mocked_hubspace, mocker
+def test_manual_discovery(
+    friendly_names,room_names, getChildID, expected_entities, mocked_hubspace, mocker
 ):
-    hass = mocker.Mock()
-    add_entities = mocker.Mock()
     # Force the call to return our test data
     mocker.patch.object(mocked_hubspace, "getChildId", side_effect=getChildID)
     # Force the class instance creation to use our mocked value
     mocker.patch.object(light, "HubSpace", return_value=mocked_hubspace)
-    light.setup_platform(hass, config, add_entities)
-    assert len(add_entities.call_args[0][0]) == len(expected_entities)
-    for ind, call in enumerate(add_entities.call_args_list):
-        validate_hubspace_equals(call.args[0][0], expected_entities[ind])
+    entities = light.manual_discovery(mocked_hubspace, friendly_names, room_names, True)
+    assert len(entities) == len(expected_entities)
+    for ind, entity in enumerate(entities):
+        validate_hubspace_equals(entity, expected_entities[ind])
 
 
 def autodiscovery_light(*args, **kwargs):
@@ -425,17 +381,10 @@ def autodiscovery_water_timer(*args, **kwargs):
 
 
 @pytest.mark.parametrize(
-    "config, device_ids_generator, expected_entities",
+    "device_ids_generator, expected_entities",
     [
         # Driskol Fan
         (
-            {
-                CONF_USERNAME: "cool",
-                CONF_PASSWORD: "beans",
-                light.CONF_FRIENDLYNAMES: [],
-                light.CONF_ROOMNAMES: [],
-                light.CONF_DEBUG: True,
-            },
             autodiscovery_driskolfan,
             [
                 generate_device_with_mocked_hubspace(
@@ -451,13 +400,6 @@ def autodiscovery_water_timer(*args, **kwargs):
         ),
         # Light
         (
-            {
-                CONF_USERNAME: "cool",
-                CONF_PASSWORD: "beans",
-                light.CONF_FRIENDLYNAMES: [],
-                light.CONF_ROOMNAMES: [],
-                light.CONF_DEBUG: True,
-            },
             autodiscovery_light,
             [
                 generate_device_with_mocked_hubspace(
@@ -473,13 +415,6 @@ def autodiscovery_water_timer(*args, **kwargs):
         ),
         # Power Outlet
         (
-            {
-                CONF_USERNAME: "cool",
-                CONF_PASSWORD: "beans",
-                light.CONF_FRIENDLYNAMES: [],
-                light.CONF_ROOMNAMES: [],
-                light.CONF_DEBUG: True,
-            },
             autodiscovery_outlet,
             [
                 generate_device_with_mocked_hubspace(
@@ -506,13 +441,6 @@ def autodiscovery_water_timer(*args, **kwargs):
         ),
         # Transformer
         (
-            {
-                CONF_USERNAME: "cool",
-                CONF_PASSWORD: "beans",
-                light.CONF_FRIENDLYNAMES: [],
-                light.CONF_ROOMNAMES: [],
-                light.CONF_DEBUG: True,
-            },
             autodiscovery_transformer,
             [
                 generate_device_with_mocked_hubspace(
@@ -539,13 +467,6 @@ def autodiscovery_water_timer(*args, **kwargs):
         ),
         # Transformer
         (
-            {
-                CONF_USERNAME: "cool",
-                CONF_PASSWORD: "beans",
-                light.CONF_FRIENDLYNAMES: [],
-                light.CONF_ROOMNAMES: [],
-                light.CONF_DEBUG: True,
-            },
             autodiscovery_water_timer,
             [
                 generate_device_with_mocked_hubspace(
@@ -572,12 +493,79 @@ def autodiscovery_water_timer(*args, **kwargs):
         ),
     ],
 )
-def test_setup_platform_auto(
-    config, device_ids_generator, expected_entities, mocked_hubspace, mocker
+def test_auto_discovery(
+    device_ids_generator, expected_entities, mocked_hubspace, mocker
+):
+    # Force the call to return our test data
+    mocker.patch.object(
+        mocked_hubspace, "discoverDeviceIds", side_effect=device_ids_generator
+    )
+    # Force the class instance creation to use our mocked value
+    mocker.patch.object(light, "HubSpace", return_value=mocked_hubspace)
+    entities = light.auto_discovery(mocked_hubspace, True)
+    assert len(entities) == len(expected_entities)
+    for ind, entity in enumerate(entities):
+        validate_hubspace_equals(entity, expected_entities[ind])
+
+
+@pytest.mark.parametrize(
+    "config,getChildID,device_ids_generator,expected_entities",
+    [
+        # Manual discovery
+        (
+            {
+                CONF_USERNAME: "cool",
+                CONF_PASSWORD: "beans",
+                light.CONF_FRIENDLYNAMES: ["test-light-1"],
+                light.CONF_ROOMNAMES: [],
+                light.CONF_DEBUG: True,
+            },
+            mock_ex1_getChildId,
+            autodiscovery_light,
+            [
+                generate_device_with_mocked_hubspace(
+                    light.HubspaceLight,
+                    friendlyname="test-light-1",
+                    debug=True,
+                    childId=MOCKED_TEST_DATA["test-light-1"][0],
+                    model=MOCKED_TEST_DATA["test-light-1"][1],
+                    deviceId=MOCKED_TEST_DATA["test-light-1"][2],
+                    deviceClass="DoesntMatter",
+                ),
+            ],
+        ),
+        # Auto Discovery
+        (
+            {
+                CONF_USERNAME: "cool",
+                CONF_PASSWORD: "beans",
+                light.CONF_FRIENDLYNAMES: [],
+                light.CONF_ROOMNAMES: [],
+                light.CONF_DEBUG: True,
+            },
+            mock_ex1_getChildId,
+            autodiscovery_light,
+            [
+                generate_device_with_mocked_hubspace(
+                    light.HubspaceLight,
+                    friendlyname="test-light-1",
+                    debug=True,
+                    childId=MOCKED_TEST_DATA["test-light-1"][0],
+                    model=MOCKED_TEST_DATA["test-light-1"][1],
+                    deviceId=MOCKED_TEST_DATA["test-light-1"][2],
+                    deviceClass="DoesntMatter",
+                ),
+            ],
+        ),
+    ]
+)
+def test_setup_platform(
+    config, getChildID, device_ids_generator, expected_entities, mocked_hubspace, mocker
 ):
     hass = mocker.Mock()
     add_entities = mocker.Mock()
     # Force the call to return our test data
+    mocker.patch.object(mocked_hubspace, "getChildId", side_effect=getChildID)
     mocker.patch.object(
         mocked_hubspace, "discoverDeviceIds", side_effect=device_ids_generator
     )

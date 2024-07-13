@@ -68,10 +68,9 @@ def _convert_color_temp(value):
     return 1000000 // int(value)
 
 
-def _add_entity(entities: list, hs: HubSpace, model: str, deviceClass: str, friendlyName: str, debug: bool) -> list:
-    """Adds all required entities for the given device
+def create_entity(hs: HubSpace, model: str, deviceClass: str, friendlyName: str, debug: bool) -> list:
+    """Creates all entities aligned to a device
 
-    :param entities: List of current entities
     :param hs: HubSpace connection
     :param model: Model of the device
     :param deviceClass: Type of the device
@@ -79,6 +78,7 @@ def _add_entity(entities: list, hs: HubSpace, model: str, deviceClass: str, frie
     :param debug: If debug is enabled
     """
 
+    entities = []
     if model == "HPKA315CWB" or model == "HPPA52CWBA023":
         _LOGGER.debug("Creating Outlets")
         entities.append(HubspaceOutlet(hs, friendlyName, "1", debug))
@@ -123,6 +123,164 @@ def _add_entity(entities: list, hs: HubSpace, model: str, deviceClass: str, frie
     return entities
 
 
+def manual_discovery(hs: HubSpace, friendly_names: list[str], room_names: list[str], debug: bool) -> list:
+    """Add entities based on names
+
+    :param hs: HubSpace connection
+    :param friendly_names: List of names to add to Home Assistant
+    :param room_names: List of rooms to search that contain
+        entities that should be added to Home Assistant
+    :param debug: If debug is enabled
+
+    :return: List of created entities to add to Home Assistant
+    """
+    entities = []
+    for friendly_name in friendly_names:
+        _LOGGER.debug("friendlyName " + friendly_name)
+        [childId, model, deviceId, deviceClass] = hs.getChildId(friendly_name)
+        if deviceClass == "fan" and model == "":
+            model = "DriskolFan"
+            _LOGGER.debug("Unknown model fan, setting as Driskol")
+            _LOGGER.debug("If your fan is not a Driskol, raise an issue")
+        _LOGGER.debug("Switch on Model " + model)
+        _LOGGER.debug("childId: " + childId)
+        _LOGGER.debug("deviceId: " + deviceId)
+        _LOGGER.debug("deviceClass: " + deviceClass)
+        entities.extend(create_entity(hs, model, deviceClass, friendly_name, debug))
+
+    for room_name in room_names:
+        _LOGGER.debug("roomName " + room_name)
+        children = hs.getChildrenFromRoom(room_name)
+        for childId in children:
+            _LOGGER.debug("childId " + childId)
+            [childId, model, deviceId, deviceClass, friendlyName] = hs.getChildInfoById(
+                childId
+            )
+            _LOGGER.debug("Switch on Model " + model)
+            _LOGGER.debug("deviceId: " + deviceId)
+            _LOGGER.debug("deviceClass: " + deviceClass)
+            _LOGGER.debug("friendlyName: " + friendlyName)
+            entities.extend(create_entity(entities, hs, model, deviceClass, friendlyName, debug))
+    return entities
+
+
+def auto_discovery(hs: HubSpace, debug: bool) -> list:
+    """Query HubSpace and find devices to add
+
+    :param hs: HubSpace connection
+    :param debug: If debug is enabled
+
+    :return: List of created entities to add to Home Assistant
+    """
+    entities = []
+    _LOGGER.debug("Attempting automatic discovery")
+    for [
+        childId,
+        model,
+        deviceId,
+        deviceClass,
+        friendlyName,
+        functions,
+    ] in hs.discoverDeviceIds():
+        _LOGGER.debug("childId " + childId)
+        _LOGGER.debug("Switch on Model " + model)
+        _LOGGER.debug("deviceId: " + deviceId)
+        _LOGGER.debug("deviceClass: " + deviceClass)
+        _LOGGER.debug("friendlyName: " + friendlyName)
+        _LOGGER.debug("functions: " + str(functions))
+
+        if deviceClass == "fan":
+            if model == "":
+                model = "DriskolFan"
+                _LOGGER.debug("Unknown model fan, setting as Driskol")
+                _LOGGER.debug("If your fan is not a Driskol, raise an issue")
+            entities.append(
+                HubspaceFan(
+                    hs, friendlyName, debug, childId, model, deviceId, deviceClass
+                )
+            )
+        elif deviceClass == "light" or deviceClass == "switch":
+            entities.append(
+                HubspaceLight(
+                    hs,
+                    friendlyName,
+                    debug,
+                    childId,
+                    model,
+                    deviceId,
+                    deviceClass,
+                    functions,
+                )
+            )
+        elif deviceClass == "power-outlet":
+            for function in functions:
+                if function.get("functionClass") == "toggle":
+                    try:
+                        _LOGGER.debug(
+                            f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}"
+                        )
+                        outletIndex = function.get("functionInstance").split("-")[1]
+                        entities.append(
+                            HubspaceOutlet(
+                                hs,
+                                friendlyName,
+                                outletIndex,
+                                debug,
+                                childId,
+                                model,
+                                deviceId,
+                                deviceClass,
+                            )
+                        )
+                    except IndexError:
+                        _LOGGER.debug("Error extracting outlet index")
+        elif deviceClass == "landscape-transformer":
+            for function in functions:
+                if function.get("functionClass") == "toggle":
+                    try:
+                        _LOGGER.debug(
+                            f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}"
+                        )
+                        outletIndex = function.get("functionInstance").split("-")[1]
+                        entities.append(
+                            HubspaceTransformer(
+                                hs,
+                                friendlyName,
+                                outletIndex,
+                                debug,
+                                childId,
+                                model,
+                                deviceId,
+                                deviceClass,
+                            )
+                        )
+                    except IndexError:
+                        _LOGGER.debug("Error extracting outlet index")
+        elif deviceClass == "water-timer":
+            for function in functions:
+                if function.get("functionClass") == "toggle":
+                    try:
+                        _LOGGER.debug(
+                            f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}"
+                        )
+                        outletIndex = function.get("functionInstance").split("-")[1]
+                        entities.append(
+                            HubspaceWaterTimer(
+                                hs,
+                                friendlyName,
+                                outletIndex,
+                                debug,
+                                childId,
+                                model,
+                                deviceId,
+                                deviceClass,
+                            )
+                        )
+                    except IndexError:
+                        _LOGGER.debug("Error extracting outlet index")
+    return entities
+
+
 def setup_platform(
     hass: HomeAssistant,
     config: ConfigType,
@@ -140,159 +298,21 @@ def setup_platform(
     try:
         hs = HubSpace(username, password)
     except requests.exceptions.ReadTimeout as ex:
+        # Where does this exception come from? The integration will break either way
+        # but more spectacularly since the exception is not imported
         raise PlatformNotReady(
             f"Connection error while connecting to hubspace: {ex}"
         ) from ex
 
     entities = []
-    for friendlyName in config.get(CONF_FRIENDLYNAMES, []):
-
-        _LOGGER.debug("friendlyName " + friendlyName)
-        [childId, model, deviceId, deviceClass] = hs.getChildId(friendlyName)
-        
-        if deviceClass == "fan" and model == "":
-            model = "DriskolFan"
-            _LOGGER.debug("Unknown model fan, setting as Driskol")
-            _LOGGER.debug("If your fan is not a Driskol, raise an issue")
-
-        _LOGGER.debug("Switch on Model " + model)
-        _LOGGER.debug("childId: " + childId)
-        _LOGGER.debug("deviceId: " + deviceId)
-        _LOGGER.debug("deviceClass: " + deviceClass)
-            
-        entities = _add_entity(entities, hs, model, deviceClass, friendlyName, debug)
-
-    for roomName in config.get(CONF_ROOMNAMES, []):
-
-        _LOGGER.debug("roomName " + roomName)
-        children = hs.getChildrenFromRoom(roomName)
-
-        for childId in children:
-
-            _LOGGER.debug("childId " + childId)
-            [childId, model, deviceId, deviceClass, friendlyName] = hs.getChildInfoById(
-                childId
-            )
-
-            _LOGGER.debug("Switch on Model " + model)
-            _LOGGER.debug("deviceId: " + deviceId)
-            _LOGGER.debug("deviceClass: " + deviceClass)
-            _LOGGER.debug("friendlyName: " + friendlyName)
-            
-            entities = _add_entity(
-                entities, hs, model, deviceClass, friendlyName, debug
-            )
-
-    if config.get(CONF_FRIENDLYNAMES) == [] and config.get(CONF_ROOMNAMES) == []:
-        _LOGGER.debug("Attempting automatic discovery")
-        for [
-            childId,
-            model,
-            deviceId,
-            deviceClass,
-            friendlyName,
-            functions,
-        ] in hs.discoverDeviceIds():
-            _LOGGER.debug("childId " + childId)
-            _LOGGER.debug("Switch on Model " + model)
-            _LOGGER.debug("deviceId: " + deviceId)
-            _LOGGER.debug("deviceClass: " + deviceClass)
-            _LOGGER.debug("friendlyName: " + friendlyName)
-            _LOGGER.debug("functions: " + str(functions))
-
-            if deviceClass == "fan":
-                if model == "":
-                    model = "DriskolFan"
-                    _LOGGER.debug("Unknown model fan, setting as Driskol")
-                    _LOGGER.debug("If your fan is not a Driskol, raise an issue")
-                entities.append(
-                    HubspaceFan(
-                        hs, friendlyName, debug, childId, model, deviceId, deviceClass
-                    )
-                )
-            elif deviceClass == "light" or deviceClass == "switch":
-                entities.append(
-                    HubspaceLight(
-                        hs,
-                        friendlyName,
-                        debug,
-                        childId,
-                        model,
-                        deviceId,
-                        deviceClass,
-                        functions,
-                    )
-                )
-            elif deviceClass == "power-outlet":
-                for function in functions:
-                    if function.get("functionClass") == "toggle":
-                        try:
-                            _LOGGER.debug(
-                                f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}"
-                            )
-                            outletIndex = function.get("functionInstance").split("-")[1]
-                            entities.append(
-                                HubspaceOutlet(
-                                    hs,
-                                    friendlyName,
-                                    outletIndex,
-                                    debug,
-                                    childId,
-                                    model,
-                                    deviceId,
-                                    deviceClass,
-                                )
-                            )
-                        except IndexError:
-                            _LOGGER.debug("Error extracting outlet index")
-            elif deviceClass == "landscape-transformer":
-                for function in functions:
-                    if function.get("functionClass") == "toggle":
-                        try:
-                            _LOGGER.debug(
-                                f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}"
-                            )
-                            outletIndex = function.get("functionInstance").split("-")[1]
-                            entities.append(
-                                HubspaceTransformer(
-                                    hs,
-                                    friendlyName,
-                                    outletIndex,
-                                    debug,
-                                    childId,
-                                    model,
-                                    deviceId,
-                                    deviceClass,
-                                )
-                            )
-                        except IndexError:
-                            _LOGGER.debug("Error extracting outlet index")
-            elif deviceClass == "water-timer":
-                for function in functions:
-                    if function.get("functionClass") == "toggle":
-                        try:
-                            _LOGGER.debug(
-                                f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}"
-                            )
-                            outletIndex = function.get("functionInstance").split("-")[1]
-                            entities.append(
-                                HubspaceWaterTimer(
-                                    hs,
-                                    friendlyName,
-                                    outletIndex,
-                                    debug,
-                                    childId,
-                                    model,
-                                    deviceId,
-                                    deviceClass,
-                                )
-                            )
-                        except IndexError:
-                            _LOGGER.debug("Error extracting outlet index")
-
-    if not entities:
-        return
-    add_entities(entities)
+    friendly_names: list[str] = config.get(CONF_FRIENDLYNAMES, [])
+    room_names: list[str] = config.get(CONF_ROOMNAMES, [])
+    if any([friendly_names, room_names]):
+        entities.extend(manual_discovery(hs, friendly_names, room_names, debug))
+    else:
+        entities.extend(auto_discovery(hs, debug))
+    if entities:
+        add_entities(entities)
 
     def my_service(call: ServiceCall) -> None:
         """My first service."""
