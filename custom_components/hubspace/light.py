@@ -68,7 +68,16 @@ def _convert_color_temp(value):
     return 1000000 // int(value)
 
 
-def _add_entity(entities, hs, model, deviceClass, friendlyName, debug):
+def _add_entity(entities: list, hs: HubSpace, model: str, deviceClass: str, friendlyName: str, debug: bool) -> list:
+    """Adds all required entities for the given device
+
+    :param entities: List of current entities
+    :param hs: HubSpace connection
+    :param model: Model of the device
+    :param deviceClass: Type of the device
+    :param friendlyName: Name of the device within HubSpace
+    :param debug: If debug is enabled
+    """
 
     if model == "HPKA315CWB" or model == "HPPA52CWBA023":
         _LOGGER.debug("Creating Outlets")
@@ -136,7 +145,7 @@ def setup_platform(
         ) from ex
 
     entities = []
-    for friendlyName in config.get(CONF_FRIENDLYNAMES):
+    for friendlyName in config.get(CONF_FRIENDLYNAMES, []):
 
         _LOGGER.debug("friendlyName " + friendlyName)
         [childId, model, deviceId, deviceClass] = hs.getChildId(friendlyName)
@@ -153,7 +162,7 @@ def setup_platform(
             
         entities = _add_entity(entities, hs, model, deviceClass, friendlyName, debug)
 
-    for roomName in config.get(CONF_ROOMNAMES):
+    for roomName in config.get(CONF_ROOMNAMES, []):
 
         _LOGGER.debug("roomName " + roomName)
         children = hs.getChildrenFromRoom(roomName)
