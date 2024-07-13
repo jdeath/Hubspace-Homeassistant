@@ -1,5 +1,5 @@
 {
-  "name": "Hubspace-Homeassistant",
+  "name": "Hubspace",
   "render_readme": true,
   "homeassistant": "2021.3.1"
 }

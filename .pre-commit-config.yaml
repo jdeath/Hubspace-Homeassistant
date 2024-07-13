@@ -1,4 +1,4 @@
-exclude: custom_components/
+exclude: sample_data/
 default_language_version:
   python: python3
 repos:

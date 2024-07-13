@@ -1,1 +1,2 @@
 homeassistant
+hubspace-async>=0.0.5

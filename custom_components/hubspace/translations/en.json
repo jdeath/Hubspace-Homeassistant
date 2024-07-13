@@ -1,23 +1,41 @@
 {
-  "title": "Hubspace",
-  "services": {
-    "send_command": {
-      "name": "Send Command",
-      "description": "Sends a custom hubspace API command.",
-      "fields": {
-        "value": {
-          "name": "Value",
-          "description": "The value you want to send"
+    "title": "Hubspace",
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "username": "Username",
+                    "password": "Password"
+                },
+                "data_description": {
+                    "username": "Username",
+                    "password": "Password"
+                }
+            }
         },
-        "function_class": {
-          "name": "Function Class",
-          "description": "functionClass you want to send"
-        },
-         "function_instance": {
-          "name": "Function Instance",
-          "description": "functionInstance you want to send"
+        "error": {
+            "base": "Connection timed out",
+            "unknown": "Unable to authentication. Please verify Username and Password"
         }
-      }
+    },
+    "services": {
+        "send_command": {
+            "name": "Send Command",
+            "description": "Sends a custom hubspace API command.",
+            "fields": {
+                "value": {
+                    "name": "Value",
+                    "description": "The value you want to send"
+                },
+                "function_class": {
+                    "name": "Function Class",
+                    "description": "functionClass you want to send"
+                },
+                "function_instance": {
+                    "name": "Function Instance",
+                    "description": "functionInstance you want to send"
+                }
+            }
+        }
     }
-  }
 }

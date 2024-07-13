@@ -1,13 +1,13 @@
-import pytest
 import logging
 
-from custom_components.hubspace import hubspace
+import hubspace_async
+import pytest
 
 
 @pytest.fixture
 def mocked_hubspace(mocker):
     """Mock all HubSpace functionality but ensure the class is correct"""
-    hs_mock = mocker.patch.object(hubspace, "HubSpace", autospec=True)
+    hs_mock = mocker.patch.object(hubspace_async, "HubSpaceConnection", autospec=True)
     return hs_mock
 
 
