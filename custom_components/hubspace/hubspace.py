@@ -353,24 +353,6 @@ class HubSpace:
         # _LOGGER.debug("No model found ")
         return child, model, deviceId, deviceClass
 
-    def discoverDeviceIds(self):
-        response = self.getMetadeviceInfo()
-
-        for lis in response.json():
-            if lis.get("typeId") == "metadevice.device":
-                child = lis.get("id")
-                deviceId = lis.get("deviceId")
-                model = lis.get("description", {}).get("device", {}).get("model")
-                deviceClass = lis.get("description", {}).get("device", {}).get("deviceClass")
-                defaultName = lis.get("description").get("device").get("defaultName")
-                defaultImage = lis.get("description").get("defaultImage")
-                friendlyName = lis.get("friendlyName")
-                functions = lis.get("description", {}).get("functions", [])
-
-                # Update variables based on metadata
-                model, deviceClass, defaultName, defaultImage = self.getModelFromMetadata(model, deviceClass, defaultName, defaultImage)
-                yield child, model, deviceId, deviceClass, friendlyName, functions
-
     def getFunctions(self, id, functionClass=None):
         response = self.getMetadeviceInfo()
 

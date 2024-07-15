@@ -1,8 +1,9 @@
-from custom_components.hubspace import hubspace_device
-import pytest
-import os
 import json
+import os
 
+import pytest
+
+from custom_components.hubspace import hubspace_device
 
 current_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -15,7 +16,8 @@ with open(os.path.join(current_path, "data", "api_response_multi_room.json")) as
 
 
 @pytest.mark.parametrize(
-    "data,room_names,expected", [
+    "data,room_names,expected",
+    [
         # Single room
         (
             api_single,
@@ -29,7 +31,7 @@ with open(os.path.join(current_path, "data", "api_response_multi_room.json")) as
             [
                 "b1e1213f-9b8e-40c6-96b5-cdee6cf85315",
                 "9916c3fb-e591-4cc0-824a-2e7536f03b1d",
-                "f74f69ea-9457-4390-938b-a005d7066ef2"
+                "f74f69ea-9457-4390-938b-a005d7066ef2",
             ],
         ),
         # Multi-room but single room requested
@@ -48,17 +50,18 @@ with open(os.path.join(current_path, "data", "api_response_multi_room.json")) as
             [
                 "b1e1213f-9b8e-40c6-96b5-cdee6cf85315",
                 "9916c3fb-e591-4cc0-824a-2e7536f03b1d",
-                "f74f69ea-9457-4390-938b-a005d7066ef2"
+                "f74f69ea-9457-4390-938b-a005d7066ef2",
             ],
         ),
-    ]
+    ],
 )
 def test_get_devices_from_rooms(data, room_names, expected):
     assert hubspace_device.get_devices_from_rooms(data, room_names) == expected
 
 
 @pytest.mark.parametrize(
-    "data,expected", [
+    "data,expected",
+    [
         (
             [
                 {"typeId": "not-a-device", "id": "nope"},
@@ -70,22 +73,15 @@ def test_get_devices_from_rooms(data, room_names, expected):
                 "dev2": {"typeId": "metadevice.device", "id": "dev2"},
             },
         )
-    ]
+    ],
 )
 def test_generated_hashed_devices(data, expected):
     assert hubspace_device.generated_hashed_devices(data) == expected
 
 
-#     id: str
-#     device_id: str
-#     model: str
-#     device_class: str
-#     default_name: str
-#     default_image: str
-#     friendly_name: str
-#     functions: list[dict]
 @pytest.mark.parametrize(
-    "hs_device,expected", [
+    "hs_device,expected",
+    [
         # Everything is set correctly
         (
             {
@@ -286,7 +282,7 @@ def test_generated_hashed_devices(data, expected):
                 }
             ),
         ),
-    ]
+    ],
 )
 def test_HubSpaceDevice(hs_device, expected):
     assert hubspace_device.HubSpaceDevice(**hs_device) == expected
@@ -297,7 +293,8 @@ with open(os.path.join(current_path, "data", "device_lock.json")) as fh:
 
 
 @pytest.mark.parametrize(
-    "hs_device,expected_attrs", [
+    "hs_device,expected_attrs",
+    [
         # Validate when values are missing
         (
             {},
@@ -310,7 +307,7 @@ with open(os.path.join(current_path, "data", "device_lock.json")) as fh:
                 "default_image": None,
                 "friendly_name": None,
                 "functions": [],
-            }
+            },
         ),
         # Ensure values are properly parsed
         (
@@ -324,14 +321,16 @@ with open(os.path.join(current_path, "data", "device_lock.json")) as fh:
                 "default_image": "keypad-deadbolt-lock-icon",
                 "friendly_name": "Friendly Name 2",
                 "functions": device_lock_response[0]["description"]["functions"],
-            }
+            },
         ),
-    ]
+    ],
 )
 def test_get_device(hs_device, expected_attrs):
     dev = hubspace_device.get_device(hs_device)
     for key, val in expected_attrs.items():
-        assert getattr(dev, key) == val, f"Key {key} did not match, {getattr(dev, key)} != {val}"
+        assert (
+            getattr(dev, key) == val
+        ), f"Key {key} did not match, {getattr(dev, key)} != {val}"
 
 
 with open(os.path.join(current_path, "data", "api_response_multi_room.json")) as fh:
@@ -339,7 +338,8 @@ with open(os.path.join(current_path, "data", "api_response_multi_room.json")) as
 
 
 @pytest.mark.parametrize(
-    "data, friendly_names, room_names, expected, msgs", [
+    "data, friendly_names, room_names, expected, msgs",
+    [
         # Autodiscovery
         (
             device_lock_response,
@@ -370,7 +370,10 @@ with open(os.path.join(current_path, "data", "api_response_multi_room.json")) as
             ["Friendly Name 1"],
             ["Room Name 1"],
             [],
-            ["Performing a manual discovery for friendlyNames", "Performing a manual discovery for roomNames"],
+            [
+                "Performing a manual discovery for friendlyNames",
+                "Performing a manual discovery for roomNames",
+            ],
         ),
         # Manual Discovery - roomName exists
         (
@@ -385,25 +388,31 @@ with open(os.path.join(current_path, "data", "api_response_multi_room.json")) as
         ),
         # Manual Discovery - friendlyName and roomName exists
         (
-                api_response_multi_room,
-                ["Friendly Name 2"],
-                ["Friendly Name 1"],
-                [
-                    "9916c3fb-e591-4cc0-824a-2e7536f03b1d",
-                    "b1e1213f-9b8e-40c6-96b5-cdee6cf85315",
-                    "f74f69ea-9457-4390-938b-a005d7066ef2",
-                ],
-                ["Performing a manual discovery for roomNames"],
-        )
-    ]
+            api_response_multi_room,
+            ["Friendly Name 2"],
+            ["Friendly Name 1"],
+            [
+                "9916c3fb-e591-4cc0-824a-2e7536f03b1d",
+                "b1e1213f-9b8e-40c6-96b5-cdee6cf85315",
+                "f74f69ea-9457-4390-938b-a005d7066ef2",
+            ],
+            ["Performing a manual discovery for roomNames"],
+        ),
+    ],
 )
 def test_get_requested_ids(data, friendly_names, room_names, expected, msgs, caplog):
     hashed_devices = hubspace_device.generated_hashed_devices(data)
-    assert hubspace_device.get_requested_ids(data, friendly_names, room_names, hashed_devices) == expected
+    assert (
+        hubspace_device.get_requested_ids(
+            data, friendly_names, room_names, hashed_devices
+        )
+        == expected
+    )
 
 
 @pytest.mark.parametrize(
-    "data, friendly_names, room_names, expected, msgs", [
+    "data, friendly_names, room_names, expected, msgs",
+    [
         # Autodiscovery
         (
             device_lock_response,
@@ -446,14 +455,25 @@ def test_get_requested_ids(data, friendly_names, room_names, expected, msgs, cap
             ],
             ["Performing a manual discovery for friendlyNames"],
         ),
-    ]
+    ],
 )
 def test_get_hubspace_devices(data, friendly_names, room_names, expected, msgs, caplog):
-    devices = [x for x in hubspace_device.get_hubspace_devices(data, friendly_names, room_names)]
+    devices = [
+        x
+        for x in hubspace_device.get_hubspace_devices(data, friendly_names, room_names)
+    ]
     assert len(devices) == len(expected)
     for ind, device in enumerate(devices):
         # We know functions correctly work from test_get_device so skip that one
-        attrs_to_validate = ["id", "device_id", "model", "device_class", "default_name", "default_image", "friendly_name"]
+        attrs_to_validate = [
+            "id",
+            "device_id",
+            "model",
+            "device_class",
+            "default_name",
+            "default_image",
+            "friendly_name",
+        ]
         for attr in attrs_to_validate:
             assert getattr(device, attr) == getattr(expected[ind], attr)
     for message in msgs:

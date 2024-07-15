@@ -4,6 +4,7 @@ from __future__ import annotations
 import logging
 
 from .hubspace import HubSpace
+from . import hubspace_device
 import voluptuous as vol
 
 # Import the device class from the component that you want to support
@@ -68,217 +69,98 @@ def _convert_color_temp(value):
     return 1000000 // int(value)
 
 
-def create_entity(hs: HubSpace, model: str, deviceClass: str, friendlyName: str, debug: bool) -> list:
-    """Creates all entities aligned to a device
-
-    :param hs: HubSpace connection
-    :param model: Model of the device
-    :param deviceClass: Type of the device
-    :param friendlyName: Name of the device within HubSpace
-    :param debug: If debug is enabled
-    """
-
-    entities = []
-    if model == "HPKA315CWB" or model == "HPPA52CWBA023":
-        _LOGGER.debug("Creating Outlets")
-        entities.append(HubspaceOutlet(hs, friendlyName, "1", debug))
-        entities.append(HubspaceOutlet(hs, friendlyName, "2", debug))
-    elif model == "LTS-4G-W":
-        _LOGGER.debug("Creating Outlets")
-        entities.append(HubspaceOutlet(hs, friendlyName, "1", debug))
-        entities.append(HubspaceOutlet(hs, friendlyName, "2", debug))
-        entities.append(HubspaceOutlet(hs, friendlyName, "3", debug))
-        entities.append(HubspaceOutlet(hs, friendlyName, "4", debug))
-    elif model == "HB-200-1215WIFIB":
-        _LOGGER.debug("Creating Transformers")
-        entities.append(HubspaceTransformer(hs, friendlyName, "1", debug))
-        entities.append(HubspaceTransformer(hs, friendlyName, "2", debug))
-        entities.append(HubspaceTransformer(hs, friendlyName, "3", debug))
-    elif model == "52133, 37833":
-        _LOGGER.debug("Creating Fan")
-        entities.append(HubspaceFan(hs, friendlyName, debug))
-        _LOGGER.debug("Creating Light")
-        entities.append(HubspaceLight(hs, friendlyName, debug))
-    elif model == "76278, 37278":
-        _LOGGER.debug("Creating Fan")
-        entities.append(HubspaceFan(hs, friendlyName, debug))
-        _LOGGER.debug("Creating Light")
-        entities.append(HubspaceLight(hs, friendlyName, debug))
-    elif model == "DriskolFan" or model == "ZandraFan" or model == "TagerFan" or model == "VinwoodFan" or model == "CF2003" or model == "NevaliFan":
-        _LOGGER.debug("Creating Fan")
-        entities.append(HubspaceFan(hs, friendlyName, debug))
-        _LOGGER.debug("Creating Light")
-        entities.append(HubspaceLight(hs, friendlyName, debug))    
-    elif deviceClass == "door-lock" and model == "TBD":
-        _LOGGER.debug("Creating Lock")
-        entities.append(HubspaceLock(hs, friendlyName, debug))
-    elif deviceClass == "water-timer":
-        _LOGGER.debug("Creating WaterTimer")
-        entities.append(HubspaceWaterTimer(hs, friendlyName, "1", debug))
-        entities.append(HubspaceWaterTimer(hs, friendlyName, "2", debug))
-    else:
-        _LOGGER.debug("creating lights")
-        entities.append(HubspaceLight(hs, friendlyName, debug))
-
-    return entities
-
-
-def manual_discovery(hs: HubSpace, friendly_names: list[str], room_names: list[str], debug: bool) -> list:
-    """Add entities based on names
-
-    :param hs: HubSpace connection
-    :param friendly_names: List of names to add to Home Assistant
-    :param room_names: List of rooms to search that contain
-        entities that should be added to Home Assistant
-    :param debug: If debug is enabled
-
-    :return: List of created entities to add to Home Assistant
-    """
-    entities = []
-    for friendly_name in friendly_names:
-        _LOGGER.debug("friendlyName " + friendly_name)
-        [childId, model, deviceId, deviceClass] = hs.getChildId(friendly_name)
-        if deviceClass == "fan" and model == "":
-            model = "DriskolFan"
-            _LOGGER.debug("Unknown model fan, setting as Driskol")
-            _LOGGER.debug("If your fan is not a Driskol, raise an issue")
-        _LOGGER.debug("Switch on Model " + model)
-        _LOGGER.debug("childId: " + childId)
-        _LOGGER.debug("deviceId: " + deviceId)
-        _LOGGER.debug("deviceClass: " + deviceClass)
-        entities.extend(create_entity(hs, model, deviceClass, friendly_name, debug))
-
-    for room_name in room_names:
-        _LOGGER.debug("roomName " + room_name)
-        children = hs.getChildrenFromRoom(room_name)
-        for childId in children:
-            _LOGGER.debug("childId " + childId)
-            [childId, model, deviceId, deviceClass, friendlyName] = hs.getChildInfoById(
-                childId
-            )
-            _LOGGER.debug("Switch on Model " + model)
-            _LOGGER.debug("deviceId: " + deviceId)
-            _LOGGER.debug("deviceClass: " + deviceClass)
-            _LOGGER.debug("friendlyName: " + friendlyName)
-            entities.extend(create_entity(entities, hs, model, deviceClass, friendlyName, debug))
-    return entities
-
-
-def auto_discovery(hs: HubSpace, debug: bool) -> list:
+def create_ha_entity(hs: HubSpace, debug: bool, entity: hubspace_device.HubSpaceDevice):
     """Query HubSpace and find devices to add
 
     :param hs: HubSpace connection
     :param debug: If debug is enabled
+    :param entity: HubSpace API device
 
-    :return: List of created entities to add to Home Assistant
     """
-    entities = []
-    _LOGGER.debug("Attempting automatic discovery")
-    for [
-        childId,
-        model,
-        deviceId,
-        deviceClass,
-        friendlyName,
-        functions,
-    ] in hs.discoverDeviceIds():
-        _LOGGER.debug("childId " + childId)
-        _LOGGER.debug("Switch on Model " + model)
-        _LOGGER.debug("deviceId: " + deviceId)
-        _LOGGER.debug("deviceClass: " + deviceClass)
-        _LOGGER.debug("friendlyName: " + friendlyName)
-        _LOGGER.debug("functions: " + str(functions))
-
-        if deviceClass == "fan":
-            if model == "":
-                model = "DriskolFan"
-                _LOGGER.debug("Unknown model fan, setting as Driskol")
-                _LOGGER.debug("If your fan is not a Driskol, raise an issue")
-            entities.append(
-                HubspaceFan(
-                    hs, friendlyName, debug, childId, model, deviceId, deviceClass
-                )
+    if entity.device_class in ["light", "switch"]:
+        return HubspaceLight(
+                hs,
+                entity.friendly_name,
+                debug,
+                entity.id,
+                entity.model,
+                entity.device_id,
+                entity.device_class,
+                entity.functions,
             )
-        elif deviceClass == "light" or deviceClass == "switch":
-            entities.append(
-                HubspaceLight(
-                    hs,
-                    friendlyName,
-                    debug,
-                    childId,
-                    model,
-                    deviceId,
-                    deviceClass,
-                    functions,
-                )
+    elif entity.device_class == "power-outlet":
+        for function in entity.functions:
+            if function.get("functionClass") == "toggle":
+                try:
+                    _LOGGER.debug(
+                        f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}"
+                    )
+                    outletIndex = function.get("functionInstance").split("-")[1]
+                    return HubspaceOutlet(
+                        hs,
+                        entity.friendly_name,
+                        outletIndex,
+                        debug,
+                        entity.id,
+                        entity.model,
+                        entity.device_id,
+                        entity.device_class,
+                    )
+                except IndexError:
+                    _LOGGER.debug("Error extracting outlet index")
+    elif entity.device_class == "landscape-transformer":
+        for function in entity.functions:
+            if function.get("functionClass") == "toggle":
+                try:
+                    _LOGGER.debug(
+                        f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}"
+                    )
+                    outletIndex = function.get("functionInstance").split("-")[1]
+                    return HubspaceTransformer(
+                        hs,
+                        entity.friendly_name,
+                        outletIndex,
+                        debug,
+                        entity.id,
+                        entity.model,
+                        entity.device_id,
+                        entity.device_class,
+                    )
+                except IndexError:
+                    _LOGGER.debug("Error extracting outlet index")
+    elif entity.device_class == "water-timer":
+        for function in entity.functions:
+            if function.get("functionClass") == "toggle":
+                try:
+                    _LOGGER.debug(
+                        f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}"
+                    )
+                    outletIndex = function.get("functionInstance").split("-")[1]
+                    return HubspaceTransformer(
+                        hs,
+                        entity.friendly_name,
+                        outletIndex,
+                        debug,
+                        entity.id,
+                        entity.model,
+                        entity.device_id,
+                        entity.device_class,
+                        entity.functions,
+                    )
+                except IndexError:
+                    _LOGGER.debug("Error extracting outlet index")
+    elif entity.device_class == "fan":
+        return HubspaceFan(
+                hs,
+                entity.friendly_name,
+                debug,
+                childId=entity.id,
+                model=entity.model,
+                deviceId=entity.device_id,
+                deviceClass=entity.device_class,
             )
-        elif deviceClass == "power-outlet":
-            for function in functions:
-                if function.get("functionClass") == "toggle":
-                    try:
-                        _LOGGER.debug(
-                            f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}"
-                        )
-                        outletIndex = function.get("functionInstance").split("-")[1]
-                        entities.append(
-                            HubspaceOutlet(
-                                hs,
-                                friendlyName,
-                                outletIndex,
-                                debug,
-                                childId,
-                                model,
-                                deviceId,
-                                deviceClass,
-                            )
-                        )
-                    except IndexError:
-                        _LOGGER.debug("Error extracting outlet index")
-        elif deviceClass == "landscape-transformer":
-            for function in functions:
-                if function.get("functionClass") == "toggle":
-                    try:
-                        _LOGGER.debug(
-                            f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}"
-                        )
-                        outletIndex = function.get("functionInstance").split("-")[1]
-                        entities.append(
-                            HubspaceTransformer(
-                                hs,
-                                friendlyName,
-                                outletIndex,
-                                debug,
-                                childId,
-                                model,
-                                deviceId,
-                                deviceClass,
-                            )
-                        )
-                    except IndexError:
-                        _LOGGER.debug("Error extracting outlet index")
-        elif deviceClass == "water-timer":
-            for function in functions:
-                if function.get("functionClass") == "toggle":
-                    try:
-                        _LOGGER.debug(
-                            f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}"
-                        )
-                        outletIndex = function.get("functionInstance").split("-")[1]
-                        entities.append(
-                            HubspaceWaterTimer(
-                                hs,
-                                friendlyName,
-                                outletIndex,
-                                debug,
-                                childId,
-                                model,
-                                deviceId,
-                                deviceClass,
-                            )
-                        )
-                    except IndexError:
-                        _LOGGER.debug("Error extracting outlet index")
-    return entities
+    else:
+        _LOGGER.debug(f"Unable to process the entity {entity.friendly_name} of class {entity.device_class}")
 
 
 def setup_platform(
@@ -307,12 +189,13 @@ def setup_platform(
     entities = []
     friendly_names: list[str] = config.get(CONF_FRIENDLYNAMES, [])
     room_names: list[str] = config.get(CONF_ROOMNAMES, [])
-    if any([friendly_names, room_names]):
-        entities.extend(manual_discovery(hs, friendly_names, room_names, debug))
-    else:
-        entities.extend(auto_discovery(hs, debug))
-    if entities:
-        add_entities(entities)
+    data = hs.getMetadeviceInfo().json()
+    for entity in hubspace_device.get_hubspace_devices(data, friendly_names, room_names):
+        ha_entity = create_ha_entity(hs, debug, entity)
+        if ha_entity:
+            entities.append(ha_entity)
+    add_entities(entities)
+
 
     def my_service(call: ServiceCall) -> None:
         """My first service."""
@@ -353,9 +236,6 @@ class HubspaceLight(LightEntity):
         functions=None,
     ) -> None:
         """Initialize an AwesomeLight."""
-
-        _LOGGER.debug("Light Name: ")
-        _LOGGER.debug(friendlyname)
         self._name = friendlyname
 
         self._debug = debug
@@ -409,7 +289,7 @@ class HubspaceLight(LightEntity):
         ):
             self._usePowerFunctionInstance = "primary"
             self._supported_color_modes.extend([ColorMode.RGB, ColorMode.WHITE])
-        
+
         if (
             self._model == "AL-TP-RGBCW-60-2116, AL-TP-RGBCW-60-2232"
         ):
@@ -417,7 +297,7 @@ class HubspaceLight(LightEntity):
             self._supported_color_modes.extend([ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE])
             self._max_mireds = 454
             self._min_mireds = 154
-            
+
         # https://www.homedepot.com/p/EcoSmart-6-5-ft-Smart-RGWBIC-Dynamic-Color-Changing-Dimmable-Plug-In-LED-Strip-Light-Powered-by-Hubspace-AL-TP-RGBICTW-6/324731690
         if (
             self._model == "AL-TP-RGBICTW-6"
@@ -426,7 +306,7 @@ class HubspaceLight(LightEntity):
             self._supported_color_modes.extend([ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE])
             self._max_mireds = 454
             self._min_mireds = 154
-        
+
         # https://www.homedepot.com/p/Commercial-Electric-4-in-Smart-Hubspace-Color-Selectable-CCT-Integrated-LED-Recessed-Light-Trim-Works-with-Amazon-Alexa-and-Google-538551010/314199717
         # https://www.homedepot.com/p/Commercial-Electric-6-in-Smart-Hubspace-Ultra-Slim-New-Construction-and-Remodel-RGB-W-LED-Recessed-Kit-Works-with-Amazon-Alexa-and-Google-50292/313556988
         #  https://www.homedepot.com/p/EcoSmart-120-Watt-Equivalent-Smart-Hubspace-PAR38-Color-Changing-CEC-LED-Light-Bulb-with-Voice-Control-1-Bulb-11PR38120RGBWH1/318411934
@@ -517,7 +397,7 @@ class HubspaceLight(LightEntity):
             self._usePowerFunctionInstance = "light-power"
             self._max_mireds = 370
             self._min_mireds = 154
-            
+
         # If model not found, use On/Off Only as a failsafe
         if not self._supported_color_modes:
             self._supported_color_modes.extend([ColorMode.ONOFF])
@@ -583,7 +463,7 @@ class HubspaceLight(LightEntity):
         """Return true if light is on."""
         if self._state is None:
             return None
-        else:    
+        else:
             return self._state == "on"
 
     def send_command(self, field_name, field_state, functionInstance=None) -> None:
@@ -741,7 +621,7 @@ class HubspaceOutlet(LightEntity):
                 self._deviceId,
                 deviceClass,
             ] = self._hs.getChildId(friendlyname)
-    
+
     async def async_setup_entry(hass, entry):
         """Set up the media player platform for Sonos."""
 
@@ -756,7 +636,7 @@ class HubspaceOutlet(LightEntity):
             },
             "send_command",
         )
-        
+
     @property
     def name(self) -> str:
         """Return the display name of this light."""
@@ -776,19 +656,19 @@ class HubspaceOutlet(LightEntity):
     def supported_color_modes(self) -> set[ColorMode]:
         """Flag supported color modes."""
         return {self.color_mode}
-    
+
     def send_command(self, field_name, field_state, functionInstance=None) -> None:
         self._hs.setState(self._childId, field_name, field_state, functionInstance)
 
     def set_send_state(self, field_name, field_state) -> None:
         self._hs.setState(self._childId, field_name, field_state)
-        
+
     @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
         if self._state is None:
             return None
-        else:    
+        else:
             return self._state == "on"
 
     def turn_on(self, **kwargs: Any) -> None:
@@ -885,7 +765,7 @@ class HubspaceFan(LightEntity):
             },
             "send_command",
         )
-        
+
     @property
     def name(self) -> str:
         """Return the display name of this light."""
@@ -901,13 +781,13 @@ class HubspaceFan(LightEntity):
 
     def set_send_state(self, field_name, field_state) -> None:
         self._hs.setState(self._childId, field_name, field_state)
-        
+
     @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
         if self._state is None:
             return None
-        else:    
+        else:
             return self._state == "on"
 
     def turn_on(self, **kwargs: Any) -> None:
@@ -916,8 +796,8 @@ class HubspaceFan(LightEntity):
         # Homeassistant uses 0-255
         brightness = kwargs.get(ATTR_BRIGHTNESS, self._brightness)
         brightnessPercent = _brightness_to_hubspace(brightness)
-        
-        
+
+
         if self._model == "DriskolFan":
             if brightnessPercent < 40:
                 speed = "020"
@@ -934,7 +814,7 @@ class HubspaceFan(LightEntity):
             if brightnessPercent < 20:
                 speed = "016"
             if brightnessPercent < 40:
-                speed = "033"    
+                speed = "033"
             elif brightnessPercent < 55:
                 speed = "050"
             elif brightnessPercent < 75:
@@ -943,24 +823,24 @@ class HubspaceFan(LightEntity):
                 speed = "083"
             else:
                 speed = "100"
-            speedstring = "fan-speed-6-" + speed    
+            speedstring = "fan-speed-6-" + speed
         elif self._model == "NevaliFan":
             if brightnessPercent < 40:
-                speed = "033"    
+                speed = "033"
             elif brightnessPercent < 75:
                 speed = "066"
             else:
                 speed = "100"
             speedstring = "fan-speed-3-" + speed
-        elif self._model == "TagerFan":    
+        elif self._model == "TagerFan":
             if brightnessPercent < 25:
                 speed = "020"
             elif brightnessPercent < 35:
                 speed = "030"
             elif brightnessPercent < 45:
-                speed = "040" 
+                speed = "040"
             elif brightnessPercent < 55:
-                speed = "050"    
+                speed = "050"
             elif brightnessPercent < 65:
                 speed = "060"
             elif brightnessPercent < 75:
@@ -982,7 +862,7 @@ class HubspaceFan(LightEntity):
             else:
                 speed = "100"
             speedstring = "fan-speed-" + speed
-        
+
         self._hs.setStateInstance(self._childId, "fan-speed", "fan-speed", speedstring)
         #self.update()
 
@@ -1052,7 +932,7 @@ class HubspaceFan(LightEntity):
             brightness = 191
         elif fanspeed == "fan-speed-100":
             brightness = 255
-            
+
         if fanspeed == "fan-speed-5-000":
             brightness = 0
         elif fanspeed == "fan-speed-5-020":
@@ -1062,10 +942,10 @@ class HubspaceFan(LightEntity):
         elif fanspeed == "fan-speed-5-060":
             brightness = 153
         elif fanspeed == "fan-speed-5-080":
-            brightness = 204    
+            brightness = 204
         elif fanspeed == "fan-speed-100":
             brightness = 255
-            
+
         if fanspeed == "fan-speed-6-000":
             brightness = 0
         elif fanspeed == "fan-speed-6-016":
@@ -1073,13 +953,13 @@ class HubspaceFan(LightEntity):
         elif fanspeed == "fan-speed-6-033":
             brightness = 102
         elif fanspeed == "fan-speed-6-050":
-            brightness = 128    
+            brightness = 128
         elif fanspeed == "fan-speed-6-066":
             brightness = 153
         elif fanspeed == "fan-speed-6-083":
-            brightness = 204    
+            brightness = 204
         elif fanspeed == "fan-speed-6-100":
-            brightness = 255    
+            brightness = 255
 
         if fanspeed == "fan-speed-000":
             brightness = 0
@@ -1089,7 +969,7 @@ class HubspaceFan(LightEntity):
             brightness = 153
         elif fanspeed == "fan-speed-3-100":
             brightness = 255
-            
+
         # For Tager Fan
         if fanspeed == "fan-speed-000":
             brightness = 0
@@ -1100,18 +980,18 @@ class HubspaceFan(LightEntity):
         elif fanspeed == "fan-speed-9-040":
             brightness = 100
         elif fanspeed == "fan-speed-9-050":
-            brightness = 125    
+            brightness = 125
         elif fanspeed == "fan-speed-9-060":
             brightness = 150
         elif fanspeed == "fan-speed-9-070":
-            brightness = 175    
+            brightness = 175
         elif fanspeed == "fan-speed-9-080":
             brightness = 200
         elif fanspeed == "fan-speed-9-090":
             brightness = 225
         elif fanspeed == "fan-speed-9-100":
             brightness = 255
-            
+
         self._brightness = brightness
 
         if self._debug:
@@ -1171,13 +1051,13 @@ class HubspaceTransformer(LightEntity):
             },
             "send_command",
         )
-        
+
     def send_command(self, field_name, field_state, functionInstance=None) -> None:
         self._hs.setState(self._childId, field_name, field_state, functionInstance)
 
     def set_send_state(self, field_name, field_state) -> None:
         self._hs.setState(self._childId, field_name, field_state)
-        
+
     @property
     def name(self) -> str:
         """Return the display name of this light."""
@@ -1203,7 +1083,7 @@ class HubspaceTransformer(LightEntity):
         """Return true if light is on."""
         if self._state is None:
             return None
-        else:    
+        else:
             return self._state == "on"
 
     def turn_on(self, **kwargs: Any) -> None:
@@ -1291,7 +1171,7 @@ class HubspaceLock(LightEntity):
                 self._deviceId,
                 deviceClass,
             ] = self._hs.getChildId(friendlyname)
-    
+
     async def async_setup_entry(hass, entry):
         """Set up the media player platform for Sonos."""
 
@@ -1306,13 +1186,13 @@ class HubspaceLock(LightEntity):
             },
             "send_command",
         )
-    
+
     def send_command(self, field_name, field_state, functionInstance=None) -> None:
         self._hs.setState(self._childId, field_name, field_state, functionInstance)
 
     def set_send_state(self, field_name, field_state) -> None:
         self._hs.setState(self._childId, field_name, field_state)
-    
+
     @property
     def name(self) -> str:
         """Return the display name of this light."""
@@ -1338,7 +1218,7 @@ class HubspaceLock(LightEntity):
         """Return true if light is on."""
         if self._state is None:
             return None
-        else:    
+        else:
             return self._state == "locked"
 
     def turn_on(self, **kwargs: Any) -> None:
@@ -1435,7 +1315,7 @@ class HubspaceWaterTimer(LightEntity):
             },
             "send_command",
         )
-        
+
     @property
     def name(self) -> str:
         """Return the display name of this light."""
@@ -1461,13 +1341,13 @@ class HubspaceWaterTimer(LightEntity):
 
     def set_send_state(self, field_name, field_state) -> None:
         self._hs.setState(self._childId, field_name, field_state)
-        
+
     @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
         if self._state is None:
             return None
-        else:    
+        else:
             return self._state == "on"
 
     def turn_on(self, **kwargs: Any) -> None:

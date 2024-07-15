@@ -80,7 +80,12 @@ def generated_hashed_devices(data: list) -> dict[str, Any]:
 
     :param data: API response for the account
     """
-    return {x.get("id"): x for x in data if x.get("typeId") == "metadevice.device"}
+    devices: dict[str, Any] = {}
+    for device in data:
+        if device.get("typeId") not in ["metadevice.device"]:
+            continue
+        devices[device["id"]] = device
+    return devices
 
 
 def get_device(hs_device: dict[str, Any]) -> HubSpaceDevice:
