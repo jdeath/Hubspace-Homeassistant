@@ -363,6 +363,29 @@ class HubSpace:
                     if function.get("functionClass") == functionClass:
                         yield function
 
+    def get_states(self, child):
+        token = self.getAuthTokenFromRefreshToken()
+        if token is None:
+            _LOGGER.debug("No token retrieved")
+            return None
+        auth_header = {
+            "user-agent": "Dart/2.15 (dart:io)",
+            "host": "semantics2.afero.net",
+            "accept-encoding": "gzip",
+            "authorization": "Bearer " + token,
+        }
+        auth_url = (
+            "https://api2.afero.net/v1/accounts/"
+            + self._accountId
+            + "/metadevices/"
+            + child
+            + "/state"
+        )
+        r = requests.get(auth_url, headers=auth_header)
+        r.raise_for_status()
+        return r.json()
+
+
     def getState(self, child, desiredStateName):
 
         state = None

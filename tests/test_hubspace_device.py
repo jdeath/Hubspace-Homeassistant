@@ -1,6 +1,6 @@
 import json
 import os
-
+import requests
 import pytest
 
 from custom_components.hubspace import hubspace_device
@@ -478,3 +478,28 @@ def test_get_hubspace_devices(data, friendly_names, room_names, expected, msgs, 
             assert getattr(device, attr) == getattr(expected[ind], attr)
     for message in msgs:
         assert message in caplog.text
+
+
+def test_get_devices_cached(mocker, mocked_hubspace):
+    resp = requests.Response()
+    resp.status_code = 200
+    resp._content = json.dumps(api_single).encode()
+    resp.encoding = "utf-8"
+    getMetadeviceInfo = mocker.patch.object(mocked_hubspace, "getMetadeviceInfo", return_value=resp)
+    devices = hubspace_device.get_devices_cached(mocked_hubspace)
+    assert "b1e1213f-9b8e-40c6-96b5-cdee6cf85315" in devices
+    assert getMetadeviceInfo.call_count == 1
+    devices = hubspace_device.get_devices_cached(mocked_hubspace)
+    assert "b1e1213f-9b8e-40c6-96b5-cdee6cf85315" in devices
+    assert getMetadeviceInfo.call_count == 1
+
+
+def test_get_device_cached(mocker, mocked_hubspace):
+    resp = requests.Response()
+    resp.status_code = 200
+    resp._content = json.dumps(api_single).encode()
+    resp.encoding = "utf-8"
+    mocker.patch.object(mocked_hubspace, "getMetadeviceInfo", return_value=resp)
+    device = hubspace_device.get_device_cached(mocked_hubspace, "b1e1213f-9b8e-40c6-96b5-cdee6cf85315")
+    assert isinstance(device, hubspace_device.HubSpaceDevice)
+    assert device.id == "b1e1213f-9b8e-40c6-96b5-cdee6cf85315"

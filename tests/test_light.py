@@ -28,8 +28,7 @@ current_path = os.path.dirname(os.path.realpath(__file__))
 
 
 with open(os.path.join(current_path, "data", "api_response_single_room.json"), "rb") as fh:
-    api_single = fh.read()
-    api_single_json = json.loads(api_single)
+    api_single_json = json.load(fh)
 
 
 def generate_device_with_mocked_hubspace(device_class, **kwargs):
@@ -78,7 +77,7 @@ def test_create_ha_entity(ha_entity, expected):
 
 
 @pytest.mark.parametrize(
-    "config,data,expected_entities,messages",
+    "config,data_path,expected_entities,messages",
     [
         pytest.param(
             {
@@ -88,51 +87,57 @@ def test_create_ha_entity(ha_entity, expected):
                 light.CONF_ROOMNAMES: [],
                 light.CONF_DEBUG: True,
             },
-            api_single,
+            "api_response_single_room.json",
             [
-                generate_device_with_mocked_hubspace(
+                (
                     light.HubspaceLight,
-                    friendlyname="Friendly Name 0",
-                    debug=True,
-                    childId="b1e1213f-9b8e-40c6-96b5-cdee6cf85315",
-                    model="TBD",
-                    deviceId="80c0c6608a10151f",
-                    deviceClass="DoesntMatter",
+                    {
+                        "_name": "Friendly Name 0",
+                        "_childId": "b1e1213f-9b8e-40c6-96b5-cdee6cf85315",
+                        "_model": "TBD",
+                        "_deviceId": "80c0c6608a10151f",
+                        "_supported_brightness": [x for x in range(1, 101, 1)],
+                        "_usePowerFunctionInstance": "light-power",
+                    }
                 ),
-                generate_device_with_mocked_hubspace(
+                (
                     light.HubspaceFan,
-                    friendlyname="Friendly Name 2",
-                    debug=True,
-                    childId="e60c2391-ca03-49fa-b872-7ad5bb1e2815",
-                    model="ZandraFan",
-                    deviceId="80c0c6608a10151f",
-                    deviceClass="fan",
+                    {
+                        "_name": "Friendly Name 2",
+                        "_childId": "e60c2391-ca03-49fa-b872-7ad5bb1e2815",
+                        "_model": "ZandraFan",
+                        "_deviceId": "80c0c6608a10151f",
+                    }
                 ),
             ],
             [
                 # The top-level "ceiling-fan" should not be added
                 "Unable to process the entity Friendly Name 1 Fan of class ceiling-fan"
             ],
-            marks=pytest.mark.xfail(reason="Need to figure out how to compare"),
         ),
     ]
 )
 def test_setup_platform(
-    config, data, expected_entities, messages, mocked_hubspace, mocker, caplog
+    config, data_path, expected_entities, messages, mocked_hubspace, mocker, caplog
 ):
     hass = mocker.Mock()
     add_entities = mocker.Mock()
     # Force the class instance creation to use our mocked value
     resp = requests.Response()
     resp.status_code = 200
-    resp._content = data
+    with open(os.path.join(current_path, "data", data_path), "rb") as fh:
+        resp._content = fh.read()
     resp.encoding = "utf-8"
     mocker.patch.object(light, "HubSpace", return_value=mocked_hubspace)
     mocker.patch.object(mocked_hubspace, "getMetadeviceInfo", return_value=resp)
     light.setup_platform(hass, config, add_entities)
     assert len(add_entities.call_args[0][0]) == len(expected_entities)
     for ind, call in enumerate(add_entities.call_args_list):
-        validate_hubspace_equals(call.args[0][0], expected_entities[ind])
+        res_entity = call.args[0][0]
+        expected_entity_data = expected_entities[ind]
+        assert isinstance(res_entity, expected_entity_data[0])
+        for key, val in expected_entity_data[1].items():
+            assert getattr(res_entity, key) == val
     for message in messages:
         assert message in caplog.text
 
@@ -170,3 +175,26 @@ def test_process_color_temps(values, expected):
 )
 def test_process_brightness(values, expected):
     assert light.process_brightness(values) == expected
+
+
+# @TODO - Add additional tests that support RGB and color-mode
+@pytest.mark.parametrize(
+    "api_response_file, expected_attrs", [
+        (
+            "light_states.json",
+            {
+                "_state": "on",
+                "_colorTemp": "3500",
+                "_brightness": 102,
+            }
+        ),
+    ]
+)
+def test_HubSpaceLight_update(api_response_file, expected_attrs, mocked_hubspace):
+    with open(os.path.join(current_path, "data", api_response_file), "rb") as fh:
+        api_response = json.load(fh)
+    dev = light.HubspaceLight(mocked_hubspace, "whatever", True)
+    dev._hs.get_states.return_value = api_response
+    dev.update()
+    for key, val in expected_attrs.items():
+        assert getattr(dev, key) == val

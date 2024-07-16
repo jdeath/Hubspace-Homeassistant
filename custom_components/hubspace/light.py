@@ -27,8 +27,7 @@ from datetime import timedelta
 # Import exceptions from the requests module
 import requests.exceptions
 
-SCAN_INTERVAL = timedelta(seconds=60)
-BASE_INTERVAL = timedelta(seconds=60)
+SCAN_INTERVAL = timedelta(seconds=30)
 SERVICE_NAME = "send_command"
 _LOGGER = logging.getLogger(__name__)
 
@@ -81,11 +80,10 @@ def create_ha_entity(hs: HubSpace, debug: bool, entity: hubspace_device.HubSpace
                 hs,
                 entity.friendly_name,
                 debug,
-                entity.id,
-                entity.model,
-                entity.device_id,
-                entity.device_class,
-                entity.functions,
+                childId=entity.id,
+                model=entity.model,
+                deviceId=entity.device_id,
+                functions=entity.functions,
             )
     elif entity.device_class == "power-outlet":
         for function in entity.functions:
@@ -100,10 +98,10 @@ def create_ha_entity(hs: HubSpace, debug: bool, entity: hubspace_device.HubSpace
                         entity.friendly_name,
                         outletIndex,
                         debug,
-                        entity.id,
-                        entity.model,
-                        entity.device_id,
-                        entity.device_class,
+                        childId=entity.id,
+                        model=entity.model,
+                        deviceId=entity.device_id,
+                        deviceClass=entity.device_class,
                     )
                 except IndexError:
                     _LOGGER.debug("Error extracting outlet index")
@@ -120,10 +118,10 @@ def create_ha_entity(hs: HubSpace, debug: bool, entity: hubspace_device.HubSpace
                         entity.friendly_name,
                         outletIndex,
                         debug,
-                        entity.id,
-                        entity.model,
-                        entity.device_id,
-                        entity.device_class,
+                        childId=entity.id,
+                        model=entity.model,
+                        deviceId=entity.device_id,
+                        deviceClass=entity.device_class,
                     )
                 except IndexError:
                     _LOGGER.debug("Error extracting outlet index")
@@ -140,11 +138,10 @@ def create_ha_entity(hs: HubSpace, debug: bool, entity: hubspace_device.HubSpace
                         entity.friendly_name,
                         outletIndex,
                         debug,
-                        entity.id,
-                        entity.model,
-                        entity.device_id,
-                        entity.device_class,
-                        entity.functions,
+                        childId=entity.id,
+                        model=entity.model,
+                        deviceId=entity.device_id,
+                        deviceClass=entity.device_class,
                     )
                 except IndexError:
                     _LOGGER.debug("Error extracting outlet index")
@@ -255,7 +252,7 @@ def process_brightness(brightness: dict) -> list[int]:
 
 
 class HubspaceLight(LightEntity):
-    """Representation of an Awesome Light."""
+    """Representation of a HubSpace Light"""
 
     def __init__(
         self,
@@ -265,10 +262,8 @@ class HubspaceLight(LightEntity):
         childId=None,
         model=None,
         deviceId=None,
-        deviceClass=None,
         functions=None,
     ) -> None:
-        """Initialize an AwesomeLight."""
         self._name = friendlyname
 
         self._debug = debug
@@ -288,14 +283,10 @@ class HubspaceLight(LightEntity):
         self._temperature_choices = None
         self._temperature_suffix = None
         self._supported_color_modes = set(ColorMode.ONOFF)
-        self._supported_brightness = [100]
+        self._supported_brightness = []
 
         if functions:
             self.process_functions(functions)
-
-        # # If model not found, use On/Off Only as a failsafe
-        # if not self._supported_color_modes:
-        #     self._supported_color_modes.extend([ColorMode.ONOFF])
 
     async def async_setup_entry(hass, entry):
         """Set up the media player platform for Sonos."""
@@ -325,8 +316,8 @@ class HubspaceLight(LightEntity):
                 self._temperature_choices = process_color_temps(function["values"])
                 if self._temperature_choices:
                     self._supported_color_modes.add(ColorMode.COLOR_TEMP)
+                    self._temperature_suffix = "K"
             elif function["functionClass"] == "brightness":
-                print(function["values"])
                 temp_bright = process_brightness(function["values"][0])
                 if temp_bright:
                     self._supported_brightness = temp_bright
@@ -387,6 +378,7 @@ class HubspaceLight(LightEntity):
             "functionClass": "power",
             "value": "on",
         }
+        self._state = "on"
         if self._usePowerFunctionInstance:
             power_state["functionInstance"] = self._usePowerFunctionInstance
         states_to_set = [power_state]
@@ -398,6 +390,7 @@ class HubspaceLight(LightEntity):
                     "value": _brightness_to_hubspace(brightness),
                 }
             )
+            self._brightness = brightness
         if ATTR_COLOR_TEMP in kwargs and ColorMode.COLOR_TEMP in self._supported_color_modes:
             color_to_set = self._temperature_choices[0]
             # I am not sure how to set specific values, so find the value
@@ -412,6 +405,7 @@ class HubspaceLight(LightEntity):
                     "value": f"{color_to_set}K",
                 }
             )
+            self._colorTemp = color_to_set
         self._hs.set_states(self._childId, states_to_set)
 
     @property
@@ -422,14 +416,12 @@ class HubspaceLight(LightEntity):
     @property
     def extra_state_attributes(self):
         """Return the state attributes."""
-        attr = {}
-        attr["model"] = self._model
-        attr["deviceId"] = self._deviceId
-        attr["devbranch"] = False
-
-        attr["debugInfo"] = self._debugInfo
-
-        return attr
+        return {
+            "model": self._model,
+            "deviceId": self._deviceId,
+            "Supported Temperatures": [f"{x}K" for x in self._temperature_choices],
+            "Child ID": self._childId
+        }
 
     def turn_off(self, **kwargs: Any) -> None:
         """Instruct the light to turn off."""
@@ -447,32 +439,24 @@ class HubspaceLight(LightEntity):
 
         This is the only method that should fetch new data for Home Assistant.
         """
-        self._state = self._hs.getPowerState(self._childId)
-
-        if self._debug:
-            self._debugInfo = self._hs.getDebugInfo(self._childId)
-
-        # ColorMode.ONOFF is the only color mode that doesn't support brightness
-        if ColorMode.ONOFF not in self._supported_color_modes:
-            self._brightness = _brightness_to_hass(
-                self._hs.getState(self._childId, "brightness")
-            )
-
-        if any(mode in COLOR_MODES_COLOR for mode in self._supported_color_modes):
-            self._rgbColor = self._hs.getRGB(self._childId)
-
-        if (
-            any(mode in COLOR_MODES_COLOR for mode in self._supported_color_modes)
-            or ColorMode.COLOR_TEMP in self._supported_color_modes
-        ):
-            self._colorMode = self._hs.getState(self._childId, "color-mode")
-            self._color_temp = self._hs.getState(self._childId, "color-temperature")
-            if (
-                self._temperature_suffix is not None
-                and isinstance(self._color_temp, str)
-                and self._color_temp.endswith(self._temperature_suffix)
-            ):
-                self._color_temp = self._color_temp[: -len(self._temperature_suffix)]
+        for state in self._hs.get_states(self._childId)["values"]:
+            if state["functionClass"] == "power":
+                self._state = state["value"]
+            elif state["functionClass"] == "color-temperature":
+                tmp_state = state["value"]
+                if tmp_state.endswith("K"):
+                    tmp_state = tmp_state[:-1]
+                self._colorTemp = tmp_state
+            elif state["functionClass"] == "brightness":
+                self._brightness = _brightness_to_hass(state["value"])
+            elif state["functionClass"] == "color-mode":
+                self._colorMode = state["value"]
+            elif state["functionClass"] == "color-rgb":
+                self._colorMode = (
+                    int(state.get("color-rgb").get("r")),
+                    int(state.get("color-rgb").get("g")),
+                    int(state.get("color-rgb").get("b"))
+                )
 
 
 class HubspaceOutlet(LightEntity):
