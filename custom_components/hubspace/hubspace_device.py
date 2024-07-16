@@ -1,10 +1,12 @@
-__all__ = ["HubSpaceDevice", "get_hubspace_devices"]
+__all__ = ["HubSpaceDevice", "get_hubspace_devices", "get_devices_cached", "get_device_cached"]
 from typing import Any, Generator
 from dataclasses import dataclass
 import logging
+from .hubspace import HubSpace
 
 
 logger = logging.getLogger(__name__)
+from cachetools import TTLCache, cached
 
 
 @dataclass
@@ -133,3 +135,25 @@ def get_hubspace_devices(data: list[dict], friendly_names: list[str], room_names
     device_ids = get_requested_ids(data, friendly_names, room_names, hashed_devices)
     for device_id in device_ids:
         yield get_device(hashed_devices[device_id])
+
+
+@cached(cache=TTLCache(maxsize=1, ttl=5))
+def get_devices_cached(hs: HubSpace) -> dict[str, Any]:
+    """Get all devices from cache
+
+    Cache is stored for 5s as it can be used for multiple entities
+
+    :param hs: HubSpace connection
+    """
+    data = hs.getMetadeviceInfo().json()
+    return generated_hashed_devices(data)
+
+
+def get_device_cached(hs: HubSpace, child_id: str) -> HubSpaceDevice:
+    """Lookup a device from the device list
+
+    :param hs: HubSpace connection
+    :param child_id: Child Device ID to lookup
+    """
+    devices = get_devices_cached(hs)
+    return get_device(devices[child_id])
