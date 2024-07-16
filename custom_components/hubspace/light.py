@@ -11,8 +11,7 @@ import voluptuous as vol
 from homeassistant.helpers import config_validation as cv, entity_platform, service
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
-    ATTR_RGB_COLOR,
-    ATTR_WHITE,
+    ATTR_COLOR_TEMP_KELVIN,
     ATTR_COLOR_TEMP,
     PLATFORM_SCHEMA,
     ColorMode,
@@ -193,6 +192,7 @@ def setup_platform(
     for entity in hubspace_device.get_hubspace_devices(data, friendly_names, room_names):
         ha_entity = create_ha_entity(hs, debug, entity)
         if ha_entity:
+            _LOGGER.debug(f"Adding an entity {ha_entity._childId}")
             entities.append(ha_entity)
     add_entities(entities)
 
@@ -219,6 +219,39 @@ def setup_platform(
 
     # Register our service with Home Assistant.
     hass.services.register("hubspace", "send_command", my_service)
+
+
+def process_color_temps(color_temps: dict) -> list[int]:
+    """Determine the supported color temps
+
+    :param color_temps: Result from functions["values"]
+    """
+    supported_temps = []
+    for temp in color_temps:
+        color_temp = temp["name"]
+        if color_temp.endswith("K"):
+            color_temp = int(color_temp[:-1])
+        supported_temps.append(color_temp)
+    return sorted(supported_temps)
+
+
+def process_brightness(brightness: dict) -> list[int]:
+    """Determine the supported brightness levels
+
+    :param brightness: Result from functions["values"]
+    """
+    supported_brightness = []
+    brightness_min = brightness["range"]["min"]
+    brightness_max = brightness["range"]["max"]
+    brightness_step = brightness["range"]["step"]
+    if brightness_min == brightness_max:
+        supported_brightness.append(brightness_max)
+    else:
+        for brightness in range(brightness_min, brightness_max, brightness_step):
+            supported_brightness.append(brightness)
+        if brightness_max not in supported_brightness:
+            supported_brightness.append(brightness_max)
+    return supported_brightness
 
 
 class HubspaceLight(LightEntity):
@@ -251,156 +284,18 @@ class HubspaceLight(LightEntity):
         # colorMode == 'color' || 'white'
         self._colorMode = None
         self._colorTemp = None
-        self._min_mireds = None
-        self._max_mireds = None
         self._rgbColor = None
         self._temperature_choices = None
         self._temperature_suffix = None
-        if None in (childId, model, deviceId, deviceClass) or "" in (childId, model, deviceId, deviceClass):
-            [
-                self._childId,
-                self._model,
-                self._deviceId,
-                deviceClass,
-            ] = self._hs.getChildId(self._name)
-        if functions is None:
-            functions = self._hs.getFunctions(self._childId)
+        self._supported_color_modes = set(ColorMode.ONOFF)
+        self._supported_brightness = [100]
 
-        self._supported_color_modes = []
+        if functions:
+            self.process_functions(functions)
 
-        # https://www.homedepot.com/p/Commercial-Electric-500-Watt-Single-Pole-Smart-Hubspace-Dimmer-with-Motion-Sensor-White-HPDA311CWB/317249353
-        if self._model == "HPDA311CWB":
-            self._supported_color_modes.extend([ColorMode.BRIGHTNESS])
-
-        # https://www.homedepot.com/p/Defiant-15-Amp-120-Volt-Smart-Hubspace-Outdoor-Single-Outlet-Wi-Fi-Bluetooth-Plug-HPPA51CWB/316341409
-        # https://www.homedepot.com/p/Defiant-15-Amp-120-Volt-Smart-Hubspace-Wi-Fi-Bluetooth-Plug-with-1-Outlet-HPPA11AWB/315636834
-        if (
-            self._model == "HPPA51CWB"
-            or self._model == "HPPA11AWBA023"
-            or self._model == "HPSA11CWB"
-            or self._model == "HPPA11CWB"
-            or self._model == "YardStake"
-        ):
-            self._supported_color_modes.extend([ColorMode.ONOFF])
-        # https://www.homedepot.com/p/EcoSmart-16-ft-Smart-Hubspace-RGB-and-Tunable-White-Tape-Light-Works-with-Amazon-Alexa-and-Google-Assistant-AL-TP-RGBCW-60/314680856
-        if (
-            self._model == "HPKA315CWB"
-            or self._model == "HPPA52CWBA023"
-        ):
-            self._usePowerFunctionInstance = "primary"
-            self._supported_color_modes.extend([ColorMode.RGB, ColorMode.WHITE])
-
-        if (
-            self._model == "AL-TP-RGBCW-60-2116, AL-TP-RGBCW-60-2232"
-        ):
-            self._usePowerFunctionInstance = "primary"
-            self._supported_color_modes.extend([ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE])
-            self._max_mireds = 454
-            self._min_mireds = 154
-
-        # https://www.homedepot.com/p/EcoSmart-6-5-ft-Smart-RGWBIC-Dynamic-Color-Changing-Dimmable-Plug-In-LED-Strip-Light-Powered-by-Hubspace-AL-TP-RGBICTW-6/324731690
-        if (
-            self._model == "AL-TP-RGBICTW-6"
-        ):
-            self._usePowerFunctionInstance = "primary"
-            self._supported_color_modes.extend([ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE])
-            self._max_mireds = 454
-            self._min_mireds = 154
-
-        # https://www.homedepot.com/p/Commercial-Electric-4-in-Smart-Hubspace-Color-Selectable-CCT-Integrated-LED-Recessed-Light-Trim-Works-with-Amazon-Alexa-and-Google-538551010/314199717
-        # https://www.homedepot.com/p/Commercial-Electric-6-in-Smart-Hubspace-Ultra-Slim-New-Construction-and-Remodel-RGB-W-LED-Recessed-Kit-Works-with-Amazon-Alexa-and-Google-50292/313556988
-        #  https://www.homedepot.com/p/EcoSmart-120-Watt-Equivalent-Smart-Hubspace-PAR38-Color-Changing-CEC-LED-Light-Bulb-with-Voice-Control-1-Bulb-11PR38120RGBWH1/318411934
-        # https://www.homedepot.com/p/EcoSmart-60-Watt-Equivalent-Smart-Hubspace-A19-Color-Changing-CEC-LED-Light-Bulb-with-Voice-Control-1-Bulb-11A19060WRGBWH1/318411935
-        if (
-            self._model == "50291, 50292"
-            or self._model == "11PR38120RGBWH1"
-            or self._model == "11A21100WRGBWH1"
-            or self._model == "11A19060WRGBWH1"
-            or self._model == "12A19060WRGBWH2"
-        ):
-            self._supported_color_modes.extend(
-                [ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE]
-            )
-            self._max_mireds = 454
-            self._min_mireds = 154
-
-        # fan
-        # https://www.homedepot.com/p/Home-Decorators-Collection-Driskol-60-in-White-Color-Changing-LED-Matte-Black-Smart-Ceiling-Fan-with-Light-Kit-and-Remote-Powered-by-Hubspace-56052/319830774
-        # https://www.homedepot.com/p/Home-Decorators-Collection-Vinwood-56-in-Indoor-White-Color-Changing-LED-Brushed-Nickel-Smart-Hubspace-Ceiling-Fan-with-Remote-Control-56002/320816365
-        if self._model == "52133, 37833" or self._model == "76278, 37278" or self._model == "DriskolFan" or self._model == "VinwoodFan" or self._model == "CF2003" or self._model == "NevaliFan":
-            self._usePowerFunctionInstance = "light-power"
-            self._supported_color_modes.extend([ColorMode.BRIGHTNESS])
-            self._temperature_suffix = "K"
-            self._temperature_choices = []
-            for function in functions:
-                if function.get("functionClass") == "color-temperature":
-                    for value in function.get("values"):
-                        temperatureName = value.get("name")
-                        if isinstance(
-                            temperatureName, str
-                        ) and temperatureName.endswith(self._temperature_suffix):
-                            try:
-                                temperatureValue = int(
-                                    temperatureName[: -len(self._temperature_suffix)]
-                                )
-                            except ValueError:
-                                _LOGGER.debug(
-                                    f"Can't convert temperatureName {temperatureName} to int"
-                                )
-                                temperatureValue = None
-                            if (
-                                temperatureValue is not None
-                                and temperatureValue not in self._temperature_choices
-                            ):
-                                self._temperature_choices.append(temperatureValue)
-            if len(self._temperature_choices):
-                self._supported_color_modes.extend(
-                    [ColorMode.COLOR_TEMP, ColorMode.WHITE]
-                )
-                self._max_mireds = 1000000 // min(self._temperature_choices) + 1
-                self._min_mireds = 1000000 // max(self._temperature_choices)
-            else:
-                self._temperature_choices = None
-
-        # https://www.homedepot.com/p/Commercial-Electric-5-in-6-in-Smart-Hubspace-Color-Selectable-CCT-Integrated-LED-Recessed-Light-Trim-Works-with-Amazon-Alexa-and-Google-538561010/314254248
-        if self._model == "538551010, 538561010, 538552010, 538562010" or self._model == "G19226" or self._model == "HB-10521-HS" or self._model == "17122-HS-WT" or self._model == "CD44bRGBW15W" or self._model == "CD44bRGBW11W":
-            self._supported_color_modes.extend(
-                [ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE]
-            )
-            self._max_mireds = 370
-            self._min_mireds = 154
-        # https://www.homedepot.com/p/Hampton-Bay-Lakeshore-13-in-Matte-Black-Smart-Hubspace-CCT-and-RGB-Selectable-LED-Flush-Mount-SMACADER-MAGB01/317216753
-        if (
-            self._model
-            == "SMACADER-MAGD01, SMACADER-MAGB01, SMACADER-MAGW01, CAD1aERMAGW26, CAD1aERMAGP26, CAD1aERMAGA26"
-        ):
-            self._supported_color_modes.extend(
-                [ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE]
-            )
-            self._max_mireds = 370
-            self._min_mireds = 154
-        # https://www.homedepot.com/p/Hampton-Bay-10-Watt-Equivalent-Low-Voltage-Black-LED-Outdoor-Landscape-Spotlight-with-Smart-App-Control-3-Pack-Powered-by-Hubspace-L08557/318145795
-        if (
-            self._model == "L08557"
-        ):
-            self._supported_color_modes.extend(
-                [ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE]
-            )
-            self._max_mireds = 370
-            self._min_mireds = 154
-        if (
-            self._model == "ZandraFan"
-        ):
-            self._supported_color_modes.extend(
-                [ColorMode.COLOR_TEMP, ColorMode.BRIGHTNESS, ColorMode.WHITE]
-            )
-            self._usePowerFunctionInstance = "light-power"
-            self._max_mireds = 370
-            self._min_mireds = 154
-
-        # If model not found, use On/Off Only as a failsafe
-        if not self._supported_color_modes:
-            self._supported_color_modes.extend([ColorMode.ONOFF])
+        # # If model not found, use On/Off Only as a failsafe
+        # if not self._supported_color_modes:
+        #     self._supported_color_modes.extend([ColorMode.ONOFF])
 
     async def async_setup_entry(hass, entry):
         """Set up the media player platform for Sonos."""
@@ -416,6 +311,26 @@ class HubspaceLight(LightEntity):
             },
             "send_command",
         )
+
+
+    def process_functions(self, functions: list[dict]) -> None:
+        """Process the functions and configure the light attributes
+
+        :param functions: Functions that are supported from the API
+        """
+        for function in functions:
+            if function["functionClass"] == "power":
+                self._usePowerFunctionInstance = function.get("functionInstance", None)
+            elif function["functionClass"] == "color-temperature":
+                self._temperature_choices = process_color_temps(function["values"])
+                if self._temperature_choices:
+                    self._supported_color_modes.add(ColorMode.COLOR_TEMP)
+            elif function["functionClass"] == "brightness":
+                print(function["values"])
+                temp_bright = process_brightness(function["values"][0])
+                if temp_bright:
+                    self._supported_brightness = temp_bright
+                    self._supported_color_modes.add(ColorMode.BRIGHTNESS)
 
     @property
     def name(self) -> str:
@@ -444,27 +359,20 @@ class HubspaceLight(LightEntity):
         return self._brightness
 
     @property
-    def color_temp(self) -> int | None:
-        """Return the CT color value in mireds."""
-        return _convert_color_temp(self._color_temp)
-
-    @property
-    def min_mireds(self) -> int or None:
-        """Return the coldest color_temp that this light supports."""
-        return self._min_mireds
-
-    @property
-    def max_mireds(self) -> int or None:
-        """Return the warmest color_temp that this light supports."""
-        return self._max_mireds
-
-    @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
         if self._state is None:
             return None
         else:
             return self._state == "on"
+
+    @property
+    def min_color_temp_kelvin(self) -> int:
+        return min(self._temperature_choices)
+
+    @property
+    def max_color_temp_kelvin(self) -> int:
+        return max(self._temperature_choices)
 
     def send_command(self, field_name, field_state, functionInstance=None) -> None:
         self._hs.setState(self._childId, field_name, field_state, functionInstance)
@@ -473,56 +381,38 @@ class HubspaceLight(LightEntity):
         self._hs.setState(self._childId, field_name, field_state)
 
     def turn_on(self, **kwargs: Any) -> None:
-        state = self._hs.setPowerState(
-            self._childId, "on", self._usePowerFunctionInstance
-        )
-
-        if ATTR_BRIGHTNESS in kwargs and (
-            ColorMode.ONOFF not in self._supported_color_modes
-        ):
+        """Perform power on and set additional attributes"""
+        _LOGGER.debug(f"Adjusting light {self._childId} with {kwargs}")
+        power_state = {
+            "functionClass": "power",
+            "value": "on",
+        }
+        if self._usePowerFunctionInstance:
+            power_state["functionInstance"] = self._usePowerFunctionInstance
+        states_to_set = [power_state]
+        if ATTR_BRIGHTNESS in kwargs and ColorMode.BRIGHTNESS in self._supported_color_modes:
             brightness = kwargs.get(ATTR_BRIGHTNESS, self._brightness)
-            self._hs.setState(
-                self._childId, "brightness", _brightness_to_hubspace(brightness)
+            states_to_set.append(
+                {
+                    "functionClass": "brightness",
+                    "value": _brightness_to_hubspace(brightness),
+                }
             )
-
-        if ATTR_RGB_COLOR in kwargs and any(
-            mode in COLOR_MODES_COLOR for mode in self._supported_color_modes
-        ):
-            self._hs.setRGB(self._childId, *kwargs[ATTR_RGB_COLOR])
-
-        if ATTR_WHITE in kwargs and (
-            any(mode in COLOR_MODES_COLOR for mode in self._supported_color_modes)
-            or ColorMode.COLOR_TEMP in self._supported_color_modes
-        ):
-            self._colorMode = ATTR_WHITE
-            self._hs.setState(self._childId, "color-mode", self._colorMode)
-            brightness = kwargs.get(ATTR_WHITE, self._brightness)
-            self._hs.setState(
-                self._childId, "brightness", _brightness_to_hubspace(brightness)
+        if ATTR_COLOR_TEMP in kwargs and ColorMode.COLOR_TEMP in self._supported_color_modes:
+            color_to_set = self._temperature_choices[0]
+            # I am not sure how to set specific values, so find the value
+            # that is closest without going over
+            for color in self._temperature_choices:
+                if kwargs[ATTR_COLOR_TEMP_KELVIN] <= color:
+                    color_to_set = color
+                    break
+            states_to_set.append(
+                {
+                    "functionClass": "color-temperature",
+                    "value": f"{color_to_set}K",
+                }
             )
-
-        if ATTR_COLOR_TEMP in kwargs and (
-            any(mode in COLOR_MODES_COLOR for mode in self._supported_color_modes)
-            or ColorMode.COLOR_TEMP in self._supported_color_modes
-        ):
-            self._color_temp = _convert_color_temp(kwargs[ATTR_COLOR_TEMP])
-            if self._temperature_choices is not None:
-                self._color_temp = self._temperature_choices[
-                    min(
-                        range(len(self._temperature_choices)),
-                        key=lambda i: abs(
-                            self._temperature_choices[i] - self._color_temp
-                        ),
-                    )
-                ]
-            if self._temperature_suffix is not None:
-                self._hs.setState(
-                    self._childId,
-                    "color-temperature",
-                    str(self._color_temp) + self._temperature_suffix,
-                )
-            else:
-                self._hs.setState(self._childId, "color-temperature", self._color_temp)
+        self._hs.set_states(self._childId, states_to_set)
 
     @property
     def rgb_color(self):
@@ -543,7 +433,7 @@ class HubspaceLight(LightEntity):
 
     def turn_off(self, **kwargs: Any) -> None:
         """Instruct the light to turn off."""
-        state = self._hs.setPowerState(
+        self._hs.setPowerState(
             self._childId, "off", self._usePowerFunctionInstance
         )
 

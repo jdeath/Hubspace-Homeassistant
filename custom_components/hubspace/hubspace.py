@@ -184,7 +184,6 @@ class HubSpace:
 
         token = self.getAuthTokenFromRefreshToken()
 
-        _LOGGER.debug("token " + token)
         auth_header = {
             "user-agent": "Dart/2.15 (dart:io)",
             "host": "semantics2.afero.net",
@@ -192,7 +191,6 @@ class HubSpace:
             "authorization": "Bearer " + token,
         }
 
-        _LOGGER.debug("token " + self._accountId)
         auth_url = (
             "https://api2.afero.net/v1/accounts/"
             + self._accountId
@@ -449,9 +447,9 @@ class HubSpace:
 
         r = self.getMetadeviceInfo()
 
-        _LOGGER.debug("############ Dumping all info 1 0f 2 #########")
-        _LOGGER.debug(json.dumps(r.json(), indent=4, sort_keys=True))
-        _LOGGER.debug("############ End Dump #########")
+        # _LOGGER.debug("############ Dumping all info 1 0f 2 #########")
+        # _LOGGER.debug(json.dumps(r.json(), indent=4, sort_keys=True))
+        # _LOGGER.debug("############ End Dump #########")
 
         token = self.getAuthTokenFromRefreshToken()
         auth_url = (
@@ -472,9 +470,9 @@ class HubSpace:
 
         r = requests.get(auth_url, data=auth_data, headers=auth_header)
         r.close()
-        _LOGGER.debug("############ Dumping all info 2 0f 2 #########")
-        _LOGGER.debug(json.dumps(r.json(), indent=4, sort_keys=True))
-        _LOGGER.debug("############ End Dump #########")
+        # _LOGGER.debug("############ Dumping all info 2 0f 2 #########")
+        # _LOGGER.debug(json.dumps(r.json(), indent=4, sort_keys=True))
+        # _LOGGER.debug("############ End Dump #########")
         return r.json()
 
     def getPowerState(self, child):
@@ -518,6 +516,9 @@ class HubSpace:
             + child
             + "/state"
         )
+        _LOGGER.debug(
+            f"About to set {desiredStateName} to {state} [{instanceField}] for {child}"
+        )
         r = requests.put(auth_url, json=payload, headers=auth_header)
         r.close()
         for lis in r.json().get("values"):
@@ -527,6 +528,43 @@ class HubSpace:
 
         # print(desiredStateName + ": " + state)
         return state
+
+    def set_states(self, child: str, new_states: list) -> None:
+        """Set one or more states with a single API call
+
+        :param states: All states to set with the corresponding data
+        """
+        token = self.getAuthTokenFromRefreshToken()
+        utc_time = self.getUTCTime()
+        payload_states = []
+        for state in new_states:
+            state["lastUpdateTime"] = utc_time
+            payload_states.append(state)
+        payload = {
+            "metadeviceId": str(child),
+            "values": payload_states
+        }
+        auth_header = {
+            "user-agent": "Dart/2.15 (dart:io)",
+            "host": "semantics2.afero.net",
+            "accept-encoding": "gzip",
+            "authorization": "Bearer " + token,
+            "content-type": "application/json; charset=utf-8",
+        }
+        auth_url = (
+            "https://api2.afero.net/v1/accounts/"
+            + self._accountId
+            + "/metadevices/"
+            + child
+            + "/state"
+        )
+        _LOGGER.debug(
+            f"About to update {child}: {payload_states}"
+        )
+        r = requests.put(auth_url, json=payload, headers=auth_header)
+        r.close()
+        r.raise_for_status()
+
 
     def setStateInstance(self, child, desiredStateName, desiredFunctionInstance, state):
 
