@@ -186,7 +186,7 @@ def setup_platform(
     entities = []
     friendly_names: list[str] = config.get(CONF_FRIENDLYNAMES, [])
     room_names: list[str] = config.get(CONF_ROOMNAMES, [])
-    data = hubspace_device.get_devices_cached(hs)
+    data = [hubspace_device.get_devices_cached(hs)]
     for entity in hubspace_device.get_hubspace_devices(data, friendly_names, room_names):
         ha_entity = create_ha_entity(hs, debug, entity)
         if ha_entity:
