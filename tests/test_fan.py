@@ -3,32 +3,16 @@ import os
 from contextlib import suppress
 
 import pytest
-import requests
 from homeassistant.components.fan import FanEntityFeature
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
-from hubspace_async import HubSpaceState
 
 from custom_components.hubspace import fan
-from custom_components.hubspace.const import (
-    CONF_DEBUG,
-    CONF_FRIENDLYNAMES,
-    CONF_ROOMNAMES,
-)
+
+from .utils import create_devices_from_data
 
 current_path = os.path.dirname(os.path.realpath(__file__))
 
 
-with open(os.path.join(current_path, "data", "device_fan.json"), "rb") as fh:
-    fan_data = json.load(fh)
-
-with open(os.path.join(current_path, "data", "device_fan_state.json"), "rb") as fh:
-    fan_data_state = json.load(fh)
-    fan_data_states = []
-    for state in fan_data_state["values"]:
-        try:
-            fan_data_states.append(HubSpaceState(**state))
-        except:
-            pass
+fan_zandra = create_devices_from_data("fan-ZandraFan.json")
 
 
 process_functions_expected = (
@@ -41,13 +25,13 @@ with suppress(AttributeError):
 
 
 @pytest.fixture
-def empty_fan(mocked_hubspace):
-    yield fan.HubspaceFan(mocked_hubspace, "test fan")
+def empty_fan(mocked_coordinator):
+    yield fan.HubspaceFan(mocked_coordinator, "test fan")
 
 
 @pytest.fixture
-def speed_fan(mocked_hubspace):
-    test_fan = fan.HubspaceFan(mocked_hubspace, "test fan")
+def speed_fan(mocked_coordinator):
+    test_fan = fan.HubspaceFan(mocked_coordinator, "test fan")
     test_fan._supported_features = process_functions_expected
     test_fan._fan_speeds = [
         "fan-speed-6-016",
@@ -67,7 +51,7 @@ class Test_HubSpaceFan:
         "functions, expected_attrs",
         [
             (
-                fan_data[1]["description"]["functions"],
+                fan_zandra[0].functions,
                 {
                     "_instance_attrs": {
                         "fan-speed": "fan-speed",
@@ -93,15 +77,14 @@ class Test_HubSpaceFan:
         for key, val in expected_attrs.items():
             assert getattr(empty_fan, key) == val
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize(
         "states, expected_attrs, extra_attrs",
         [
             (
-                fan_data_states,
+                fan_zandra[0].states,
                 {
                     "_preset_mode": "comfort-breeze",
-                    "_fan_speed": "fan-speed-6-016",
+                    "_fan_speed": "fan-speed-6-050",
                     "_current_direction": "reverse",
                     "_state": "on",
                 },
@@ -109,19 +92,18 @@ class Test_HubSpaceFan:
                     "model": None,
                     "deviceId": None,
                     "Child ID": None,
-                    "wifi-ssid": "SSID0",
-                    "wifi-mac-address": "fd51c93dd1d0",
+                    "wifi-ssid": "71e7209f-b932-44b9-ba2f-a8179f68c3ac",
+                    "wifi-mac-address": "e1119e0a-688d-45df-9882-a76549db9bc3",
                     "available": True,
-                    "ble-mac-address": "cb7e997398d4",
+                    "ble-mac-address": "07346a23-350b-4606-8d86-67217ec7a688",
                 },
             ),
         ],
     )
-    async def test_update_states(
-        self, states, expected_attrs, extra_attrs, empty_fan, mocker
-    ):
-        empty_fan._hs.get_device_state = mocker.AsyncMock(return_value=states)
-        await empty_fan.update_states()
+    def test_update_states(self, states, expected_attrs, extra_attrs, empty_fan):
+        empty_fan.states = states
+        empty_fan.coordinator.data["devices"][empty_fan._child_id] = empty_fan
+        empty_fan.update_states()
         assert empty_fan.extra_state_attributes == extra_attrs
         for key, val in expected_attrs.items():
             assert getattr(empty_fan, key) == val
@@ -131,7 +113,7 @@ class Test_HubSpaceFan:
 
     def test_unique_id(self, empty_fan):
         empty_fan._child_id = "beans"
-        assert empty_fan.unique_id == "beans_fan"
+        assert empty_fan.unique_id == "beans"
 
     @pytest.mark.parametrize(
         "state, expected",
@@ -144,12 +126,12 @@ class Test_HubSpaceFan:
         empty_fan._state = state
         assert empty_fan.is_on == expected
 
-    def test_extra_state_attributes(self, mocked_hubspace):
+    def test_extra_state_attributes(self, mocked_coordinator):
         model = "bean model"
         device_id = "bean-123"
         child_id = "bean-123-123"
         test_fan = fan.HubspaceFan(
-            mocked_hubspace,
+            mocked_coordinator,
             "test fan",
             model=model,
             device_id=device_id,
