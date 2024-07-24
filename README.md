@@ -103,38 +103,38 @@ the following setup steps must be run:
        python -m virtualenv "%userprofile%/.virtualenv/hubspace"
        %userprofile%\.virtualenv\hubspace\Scripts\activate.bat
        ```
-   * Download requirements
-     * ```sh
-       python -m pip install requests "hubspace_async>=0.0.5" click
-       ```
-   * Goto your home directory
-     * Unix
-       * ```bash
-         cd ~
-         ```
-     * Windows
-       * ```bat
-         cd  %userprofile%
-         ```
-   * Download the anonymizer code
+ * Download requirements
+   * ```sh
+     python -m pip install requests "hubspace_async>=0.0.5" click
+     ```
+ * Goto your home directory
+   * Unix
      * ```bash
-       python -c "import requests; data=requests.get('https://raw.githubusercontent.com/Expl0dingBanana/Hubspace-Homeassistant/rework-tmp/custom_components/hubspace/anonomyize_data.py').text; fh=open('anonomyize_data.py', 'w'); fh.write(data); fh.close();"
+       cd ~
        ```
-   * Run the anonymizer code (but fill in username and password)
-     * Determine the device (gets child_id and friendly names)
-       * Get all devices
-         * ```python
-           python anonomyize_data.py --username "<username>" --password "<password>" get-devs
-           ```
-     * Gather data based on friendlyName or childID. This will create a .json file with the friendlyname in the current directory
-       * Get devices based on a friendlyName
-         * ```python
-           python anonomyize_data.py --username "<username>" --password "<password>" friendly-name --fn "<friendly name>"
-           ```
-       * Get devices based on a childId
-         * ```python
-           python anonomyize_data.py --username "<username>" --password "<password>" child-id --child_id "<child_id>"
-           ```
+   * Windows
+     * ```bat
+       cd  %userprofile%
+       ```
+ * Download the anonymizer code
+   * ```bash
+     python -c "import requests; data=requests.get('https://raw.githubusercontent.com/Expl0dingBanana/Hubspace-Homeassistant/rework-tmp/custom_components/hubspace/anonomyize_data.py').text; fh=open('anonomyize_data.py', 'w'); fh.write(data); fh.close();"
+     ```
+ * Run the anonymizer code (but fill in username and password)
+   * Determine the device (gets child_id and friendly names)
+     * Get all devices
+       * ```python
+         python anonomyize_data.py --username "<username>" --password "<password>" get-devs
+         ```
+   * Gather data based on friendlyName or childID. This will create a .json file with the friendlyname in the current directory
+     * Get devices based on a friendlyName
+       * ```python
+         python anonomyize_data.py --username "<username>" --password "<password>" friendly-name --fn "<friendly name>"
+         ```
+     * Get devices based on a childId
+       * ```python
+         python anonomyize_data.py --username "<username>" --password "<password>" child-id --child_id "<child_id>"
+         ```
    
    
 
