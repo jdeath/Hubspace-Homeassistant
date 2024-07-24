@@ -26,6 +26,9 @@ def get_devices(conn: HubSpaceConnection) -> dict:
     return conn._devices
 
 
+def generate_name(dev: HubSpaceDevice) -> str:
+    return f"{dev.device_class}-{dev.model}"
+
 def output_devices(conn: HubSpaceConnection):
     """Output all devices associated with the Account
 
@@ -50,26 +53,31 @@ def anonymize_device_lookup(conn: HubSpaceConnection, friendly_name: str=None, c
     overall.
     """
     devices = get_devices(conn)
+    matched_dev = None
     related = []
-    parent_id = None
+    # Find the device match
     for dev in devices.values():
         if friendly_name and dev.friendly_name != friendly_name:
             continue
         if child_id and dev.id != child_id:
             continue
-        related.append(dev)
-        parent_id = dev.device_id
+        matched_dev = dev
         break
-    if parent_id:
+    if not matched_dev:
+        raise RuntimeError("No matching device")
+    related.append(matched_dev)
+    if matched_dev.device_id:
         for dev in devices.values():
-            if dev.device_id != parent_id:
+            if dev in related:
                 continue
-            related.append(dev)
+            if dev.device_id == matched_dev.device_id:
+                related.append(dev)
     anon_data = []
     mapping = {}
     for dev in related:
         anon_data.append(anonymize_device(dev, mapping))
-    with open(f"{related[0].friendly_name}.json", "w") as f:
+    identifier = f"{generate_name(related[0])}.json"
+    with open(identifier, "w") as f:
         json.dump(anon_data, f, indent=4)
     return anon_data
 
@@ -93,7 +101,7 @@ def anonymize_device(dev: HubSpaceDevice, parent_mapping: dict):
     return fake_dev
 
 
-def anonymize_state(state:HubSpaceState):
+def anonymize_state(state: HubSpaceState):
     fake_state = asdict(state)
     fake_state["lastUpdateTime"] = 0
     if fake_state["functionClass"] == "wifi-ssid":
@@ -102,6 +110,23 @@ def anonymize_state(state:HubSpaceState):
         if "mac" in state.functionClass:
             fake_state["value"] = str(uuid4())
     return fake_state
+
+
+def get_states(conn: HubSpaceConnection, friendly_name: str=None, child_id: str=None):
+    """Get all states associated to a specific ID"""
+    states = []
+    devices = get_devices(conn)
+    dev_to_grab = None
+    for dev in devices.values():
+        if friendly_name and dev.friendly_name != friendly_name:
+            continue
+        if child_id and dev.id != child_id:
+            continue
+        for ind, state in enumerate(dev.states):
+            states.append(anonymize_state(state))
+        with open(f"{generate_name(dev)}.json", "w") as f:
+            json.dump(states, f, indent=4)
+        return states
 
 
 try:
@@ -121,11 +146,13 @@ try:
         ctx.ensure_object(dict)
         ctx.obj["conn"] = hubspace_async.HubSpaceConnection(username, password)
 
+
     @cli.command()
     @click.pass_context
     def get_devs(ctx):
         """Output all devices associated with the Account"""
         click.echo(output_devices(ctx.obj["conn"]))
+
 
     @cli.command()
     @click.option("--fn", required=True, help="Friendly Name")
@@ -141,6 +168,14 @@ try:
     def child_id(ctx, child_id):
         """Output all devices associated to the child_id"""
         click.echo(anonymize_device_lookup(ctx.obj["conn"], child_id=child_id))
+
+
+    @cli.command()
+    @click.option("--child_id", required=True, help="Child ID")
+    @click.pass_context
+    def states(ctx, child_id):
+        """Output all devices associated to the child_id"""
+        click.echo(get_states(ctx.obj["conn"], child_id=child_id))
 
 except:
     pass
