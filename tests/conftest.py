@@ -1,10 +1,10 @@
 import logging
+from collections import defaultdict
 
 import hubspace_async
 import pytest
 
 from custom_components.hubspace import coordinator
-from collections import defaultdict
 
 
 @pytest.fixture

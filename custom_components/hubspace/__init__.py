@@ -6,15 +6,21 @@ from dataclasses import dataclass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, Platform
 from homeassistant.core import HomeAssistant
-from hubspace_async import HubSpaceConnection
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from hubspace_async import HubSpaceConnection
 
-from .const import CONF_FRIENDLYNAMES, CONF_ROOMNAMES, UPDATE_INTERVAL_OBSERVATION
+from .const import UPDATE_INTERVAL_OBSERVATION
 from .coordinator import HubSpaceDataUpdateCoordinator
 
 logger = logging.getLogger(__name__)
 
-PLATFORMS = [Platform.FAN, Platform.LIGHT, Platform.LOCK, Platform.SWITCH, Platform.VALVE]
+PLATFORMS = [
+    Platform.FAN,
+    Platform.LIGHT,
+    Platform.LOCK,
+    Platform.SWITCH,
+    Platform.VALVE,
+]
 
 
 @dataclass
@@ -30,7 +36,9 @@ type HubSpaceConfigEntry = ConfigEntry[HubSpaceData]
 async def async_setup_entry(hass: HomeAssistant, entry: HubSpaceData) -> bool:
     """Set up HubSpace as config entry."""
     websession = async_get_clientsession(hass)
-    conn = HubSpaceConnection(entry.data[CONF_USERNAME], entry.data[CONF_PASSWORD], websession=websession)
+    conn = HubSpaceConnection(
+        entry.data[CONF_USERNAME], entry.data[CONF_PASSWORD], websession=websession
+    )
 
     coordinator_hubspace = HubSpaceDataUpdateCoordinator(
         hass,

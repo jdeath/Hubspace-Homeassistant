@@ -135,8 +135,8 @@ the following setup steps must be run:
        * ```python
          python anonomyize_data.py --username "<username>" --password "<password>" child-id --child_id "<child_id>"
          ```
-   
-   
+
+
 
 #### Through the UI
 This is possible through the UI by navigating

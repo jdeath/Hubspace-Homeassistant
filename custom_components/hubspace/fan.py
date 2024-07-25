@@ -4,25 +4,24 @@ import logging
 from contextlib import suppress
 from typing import Any, Optional, Union
 
+from homeassistant.components.fan import FanEntity, FanEntityFeature
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util.percentage import (
     ordered_list_item_to_percentage,
     percentage_to_ordered_list_item,
 )
-
-from .const import DOMAIN, ENTITY_FAN
-
-_LOGGER = logging.getLogger(__name__)
-
-from homeassistant.components.fan import FanEntity, FanEntityFeature
 from hubspace_async import HubSpaceState
 
 from . import HubSpaceConfigEntry
+from .const import DOMAIN, ENTITY_FAN
 from .coordinator import HubSpaceDataUpdateCoordinator
+
+_LOGGER = logging.getLogger(__name__)
+
 
 PRESET_HS_TO_HA = {"comfort-breeze": "breeze"}
 
@@ -129,12 +128,16 @@ class HubspaceFan(CoordinatorEntity, FanEntity):
                     self._supported_features |= FanEntityFeature.TURN_ON
                     self._supported_features |= FanEntityFeature.TURN_OFF
             else:
-                _LOGGER.debug("Unsupported feature found, %s", function["functionClass"])
+                _LOGGER.debug(
+                    "Unsupported feature found, %s", function["functionClass"]
+                )
                 self._instance_attrs.pop(function["functionClass"], None)
 
     def update_states(self) -> None:
         """Load initial states into the device"""
-        states: list[HubSpaceState] = self.coordinator.data[ENTITY_FAN][self._child_id].states
+        states: list[HubSpaceState] = self.coordinator.data[ENTITY_FAN][
+            self._child_id
+        ].states
         additional_attrs = [
             "wifi-ssid",
             "wifi-mac-address",
@@ -236,7 +239,7 @@ class HubspaceFan(CoordinatorEntity, FanEntity):
         **kwargs: Any,
     ) -> None:
         """Turn on the fan."""
-        _LOGGER.debug(f"Adjusting fan {self._child_id} with {kwargs}")
+        _LOGGER.debug("Adjusting fan %s with %s", self._child_id, kwargs)
         with suppress(AttributeError):
             if not self._supported_features & FanEntityFeature.TURN_ON:
                 raise NotImplementedError
@@ -327,7 +330,7 @@ async def async_setup_entry(
     fans: list[HubspaceFan] = []
     device_registry = dr.async_get(hass)
     for entity in coordinator_hubspace.data[ENTITY_FAN].values():
-        _LOGGER.debug(f"Adding a {entity.device_class}, {entity.friendly_name}")
+        _LOGGER.debug("Adding a %s, %s", entity.device_class, entity.friendly_name)
         device_registry.async_get_or_create(
             config_entry_id=entry.entry_id,
             identifiers={(DOMAIN, entity.device_id)},

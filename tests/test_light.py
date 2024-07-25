@@ -1,7 +1,4 @@
 import pytest
-from .utils import create_devices_from_data
-from custom_components.hubspace import light
-
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
     ATTR_COLOR_TEMP_KELVIN,
@@ -9,6 +6,9 @@ from homeassistant.components.light import (
     ColorMode,
 )
 
+from custom_components.hubspace import light
+
+from .utils import create_devices_from_data
 
 fan_zandra = create_devices_from_data("fan-ZandraFan.json")
 fan_zandra_light = fan_zandra[1]
@@ -24,22 +24,25 @@ def empty_light(mocked_coordinator):
 
 @pytest.fixture
 def temperature_light(mocked_coordinator):
-    l = light.HubspaceLight(mocked_coordinator, "test light")
-    l._temperature_choices = [2700, 3000, 3500]
-    yield l
+    temp_light = light.HubspaceLight(mocked_coordinator, "test light")
+    temp_light._temperature_choices = [2700, 3000, 3500]
+    yield temp_light
 
 
 @pytest.mark.parametrize(
-    "functions, expected_attrs", [
+    "functions, expected_attrs",
+    [
         (
             fan_zandra_light.functions,
             {
-                 "_instance_attrs": {
-                     "power": "light-power"
-                 },
-                "_color_modes": {ColorMode.ONOFF, ColorMode.COLOR_TEMP, ColorMode.BRIGHTNESS},
+                "_instance_attrs": {"power": "light-power"},
+                "_color_modes": {
+                    ColorMode.ONOFF,
+                    ColorMode.COLOR_TEMP,
+                    ColorMode.BRIGHTNESS,
+                },
                 "_supported_brightness": [x for x in range(1, 101)],
-            }
+            },
         ),
         (
             switch_dimmer_light.functions,
@@ -47,14 +50,15 @@ def temperature_light(mocked_coordinator):
                 "_instance_attrs": {},
                 "_color_modes": {ColorMode.ONOFF, ColorMode.BRIGHTNESS},
                 "_supported_brightness": [x for x in range(1, 101)],
-            }
+            },
         ),
-    ]
+    ],
 )
 def test_process_functions(functions, expected_attrs, empty_light):
     empty_light.process_functions(functions)
     for key, val in expected_attrs.items():
         assert getattr(empty_light, key) == val
+
 
 @pytest.mark.parametrize(
     "states, expected_attrs, extra_attrs",
@@ -74,9 +78,11 @@ def test_process_functions(functions, expected_attrs, empty_light):
         )
     ],
 )
-def test_update_states( states, expected_attrs, extra_attrs, empty_light):
+def test_update_states(states, expected_attrs, extra_attrs, empty_light):
     empty_light.states = states
-    empty_light.coordinator.data[fan_zandra_light.device_class][empty_light._child_id] = empty_light
+    empty_light.coordinator.data[fan_zandra_light.device_class][
+        empty_light._child_id
+    ] = empty_light
     empty_light.update_states()
     assert empty_light.extra_state_attributes == extra_attrs
     for key, val in expected_attrs.items():
@@ -137,13 +143,11 @@ def test_extra_state_attributes(mocked_coordinator):
                 "_color_temp": 3000,
                 "_state": "on",
                 "_rgb": light.RGB(25, 50, 255),
-            }
+            },
         ),
     ],
 )
-async def test_async_turn_on(
-    turn_on_kwargs, expected_attrs, temperature_light
-):
+async def test_async_turn_on(turn_on_kwargs, expected_attrs, temperature_light):
     await temperature_light.async_turn_on(**turn_on_kwargs)
     for key, val in expected_attrs.items():
         assert getattr(temperature_light, key) == val

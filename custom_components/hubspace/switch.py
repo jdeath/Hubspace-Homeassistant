@@ -12,7 +12,6 @@ from . import HubSpaceConfigEntry
 from .const import DOMAIN, ENTITY_SWITCH
 from .coordinator import HubSpaceDataUpdateCoordinator
 
-
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -62,7 +61,9 @@ class HubSpaceSwitch(SwitchEntity):
 
     def update_states(self) -> None:
         """Load initial states into the device"""
-        states: list[HubSpaceState] = self.coordinator.data[ENTITY_SWITCH][self._child_id].states
+        states: list[HubSpaceState] = self.coordinator.data[ENTITY_SWITCH][
+            self._child_id
+        ].states
         if not states:
             _LOGGER.debug(
                 "No states found for %s. Maybe hasn't polled yet?", self._child_id
@@ -147,7 +148,7 @@ async def setup_entry_toggled(
 ) -> list[HubSpaceSwitch]:
     valid: list[HubSpaceSwitch] = []
     for entity in devices:
-        _LOGGER.debug(f"Processing a {entity.device_class}, {entity.id}")
+        _LOGGER.debug("Processing a %s, %s", entity.device_class, entity.id)
         added_dev: bool = False
         for function in entity.functions:
             if function["functionClass"] != "toggle":
@@ -155,7 +156,7 @@ async def setup_entry_toggled(
             added_dev = True
             instance = function["functionInstance"]
             _LOGGER.debug(
-                f"Adding a %s [%s] @ %s", entity.device_class, entity.id, instance
+                "Adding a %s [%s] @ %s", entity.device_class, entity.id, instance
             )
             ha_entity = HubSpaceSwitch(
                 coordinator_hubspace,

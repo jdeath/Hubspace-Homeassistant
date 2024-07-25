@@ -1,19 +1,17 @@
 """The HubSpace coordinator."""
 
+import json
 import logging
 from asyncio import timeout
+from collections import defaultdict
 from datetime import timedelta
 from typing import Any
-from collections import defaultdict
 
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from hubspace_async import HubSpaceConnection, HubSpaceDevice, HubSpaceState
 
-import json
-
-from . import discovery, anonomyize_data
-from . import const
+from . import anonomyize_data, const, discovery
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -61,14 +59,20 @@ class HubSpaceDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         # during discovery
         for dev in self.tracked_devs:
             if dev.children:
-                _LOGGER.debug("Skipping %s [%s] as it has children", dev.friendly_name, dev.id)
+                _LOGGER.debug(
+                    "Skipping %s [%s] as it has children", dev.friendly_name, dev.id
+                )
                 continue
             mapped = const.DEVICE_CLASS_TO_ENTITY_MAP.get(dev.device_class)
             if not mapped:
                 if dev.device_class not in const.UNMAPPED_DEVICE_CLASSES:
-                    _LOGGER.warning("Found an unmapped device_class, %s", dev.device_class)
+                    _LOGGER.warning(
+                        "Found an unmapped device_class, %s", dev.device_class
+                    )
                 else:
-                    _LOGGER.info("Found a known unmapped device_class, %s", dev.device_class)
+                    _LOGGER.info(
+                        "Found a known unmapped device_class, %s", dev.device_class
+                    )
                 continue
             _LOGGER.debug("Adding device %s to %s", dev.friendly_name, mapped)
             devices[mapped][dev.id] = dev

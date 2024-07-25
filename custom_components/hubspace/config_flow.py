@@ -2,10 +2,8 @@
 
 from __future__ import annotations
 
-import copy
 import logging
 from asyncio import timeout
-from collections.abc import Mapping
 from typing import Any
 
 import voluptuous as vol

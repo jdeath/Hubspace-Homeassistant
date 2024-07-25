@@ -1,4 +1,3 @@
-import json
 import os
 from contextlib import suppress
 
@@ -9,7 +8,6 @@ from custom_components.hubspace import fan
 from custom_components.hubspace.const import ENTITY_FAN
 
 from .utils import create_devices_from_data
-
 
 current_path = os.path.dirname(os.path.realpath(__file__))
 

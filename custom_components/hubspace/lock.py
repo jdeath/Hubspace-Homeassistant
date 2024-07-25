@@ -3,8 +3,8 @@ from typing import Optional
 
 from homeassistant.components.lock import LockEntity, LockEntityFeature
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from hubspace_async import HubSpaceState
 
@@ -21,7 +21,6 @@ class HubSpaceLock(LockEntity):
     :ivar _name: Name of the device
     :ivar _hs: HubSpace connector
     :ivar _child_id: ID used when making requests to HubSpace
-    :ivar _state: If the device is on / off
     :ivar _bonus_attrs: Attributes relayed to Home Assistant that do not need to be
         tracked in their own class variables
     :ivar _current_position: Current position of the device (right [locked], left [unlocked])
@@ -55,7 +54,9 @@ class HubSpaceLock(LockEntity):
 
     def update_states(self) -> None:
         """Load initial states into the device"""
-        states: list[HubSpaceState] = self.coordinator.data[ENTITY_LOCK][self._child_id].states
+        states: list[HubSpaceState] = self.coordinator.data[ENTITY_LOCK][
+            self._child_id
+        ].states
         if not states:
             _LOGGER.debug(
                 "No states found for %s. Maybe hasn't polled yet?", self._child_id
@@ -143,29 +144,22 @@ async def async_setup_entry(
     coordinator_hubspace: HubSpaceDataUpdateCoordinator = (
         entry.runtime_data.coordinator_hubspace
     )
-    entities: list[HubSpaceValve] = []
+    entities: list[HubSpaceLock] = []
     device_registry = dr.async_get(hass)
-    for entity in coordinator_hubspace.data[ENTITY_VALVE].values():
-        for function in entity.functions:
-            if function["functionClass"] != "toggle":
-                continue
-            instance = function["functionInstance"]
-            ha_entity = HubSpaceValve(
-                coordinator_hubspace,
-                entity.friendly_name,
-                instance,
-                child_id=entity.id,
-                model=entity.model,
-                device_id=entity.device_id,
-            )
-            device_registry.async_get_or_create(
-                config_entry_id=entry.entry_id,
-                identifiers={(DOMAIN, entity.device_id)},
-                name=entity.friendly_name,
-                model=entity.model,
-            )
-            _LOGGER.debug(
-                f"Adding a %s [%s] @ %s", entity.device_class, entity.id, instance
-            )
-            entities.append(ha_entity)
+    for entity in coordinator_hubspace.data[ENTITY_LOCK].values():
+        _LOGGER.debug("Adding a %s, %s", entity.device_class, entity.friendly_name)
+        ha_entity = HubSpaceLock(
+            coordinator_hubspace,
+            entity.friendly_name,
+            child_id=entity.id,
+            model=entity.model,
+            device_id=entity.device_id,
+        )
+        device_registry.async_get_or_create(
+            config_entry_id=entry.entry_id,
+            identifiers={(DOMAIN, entity.device_id)},
+            name=entity.friendly_name,
+            model=entity.model,
+        )
+        entities.append(ha_entity)
     async_add_entities(entities)

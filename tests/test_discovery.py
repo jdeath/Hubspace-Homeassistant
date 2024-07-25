@@ -17,7 +17,8 @@ def generate_hs_device(friendly_id: str, child_id: str, **kwargs) -> HubSpaceDev
         "default_image": "default-image",
         "friendly_name": friendly_id,
         "functions": [],
-        "states": []
+        "states": [],
+        "children": [],
     }
     dev_dict.update(kwargs)
     return HubSpaceDevice(**dev_dict)

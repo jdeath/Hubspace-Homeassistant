@@ -1,9 +1,9 @@
 import pytest
-from .utils import create_devices_from_data
-from custom_components.hubspace import lock
 
+from custom_components.hubspace import lock
 from custom_components.hubspace.const import ENTITY_LOCK
 
+from .utils import create_devices_from_data
 
 lock_tbd = create_devices_from_data("door-lock-TBD.json")
 lock_tbd_instance = lock_tbd[0]
@@ -30,7 +30,7 @@ def empty_lock(mocked_coordinator):
         )
     ],
 )
-def test_update_states( states, expected_attrs, extra_attrs, empty_lock):
+def test_update_states(states, expected_attrs, extra_attrs, empty_lock):
     empty_lock.states = states
     empty_lock.coordinator.data[ENTITY_LOCK][empty_lock._child_id] = empty_lock
     empty_lock.update_states()

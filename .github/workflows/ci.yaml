@@ -12,7 +12,7 @@ jobs:
     runs-on: "ubuntu-latest"
     strategy:
       matrix:
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.12"]
 
     steps:
       - uses: actions/checkout@v4
@@ -23,11 +23,10 @@ jobs:
       - name: Install requirements
         run: |
           pip install -r requirements.txt -r test-requirements.txt
-# These are super broken atm and will need to be
-# revisited
-#      - name: Execute Tests
-#        run: |
-#          pytest
-#      - name: Execute Linting
-#        run: |
-#          pre-commit
+      - name: Execute Tests
+        run: |
+          pytest
+      - name: Execute Linting
+        # Run on 3.11 since its broken on 3.12
+        run: |
+          pre-commit

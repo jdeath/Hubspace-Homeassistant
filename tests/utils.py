@@ -28,5 +28,7 @@ def create_devices_from_data(file_name: str) -> list[HubSpaceDevice]:
         for state in device["states"]:
             processed_states.append(HubSpaceState(**state))
         device["states"] = processed_states
+        if "children" not in device:
+            device["children"] = []
         processed.append(HubSpaceDevice(**device))
     return processed

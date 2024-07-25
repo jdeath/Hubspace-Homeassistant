@@ -3,8 +3,8 @@ from typing import Optional
 
 from homeassistant.components.valve import ValveEntity
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from hubspace_async import HubSpaceState
 
@@ -62,7 +62,9 @@ class HubSpaceValve(ValveEntity):
 
     def update_states(self) -> None:
         """Load initial states into the device"""
-        states: list[HubSpaceState] = self.coordinator.data[ENTITY_VALVE][self._child_id].states
+        states: list[HubSpaceState] = self.coordinator.data[ENTITY_VALVE][
+            self._child_id
+        ].states
         if not states:
             _LOGGER.debug(
                 "No states found for %s. Maybe hasn't polled yet?", self._child_id
@@ -147,7 +149,7 @@ async def async_setup_entry(
     entities: list[HubSpaceValve] = []
     device_registry = dr.async_get(hass)
     for entity in coordinator_hubspace.data[ENTITY_VALVE].values():
-        _LOGGER.debug(f"Processing a {entity.device_class}, {entity.id}")
+        _LOGGER.debug("Processing a %s, %s", entity.device_class, entity.id)
         added_dev: bool = False
         for function in entity.functions:
             if function["functionClass"] != "toggle":
@@ -162,14 +164,8 @@ async def async_setup_entry(
                 model=entity.model,
                 device_id=entity.device_id,
             )
-            device_registry.async_get_or_create(
-                config_entry_id=entry.entry_id,
-                identifiers={(DOMAIN, entity.device_id)},
-                name=entity.friendly_name,
-                model=entity.model,
-            )
             _LOGGER.debug(
-                f"Adding a %s [%s] @ %s", entity.device_class, entity.id, instance
+                "Adding a %s [%s] @ %s", entity.device_class, entity.id, instance
             )
             entities.append(ha_entity)
         if not added_dev:
@@ -178,16 +174,15 @@ async def async_setup_entry(
                 coordinator_hubspace,
                 entity.friendly_name,
                 None,
-                entity.device_class,
                 child_id=entity.id,
                 model=entity.model,
                 device_id=entity.device_id,
             )
-            device_registry.async_get_or_create(
-                config_entry_id=entry.entry_id,
-                identifiers={(DOMAIN, entity.device_id)},
-                name=entity.friendly_name,
-                model=entity.model,
-            )
             entities.append(ha_entity)
+        device_registry.async_get_or_create(
+            config_entry_id=entry.entry_id,
+            identifiers={(DOMAIN, entity.device_id)},
+            name=entity.friendly_name,
+            model=entity.model,
+        )
     async_add_entities(entities)
