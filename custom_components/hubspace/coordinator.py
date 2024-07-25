@@ -4,6 +4,7 @@ import logging
 from asyncio import timeout
 from datetime import timedelta
 from typing import Any
+from collections import defaultdict
 
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
@@ -12,6 +13,7 @@ from hubspace_async import HubSpaceConnection, HubSpaceDevice, HubSpaceState
 import json
 
 from . import discovery, anonomyize_data
+from . import const
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -51,7 +53,20 @@ class HubSpaceDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self.tracked_devs = await discovery.get_requested_devices(
             self.conn, self.friendly_names, self.room_names
         )
-        if _LOGGER.getEffectiveLevel() <= logging.DEBUG:
-            data = await anonomyize_data.generate_anon_data(self.conn)
-            _LOGGER.debug(json.dumps(data, indent=4))
-        return {"devices": {x.id: x for x in self.tracked_devs}}
+        # if _LOGGER.getEffectiveLevel() <= logging.DEBUG:
+        #     data = await anonomyize_data.generate_anon_data(self.conn)
+        #     _LOGGER.debug(json.dumps(data, indent=4))
+        devices: dict[str, dict[str, HubSpaceDevice]] = defaultdict(dict)
+        # Separate the devices by device_class to reduce logging messages
+        # during discovery
+        for dev in self.tracked_devs:
+            mapped = const.DEVICE_CLASS_TO_ENTITY_MAP.get(dev.device_class)
+            if not mapped:
+                if dev.device_class not in const.UNMAPPED_DEVICE_CLASSES:
+                    _LOGGER.warning("Found an unmapped device_class, %s", dev.device_class)
+                else:
+                    _LOGGER.info("Found a known unmapped device_class, %s", dev.device_class)
+                continue
+            _LOGGER.debug("Adding device %s to %s", dev.friendly_name, mapped)
+            devices[mapped][dev.id] = dev
+        return devices

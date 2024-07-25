@@ -4,14 +4,15 @@ from typing import Optional
 from homeassistant.components.valve import ValveEntity
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from hubspace_async import HubSpaceState
 
 from . import HubSpaceConfigEntry
-from .const import DOMAIN
+from .const import DOMAIN, ENTITY_VALVE
 from .coordinator import HubSpaceDataUpdateCoordinator
 
-logger = logging.getLogger(__name__)
+_LOGGER = logging.getLogger(__name__)
 
 
 class HubSpaceValve(ValveEntity):
@@ -61,9 +62,9 @@ class HubSpaceValve(ValveEntity):
 
     def update_states(self) -> None:
         """Load initial states into the device"""
-        states: list[HubSpaceState] = self.coordinator.data["devices"][self._child_id].states
+        states: list[HubSpaceState] = self.coordinator.data[ENTITY_VALVE][self._child_id].states
         if not states:
-            logger.debug(
+            _LOGGER.debug(
                 "No states found for %s. Maybe hasn't polled yet?", self._child_id
             )
         # functionClass -> internal attribute
@@ -108,7 +109,7 @@ class HubSpaceValve(ValveEntity):
         )
 
     async def async_open_valve(self, **kwargs) -> None:
-        logger.debug("Opening %s on %s", self._instance, self._child_id)
+        _LOGGER.debug("Opening %s on %s", self._instance, self._child_id)
         self._state = "on"
         states_to_set = [
             HubSpaceState(
@@ -121,7 +122,7 @@ class HubSpaceValve(ValveEntity):
         self.async_write_ha_state()
 
     async def async_close_valve(self, **kwargs) -> None:
-        logger.debug("Closing %s on %s", self._instance, self._child_id)
+        _LOGGER.debug("Closing %s on %s", self._instance, self._child_id)
         self._state = "off"
         states_to_set = [
             HubSpaceState(
@@ -144,27 +145,28 @@ async def async_setup_entry(
         entry.runtime_data.coordinator_hubspace
     )
     entities: list[HubSpaceValve] = []
-    for entity in coordinator_hubspace.data["devices"].values():
-        if entity.device_class == "water-timer":
-            for function in entity.functions:
-                if function["functionClass"] != "toggle":
-                    continue
-                instance = function["functionInstance"]
-                ha_entity = HubSpaceValve(
-                    coordinator_hubspace,
-                    entity.friendly_name,
-                    instance,
-                    child_id=entity.id,
-                    model=entity.model,
-                    device_id=entity.device_id,
-                )
-                logger.debug(
-                    f"Adding a %s [%s] @ %s", entity.device_class, entity.id, instance
-                )
-                entities.append(ha_entity)
-        else:
-            logger.debug(
-                f"Unable to process the entity {entity.friendly_name} of class {entity.device_class}"
+    device_registry = dr.async_get(hass)
+    for entity in coordinator_hubspace.data[ENTITY_VALVE].values():
+        for function in entity.functions:
+            if function["functionClass"] != "toggle":
+                continue
+            instance = function["functionInstance"]
+            ha_entity = HubSpaceValve(
+                coordinator_hubspace,
+                entity.friendly_name,
+                instance,
+                child_id=entity.id,
+                model=entity.model,
+                device_id=entity.device_id,
             )
-            continue
+            device_registry.async_get_or_create(
+                config_entry_id=entry.entry_id,
+                identifiers={(DOMAIN, entity.device_id)},
+                name=entity.friendly_name,
+                model=entity.model,
+            )
+            _LOGGER.debug(
+                f"Adding a %s [%s] @ %s", entity.device_class, entity.id, instance
+            )
+            entities.append(ha_entity)
     async_add_entities(entities)

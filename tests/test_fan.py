@@ -6,8 +6,10 @@ import pytest
 from homeassistant.components.fan import FanEntityFeature
 
 from custom_components.hubspace import fan
+from custom_components.hubspace.const import ENTITY_FAN
 
 from .utils import create_devices_from_data
+
 
 current_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -46,7 +48,6 @@ def speed_fan(mocked_coordinator):
 
 class Test_HubSpaceFan:
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize(
         "functions, expected_attrs",
         [
@@ -72,8 +73,8 @@ class Test_HubSpaceFan:
             )
         ],
     )
-    async def test_process_functions(self, functions, expected_attrs, empty_fan):
-        await empty_fan.process_functions(functions)
+    def test_process_functions(self, functions, expected_attrs, empty_fan):
+        empty_fan.process_functions(functions)
         for key, val in expected_attrs.items():
             assert getattr(empty_fan, key) == val
 
@@ -102,7 +103,7 @@ class Test_HubSpaceFan:
     )
     def test_update_states(self, states, expected_attrs, extra_attrs, empty_fan):
         empty_fan.states = states
-        empty_fan.coordinator.data["devices"][empty_fan._child_id] = empty_fan
+        empty_fan.coordinator.data[ENTITY_FAN][empty_fan._child_id] = empty_fan
         empty_fan.update_states()
         assert empty_fan.extra_state_attributes == extra_attrs
         for key, val in expected_attrs.items():

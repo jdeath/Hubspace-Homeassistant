@@ -6,6 +6,7 @@ from typing import Any, Optional, Union
 
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util.percentage import (
@@ -13,9 +14,9 @@ from homeassistant.util.percentage import (
     percentage_to_ordered_list_item,
 )
 
-from .const import DOMAIN
+from .const import DOMAIN, ENTITY_FAN
 
-logger = logging.getLogger(__name__)
+_LOGGER = logging.getLogger(__name__)
 
 from homeassistant.components.fan import FanEntity, FanEntityFeature
 from hubspace_async import HubSpaceState
@@ -83,7 +84,8 @@ class HubspaceFan(CoordinatorEntity, FanEntity):
             "Child ID": self._child_id,
         }
         self._instance_attrs: dict[str, str] = {}
-        self._functions: list[dict[str, Any]] = functions or []
+        functions = functions or []
+        self.process_functions(functions)
         super().__init__(hs, context=self._child_id)
 
     @callback
@@ -92,17 +94,7 @@ class HubspaceFan(CoordinatorEntity, FanEntity):
         self.update_states()
         self.async_write_ha_state()
 
-    def __await__(self):
-        return self.create().__await__()
-
-    async def create(self):
-        await self.async_update()
-        if self._functions:
-            await self.process_functions(self._functions)
-            self._functions = None
-        return self
-
-    async def process_functions(self, functions: list[dict]) -> None:
+    def process_functions(self, functions: list[dict]) -> None:
         """Process available functions
 
         :param functions: Functions that are supported from the API
@@ -116,7 +108,7 @@ class HubspaceFan(CoordinatorEntity, FanEntity):
                 self._supported_features |= FanEntityFeature.PRESET_MODE
                 self._preset_modes.add(function["functionInstance"])
                 self._instance_attrs.pop(function["functionClass"])
-                logger.debug(
+                _LOGGER.debug(
                     "Adding a new feature - preset, %s", function["functionInstance"]
                 )
             elif function["functionClass"] == "fan-speed":
@@ -126,23 +118,23 @@ class HubspaceFan(CoordinatorEntity, FanEntity):
                     if not value["name"].endswith("-000"):
                         tmp_speed.add(value["name"])
                 self._fan_speeds = list(sorted(tmp_speed))
-                logger.debug("Adding a new feature - fan speed, %s", self._fan_speeds)
+                _LOGGER.debug("Adding a new feature - fan speed, %s", self._fan_speeds)
             elif function["functionClass"] == "fan-reverse":
                 self._supported_features |= FanEntityFeature.DIRECTION
-                logger.debug("Adding a new feature - direction")
+                _LOGGER.debug("Adding a new feature - direction")
             elif function["functionClass"] == "power":
-                logger.debug("Adding a new feature - on / off")
+                _LOGGER.debug("Adding a new feature - on / off")
                 # This code is in the mainline but unreleased
                 with suppress(AttributeError):
                     self._supported_features |= FanEntityFeature.TURN_ON
                     self._supported_features |= FanEntityFeature.TURN_OFF
             else:
-                logger.debug("Unsupported feature found, %s", function["functionClass"])
+                _LOGGER.debug("Unsupported feature found, %s", function["functionClass"])
                 self._instance_attrs.pop(function["functionClass"], None)
 
     def update_states(self) -> None:
         """Load initial states into the device"""
-        states: list[HubSpaceState] = self.coordinator.data["devices"][self._child_id].states
+        states: list[HubSpaceState] = self.coordinator.data[ENTITY_FAN][self._child_id].states
         additional_attrs = [
             "wifi-ssid",
             "wifi-mac-address",
@@ -244,6 +236,7 @@ class HubspaceFan(CoordinatorEntity, FanEntity):
         **kwargs: Any,
     ) -> None:
         """Turn on the fan."""
+        _LOGGER.debug(f"Adjusting fan {self._child_id} with {kwargs}")
         with suppress(AttributeError):
             if not self._supported_features & FanEntityFeature.TURN_ON:
                 raise NotImplementedError
@@ -332,13 +325,16 @@ async def async_setup_entry(
         entry.runtime_data.coordinator_hubspace
     )
     fans: list[HubspaceFan] = []
-    for entity in coordinator_hubspace.data["devices"].values():
-        if entity.device_class != "fan":
-            logger.debug(
-                f"Unable to process the entity {entity.friendly_name} of class {entity.device_class}"
-            )
-            continue
-        ha_entity = await HubspaceFan(
+    device_registry = dr.async_get(hass)
+    for entity in coordinator_hubspace.data[ENTITY_FAN].values():
+        _LOGGER.debug(f"Adding a {entity.device_class}, {entity.friendly_name}")
+        device_registry.async_get_or_create(
+            config_entry_id=entry.entry_id,
+            identifiers={(DOMAIN, entity.device_id)},
+            name=entity.friendly_name,
+            model=entity.model,
+        )
+        ha_entity = HubspaceFan(
             coordinator_hubspace,
             entity.friendly_name,
             child_id=entity.id,
@@ -346,6 +342,5 @@ async def async_setup_entry(
             device_id=entity.device_id,
             functions=entity.functions,
         )
-        logger.debug(f"Adding a fan, {ha_entity._child_id}")
         fans.append(ha_entity)
     async_add_entities(fans)

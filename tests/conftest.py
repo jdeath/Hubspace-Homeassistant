@@ -4,6 +4,7 @@ import hubspace_async
 import pytest
 
 from custom_components.hubspace import coordinator
+from collections import defaultdict
 
 
 @pytest.fixture
@@ -15,9 +16,7 @@ def mocked_coordinator(mocker, mocked_hubspace):
         coordinator, "HubSpaceDataUpdateCoordinator", autospec=True
     )
     coord_mock.conn = mocked_hubspace
-    coord_mock.data = {
-        "devices": {},
-    }
+    coord_mock.data = defaultdict(dict)
     yield coord_mock
 
 

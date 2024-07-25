@@ -10,13 +10,12 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN
+from .const import DOMAIN, ENTITY_LIGHT
 
-logger = logging.getLogger(__name__)
+_LOGGER = logging.getLogger(__name__)
 
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
-    ATTR_COLOR_TEMP,
     ATTR_COLOR_TEMP_KELVIN,
     ATTR_RGB_COLOR,
     ColorMode,
@@ -143,6 +142,7 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
         self._brightness: Optional[int] = None
         self._rgb: RGB = RGB(red=0, green=0, blue=0)
 
+        functions = functions or []
         self.process_functions(functions)
         self._adjust_supported_modes()
         super().__init__(hs, context=self._child_id)
@@ -166,25 +166,32 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
                 ]
             if function["functionClass"] == "power":
                 self._color_modes.add(ColorMode.ONOFF)
+                _LOGGER.debug("Adding a new feature - on / off")
             elif function["functionClass"] == "color-temperature":
                 self._temperature_choices, self._temperature_prefix = (
                     process_color_temps(function["values"])
                 )
                 if self._temperature_choices:
                     self._color_modes.add(ColorMode.COLOR_TEMP)
+                    _LOGGER.debug("Adding a new feature - color temperature")
             elif function["functionClass"] == "brightness":
                 temp_bright = process_range(function["values"][0])
                 if temp_bright:
                     self._supported_brightness = temp_bright
                     self._color_modes.add(ColorMode.BRIGHTNESS)
+                    _LOGGER.debug("Adding a new feature - brightness")
             elif function["functionClass"] == "color-rgb":
                 self._color_modes.add(ColorMode.RGB)
+                _LOGGER.debug("Adding a new feature - rgb")
+            else:
+                _LOGGER.debug("Unsupported feature found, %s", function["functionClass"])
+                self._instance_attrs.pop(function["functionClass"], None)
 
     def update_states(self) -> None:
         """Load initial states into the device"""
-        states: list[HubSpaceState] = self.coordinator.data["devices"][self._child_id].states
+        states: list[HubSpaceState] = self.coordinator.data[ENTITY_LIGHT][self._child_id].states
         if not states:
-            logger.debug(
+            _LOGGER.debug(
                 "No states found for %s. Maybe hasn't polled yet?", self._child_id
             )
         additional_attrs = []
@@ -299,7 +306,7 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
             self._color_modes.remove(ColorMode.ONOFF)
 
     async def async_turn_on(self, **kwargs) -> None:
-        logger.debug(f"Adjusting light {self._child_id} with {kwargs}")
+        _LOGGER.debug(f"Adjusting light {self._child_id} with {kwargs}")
         self._state = "on"
         states_to_set = [
             HubSpaceState(
@@ -318,7 +325,7 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
                 )
             )
             self._brightness = brightness
-        if ATTR_COLOR_TEMP in kwargs:
+        if ATTR_COLOR_TEMP_KELVIN in kwargs:
             color_to_set = list(self._temperature_choices)[0]
             # I am not sure how to set specific values, so find the value
             # that is closest without going over
@@ -353,7 +360,7 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
         self.async_write_ha_state()
 
     async def async_turn_off(self, **kwargs) -> None:
-        logger.debug(f"Adjusting light {self._child_id} with {kwargs}")
+        _LOGGER.debug(f"Adjusting light {self._child_id} with {kwargs}")
         self._state = "off"
         states_to_set = [
             HubSpaceState(
@@ -377,19 +384,14 @@ async def async_setup_entry(
     )
     entities: list[HubspaceLight] = []
     device_registry = dr.async_get(hass)
-    for entity in coordinator_hubspace.data["devices"].values():
-        # Force everything to have a device
+    for entity in coordinator_hubspace.data[ENTITY_LIGHT].values():
+        _LOGGER.debug(f"Adding a {entity.device_class}, {entity.friendly_name}")
         device_registry.async_get_or_create(
             config_entry_id=entry.entry_id,
             identifiers={(DOMAIN, entity.device_id)},
             name=entity.friendly_name,
             model=entity.model,
         )
-        if entity.device_class != "light":
-            logger.debug(
-                f"Unable to process the entity {entity.friendly_name} of class {entity.device_class}"
-            )
-            continue
         ha_entity = HubspaceLight(
             coordinator_hubspace,
             entity.friendly_name,
@@ -398,6 +400,5 @@ async def async_setup_entry(
             device_id=entity.device_id,
             functions=entity.functions,
         )
-        logger.debug(f"Adding a light, {ha_entity._child_id}")
         entities.append(ha_entity)
     async_add_entities(entities)

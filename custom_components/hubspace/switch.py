@@ -3,15 +3,17 @@ from typing import Optional
 
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from hubspace_async import HubSpaceState
+from hubspace_async import HubSpaceDevice, HubSpaceState
 
 from . import HubSpaceConfigEntry
-from .const import DOMAIN
+from .const import DOMAIN, ENTITY_SWITCH
 from .coordinator import HubSpaceDataUpdateCoordinator
 
-logger = logging.getLogger(__name__)
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class HubSpaceSwitch(SwitchEntity):
@@ -23,6 +25,7 @@ class HubSpaceSwitch(SwitchEntity):
     :ivar _state: If the device is on / off
     :ivar _bonus_attrs: Attributes relayed to Home Assistant that do not need to be
         tracked in their own class variables
+    :ivar _device_class: Device class used during lookup
     :ivar _instance: functionInstance within the HS device
     """
 
@@ -31,6 +34,7 @@ class HubSpaceSwitch(SwitchEntity):
         hs: HubSpaceDataUpdateCoordinator,
         friendly_name: str,
         instance: str,
+        device_class: str,
         child_id: Optional[str] = None,
         model: Optional[str] = None,
         device_id: Optional[str] = None,
@@ -46,6 +50,7 @@ class HubSpaceSwitch(SwitchEntity):
             "Child ID": self._child_id,
         }
         # Entity-specific
+        self._device_class = device_class
         self._instance = instance
         super().__init__(hs, context=self._child_id)
 
@@ -57,9 +62,9 @@ class HubSpaceSwitch(SwitchEntity):
 
     def update_states(self) -> None:
         """Load initial states into the device"""
-        states: list[HubSpaceState] = self.coordinator.data["devices"][self._child_id].states
+        states: list[HubSpaceState] = self.coordinator.data[ENTITY_SWITCH][self._child_id].states
         if not states:
-            logger.debug(
+            _LOGGER.debug(
                 "No states found for %s. Maybe hasn't polled yet?", self._child_id
             )
         # functionClass -> internal attribute
@@ -104,7 +109,7 @@ class HubSpaceSwitch(SwitchEntity):
         )
 
     async def async_turn_on(self, **kwargs) -> None:
-        logger.debug("Enabling %s on %s", self._instance, self._child_id)
+        _LOGGER.debug("Enabling %s on %s", self._instance, self._child_id)
         self._state = "on"
         states_to_set = [
             HubSpaceState(
@@ -117,7 +122,7 @@ class HubSpaceSwitch(SwitchEntity):
         self.async_write_ha_state()
 
     async def async_turn_off(self, **kwargs) -> None:
-        logger.debug("Disabling %s on %s", self._instance, self._child_id)
+        _LOGGER.debug("Disabling %s on %s", self._instance, self._child_id)
         self._state = "off"
         states_to_set = [
             HubSpaceState(
@@ -130,6 +135,41 @@ class HubSpaceSwitch(SwitchEntity):
         self.async_write_ha_state()
 
 
+async def setup_entry_toggled(
+    coordinator_hubspace: HubSpaceDataUpdateCoordinator,
+    registry: dr.DeviceRegistry,
+    devices: list[HubSpaceDevice],
+    entry: HubSpaceConfigEntry,
+) -> list[HubSpaceSwitch]:
+    valid: list[HubSpaceSwitch] = []
+    for entity in devices:
+        _LOGGER.debug(f"Processing a {entity.device_class}, {entity.id}")
+        for function in entity.functions:
+            if function["functionClass"] != "toggle":
+                continue
+            instance = function["functionInstance"]
+            _LOGGER.debug(
+                f"Adding a %s [%s] @ %s", entity.device_class, entity.id, instance
+            )
+            ha_entity = HubSpaceSwitch(
+                coordinator_hubspace,
+                entity.friendly_name,
+                instance,
+                entity.device_class,
+                child_id=entity.id,
+                model=entity.model,
+                device_id=entity.device_id,
+            )
+            registry.async_get_or_create(
+                config_entry_id=entry.entry_id,
+                identifiers={(DOMAIN, entity.device_id)},
+                name=entity.friendly_name,
+                model=entity.model,
+            )
+            valid.append(ha_entity)
+    return valid
+
+
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: HubSpaceConfigEntry,
@@ -139,28 +179,15 @@ async def async_setup_entry(
     coordinator_hubspace: HubSpaceDataUpdateCoordinator = (
         entry.runtime_data.coordinator_hubspace
     )
+    device_registry = dr.async_get(hass)
     entities: list[HubSpaceSwitch] = []
-    for entity in coordinator_hubspace.data["devices"].values():
-        if entity.device_class in ["power-outlet", "landscape-transformer"]:
-            for function in entity.functions:
-                if function["functionClass"] != "toggle":
-                    continue
-                instance = function["functionInstance"]
-                ha_entity = HubSpaceSwitch(
-                    coordinator_hubspace,
-                    entity.friendly_name,
-                    instance,
-                    child_id=entity.id,
-                    model=entity.model,
-                    device_id=entity.device_id,
-                )
-                logger.debug(
-                    f"Adding a %s [%s] @ %s", entity.device_class, entity.id, instance
-                )
-                entities.append(ha_entity)
-        else:
-            logger.debug(
-                f"Unable to process the entity {entity.friendly_name} of class {entity.device_class}"
+    for dev_class in ENTITY_SWITCH:
+        entities.extend(
+            await setup_entry_toggled(
+                coordinator_hubspace,
+                device_registry,
+                coordinator_hubspace.data[dev_class].values(),
+                entry,
             )
-            continue
+        )
     async_add_entities(entities)
