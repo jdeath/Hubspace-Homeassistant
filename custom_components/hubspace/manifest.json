@@ -7,6 +7,6 @@
   "documentation": "https://github.com/jdeath/Hubspace-Homeassistant/blob/main/README.md",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/jdeath/Hubspace-Homeassistant/issues",
-  "requirements": ["hubspace-async==0.0.5"],
+  "requirements": ["hubspace-async==0.0.6"],
   "version": "1.0"
 }

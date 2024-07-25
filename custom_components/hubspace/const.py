@@ -11,6 +11,7 @@ HUB_IDENTIFIER: Final[str] = "hubspace_debug"
 
 ENTITY_FAN: Final[str] = "fan"
 ENTITY_LIGHT: Final[str] = "light"
+ENTITY_LOCK: Final[str] = "lock"
 ENTITY_SWITCH: Final[str] = "switch"
 ENTITY_VALVE: Final[str] = "valve"
 
@@ -25,6 +26,7 @@ DEVICE_CLASS_WATER_TIMER: Final[str] = "water-timer"
 DEVICE_CLASS_TO_ENTITY_MAP: Final[dict[str, str]] = {
     DEVICE_CLASS_FAN: ENTITY_FAN,
     DEVICE_CLASS_LIGHT: ENTITY_LIGHT,
+    DEVICE_CLASS_DOOR_LOCK: ENTITY_LOCK,
     DEVICE_CLASS_SWITCH: ENTITY_SWITCH,
     DEVICE_CLASS_OUTLET: ENTITY_SWITCH,
     DEVICE_CLASS_LANDSCAPE_TRANSFORMER: ENTITY_SWITCH,

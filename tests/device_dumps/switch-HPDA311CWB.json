@@ -1,0 +1,1400 @@
+[
+    {
+        "id": "feb5d9db-0562-478b-aaa0-00c889f0a758",
+        "device_id": "e5289c00-f943-4fba-9b52-1ba17f5064b2",
+        "model": "HPDA311CWB",
+        "device_class": "switch",
+        "default_name": "Dimmer",
+        "default_image": "smart-dimmer-icon",
+        "friendly_name": "friendly-device-0",
+        "functions": [
+            {
+                "id": "e1f85825-3147-4dc3-9942-78e9bc5bbe6f",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "sensor-mode",
+                "type": "category",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "39be6297-578d-4805-ba2a-3d30b5e3f24b",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "auto-off",
+                        "deviceValues": [
+                            {
+                                "id": "8aac5fcb-17d7-49ff-a913-fc334e2f3d5e",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "3",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "8cd7226e-0cb5-4edb-9718-e88d8c59f6a1",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "automatic",
+                        "deviceValues": [
+                            {
+                                "id": "6038b14a-9ce7-439c-9967-70746f92c84d",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "3",
+                                "value": "2"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "40209c85-1ed3-4769-969d-7aa70356d087",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "manual",
+                        "deviceValues": [
+                            {
+                                "id": "cbfa81b6-3ed9-4029-b6ed-c24d487e7932",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "3",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "18635811-53c2-4617-8026-5c522ffd1e8e",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "grace-period",
+                "functionInstance": "grace-period",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "26e3056c-8715-4a30-9fa6-fa39278f68a4",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "grace-period",
+                        "deviceValues": [
+                            {
+                                "id": "c9ad2e9d-2635-4fe0-8fef-f087b2385ebe",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "51"
+                            }
+                        ],
+                        "range": {
+                            "min": 15,
+                            "max": 30,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "46e32be4-989b-43cb-baad-cd6d4379832b",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "pir-sensitivity",
+                "functionInstance": "pir",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "bc3ef077-a08b-410a-b830-5085ee49cc7d",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "pir-sensitivity",
+                        "deviceValues": [
+                            {
+                                "id": "fd6b5d56-2eea-4c1e-b92c-945a5e3dfe09",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "208"
+                            }
+                        ],
+                        "range": {
+                            "min": 0,
+                            "max": 100,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "ade2dba7-811f-46b9-b655-36bb2f525d02",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "led-configuration",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "8f4d5f65-afa8-4040-8fc9-ce657a19e0f7",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "a603a080-41e5-4099-ad8e-bf2d7b277d86",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "205",
+                                "value": "2"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "7baae60a-8aaa-4fd4-952d-eed3881d30e7",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "0f2eea5e-cb99-46e0-8a9a-028a59a73964",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "205",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "c79a4d0d-b0cb-4db7-ae76-a67733cb1678",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "blink",
+                        "deviceValues": [
+                            {
+                                "id": "03f7247f-dc35-4bc4-b149-0e7ddd6b028b",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "205",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "977fc51a-8c65-4516-b8aa-48e50505c9b2",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "dark-determination",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "066e276f-a6a0-4ba1-a05e-2188101d1c40",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "bdbbf3ac-1116-499a-b381-5a1e304e0d40",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "200",
+                                "value": "2"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "4ffc3d6d-4792-43bf-b614-1509ad52ace8",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "light-sensor",
+                        "deviceValues": [
+                            {
+                                "id": "ebd36a4c-896d-4ecd-9af2-fe6caf5d00d7",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "200",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "f04f1efb-43cf-48c1-9496-d798f3f94cca",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "sunrise-sunset",
+                        "deviceValues": [
+                            {
+                                "id": "aa8f404e-8a18-47ac-86db-890660086b20",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "200",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "3cd11948-bdd3-4d92-a61d-e1b571046d26",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "bright-threshold",
+                "functionInstance": "bright-threshold",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "256c2313-7307-46f0-bca3-dad3874abab8",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "bright-threshold",
+                        "deviceValues": [
+                            {
+                                "id": "04a9eef8-cb78-43d8-bec4-bbf31bab013a",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "206"
+                            }
+                        ],
+                        "range": {
+                            "min": 30,
+                            "max": 95,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "e7861f43-0487-4bca-b7dd-27bb52cbdd93",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "brightness",
+                "type": "numeric",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "94c50bdd-0672-4591-8804-692ca0802eca",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "brightness",
+                        "deviceValues": [
+                            {
+                                "id": "deccbf2f-9ca1-4f70-a9df-1e33629dfa3a",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "2"
+                            }
+                        ],
+                        "range": {
+                            "min": 1,
+                            "max": 100,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "914f621a-802e-458f-a18c-3a258b55019b",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "fade-duration",
+                "functionInstance": "fade-on",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "4aa5648f-492b-4dad-be4b-265787ca5394",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "fade-on-duration",
+                        "deviceValues": [
+                            {
+                                "id": "85005e37-0b7d-4e21-aee1-bc7626066853",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "203"
+                            }
+                        ],
+                        "range": {
+                            "min": 0,
+                            "max": 60,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "74d015c0-66ef-4c2b-b830-a257564477fa",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "trim",
+                "functionInstance": "low-trim",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "11a0f0c0-ac69-4c28-8bd4-54dadea2fcaa",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "low-trim",
+                        "deviceValues": [
+                            {
+                                "id": "77818853-0607-46da-ad60-6e8fd7e54219",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "201"
+                            }
+                        ],
+                        "range": {
+                            "min": 0,
+                            "max": 50,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "36ea24bf-26b2-44cf-b31b-1597130200ef",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "auto-off-timer",
+                "functionInstance": "auto-off",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "10561ba4-7042-4559-956f-1841ade208ec",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "Auto Off Timer",
+                        "deviceValues": [
+                            {
+                                "id": "1e76c284-da09-46a5-ac7f-1f740d472b4c",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "50"
+                            }
+                        ],
+                        "range": {
+                            "min": 5,
+                            "max": 3600,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "7daf1590-b425-4614-a128-636061312204",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "fade-duration",
+                "functionInstance": "fade-off",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "9fa66c36-921f-42e8-9e35-815ad879d4a1",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "fade-off-duration",
+                        "deviceValues": [
+                            {
+                                "id": "cf22d19b-2166-4e51-813d-ca94e13fd687",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "204"
+                            }
+                        ],
+                        "range": {
+                            "min": 0,
+                            "max": 60,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "5869ec56-0426-46e7-b0cd-6438d3b5bc7b",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "power",
+                "type": "category",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "229331ce-2748-44c5-9976-379d6e90e22c",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "4c523b73-f93b-4fee-a6d1-c5da1cb80c36",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "1",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "16eaea56-97a7-4ae6-82db-b830af82c3aa",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "61ceb360-b4a0-452d-ae0b-48bf4e012544",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "1",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "9ad0d015-bfbe-4fe0-854d-a02f53b7e7b2",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "trim",
+                "functionInstance": "high-trim",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "63905b33-5a75-40cc-8a68-aa2df86ab492",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "high-trim",
+                        "deviceValues": [
+                            {
+                                "id": "a5bcac90-a11b-4c08-a3e9-056f7dec2ca5",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "202"
+                            }
+                        ],
+                        "range": {
+                            "min": 50,
+                            "max": 100,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "014b8af6-d7ca-4174-8d4e-872cd868cd1d",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "dark-threshold",
+                "functionInstance": "dark-threshold",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "1cfcf003-559e-4fe0-bb2c-d3aa8166499f",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "dark-threshold",
+                        "deviceValues": [
+                            {
+                                "id": "c3c31014-3959-4ac3-9c72-ae0f39059548",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "207"
+                            }
+                        ],
+                        "range": {
+                            "min": 5,
+                            "max": 30,
+                            "step": 1
+                        }
+                    }
+                ]
+            }
+        ],
+        "states": [
+            {
+                "functionClass": "sensor-mode",
+                "value": "auto-off",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "grace-period",
+                "value": 10,
+                "lastUpdateTime": 0,
+                "functionInstance": "grace-period"
+            },
+            {
+                "functionClass": "pir-sensitivity",
+                "value": 90,
+                "lastUpdateTime": 0,
+                "functionInstance": "pir"
+            },
+            {
+                "functionClass": "led-configuration",
+                "value": "off",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "dark-determination",
+                "value": "light-sensor",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "bright-threshold",
+                "value": 40,
+                "lastUpdateTime": 0,
+                "functionInstance": "bright-threshold"
+            },
+            {
+                "functionClass": "brightness",
+                "value": 100,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "fade-duration",
+                "value": 0,
+                "lastUpdateTime": 0,
+                "functionInstance": "fade-on"
+            },
+            {
+                "functionClass": "trim",
+                "value": 20,
+                "lastUpdateTime": 0,
+                "functionInstance": "low-trim"
+            },
+            {
+                "functionClass": "auto-off-timer",
+                "value": 300,
+                "lastUpdateTime": 0,
+                "functionInstance": "auto-off"
+            },
+            {
+                "functionClass": "fade-duration",
+                "value": 0,
+                "lastUpdateTime": 0,
+                "functionInstance": "fade-off"
+            },
+            {
+                "functionClass": "power",
+                "value": "off",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "trim",
+                "value": 100,
+                "lastUpdateTime": 0,
+                "functionInstance": "high-trim"
+            },
+            {
+                "functionClass": "dark-threshold",
+                "value": 15,
+                "lastUpdateTime": 0,
+                "functionInstance": "dark-threshold"
+            },
+            {
+                "functionClass": "wifi-ssid",
+                "value": "2aab69c0-0ecc-4c60-bafd-287856fb9af3",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-rssi",
+                "value": -49,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-steady-state",
+                "value": "connected",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-setup-state",
+                "value": "connected",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-mac-address",
+                "value": "00ea0783-77c3-48c7-936d-558fc6fa07bc",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "geo-coordinates",
+                "value": null,
+                "lastUpdateTime": 0,
+                "functionInstance": "system-device-location"
+            },
+            {
+                "functionClass": "scheduler-flags",
+                "value": 0,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "available",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "visible",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "direct",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "ble-mac-address",
+                "value": "16a00712-1f5b-4c5b-9695-f28e177bb1b1",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            }
+        ]
+    },
+    {
+        "id": "e2739f39-8698-4eb2-9bc9-049030df3d08",
+        "device_id": "e5289c00-f943-4fba-9b52-1ba17f5064b2",
+        "model": "HPDA311CWB",
+        "device_class": "switch",
+        "default_name": "Dimmer",
+        "default_image": "smart-dimmer-icon",
+        "friendly_name": "friendly-device-1",
+        "functions": [
+            {
+                "id": "e1f85825-3147-4dc3-9942-78e9bc5bbe6f",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "sensor-mode",
+                "type": "category",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "39be6297-578d-4805-ba2a-3d30b5e3f24b",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "auto-off",
+                        "deviceValues": [
+                            {
+                                "id": "8aac5fcb-17d7-49ff-a913-fc334e2f3d5e",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "3",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "8cd7226e-0cb5-4edb-9718-e88d8c59f6a1",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "automatic",
+                        "deviceValues": [
+                            {
+                                "id": "6038b14a-9ce7-439c-9967-70746f92c84d",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "3",
+                                "value": "2"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "40209c85-1ed3-4769-969d-7aa70356d087",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "manual",
+                        "deviceValues": [
+                            {
+                                "id": "cbfa81b6-3ed9-4029-b6ed-c24d487e7932",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "3",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "18635811-53c2-4617-8026-5c522ffd1e8e",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "grace-period",
+                "functionInstance": "grace-period",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "26e3056c-8715-4a30-9fa6-fa39278f68a4",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "grace-period",
+                        "deviceValues": [
+                            {
+                                "id": "c9ad2e9d-2635-4fe0-8fef-f087b2385ebe",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "51"
+                            }
+                        ],
+                        "range": {
+                            "min": 15,
+                            "max": 30,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "46e32be4-989b-43cb-baad-cd6d4379832b",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "pir-sensitivity",
+                "functionInstance": "pir",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "bc3ef077-a08b-410a-b830-5085ee49cc7d",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "pir-sensitivity",
+                        "deviceValues": [
+                            {
+                                "id": "fd6b5d56-2eea-4c1e-b92c-945a5e3dfe09",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "208"
+                            }
+                        ],
+                        "range": {
+                            "min": 0,
+                            "max": 100,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "ade2dba7-811f-46b9-b655-36bb2f525d02",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "led-configuration",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "8f4d5f65-afa8-4040-8fc9-ce657a19e0f7",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "a603a080-41e5-4099-ad8e-bf2d7b277d86",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "205",
+                                "value": "2"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "7baae60a-8aaa-4fd4-952d-eed3881d30e7",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "0f2eea5e-cb99-46e0-8a9a-028a59a73964",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "205",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "c79a4d0d-b0cb-4db7-ae76-a67733cb1678",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "blink",
+                        "deviceValues": [
+                            {
+                                "id": "03f7247f-dc35-4bc4-b149-0e7ddd6b028b",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "205",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "977fc51a-8c65-4516-b8aa-48e50505c9b2",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "dark-determination",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "066e276f-a6a0-4ba1-a05e-2188101d1c40",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "bdbbf3ac-1116-499a-b381-5a1e304e0d40",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "200",
+                                "value": "2"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "4ffc3d6d-4792-43bf-b614-1509ad52ace8",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "light-sensor",
+                        "deviceValues": [
+                            {
+                                "id": "ebd36a4c-896d-4ecd-9af2-fe6caf5d00d7",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "200",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "f04f1efb-43cf-48c1-9496-d798f3f94cca",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "sunrise-sunset",
+                        "deviceValues": [
+                            {
+                                "id": "aa8f404e-8a18-47ac-86db-890660086b20",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "200",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "3cd11948-bdd3-4d92-a61d-e1b571046d26",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "bright-threshold",
+                "functionInstance": "bright-threshold",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "256c2313-7307-46f0-bca3-dad3874abab8",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "bright-threshold",
+                        "deviceValues": [
+                            {
+                                "id": "04a9eef8-cb78-43d8-bec4-bbf31bab013a",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "206"
+                            }
+                        ],
+                        "range": {
+                            "min": 30,
+                            "max": 95,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "e7861f43-0487-4bca-b7dd-27bb52cbdd93",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "brightness",
+                "type": "numeric",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "94c50bdd-0672-4591-8804-692ca0802eca",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "brightness",
+                        "deviceValues": [
+                            {
+                                "id": "deccbf2f-9ca1-4f70-a9df-1e33629dfa3a",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "2"
+                            }
+                        ],
+                        "range": {
+                            "min": 1,
+                            "max": 100,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "914f621a-802e-458f-a18c-3a258b55019b",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "fade-duration",
+                "functionInstance": "fade-on",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "4aa5648f-492b-4dad-be4b-265787ca5394",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "fade-on-duration",
+                        "deviceValues": [
+                            {
+                                "id": "85005e37-0b7d-4e21-aee1-bc7626066853",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "203"
+                            }
+                        ],
+                        "range": {
+                            "min": 0,
+                            "max": 60,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "74d015c0-66ef-4c2b-b830-a257564477fa",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "trim",
+                "functionInstance": "low-trim",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "11a0f0c0-ac69-4c28-8bd4-54dadea2fcaa",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "low-trim",
+                        "deviceValues": [
+                            {
+                                "id": "77818853-0607-46da-ad60-6e8fd7e54219",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "201"
+                            }
+                        ],
+                        "range": {
+                            "min": 0,
+                            "max": 50,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "36ea24bf-26b2-44cf-b31b-1597130200ef",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "auto-off-timer",
+                "functionInstance": "auto-off",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "10561ba4-7042-4559-956f-1841ade208ec",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "Auto Off Timer",
+                        "deviceValues": [
+                            {
+                                "id": "1e76c284-da09-46a5-ac7f-1f740d472b4c",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "50"
+                            }
+                        ],
+                        "range": {
+                            "min": 5,
+                            "max": 3600,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "7daf1590-b425-4614-a128-636061312204",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "fade-duration",
+                "functionInstance": "fade-off",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "9fa66c36-921f-42e8-9e35-815ad879d4a1",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "fade-off-duration",
+                        "deviceValues": [
+                            {
+                                "id": "cf22d19b-2166-4e51-813d-ca94e13fd687",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "204"
+                            }
+                        ],
+                        "range": {
+                            "min": 0,
+                            "max": 60,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "5869ec56-0426-46e7-b0cd-6438d3b5bc7b",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "power",
+                "type": "category",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "229331ce-2748-44c5-9976-379d6e90e22c",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "4c523b73-f93b-4fee-a6d1-c5da1cb80c36",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "1",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "16eaea56-97a7-4ae6-82db-b830af82c3aa",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "61ceb360-b4a0-452d-ae0b-48bf4e012544",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "1",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "9ad0d015-bfbe-4fe0-854d-a02f53b7e7b2",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "trim",
+                "functionInstance": "high-trim",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "63905b33-5a75-40cc-8a68-aa2df86ab492",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "high-trim",
+                        "deviceValues": [
+                            {
+                                "id": "a5bcac90-a11b-4c08-a3e9-056f7dec2ca5",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "202"
+                            }
+                        ],
+                        "range": {
+                            "min": 50,
+                            "max": 100,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "014b8af6-d7ca-4174-8d4e-872cd868cd1d",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "dark-threshold",
+                "functionInstance": "dark-threshold",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "1cfcf003-559e-4fe0-bb2c-d3aa8166499f",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "dark-threshold",
+                        "deviceValues": [
+                            {
+                                "id": "c3c31014-3959-4ac3-9c72-ae0f39059548",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "207"
+                            }
+                        ],
+                        "range": {
+                            "min": 5,
+                            "max": 30,
+                            "step": 1
+                        }
+                    }
+                ]
+            }
+        ],
+        "states": [
+            {
+                "functionClass": "sensor-mode",
+                "value": "auto-off",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "grace-period",
+                "value": 10,
+                "lastUpdateTime": 0,
+                "functionInstance": "grace-period"
+            },
+            {
+                "functionClass": "pir-sensitivity",
+                "value": 90,
+                "lastUpdateTime": 0,
+                "functionInstance": "pir"
+            },
+            {
+                "functionClass": "led-configuration",
+                "value": "off",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "dark-determination",
+                "value": "light-sensor",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "bright-threshold",
+                "value": 40,
+                "lastUpdateTime": 0,
+                "functionInstance": "bright-threshold"
+            },
+            {
+                "functionClass": "brightness",
+                "value": 100,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "fade-duration",
+                "value": 0,
+                "lastUpdateTime": 0,
+                "functionInstance": "fade-on"
+            },
+            {
+                "functionClass": "trim",
+                "value": 20,
+                "lastUpdateTime": 0,
+                "functionInstance": "low-trim"
+            },
+            {
+                "functionClass": "auto-off-timer",
+                "value": 300,
+                "lastUpdateTime": 0,
+                "functionInstance": "auto-off"
+            },
+            {
+                "functionClass": "fade-duration",
+                "value": 0,
+                "lastUpdateTime": 0,
+                "functionInstance": "fade-off"
+            },
+            {
+                "functionClass": "power",
+                "value": "off",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "trim",
+                "value": 100,
+                "lastUpdateTime": 0,
+                "functionInstance": "high-trim"
+            },
+            {
+                "functionClass": "dark-threshold",
+                "value": 15,
+                "lastUpdateTime": 0,
+                "functionInstance": "dark-threshold"
+            },
+            {
+                "functionClass": "wifi-ssid",
+                "value": "77c10385-b578-489d-959f-1a2823e6ecbd",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-rssi",
+                "value": -49,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-steady-state",
+                "value": "connected",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-setup-state",
+                "value": "connected",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-mac-address",
+                "value": "e1c8350c-ab16-4550-ab76-d3a6bd044431",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "geo-coordinates",
+                "value": null,
+                "lastUpdateTime": 0,
+                "functionInstance": "system-device-location"
+            },
+            {
+                "functionClass": "scheduler-flags",
+                "value": 0,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "available",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "visible",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "direct",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "ble-mac-address",
+                "value": "0d04e47b-9315-49c1-9900-83ccd190a8c5",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            }
+        ]
+    }
+]

@@ -33,7 +33,7 @@ class HubSpaceSwitch(SwitchEntity):
         self,
         hs: HubSpaceDataUpdateCoordinator,
         friendly_name: str,
-        instance: str,
+        instance: Optional[str],
         device_class: str,
         child_id: Optional[str] = None,
         model: Optional[str] = None,
@@ -69,8 +69,12 @@ class HubSpaceSwitch(SwitchEntity):
             )
         # functionClass -> internal attribute
         for state in states:
-            if state.functionInstance == self._instance:
-                self._state = state.value
+            if self._instance:
+                if state.functionInstance == self._instance:
+                    self._state = state.value
+            else:
+                if state.functionClass == "power":
+                    self._state = state.value
 
     @property
     def should_poll(self):
@@ -113,7 +117,7 @@ class HubSpaceSwitch(SwitchEntity):
         self._state = "on"
         states_to_set = [
             HubSpaceState(
-                functionClass="toggle",
+                functionClass="toggle" if self._instance else "power",
                 functionInstance=self._instance,
                 value=self._state,
             )
@@ -126,7 +130,7 @@ class HubSpaceSwitch(SwitchEntity):
         self._state = "off"
         states_to_set = [
             HubSpaceState(
-                functionClass="toggle",
+                functionClass="toggle" if self._instance else "power",
                 functionInstance=self._instance,
                 value=self._state,
             )
@@ -144,9 +148,11 @@ async def setup_entry_toggled(
     valid: list[HubSpaceSwitch] = []
     for entity in devices:
         _LOGGER.debug(f"Processing a {entity.device_class}, {entity.id}")
+        added_dev: bool = False
         for function in entity.functions:
             if function["functionClass"] != "toggle":
                 continue
+            added_dev = True
             instance = function["functionInstance"]
             _LOGGER.debug(
                 f"Adding a %s [%s] @ %s", entity.device_class, entity.id, instance
@@ -155,6 +161,24 @@ async def setup_entry_toggled(
                 coordinator_hubspace,
                 entity.friendly_name,
                 instance,
+                entity.device_class,
+                child_id=entity.id,
+                model=entity.model,
+                device_id=entity.device_id,
+            )
+            registry.async_get_or_create(
+                config_entry_id=entry.entry_id,
+                identifiers={(DOMAIN, entity.device_id)},
+                name=entity.friendly_name,
+                model=entity.model,
+            )
+            valid.append(ha_entity)
+        if not added_dev:
+            _LOGGER.debug("No toggleable outlets found. Assuming there is only one")
+            ha_entity = HubSpaceSwitch(
+                coordinator_hubspace,
+                entity.friendly_name,
+                None,
                 entity.device_class,
                 child_id=entity.id,
                 model=entity.model,

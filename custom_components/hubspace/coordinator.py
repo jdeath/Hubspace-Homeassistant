@@ -53,13 +53,16 @@ class HubSpaceDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self.tracked_devs = await discovery.get_requested_devices(
             self.conn, self.friendly_names, self.room_names
         )
-        # if _LOGGER.getEffectiveLevel() <= logging.DEBUG:
-        #     data = await anonomyize_data.generate_anon_data(self.conn)
-        #     _LOGGER.debug(json.dumps(data, indent=4))
+        if _LOGGER.getEffectiveLevel() <= logging.DEBUG:
+            data = await anonomyize_data.generate_anon_data(self.conn)
+            _LOGGER.debug(json.dumps(data, indent=4))
         devices: dict[str, dict[str, HubSpaceDevice]] = defaultdict(dict)
         # Separate the devices by device_class to reduce logging messages
         # during discovery
         for dev in self.tracked_devs:
+            if dev.children:
+                _LOGGER.debug("Skipping %s [%s] as it has children", dev.friendly_name, dev.id)
+                continue
             mapped = const.DEVICE_CLASS_TO_ENTITY_MAP.get(dev.device_class)
             if not mapped:
                 if dev.device_class not in const.UNMAPPED_DEVICE_CLASSES:

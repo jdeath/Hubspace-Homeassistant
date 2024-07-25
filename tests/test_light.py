@@ -13,6 +13,9 @@ from homeassistant.components.light import (
 fan_zandra = create_devices_from_data("fan-ZandraFan.json")
 fan_zandra_light = fan_zandra[1]
 
+switch_dimmer = create_devices_from_data("switch-HPDA311CWB.json")
+switch_dimmer_light = switch_dimmer[0]
+
 
 @pytest.fixture
 def empty_light(mocked_coordinator):
@@ -35,6 +38,14 @@ def temperature_light(mocked_coordinator):
                      "power": "light-power"
                  },
                 "_color_modes": {ColorMode.ONOFF, ColorMode.COLOR_TEMP, ColorMode.BRIGHTNESS},
+                "_supported_brightness": [x for x in range(1, 101)],
+            }
+        ),
+        (
+            switch_dimmer_light.functions,
+            {
+                "_instance_attrs": {},
+                "_color_modes": {ColorMode.ONOFF, ColorMode.BRIGHTNESS},
                 "_supported_brightness": [x for x in range(1, 101)],
             }
         ),

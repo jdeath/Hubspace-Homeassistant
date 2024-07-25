@@ -1,7 +1,7 @@
 import logging
 from typing import Optional
 
-from homeassistant.components.valve import ValveEntity
+from homeassistant.components.lock import LockEntity, LockEntityFeature
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers import device_registry as dr
@@ -9,14 +9,14 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from hubspace_async import HubSpaceState
 
 from . import HubSpaceConfigEntry
-from .const import DOMAIN, ENTITY_VALVE
+from .const import DOMAIN, ENTITY_LOCK
 from .coordinator import HubSpaceDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class HubSpaceValve(ValveEntity):
-    """HubSpace switch-type that can communicate with Home Assistant
+class HubSpaceLock(LockEntity):
+    """HubSpace lock that can communicate with Home Assistant
 
     :ivar _name: Name of the device
     :ivar _hs: HubSpace connector
@@ -24,16 +24,13 @@ class HubSpaceValve(ValveEntity):
     :ivar _state: If the device is on / off
     :ivar _bonus_attrs: Attributes relayed to Home Assistant that do not need to be
         tracked in their own class variables
-    :ivar _instance: functionInstance within the HS device
-    :ivar _current_valve_position: Current position of the valve
-    :ivar _reports_position: Reports position of the valve
+    :ivar _current_position: Current position of the device (right [locked], left [unlocked])
     """
 
     def __init__(
         self,
         hs: HubSpaceDataUpdateCoordinator,
         friendly_name: str,
-        instance: Optional[str],
         child_id: Optional[str] = None,
         model: Optional[str] = None,
         device_id: Optional[str] = None,
@@ -42,17 +39,13 @@ class HubSpaceValve(ValveEntity):
         self.coordinator = hs
         self._hs = hs.conn
         self._child_id: str = child_id
-        self._state: Optional[str] = None
         self._bonus_attrs = {
             "model": model,
             "deviceId": device_id,
             "Child ID": self._child_id,
         }
         # Entity-specific
-        self._instance = instance
-        self._current_valve_position: int | None = None
-        self._reports_position: bool = False
-        super().__init__(hs, context=self._child_id)
+        self._current_position: Optional[str] = None
 
     @callback
     def _handle_coordinator_update(self) -> None:
@@ -62,15 +55,15 @@ class HubSpaceValve(ValveEntity):
 
     def update_states(self) -> None:
         """Load initial states into the device"""
-        states: list[HubSpaceState] = self.coordinator.data[ENTITY_VALVE][self._child_id].states
+        states: list[HubSpaceState] = self.coordinator.data[ENTITY_LOCK][self._child_id].states
         if not states:
             _LOGGER.debug(
                 "No states found for %s. Maybe hasn't polled yet?", self._child_id
             )
         # functionClass -> internal attribute
         for state in states:
-            if state.functionInstance == self._instance:
-                self._state = state.value
+            if state.functionClass == "lock-direction":
+                self._current_position = state.value
 
     @property
     def should_poll(self):
@@ -92,14 +85,6 @@ class HubSpaceValve(ValveEntity):
         return self._bonus_attrs
 
     @property
-    def is_on(self) -> bool | None:
-        """Return true if device is on."""
-        if self._state is None:
-            return None
-        else:
-            return self._state == "on"
-
-    @property
     def device_info(self) -> DeviceInfo:
         """Return the device info."""
         return DeviceInfo(
@@ -108,27 +93,41 @@ class HubSpaceValve(ValveEntity):
             model=self._bonus_attrs["model"],
         )
 
-    async def async_open_valve(self, **kwargs) -> None:
-        _LOGGER.debug("Opening %s on %s", self._instance, self._child_id)
-        self._state = "on"
+    @property
+    def supported_features(self) -> LockEntityFeature:
+        # Is open the same as unlock?
+        # https://developers.home-assistant.io/docs/core/entity/lock/#unlock
+        return LockEntityFeature.OPEN
+
+    @property
+    def is_locked(self) -> bool:
+        return self._current_position == "right"
+
+    @property
+    def is_open(self) -> bool:
+        return self._current_position != "right"
+
+    async def async_unlock(self, **kwargs) -> None:
+        _LOGGER.debug("Unlocking %s [%s]", self._name, self._child_id)
+        self._current_position = "left"
         states_to_set = [
             HubSpaceState(
-                functionClass="toggle" if self._instance else "power",
-                functionInstance=self._instance,
-                value=self._state,
+                functionClass="lock-direction",
+                functionInstance=self._current_position,
+                value=self._current_position,
             )
         ]
         await self._hs.set_device_states(self._child_id, states_to_set)
         self.async_write_ha_state()
 
-    async def async_close_valve(self, **kwargs) -> None:
-        _LOGGER.debug("Closing %s on %s", self._instance, self._child_id)
-        self._state = "off"
+    async def async_lock(self, **kwargs) -> None:
+        _LOGGER.debug("Locking %s [%s]", self._name, self._child_id)
+        self._current_position = "right"
         states_to_set = [
             HubSpaceState(
-                functionClass="toggle" if self._instance else "power",
-                functionInstance=self._instance,
-                value=self._state,
+                functionClass="lock-direction",
+                functionInstance=self._current_position,
+                value=self._current_position,
             )
         ]
         await self._hs.set_device_states(self._child_id, states_to_set)
@@ -147,12 +146,9 @@ async def async_setup_entry(
     entities: list[HubSpaceValve] = []
     device_registry = dr.async_get(hass)
     for entity in coordinator_hubspace.data[ENTITY_VALVE].values():
-        _LOGGER.debug(f"Processing a {entity.device_class}, {entity.id}")
-        added_dev: bool = False
         for function in entity.functions:
             if function["functionClass"] != "toggle":
                 continue
-            added_dev = True
             instance = function["functionInstance"]
             ha_entity = HubSpaceValve(
                 coordinator_hubspace,
@@ -170,24 +166,6 @@ async def async_setup_entry(
             )
             _LOGGER.debug(
                 f"Adding a %s [%s] @ %s", entity.device_class, entity.id, instance
-            )
-            entities.append(ha_entity)
-        if not added_dev:
-            _LOGGER.debug("No toggleable valves found. Assuming there is only one")
-            ha_entity = HubSpaceValve(
-                coordinator_hubspace,
-                entity.friendly_name,
-                None,
-                entity.device_class,
-                child_id=entity.id,
-                model=entity.model,
-                device_id=entity.device_id,
-            )
-            device_registry.async_get_or_create(
-                config_entry_id=entry.entry_id,
-                identifiers={(DOMAIN, entity.device_id)},
-                name=entity.friendly_name,
-                model=entity.model,
             )
             entities.append(ha_entity)
     async_add_entities(entities)
