@@ -1,6 +1,13 @@
 from datetime import timedelta
 from typing import Final
 
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorEntityDescription,
+    SensorStateClass,
+)
+from homeassistant.const import PERCENTAGE, SIGNAL_STRENGTH_DECIBELS, EntityCategory
+
 DOMAIN = "hubspace"
 CONF_FRIENDLYNAMES: Final = "friendlynames"
 CONF_ROOMNAMES: Final = "roomnames"
@@ -12,6 +19,7 @@ HUB_IDENTIFIER: Final[str] = "hubspace_debug"
 ENTITY_FAN: Final[str] = "fan"
 ENTITY_LIGHT: Final[str] = "light"
 ENTITY_LOCK: Final[str] = "lock"
+ENTITY_SENSOR: Final[str] = "sensor"
 ENTITY_SWITCH: Final[str] = "switch"
 ENTITY_VALVE: Final[str] = "valve"
 
@@ -37,3 +45,22 @@ UNMAPPED_DEVICE_CLASSES: Final[list[str]] = [
     # Parent device for a fan / light combo
     "ceiling-fan",
 ]
+
+
+# Sensors that apply to any device that it is found on
+SENSORS_GENERAL = {
+    "wifi-rssi": SensorEntityDescription(
+        key="wifi-rssi",
+        device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        native_unit_of_measurement=SIGNAL_STRENGTH_DECIBELS,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    "battery-level": SensorEntityDescription(
+        key="battery-level",
+        device_class=SensorDeviceClass.BATTERY,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        native_unit_of_measurement=PERCENTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+}

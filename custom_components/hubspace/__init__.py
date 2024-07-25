@@ -18,6 +18,7 @@ PLATFORMS = [
     Platform.FAN,
     Platform.LIGHT,
     Platform.LOCK,
+    Platform.SENSOR,
     Platform.SWITCH,
     Platform.VALVE,
 ]

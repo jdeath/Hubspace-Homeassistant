@@ -249,10 +249,13 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
     @property
     def device_info(self) -> DeviceInfo:
         """Return the device info."""
+        model = (
+            self._bonus_attrs["model"] if self._bonus_attrs["model"] != "TBD" else None
+        )
         return DeviceInfo(
             identifiers={(DOMAIN, self._bonus_attrs["deviceId"])},
             name=self.name,
-            model=self._bonus_attrs["model"],
+            model=model,
         )
 
     @property
