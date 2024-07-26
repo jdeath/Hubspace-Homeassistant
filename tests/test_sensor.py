@@ -7,8 +7,7 @@ from .utils import create_devices_from_data
 door_lock = create_devices_from_data("door-lock-TBD.json")
 
 
-@pytest.mark.asyncio
-async def test_sensor(mocked_coordinator):
+def test_sensor(mocked_coordinator):
     empty_sensor = sensor.HubSpaceSensor(
         mocked_coordinator,
         const.SENSORS_GENERAL["battery-level"],
@@ -17,5 +16,5 @@ async def test_sensor(mocked_coordinator):
     empty_sensor.coordinator.data[const.ENTITY_SENSOR][door_lock[0].id] = {
         "device": door_lock[0]
     }
-    await empty_sensor.async_update()
+    empty_sensor.update_states()
     assert empty_sensor.native_value == 80

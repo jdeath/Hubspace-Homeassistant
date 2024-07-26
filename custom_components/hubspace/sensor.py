@@ -2,10 +2,11 @@ import logging
 from typing import Any
 
 from homeassistant.components.sensor import SensorEntity, SensorEntityDescription
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from hubspace_async import HubSpaceDevice, HubSpaceState
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import HubSpaceConfigEntry
 from .const import DOMAIN, ENTITY_SENSOR
@@ -14,7 +15,7 @@ from .coordinator import HubSpaceDataUpdateCoordinator
 _LOGGER = logging.getLogger(__name__)
 
 
-class HubSpaceSensor(SensorEntity):
+class HubSpaceSensor(CoordinatorEntity, SensorEntity):
     """HubSpace child sensor component"""
 
     def __init__(
@@ -23,20 +24,19 @@ class HubSpaceSensor(SensorEntity):
         description: SensorEntityDescription,
         device: HubSpaceDevice,
     ) -> None:
+        super().__init__(coordinator, context=device.id)
         self.coordinator = coordinator
         self.entity_description = description
         self._device = device
         self._sensor_value = None
 
-    @property
-    def unique_id(self) -> str:
-        return f"{self._device.id}_{self.entity_description.key}"
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self.update_states()
+        self.async_write_ha_state()
 
-    @property
-    def name(self) -> str:
-        return f"{self.entity_description.key}"
-
-    async def async_update(self) -> None:
+    def update_states(self) -> None:
         """Handle updated data from the coordinator."""
         states: list[HubSpaceState] = self.coordinator.data[ENTITY_SENSOR][
             self._device.id
@@ -48,6 +48,14 @@ class HubSpaceSensor(SensorEntity):
         for state in states:
             if state.functionClass == self.entity_description.key:
                 self._sensor_value = state.value
+
+    @property
+    def unique_id(self) -> str:
+        return f"{self._device.id}_{self.entity_description.key}"
+
+    @property
+    def name(self) -> str:
+        return f"{self.entity_description.key}"
 
     @property
     def device_info(self) -> DeviceInfo:

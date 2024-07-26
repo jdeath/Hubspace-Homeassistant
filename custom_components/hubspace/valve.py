@@ -87,7 +87,10 @@ class HubSpaceValve(CoordinatorEntity, ValveEntity):
     @property
     def unique_id(self) -> str:
         """Return the HubSpace ID"""
-        return self._child_id
+        if self._instance:
+            return f"{self._child_id}-{self._instance}"
+        else:
+            return self._child_id
 
     @property
     def extra_state_attributes(self):
