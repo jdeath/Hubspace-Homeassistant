@@ -100,7 +100,7 @@ the following setup steps must be run:
    * Windows
      * ```bat
        python -m pip install virtualenv
-       python -m virtualenv "%userprofile%/.virtualenv/hubspace"
+       python -m virtualenv "%userprofile%\.virtualenv\hubspace"
        %userprofile%\.virtualenv\hubspace\Scripts\activate.bat
        ```
  * Download requirements

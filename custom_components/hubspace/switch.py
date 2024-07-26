@@ -6,6 +6,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from hubspace_async import HubSpaceDevice, HubSpaceState
 
 from . import HubSpaceConfigEntry
@@ -15,7 +16,7 @@ from .coordinator import HubSpaceDataUpdateCoordinator
 _LOGGER = logging.getLogger(__name__)
 
 
-class HubSpaceSwitch(SwitchEntity):
+class HubSpaceSwitch(CoordinatorEntity, SwitchEntity):
     """HubSpace switch-type that can communicate with Home Assistant
 
     :ivar _name: Name of the device
@@ -38,6 +39,7 @@ class HubSpaceSwitch(SwitchEntity):
         model: Optional[str] = None,
         device_id: Optional[str] = None,
     ) -> None:
+        super().__init__(hs, context=child_id)
         self._name: str = friendly_name
         self.coordinator = hs
         self._hs = hs.conn

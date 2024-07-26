@@ -1,11 +1,12 @@
 import logging
 from typing import Optional
 
-from homeassistant.components.valve import ValveEntity
+from homeassistant.components.valve import ValveEntity, ValveDeviceClass
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from hubspace_async import HubSpaceDevice, HubSpaceState
 
 from . import HubSpaceConfigEntry
@@ -15,7 +16,7 @@ from .coordinator import HubSpaceDataUpdateCoordinator
 _LOGGER = logging.getLogger(__name__)
 
 
-class HubSpaceValve(ValveEntity):
+class HubSpaceValve(CoordinatorEntity, ValveEntity):
     """HubSpace switch-type that can communicate with Home Assistant
 
     :ivar _name: Name of the device
@@ -38,6 +39,7 @@ class HubSpaceValve(ValveEntity):
         model: Optional[str] = None,
         device_id: Optional[str] = None,
     ) -> None:
+        super().__init__(hs, context=child_id)
         self._name: str = friendly_name
         self.coordinator = hs
         self._hs = hs.conn
@@ -51,8 +53,7 @@ class HubSpaceValve(ValveEntity):
         # Entity-specific
         self._instance = instance
         self._current_valve_position: int | None = None
-        self._reports_position: bool = False
-        super().__init__(hs, context=self._child_id)
+        self._reports_position: bool = True
 
     @callback
     def _handle_coordinator_update(self) -> None:
@@ -94,12 +95,13 @@ class HubSpaceValve(ValveEntity):
         return self._bonus_attrs
 
     @property
-    def is_on(self) -> bool | None:
+    def reports_position(self) -> bool:
         """Return true if device is on."""
-        if self._state is None:
-            return None
-        else:
-            return self._state == "on"
+        return self._reports_position
+
+    @property
+    def current_valve_position(self) -> Optional[int]:
+        return 100 if self._state == "on" else 0
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -112,6 +114,10 @@ class HubSpaceValve(ValveEntity):
             name=self._name,
             model=model,
         )
+
+    @property
+    def device_class(self) -> ValveDeviceClass:
+        return ValveDeviceClass.WATER
 
     async def async_open_valve(self, **kwargs) -> None:
         _LOGGER.debug("Opening %s on %s", self._instance, self._child_id)

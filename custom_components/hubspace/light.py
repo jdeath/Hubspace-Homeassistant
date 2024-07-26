@@ -119,6 +119,7 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
         device_id: Optional[str] = None,
         functions: Optional[list[dict]] = None,
     ) -> None:
+        super().__init__(hs, context=child_id)
         self._name: str = friendly_name
         self.coordinator = hs
         self._hs = hs.conn
@@ -143,7 +144,6 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
         functions = functions or []
         self.process_functions(functions)
         self._adjust_supported_modes()
-        super().__init__(hs, context=self._child_id)
 
     @callback
     def _handle_coordinator_update(self) -> None:

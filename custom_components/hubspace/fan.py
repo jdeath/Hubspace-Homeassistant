@@ -66,6 +66,7 @@ class HubspaceFan(CoordinatorEntity, FanEntity):
         device_id: Optional[str] = None,
         functions: Optional[list[dict]] = None,
     ) -> None:
+        super().__init__(hs, context=child_id)
         self._name: str = friendly_name
         self.coordinator = hs
         self._hs = hs.conn
@@ -85,7 +86,6 @@ class HubspaceFan(CoordinatorEntity, FanEntity):
         self._instance_attrs: dict[str, str] = {}
         functions = functions or []
         self.process_functions(functions)
-        super().__init__(hs, context=self._child_id)
 
     @callback
     def _handle_coordinator_update(self) -> None:
