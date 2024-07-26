@@ -7,7 +7,7 @@ from .utils import create_devices_from_data
 door_lock = create_devices_from_data("door-lock-TBD.json")
 
 
-@pytest.mark.ascynio
+@pytest.mark.asyncio
 async def test_sensor(mocked_coordinator):
     empty_sensor = sensor.HubSpaceSensor(
         mocked_coordinator,
