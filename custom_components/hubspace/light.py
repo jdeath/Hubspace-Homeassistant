@@ -132,7 +132,7 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
         self._instance_attrs: dict[str, str] = {}
         # Entity-specific
         self._color_modes: set[ColorMode] = set()
-        self._color_mode: ColorMode = ColorMode.UNKNOWN
+        self._color_mode: Optional[ColorMode] = None
         self._color_temp: Optional[int] = None
         self._temperature_choices: Optional[set[Any]] = set()
         self._temperature_prefix: str = ""
@@ -267,15 +267,12 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
             return {*self._color_modes}
 
     @property
-    def color_mode(self) -> ColorMode | str | None:
-        if len(self._color_modes) == 1 and not self._color_mode:
-            return list(self._color_modes)[0]
-        else:
-            return self._color_mode
+    def color_mode(self) -> Optional[ColorMode]:
+        return self._color_mode
 
     @property
-    def brightness(self) -> int or None:
-        """Return the brightness of this light between 0..255."""
+    def brightness(self) -> int | None:
+        """Return the brightness of this light between 1..255."""
         return self._brightness
 
     @property
@@ -305,10 +302,13 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
         mode_bright = {ColorMode.BRIGHTNESS, ColorMode.ONOFF}
         if mode_temp & self._color_modes == mode_temp:
             self._color_modes.remove(ColorMode.BRIGHTNESS)
+            self._color_mode = ColorMode.COLOR_TEMP
         if mode_bright & self._color_modes == mode_bright:
             self._color_modes.remove(ColorMode.ONOFF)
+            self._color_mode = ColorMode.BRIGHTNESS
         if len(self._color_modes) > 1 and ColorMode.ONOFF in self._color_modes:
             self._color_modes.remove(ColorMode.ONOFF)
+            self._color_mode = list(self._color_modes)[0]
 
     async def async_turn_on(self, **kwargs) -> None:
         _LOGGER.debug("Adjusting light %s with %s", self._child_id, kwargs)
