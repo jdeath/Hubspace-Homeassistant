@@ -7,17 +7,18 @@ from collections import defaultdict
 from datetime import timedelta
 from typing import Any, NewType, Union
 
+import hubspace_async
 from homeassistant.components.sensor import SensorEntityDescription
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from hubspace_async import HubSpaceConnection, HubSpaceDevice, HubSpaceState
 
 from . import anonomyize_data, const, discovery
 
 _LOGGER = logging.getLogger(__name__)
+_LOGGER_HS = logging.getLogger(hubspace_async.__name__)
 
 coordinator_data = NewType(
-    "coordinator_data", dict[str, dict[str, Union[HubSpaceDevice, dict]]]
+    "coordinator_data", dict[str, dict[str, Union[hubspace_async.HubSpaceDevice, dict]]]
 )
 
 
@@ -25,15 +26,15 @@ class HubSpaceDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     def __init__(
         self,
         hass: HomeAssistant,
-        conn: HubSpaceConnection,
+        conn: hubspace_async.HubSpaceConnection,
         friendly_names: list[str],
         room_names: list[str],
         update_interval: timedelta,
     ) -> None:
         """Initialize."""
         self.conn = conn
-        self.tracked_devices: list[HubSpaceDevice] = []
-        self.states: dict[str, list[HubSpaceState]] = {}
+        self.tracked_devices: list[hubspace_async.HubSpaceDevice] = []
+        self.states: dict[str, list[hubspace_async.HubSpaceState]] = {}
         self.friendly_names = friendly_names
         self.room_names = room_names
         # We only want to perform the sensor checks once per device
@@ -51,7 +52,7 @@ class HubSpaceDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             update_interval=update_interval,
         )
 
-    async def process_sensor_devs(self, dev: HubSpaceDevice) -> list:
+    async def process_sensor_devs(self, dev: hubspace_async.HubSpaceDevice) -> list:
         """Get sensors from a device"""
         if dev.id not in self._sensor_checks:
             _LOGGER.debug(
@@ -76,6 +77,8 @@ class HubSpaceDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self,
     ) -> coordinator_data:
         """Update data via library."""
+        # Update the hubspace_async logger to match our logger
+        _LOGGER_HS.setLevel(_LOGGER.getEffectiveLevel())
         await self.hs_data_update()
         if _LOGGER.getEffectiveLevel() <= logging.DEBUG:
             data = await anonomyize_data.generate_anon_data(self.conn)
@@ -128,7 +131,9 @@ class HubSpaceDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         return devices
 
 
-async def get_sensors(dev: HubSpaceDevice) -> list[SensorEntityDescription]:
+async def get_sensors(
+    dev: hubspace_async.HubSpaceDevice,
+) -> list[SensorEntityDescription]:
     """Get sensors from a device"""
     required_sensors: list[SensorEntityDescription] = []
     for state in dev.states:
