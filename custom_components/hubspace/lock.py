@@ -23,7 +23,8 @@ class HubSpaceLock(LockEntity):
     :ivar _child_id: ID used when making requests to HubSpace
     :ivar _bonus_attrs: Attributes relayed to Home Assistant that do not need to be
         tracked in their own class variables
-    :ivar _current_position: Current position of the device (right [locked], left [unlocked])
+    :ivar _current_position: Current position of the device
+    :ivar _supported_features: Supported features of the device
     """
 
     def __init__(
@@ -33,6 +34,7 @@ class HubSpaceLock(LockEntity):
         child_id: Optional[str] = None,
         model: Optional[str] = None,
         device_id: Optional[str] = None,
+        functions: Optional[list] = None,
     ) -> None:
         self._name: str = friendly_name
         self.coordinator = hs
@@ -45,6 +47,22 @@ class HubSpaceLock(LockEntity):
         }
         # Entity-specific
         self._current_position: Optional[str] = None
+        self._supported_features: Optional[LockEntityFeature] = LockEntityFeature(0)
+        functions = functions or []
+        self.process_functions(functions)
+
+    def process_functions(self, functions: list[dict]) -> None:
+        """Process available functions
+
+
+        :param functions: Functions that are supported from the API
+        """
+        for function in functions:
+            if function["functionClass"] == "lock-control":
+                _LOGGER.debug("Found lock-control. Determining open state support")
+                for value in function["values"]:
+                    if value["name"] == "unlocked":
+                        self._supported_features |= LockEntityFeature.OPEN
 
     @callback
     def _handle_coordinator_update(self) -> None:
@@ -61,14 +79,12 @@ class HubSpaceLock(LockEntity):
             _LOGGER.debug(
                 "No states found for %s. Maybe hasn't polled yet?", self._child_id
             )
+        _LOGGER.debug("About to update using %s", states)
         # functionClass -> internal attribute
         for state in states:
             if state.functionClass == "lock-control":
+                _LOGGER.debug("Found lock-control and setting to %s", state.value)
                 self._current_position = state.value
-
-    @property
-    def should_poll(self):
-        return False
 
     @property
     def name(self) -> str:
@@ -99,9 +115,7 @@ class HubSpaceLock(LockEntity):
 
     @property
     def supported_features(self) -> LockEntityFeature:
-        # Is open the same as unlock?
-        # https://developers.home-assistant.io/docs/core/entity/lock/#unlock
-        return LockEntityFeature.OPEN
+        return self._supported_features
 
     @property
     def is_locked(self) -> bool:
@@ -115,13 +129,21 @@ class HubSpaceLock(LockEntity):
     def is_unlocking(self) -> bool:
         return self._current_position == "unlocking"
 
+    @property
+    def is_opening(self) -> bool:
+        return self._current_position == "unlocking"
+
+    @property
+    def is_open(self) -> bool:
+        return self._current_position == "unlocked"
+
     async def async_unlock(self, **kwargs) -> None:
         _LOGGER.debug("Unlocking %s [%s]", self._name, self._child_id)
         self._current_position = "unlocking"
         states_to_set = [
             HubSpaceState(
                 functionClass="lock-control",
-                functionInstance=self._current_position,
+                functionInstance=None,
                 value=self._current_position,
             )
         ]
@@ -134,7 +156,7 @@ class HubSpaceLock(LockEntity):
         states_to_set = [
             HubSpaceState(
                 functionClass="lock-control",
-                functionInstance=self._current_position,
+                functionInstance=None,
                 value=self._current_position,
             )
         ]
@@ -161,6 +183,7 @@ async def async_setup_entry(
             child_id=entity.id,
             model=entity.model,
             device_id=entity.device_id,
+            functions=entity.functions,
         )
         device_registry.async_get_or_create(
             config_entry_id=entry.entry_id,
