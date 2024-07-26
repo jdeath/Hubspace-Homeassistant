@@ -6,7 +6,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from hubspace_async import HubSpaceState
+from hubspace_async import HubSpaceDevice, HubSpaceState
 
 from . import HubSpaceConfigEntry
 from .const import DOMAIN, ENTITY_VALVE
@@ -140,6 +140,44 @@ class HubSpaceValve(ValveEntity):
         self.async_write_ha_state()
 
 
+async def setup_entry_toggled(
+    coordinator_hubspace: HubSpaceDataUpdateCoordinator,
+    entity: HubSpaceDevice,
+) -> list[HubSpaceValve]:
+    valid: list[HubSpaceValve] = []
+    for function in entity.functions:
+        if function["functionClass"] != "toggle":
+            continue
+        instance = function["functionInstance"]
+        _LOGGER.debug("Adding a %s [%s] @ %s", entity.device_class, entity.id, instance)
+        ha_entity = HubSpaceValve(
+            coordinator_hubspace,
+            entity.friendly_name,
+            instance,
+            child_id=entity.id,
+            model=entity.model,
+            device_id=entity.device_id,
+        )
+        valid.append(ha_entity)
+    return valid
+
+
+async def setup_basic_valve(
+    coordinator_hubspace: HubSpaceDataUpdateCoordinator,
+    entity: HubSpaceDevice,
+):
+    _LOGGER.debug("No toggleable elements found. Setting up as a single valve")
+    ha_entity = HubSpaceValve(
+        coordinator_hubspace,
+        entity.friendly_name,
+        None,
+        child_id=entity.id,
+        model=entity.model,
+        device_id=entity.device_id,
+    )
+    return ha_entity
+
+
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: HubSpaceConfigEntry,
@@ -153,35 +191,19 @@ async def async_setup_entry(
     device_registry = dr.async_get(hass)
     for entity in coordinator_hubspace.data[ENTITY_VALVE].values():
         _LOGGER.debug("Processing a %s, %s", entity.device_class, entity.id)
-        added_dev: bool = False
-        for function in entity.functions:
-            if function["functionClass"] != "toggle":
-                continue
-            added_dev = True
-            instance = function["functionInstance"]
-            ha_entity = HubSpaceValve(
-                coordinator_hubspace,
-                entity.friendly_name,
-                instance,
-                child_id=entity.id,
-                model=entity.model,
-                device_id=entity.device_id,
+        new_devs = await setup_entry_toggled(
+            coordinator_hubspace,
+            entity,
+        )
+        if new_devs:
+            entities.extend(new_devs)
+        else:
+            entities.append(
+                await setup_basic_valve(
+                    coordinator_hubspace,
+                    entity,
+                )
             )
-            _LOGGER.debug(
-                "Adding a %s [%s] @ %s", entity.device_class, entity.id, instance
-            )
-            entities.append(ha_entity)
-        if not added_dev:
-            _LOGGER.debug("No toggleable valves found. Assuming there is only one")
-            ha_entity = HubSpaceValve(
-                coordinator_hubspace,
-                entity.friendly_name,
-                None,
-                child_id=entity.id,
-                model=entity.model,
-                device_id=entity.device_id,
-            )
-            entities.append(ha_entity)
         device_registry.async_get_or_create(
             config_entry_id=entry.entry_id,
             identifiers={(DOMAIN, entity.device_id)},

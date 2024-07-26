@@ -169,7 +169,7 @@ async def setup_basic_switch(
     coordinator_hubspace: HubSpaceDataUpdateCoordinator,
     entity: HubSpaceDevice,
 ):
-    _LOGGER.debug("No toggleable outlets found. Setting up as a basic switch")
+    _LOGGER.debug("No toggleable elements found. Setting up as a basic switch")
     ha_entity = HubSpaceSwitch(
         coordinator_hubspace,
         entity.friendly_name,
