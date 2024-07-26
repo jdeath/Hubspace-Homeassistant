@@ -144,9 +144,7 @@ class HubSpaceSwitch(SwitchEntity):
 
 async def setup_entry_toggled(
     coordinator_hubspace: HubSpaceDataUpdateCoordinator,
-    registry: dr.DeviceRegistry,
     entity: HubSpaceDevice,
-    entry: HubSpaceConfigEntry,
 ) -> list[HubSpaceSwitch]:
     valid: list[HubSpaceSwitch] = []
     for function in entity.functions:
@@ -163,21 +161,13 @@ async def setup_entry_toggled(
             model=entity.model,
             device_id=entity.device_id,
         )
-        registry.async_get_or_create(
-            config_entry_id=entry.entry_id,
-            identifiers={(DOMAIN, entity.device_id)},
-            name=entity.friendly_name,
-            model=entity.model,
-        )
         valid.append(ha_entity)
     return valid
 
 
 async def setup_basic_switch(
     coordinator_hubspace: HubSpaceDataUpdateCoordinator,
-    registry: dr.DeviceRegistry,
     entity: HubSpaceDevice,
-    entry: HubSpaceConfigEntry,
 ):
     _LOGGER.debug("No toggleable outlets found. Setting up as a basic switch")
     ha_entity = HubSpaceSwitch(
@@ -188,12 +178,6 @@ async def setup_basic_switch(
         child_id=entity.id,
         model=entity.model,
         device_id=entity.device_id,
-    )
-    registry.async_get_or_create(
-        config_entry_id=entry.entry_id,
-        identifiers={(DOMAIN, entity.device_id)},
-        name=entity.friendly_name,
-        model=entity.model,
     )
     return ha_entity
 
@@ -213,9 +197,7 @@ async def async_setup_entry(
         _LOGGER.debug("Processing a %s, %s", entity.device_class, entity.id)
         new_devs = await setup_entry_toggled(
             coordinator_hubspace,
-            device_registry,
             entity,
-            entry,
         )
         if new_devs:
             entities.extend(new_devs)
@@ -223,10 +205,15 @@ async def async_setup_entry(
             entities.append(
                 await setup_basic_switch(
                     coordinator_hubspace,
-                    device_registry,
                     entity,
-                    entry,
                 )
             )
+        device_registry.async_get_or_create(
+            config_entry_id=entry.entry_id,
+            identifiers={(DOMAIN, entity.device_id)},
+            name=entity.friendly_name,
+            model=entity.model,
+            manufacturer=entity.manufacturerName,
+        )
         entities.extend(new_devs)
     async_add_entities(entities)

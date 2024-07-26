@@ -187,5 +187,6 @@ async def async_setup_entry(
             identifiers={(DOMAIN, entity.device_id)},
             name=entity.friendly_name,
             model=entity.model,
+            manufacturer=entity.manufacturerName,
         )
     async_add_entities(entities)

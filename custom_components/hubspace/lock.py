@@ -177,6 +177,13 @@ async def async_setup_entry(
     device_registry = dr.async_get(hass)
     for entity in coordinator_hubspace.data[ENTITY_LOCK].values():
         _LOGGER.debug("Adding a %s, %s", entity.device_class, entity.friendly_name)
+        device_registry.async_get_or_create(
+            config_entry_id=entry.entry_id,
+            identifiers={(DOMAIN, entity.device_id)},
+            name=entity.friendly_name,
+            model=entity.model,
+            manufacturer=entity.manufacturerName,
+        )
         ha_entity = HubSpaceLock(
             coordinator_hubspace,
             entity.friendly_name,
@@ -184,12 +191,6 @@ async def async_setup_entry(
             model=entity.model,
             device_id=entity.device_id,
             functions=entity.functions,
-        )
-        device_registry.async_get_or_create(
-            config_entry_id=entry.entry_id,
-            identifiers={(DOMAIN, entity.device_id)},
-            name=entity.friendly_name,
-            model=entity.model,
         )
         entities.append(ha_entity)
     async_add_entities(entities)

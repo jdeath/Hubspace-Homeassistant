@@ -63,7 +63,21 @@ async def get_requested_devices(
     if not (friendly_names or room_names):
         logger.debug("Performing auto discovery")
         devices = set((await conn.devices).values())
-    sorted_devs = sorted(list(devices), key=lambda dev: dev.friendly_name)
+    sorted_devs = [
+        await modify_device_class(dev)
+        for dev in sorted(list(devices), key=lambda dev: dev.friendly_name)
+    ]
     dev_names = ", ".join([x.friendly_name for x in sorted_devs])
     logger.info("Performing discovery for the following friendly names: %s", dev_names)
     return sorted_devs
+
+
+async def modify_device_class(device: HubSpaceDevice) -> HubSpaceDevice:
+    """Modify a device class if required
+
+    A device class must be modified if the reported class from HS API does
+    not match the HA entity.
+    """
+    if device.device_class == "switch" and device.default_name == "Dimmer":
+        device.device_class = "light"
+    return device

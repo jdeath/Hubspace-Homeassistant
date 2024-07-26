@@ -396,6 +396,7 @@ async def async_setup_entry(
             identifiers={(DOMAIN, entity.device_id)},
             name=entity.friendly_name,
             model=entity.model,
+            manufacturer=entity.manufacturerName,
         )
         ha_entity = HubspaceLight(
             coordinator_hubspace,
