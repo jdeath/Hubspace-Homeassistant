@@ -20,7 +20,7 @@ def empty_lock(mocked_coordinator):
         (
             lock_tbd_instance.states,
             {
-                "_current_position": "right",
+                "_current_position": "locked",
             },
             {
                 "Child ID": None,
@@ -69,10 +69,10 @@ def test_extra_state_attributes(mocked_coordinator):
 @pytest.mark.asyncio
 async def test_async_lock(empty_lock):
     await empty_lock.async_lock()
-    assert empty_lock._current_position == "right"
+    assert empty_lock._current_position == "locking"
 
 
 @pytest.mark.asyncio
 async def test_async_unlock(empty_lock):
     await empty_lock.async_unlock()
-    assert empty_lock._current_position == "left"
+    assert empty_lock._current_position == "unlocking"

@@ -63,7 +63,7 @@ class HubSpaceLock(LockEntity):
             )
         # functionClass -> internal attribute
         for state in states:
-            if state.functionClass == "lock-direction":
+            if state.functionClass == "lock-control":
                 self._current_position = state.value
 
     @property
@@ -105,18 +105,22 @@ class HubSpaceLock(LockEntity):
 
     @property
     def is_locked(self) -> bool:
-        return self._current_position == "right"
+        return self._current_position == "locked"
 
     @property
-    def is_open(self) -> bool:
-        return self._current_position != "right"
+    def is_locking(self) -> bool:
+        return self._current_position == "locking"
+
+    @property
+    def is_unlocking(self) -> bool:
+        return self._current_position == "unlocking"
 
     async def async_unlock(self, **kwargs) -> None:
         _LOGGER.debug("Unlocking %s [%s]", self._name, self._child_id)
-        self._current_position = "left"
+        self._current_position = "unlocking"
         states_to_set = [
             HubSpaceState(
-                functionClass="lock-direction",
+                functionClass="lock-control",
                 functionInstance=self._current_position,
                 value=self._current_position,
             )
@@ -126,10 +130,10 @@ class HubSpaceLock(LockEntity):
 
     async def async_lock(self, **kwargs) -> None:
         _LOGGER.debug("Locking %s [%s]", self._name, self._child_id)
-        self._current_position = "right"
+        self._current_position = "locking"
         states_to_set = [
             HubSpaceState(
-                functionClass="lock-direction",
+                functionClass="lock-control",
                 functionInstance=self._current_position,
                 value=self._current_position,
             )
