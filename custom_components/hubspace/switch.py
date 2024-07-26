@@ -51,7 +51,6 @@ class HubSpaceSwitch(SwitchEntity):
         # Entity-specific
         self._device_class = device_class
         self._instance = instance
-        super().__init__(hs, context=self._child_id)
 
     @callback
     def _handle_coordinator_update(self) -> None:
@@ -146,56 +145,57 @@ class HubSpaceSwitch(SwitchEntity):
 async def setup_entry_toggled(
     coordinator_hubspace: HubSpaceDataUpdateCoordinator,
     registry: dr.DeviceRegistry,
-    devices: list[HubSpaceDevice],
+    entity: HubSpaceDevice,
     entry: HubSpaceConfigEntry,
 ) -> list[HubSpaceSwitch]:
     valid: list[HubSpaceSwitch] = []
-    for entity in devices:
-        _LOGGER.debug("Processing a %s, %s", entity.device_class, entity.id)
-        added_dev: bool = False
-        for function in entity.functions:
-            if function["functionClass"] != "toggle":
-                continue
-            added_dev = True
-            instance = function["functionInstance"]
-            _LOGGER.debug(
-                "Adding a %s [%s] @ %s", entity.device_class, entity.id, instance
-            )
-            ha_entity = HubSpaceSwitch(
-                coordinator_hubspace,
-                entity.friendly_name,
-                instance,
-                entity.device_class,
-                child_id=entity.id,
-                model=entity.model,
-                device_id=entity.device_id,
-            )
-            registry.async_get_or_create(
-                config_entry_id=entry.entry_id,
-                identifiers={(DOMAIN, entity.device_id)},
-                name=entity.friendly_name,
-                model=entity.model,
-            )
-            valid.append(ha_entity)
-        if not added_dev:
-            _LOGGER.debug("No toggleable outlets found. Assuming there is only one")
-            ha_entity = HubSpaceSwitch(
-                coordinator_hubspace,
-                entity.friendly_name,
-                None,
-                entity.device_class,
-                child_id=entity.id,
-                model=entity.model,
-                device_id=entity.device_id,
-            )
-            registry.async_get_or_create(
-                config_entry_id=entry.entry_id,
-                identifiers={(DOMAIN, entity.device_id)},
-                name=entity.friendly_name,
-                model=entity.model,
-            )
-            valid.append(ha_entity)
+    for function in entity.functions:
+        if function["functionClass"] != "toggle":
+            continue
+        instance = function["functionInstance"]
+        _LOGGER.debug("Adding a %s [%s] @ %s", entity.device_class, entity.id, instance)
+        ha_entity = HubSpaceSwitch(
+            coordinator_hubspace,
+            entity.friendly_name,
+            instance,
+            entity.device_class,
+            child_id=entity.id,
+            model=entity.model,
+            device_id=entity.device_id,
+        )
+        registry.async_get_or_create(
+            config_entry_id=entry.entry_id,
+            identifiers={(DOMAIN, entity.device_id)},
+            name=entity.friendly_name,
+            model=entity.model,
+        )
+        valid.append(ha_entity)
     return valid
+
+
+async def setup_basic_switch(
+    coordinator_hubspace: HubSpaceDataUpdateCoordinator,
+    registry: dr.DeviceRegistry,
+    entity: HubSpaceDevice,
+    entry: HubSpaceConfigEntry,
+):
+    _LOGGER.debug("No toggleable outlets found. Setting up as a basic switch")
+    ha_entity = HubSpaceSwitch(
+        coordinator_hubspace,
+        entity.friendly_name,
+        None,
+        entity.device_class,
+        child_id=entity.id,
+        model=entity.model,
+        device_id=entity.device_id,
+    )
+    registry.async_get_or_create(
+        config_entry_id=entry.entry_id,
+        identifiers={(DOMAIN, entity.device_id)},
+        name=entity.friendly_name,
+        model=entity.model,
+    )
+    return ha_entity
 
 
 async def async_setup_entry(
@@ -209,13 +209,24 @@ async def async_setup_entry(
     )
     device_registry = dr.async_get(hass)
     entities: list[HubSpaceSwitch] = []
-    for dev_class in ENTITY_SWITCH:
-        entities.extend(
-            await setup_entry_toggled(
-                coordinator_hubspace,
-                device_registry,
-                coordinator_hubspace.data[dev_class].values(),
-                entry,
-            )
+    for entity in coordinator_hubspace.data[ENTITY_SWITCH].values():
+        _LOGGER.debug("Processing a %s, %s", entity.device_class, entity.id)
+        new_devs = await setup_entry_toggled(
+            coordinator_hubspace,
+            device_registry,
+            entity,
+            entry,
         )
+        if new_devs:
+            entities.extend(new_devs)
+        else:
+            entities.append(
+                await setup_basic_switch(
+                    coordinator_hubspace,
+                    device_registry,
+                    entity,
+                    entry,
+                )
+            )
+        entities.extend(new_devs)
     async_add_entities(entities)
