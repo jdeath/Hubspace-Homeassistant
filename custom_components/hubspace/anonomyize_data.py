@@ -179,7 +179,6 @@ try:
         """Output all devices associated to the child_id"""
         click.echo(get_states(ctx.obj["conn"], child_id=child_id))
 
-
     @cli.command()
     @click.pass_context
     def raw_data(ctx):
@@ -187,8 +186,8 @@ try:
         get_devices(ctx.obj["conn"])
         with open("raw-data.json", "w") as f:
             import json
-            json.dump(ctx.obj["conn"].raw_devices, f, indent=4)
 
+            json.dump(ctx.obj["conn"].raw_devices, f, indent=4)
 
 except:  # noqa
     pass

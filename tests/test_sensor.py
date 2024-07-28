@@ -1,5 +1,3 @@
-import pytest
-
 from custom_components.hubspace import const, sensor
 
 from .utils import create_devices_from_data

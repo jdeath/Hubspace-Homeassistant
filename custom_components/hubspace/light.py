@@ -7,9 +7,11 @@ from typing import Any, Optional
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
     ATTR_COLOR_TEMP_KELVIN,
+    ATTR_EFFECT,
     ATTR_RGB_COLOR,
     ColorMode,
     LightEntity,
+    LightEntityFeature,
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import device_registry as dr
@@ -54,6 +56,13 @@ def process_range(range_vals: dict) -> list[Any]:
     return supported_range
 
 
+def process_names(values: list[dict]) -> set[str]:
+    vals = set()
+    for val in values:
+        vals.add(val["name"])
+    return vals
+
+
 @dataclasses.dataclass
 class RGB:
     red: int = 0
@@ -80,7 +89,7 @@ def process_color_temps(color_temps: dict) -> tuple[list[int], str]:
 class HubspaceLight(CoordinatorEntity, LightEntity):
     """HubSpace light that can communicate with Home Assistant
 
-    @TODO - Support for HS, RGB, RGBW, RGBWW, XY
+    @TODO - Support for HS, RGBW, RGBWW, XY
 
     :ivar _name: Name of the device
     :ivar _hs: HubSpace connector
@@ -140,6 +149,9 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
         self._supported_brightness: Optional[list[int]] = []
         self._brightness: Optional[int] = None
         self._rgb: RGB = RGB(red=0, green=0, blue=0)
+        self._supported_features: LightEntityFeature = LightEntityFeature(0)
+        self._effect_list: Optional[list[str]] = None
+        self._current_effect: Optional[str] = None
 
         functions = functions or []
         self.process_functions(functions)
@@ -166,9 +178,13 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
                 self._color_modes.add(ColorMode.ONOFF)
                 _LOGGER.debug("Adding a new feature - on / off")
             elif function["functionClass"] == "color-temperature":
-                self._temperature_choices, self._temperature_prefix = (
-                    process_color_temps(function["values"])
-                )
+                if len(function["values"]) > 1:
+                    self._temperature_choices, self._temperature_prefix = (
+                        process_color_temps(function["values"])
+                    )
+                else:
+                    self._temperature_choices = process_range(function["values"][0])
+                    self._temperature_prefix = "K"
                 if self._temperature_choices:
                     self._color_modes.add(ColorMode.COLOR_TEMP)
                     _LOGGER.debug("Adding a new feature - color temperature")
@@ -181,6 +197,22 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
             elif function["functionClass"] == "color-rgb":
                 self._color_modes.add(ColorMode.RGB)
                 _LOGGER.debug("Adding a new feature - rgb")
+            elif function["functionClass"] == "color-mode":
+                for value in function["values"]:
+                    if value["name"] == "white":
+                        # @TODO - Is white the same thing as color temp?
+                        self._color_modes.add(ColorMode.COLOR_TEMP)
+            elif function["functionClass"] == "color-sequence":
+                self._instance_attrs.pop(function["functionClass"], None)
+                if function["functionInstance"] == "custom":
+                    self._instance_attrs["effects"] = function["functionInstance"]
+                    self._effect_list = sorted(list(process_names(function["values"])))
+                    self._supported_features |= LightEntityFeature.EFFECT
+                # @TODO - Is this what HA expects for transitions?
+                # elif function["functionInstance"] == "preset":
+                #     self._instance_attrs["transition"] = function["functionInstance"]
+                #     self._transition_list = sorted(list(process_names(function["values"])))
+                #     self._supported_features |= LightEntityFeature.TRANSITION
             else:
                 _LOGGER.debug(
                     "Unsupported feature found, %s", function["functionClass"]
@@ -188,7 +220,11 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
                 self._instance_attrs.pop(function["functionClass"], None)
 
     def update_states(self) -> None:
-        """Load initial states into the device"""
+        """Load initial states into the device
+
+        When determining the current color mode, we should only read the latest update
+        as every value is reported.
+        """
         states: list[HubSpaceState] = self.coordinator.data[ENTITY_LIGHT][
             self._child_id
         ].states
@@ -197,6 +233,7 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
                 "No states found for %s. Maybe hasn't polled yet?", self._child_id
             )
         additional_attrs = []
+        latest_update: int = 0
         # functionClass -> internal attribute
         for state in states:
             if state.functionClass == "power":
@@ -208,13 +245,34 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
             elif state.functionClass == "brightness":
                 self._brightness = _brightness_to_hass(state.value)
             elif state.functionClass == "color-mode":
-                self._color_mode = state.value
+                if state.lastUpdateTime <= latest_update:
+                    continue
+                latest_update = state.lastUpdateTime
+                if state.value in ["rgb", "sequence"]:
+                    self._color_mode = ColorMode.RGB
+                else:
+                    self._color_mode = ColorMode.COLOR_TEMP
             elif state.functionClass == "color-rgb":
                 self._rgb = RGB(
                     red=state.value["color-rgb"].get("r", 0),
                     green=state.value["color-rgb"].get("g", 0),
                     blue=state.value["color-rgb"].get("b", 0),
                 )
+            elif state.functionClass == "color-mode":
+                if state.lastUpdateTime <= latest_update:
+                    continue
+                latest_update = state.lastUpdateTime
+                if state.value == "rgb":
+                    self._color_mode = ColorMode.RGB
+            elif (
+                state.functionClass == "color-sequence"
+                and state.functionInstance == "custom"
+            ):
+                if state.lastUpdateTime <= latest_update:
+                    self._current_effect = None
+                    continue
+                latest_update = state.lastUpdateTime
+                self._current_effect = state.value
             elif state.functionClass in additional_attrs:
                 self._bonus_attrs[state.functionClass] = state.value
 
@@ -295,9 +353,21 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
             self._rgb.blue,
         )
 
+    @property
+    def supported_features(self) -> LightEntityFeature:
+        return self._supported_features
+
+    @property
+    def effect_list(self) -> list[str]:
+        return self._effect_list
+
+    @property
+    def effect(self) -> Optional[str]:
+        return self._current_effect
+
     # Entity-specific functions
     def _adjust_supported_modes(self):
-        """Lights are annoying"""
+        """Adjust supported color modes to de-duplicate"""
         mode_temp = {ColorMode.BRIGHTNESS, ColorMode.COLOR_TEMP}
         mode_bright = {ColorMode.BRIGHTNESS, ColorMode.ONOFF}
         if mode_temp & self._color_modes == mode_temp:
@@ -308,10 +378,11 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
             self._color_mode = ColorMode.BRIGHTNESS
         if len(self._color_modes) > 1 and ColorMode.ONOFF in self._color_modes:
             self._color_modes.remove(ColorMode.ONOFF)
+        if not self._color_mode and self._color_modes:
             self._color_mode = list(self._color_modes)[0]
 
     async def async_turn_on(self, **kwargs) -> None:
-        _LOGGER.debug("Adjusting light %s with %s", self._child_id, kwargs)
+        _LOGGER.info("Adjusting light %s with %s", self._child_id, kwargs)
         self._state = "on"
         states_to_set = [
             HubSpaceState(
@@ -349,6 +420,7 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
                 )
             self._color_temp = color_to_set
         if ATTR_RGB_COLOR in kwargs:
+            self._color_mode = ColorMode.RGB
             self._rgb = RGB(
                 red=kwargs[ATTR_RGB_COLOR][0],
                 green=kwargs[ATTR_RGB_COLOR][1],
@@ -361,6 +433,22 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
                     value=kwargs[ATTR_RGB_COLOR],
                 )
             )
+        if ATTR_EFFECT in kwargs:
+            self._current_effect = kwargs[ATTR_EFFECT]
+            effect_states = [
+                HubSpaceState(
+                    functionClass="color-sequence",
+                    functionInstance="preset",
+                    value="custom",
+                ),
+                HubSpaceState(
+                    functionClass="color-sequence",
+                    functionInstance=self._instance_attrs.get("effects", None),
+                    value=self._current_effect,
+                ),
+            ]
+            states_to_set.extend(effect_states)
+            self._color_mode = ColorMode.RGB
         await self._hs.set_device_states(self._child_id, states_to_set)
         self.async_write_ha_state()
 

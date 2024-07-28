@@ -16,6 +16,8 @@ fan_zandra_light = fan_zandra[1]
 switch_dimmer = create_devices_from_data("switch-HPDA311CWB.json")
 switch_dimmer_light = switch_dimmer[0]
 
+rgb_temp_light = create_devices_from_data("light-rgb_temp.json")[0]
+
 
 @pytest.fixture
 def empty_light(mocked_coordinator):
@@ -50,6 +52,20 @@ def temperature_light(mocked_coordinator):
                 "_instance_attrs": {},
                 "_color_modes": {ColorMode.ONOFF, ColorMode.BRIGHTNESS},
                 "_supported_brightness": [x for x in range(1, 101)],
+            },
+        ),
+        (
+            rgb_temp_light.functions,
+            {
+                "_instance_attrs": {"effects": "custom"},
+                "_color_modes": {
+                    ColorMode.ONOFF,
+                    ColorMode.BRIGHTNESS,
+                    ColorMode.RGB,
+                    ColorMode.COLOR_TEMP,
+                },
+                "_supported_brightness": [x for x in range(1, 101)],
+                "_temperature_choices": [x for x in range(2200, 6501, 100)],
             },
         ),
     ],

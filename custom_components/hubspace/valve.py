@@ -1,7 +1,7 @@
 import logging
 from typing import Optional
 
-from homeassistant.components.valve import ValveEntity, ValveDeviceClass
+from homeassistant.components.valve import ValveDeviceClass, ValveEntity
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.device_registry import DeviceInfo

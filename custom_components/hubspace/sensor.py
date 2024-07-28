@@ -5,8 +5,8 @@ from homeassistant.components.sensor import SensorEntity, SensorEntityDescriptio
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from hubspace_async import HubSpaceDevice, HubSpaceState
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from hubspace_async import HubSpaceDevice, HubSpaceState
 
 from . import HubSpaceConfigEntry
 from .const import DOMAIN, ENTITY_SENSOR
@@ -55,7 +55,7 @@ class HubSpaceSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def name(self) -> str:
-        return f"{self.entity_description.key}"
+        return f"{self._device.friendly_name}: {self.entity_description.key}"
 
     @property
     def device_info(self) -> DeviceInfo:
