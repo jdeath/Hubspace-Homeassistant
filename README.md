@@ -4,7 +4,29 @@ Please ask support questions in homeassistant forums: https://community.home-ass
 
 ### Background
 HubSpace is reliant on a cloud connection which means this integration could break at any point. Not all
-devices may be supported with and developer time will be required to add new devices.
+devices may be supported with and developer time will be required to add new devices. Supported
+device types:
+
+ * fan
+   * On/Off
+   * Speed
+   * Preset mode
+ * device-lock
+   * Lock / Unlock
+ * light
+   * On/Off
+   * Color Temperature
+   * Color Sequences
+   * Dimming
+   * RGB
+ * power-outlet
+   * On/Off
+ * switch
+   * On/Off
+ * landscape-transformer (maybe)
+   * On/Off
+ * water-valve
+   * Open / Close
 
 ### Breaking Change:
 Configuration is done through the `Add Integrations` rather than configuration.yaml.
@@ -60,28 +82,28 @@ click `SUBMIT`. Entities should start appearing shortly after clicking submit.
 If your username or password is incorrect, the form will not be submitted.
 
 ### Troubleshooting
-If a device is not being automatically discovered, the device type may not be added to discovery. The following
-device classes are supported:
 
- * fan
- * light
- * power-outlet
- * landscape-transformer (maybe)
- * water-valve
-
-If your device class is not listed here, please refer to the section
-``Support for a new model`` on how to get it added.
-
-If a device is not responding to commands, enable debug through HA (Settings -> Devices & services ->
-Integrations -> hubspace -> enable debug). This will enable debug logs for a developer to assist
-with the problem. Please note that this debug logs could potentially show your account id
-and device id.
+ * I have a device in HubSpace that is not added to Home Assistant
+   * Check the logs for any warning / errors around hubspace and report the issue.
+   * If no warning / error messages exist around HubSpace, the device type is likely
+     not supported. Refer to the troubleshooting section to grab anonymized logs and
+     open a new issue with the logs and state thedevice that did not discover
+ * I have a device and its missing functionality
+   * Refer to the troubleshooting section to grab anonymized logs and
+     open a new issue with the logs and state the device that is not working
+     along with the broken functionality
+ * I have a device and its functionality is not working
+   * Refer to the troubleshooting section to grab anonymized logs and
+     open a new issue with the logs and state the device that is not working
+     along with the broken functionality
+   * If the developers are unable to solve the problem with the anonymized data,
+     the raw data may need to be provided
 
 ### Support for a new model
 To support a new model, the states and metadata will need to be gathered. To accomplish
 this, you will need to gather the data. There are two ways to grab this information:
 
- * Through a shell (preferred, but some technical knowledge is required)
+ * Through a shell (target a specific device)
  * Through the UI
 
 #### Shell
@@ -136,12 +158,24 @@ the following setup steps must be run:
          python anonomyize_data.py --username "<username>" --password "<password>" child-id --child_id "<child_id>"
          ```
 
-
-
 #### Through the UI
-This is possible through the UI by navigating
-to the integration and clicking "Enable debugging logging". After 30s or less,
-the anonymized data will appear within the Home Assistant logs. Create a GitHub
-issue with this information and it should be sufficient to add support.
+Gathering data through the UI provides a less targeted approach to gathering data
+as it will pull all devices. This may be required if a device cannot be fixed with
+a normal data dump or you are not comfortable running python on your system. It requires
+the add-on `File Editor` or a similar add-on /  integration that enables you to download
+files from Home Assistant. After  the file downloader has been installed onto Home
+Assistant, the following steps are required to gather the data:
+
+ * Enable Debug
+   * Settings -> Devices & services -> Integrations -> hubspace -> Enable debug logging
+ * Wait 30s - 60s for the files to generate
+ * Open File Editor
+ * Click the folder icon on the top left
+ * Navigate to custom_components -> hubspace
+ * Download the required files:
+   * `_dump_hs_devices.json`: Anonymized device dumps consumed by the HubSpace integration
+   * `_dump_hs_raw.json`: Raw data from the connector. This data is not anonymized
+ * Disable debug
+   * Settings -> Devices & services -> Integrations -> hubspace -> Disable debug logging
 
 [![Star History Chart](https://api.star-history.com/svg?repos=jdeath/Hubspace-Homeassistant&type=Date)](https://star-history.com/#jdeath/Hubspace-Homeassistant&Date)

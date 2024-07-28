@@ -2,11 +2,13 @@
 
 import json
 import logging
+import os
 from asyncio import timeout
 from collections import defaultdict
 from datetime import timedelta
 from typing import Any, NewType, Union
 
+import aiofiles
 import hubspace_async
 from homeassistant.components.sensor import SensorEntityDescription
 from homeassistant.core import HomeAssistant
@@ -82,7 +84,15 @@ class HubSpaceDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         await self.hs_data_update()
         if _LOGGER.getEffectiveLevel() <= logging.DEBUG:
             data = await anonomyize_data.generate_anon_data(self.conn)
-            _LOGGER.debug(json.dumps(data, indent=4))
+            curr_directory = os.path.dirname(os.path.realpath(__file__))
+            dev_dump = os.path.join(curr_directory, "_dump_hs_devices.json")
+            _LOGGER.debug("Writing out anonymized device data to %s", dev_dump)
+            async with aiofiles.open(dev_dump, "w") as fh:
+                await fh.write(json.dumps(data, indent=4))
+            dev_raw = os.path.join(curr_directory, "_dump_hs_raw.json")
+            _LOGGER.debug("Writing out raw device data to %s", dev_raw)
+            async with aiofiles.open(dev_raw, "w") as fh:
+                await fh.write(json.dumps(self.conn.raw_devices, indent=4))
         return await self.process_tracked_devices()
 
     async def hs_data_update(self) -> None:
