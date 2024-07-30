@@ -85,7 +85,10 @@ class HubSpaceSwitch(CoordinatorEntity, SwitchEntity):
     @property
     def name(self) -> str:
         """Return the display name"""
-        return self._name
+        if self._instance:
+            return f"{self._name} - {self._instance}"
+        else:
+            return self._name
 
     @property
     def unique_id(self) -> str:
