@@ -101,6 +101,10 @@ class HubSpaceValve(CoordinatorEntity, ValveEntity):
             return self._child_id
 
     @property
+    def supported_features(self) -> ValveEntityFeature:
+        return self._supported_features
+
+    @property
     def extra_state_attributes(self):
         """Return the state attributes."""
         return self._bonus_attrs
