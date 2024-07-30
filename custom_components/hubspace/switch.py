@@ -71,12 +71,12 @@ class HubSpaceSwitch(CoordinatorEntity, SwitchEntity):
             )
         # functionClass -> internal attribute
         for state in states:
-            if self._instance:
-                if state.functionInstance == self._instance:
-                    self._state = state.value
-            else:
-                if state.functionClass == "power":
-                    self._state = state.value
+            if state.functionClass != "power":
+                continue
+            if not self._instance:
+                self._state = state.value
+            elif state.functionInstance == self._instance:
+                self._state = state.value
 
     @property
     def should_poll(self):

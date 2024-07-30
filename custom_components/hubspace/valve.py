@@ -80,7 +80,11 @@ class HubSpaceValve(CoordinatorEntity, ValveEntity):
             )
         # functionClass -> internal attribute
         for state in states:
-            if state.functionInstance == self._instance:
+            if state.functionClass != "toggle":
+                continue
+            if not self._instance:
+                self._state = state.value
+            elif state.functionInstance == self._instance:
                 self._state = state.value
 
     @property
@@ -142,7 +146,7 @@ class HubSpaceValve(CoordinatorEntity, ValveEntity):
         self._state = "on"
         states_to_set = [
             HubSpaceState(
-                functionClass="toggle" if self._instance else "power",
+                functionClass="toggle",
                 functionInstance=self._instance,
                 value=self._state,
             )
@@ -155,7 +159,7 @@ class HubSpaceValve(CoordinatorEntity, ValveEntity):
         self._state = "off"
         states_to_set = [
             HubSpaceState(
-                functionClass="toggle" if self._instance else "power",
+                functionClass="toggle",
                 functionInstance=self._instance,
                 value=self._state,
             )
