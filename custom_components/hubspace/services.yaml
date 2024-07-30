@@ -14,7 +14,7 @@ send_command:
       name: functionClass
       description: functionClass you want to send
       required: true
-      example: "power"  
+      example: "power"
     functionInstance:
       name: functionInstance
       description: functionInstance you want to send

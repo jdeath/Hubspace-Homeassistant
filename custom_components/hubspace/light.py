@@ -1,53 +1,30 @@
-"""Platform for light integration."""
-from __future__ import annotations
+"""Platform for fan integration."""
 
+import dataclasses
 import logging
+from typing import Any, Optional
 
-from .hubspace import HubSpace
-import voluptuous as vol
-
-# Import the device class from the component that you want to support
-from homeassistant.helpers import config_validation as cv, entity_platform, service
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
+    ATTR_COLOR_TEMP_KELVIN,
+    ATTR_EFFECT,
     ATTR_RGB_COLOR,
-    ATTR_WHITE,
-    ATTR_COLOR_TEMP,
-    PLATFORM_SCHEMA,
     ColorMode,
-    COLOR_MODES_COLOR,
     LightEntity,
+    LightEntityFeature,
 )
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
-from homeassistant.core import HomeAssistant, ServiceCall
+from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
-from datetime import timedelta
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from hubspace_async import HubSpaceState
 
-# Import exceptions from the requests module
-import requests.exceptions
+from . import HubSpaceConfigEntry
+from .const import DOMAIN, ENTITY_LIGHT
+from .coordinator import HubSpaceDataUpdateCoordinator
 
-SCAN_INTERVAL = timedelta(seconds=60)
-BASE_INTERVAL = timedelta(seconds=60)
-SERVICE_NAME = "send_command"
 _LOGGER = logging.getLogger(__name__)
-
-CONF_FRIENDLYNAMES: Final = "friendlynames"
-CONF_ROOMNAMES: Final = "roomnames"
-CONF_DEBUG: Final = "debug"
-
-# Validation of the user's configuration
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Required(CONF_DEBUG, default=False): cv.boolean,
-        vol.Required(CONF_FRIENDLYNAMES, default=[]): vol.All(
-            cv.ensure_list, [cv.string]
-        ),
-        vol.Required(CONF_ROOMNAMES, default=[]): vol.All(cv.ensure_list, [cv.string]),
-    }
-)
 
 
 def _brightness_to_hass(value):
@@ -60,703 +37,250 @@ def _brightness_to_hubspace(value):
     return value * 100 // 255
 
 
-def _convert_color_temp(value):
-    if isinstance(value, str) and value.endswith("K"):
-        value = value[:-1]
-    if value is None:
-        value = 1
-    return 1000000 // int(value)
+def process_range(range_vals: dict) -> list[Any]:
+    """Process a range to determine what's supported
+
+    :param range_vals: Result from functions["values"][x]
+    """
+    supported_range = []
+    range_min = range_vals["range"]["min"]
+    range_max = range_vals["range"]["max"]
+    range_step = range_vals["range"]["step"]
+    if range_min == range_max:
+        supported_range.append(range_max)
+    else:
+        for brightness in range(range_min, range_max, range_step):
+            supported_range.append(brightness)
+        if range_max not in supported_range:
+            supported_range.append(range_max)
+    return supported_range
 
 
-def create_entity(hs: HubSpace, model: str, deviceClass: str, friendlyName: str, debug: bool) -> list:
-    """Creates all entities aligned to a device
+def process_names(values: list[dict]) -> set[str]:
+    vals = set()
+    for val in values:
+        vals.add(val["name"])
+    return vals
 
-    :param hs: HubSpace connection
+
+@dataclasses.dataclass
+class RGB:
+    red: int = 0
+    green: int = 0
+    blue: int = 0
+
+
+def process_color_temps(color_temps: dict) -> tuple[list[int], str]:
+    """Determine the supported color temps
+
+    :param color_temps: Result from functions["values"]
+    """
+    supported_temps = []
+    prefix = ""
+    for temp in color_temps:
+        color_temp = temp["name"]
+        if isinstance(color_temp, str) and color_temp.endswith("K"):
+            prefix = "k"
+            color_temp = color_temp[0:-1]
+        supported_temps.append(int(color_temp))
+    return sorted(supported_temps), prefix
+
+
+class HubspaceLight(CoordinatorEntity, LightEntity):
+    """HubSpace light that can communicate with Home Assistant
+
+    @TODO - Support for HS, RGBW, RGBWW, XY
+
+    :ivar _name: Name of the device
+    :ivar _hs: HubSpace connector
+    :ivar _child_id: ID used when making requests to HubSpace
+    :ivar _state: If the device is on / off
+    :ivar _bonus_attrs: Attributes relayed to Home Assistant that do not need to be
+        tracked in their own class variables
+    :ivar _instance_attrs: Additional attributes that are required when
+        POSTing to HubSpace
+    :ivar _color_modes: Supported options for the light
+    :ivar _color_mode: Current color mode of the light
+    :ivar _color_temp: Current temperature of the light
+    :ivar _temperature_choices: Supported temperatures of the light
+    :ivar _temperature_prefix: Prefix for HubSpace
+    :ivar _brightness: Current brightness of the light
+    :ivar _supported_brightness: Supported brightness of the light
+    :ivar _rgb: Current RGB values
+
+
+    :param hs: HubSpace connector
+    :param friendly_name: The friendly name of the device
+    :param child_id: ID used when making requests to HubSpace
     :param model: Model of the device
-    :param deviceClass: Type of the device
-    :param friendlyName: Name of the device within HubSpace
-    :param debug: If debug is enabled
+    :param device_id: Parent Device ID
+    :param functions: List of supported functions for the device
     """
 
-    entities = []
-    if model == "HPKA315CWB" or model == "HPPA52CWBA023":
-        _LOGGER.debug("Creating Outlets")
-        entities.append(HubspaceOutlet(hs, friendlyName, "1", debug))
-        entities.append(HubspaceOutlet(hs, friendlyName, "2", debug))
-    elif model == "LTS-4G-W":
-        _LOGGER.debug("Creating Outlets")
-        entities.append(HubspaceOutlet(hs, friendlyName, "1", debug))
-        entities.append(HubspaceOutlet(hs, friendlyName, "2", debug))
-        entities.append(HubspaceOutlet(hs, friendlyName, "3", debug))
-        entities.append(HubspaceOutlet(hs, friendlyName, "4", debug))
-    elif model == "HB-200-1215WIFIB":
-        _LOGGER.debug("Creating Transformers")
-        entities.append(HubspaceTransformer(hs, friendlyName, "1", debug))
-        entities.append(HubspaceTransformer(hs, friendlyName, "2", debug))
-        entities.append(HubspaceTransformer(hs, friendlyName, "3", debug))
-    elif model == "52133, 37833":
-        _LOGGER.debug("Creating Fan")
-        entities.append(HubspaceFan(hs, friendlyName, debug))
-        _LOGGER.debug("Creating Light")
-        entities.append(HubspaceLight(hs, friendlyName, debug))
-    elif model == "76278, 37278":
-        _LOGGER.debug("Creating Fan")
-        entities.append(HubspaceFan(hs, friendlyName, debug))
-        _LOGGER.debug("Creating Light")
-        entities.append(HubspaceLight(hs, friendlyName, debug))
-    elif model == "DriskolFan" or model == "ZandraFan" or model == "TagerFan" or model == "VinwoodFan" or model == "CF2003" or model == "NevaliFan":
-        _LOGGER.debug("Creating Fan")
-        entities.append(HubspaceFan(hs, friendlyName, debug))
-        _LOGGER.debug("Creating Light")
-        entities.append(HubspaceLight(hs, friendlyName, debug))    
-    elif deviceClass == "door-lock" and model == "TBD":
-        _LOGGER.debug("Creating Lock")
-        entities.append(HubspaceLock(hs, friendlyName, debug))
-    elif deviceClass == "water-timer":
-        _LOGGER.debug("Creating WaterTimer")
-        entities.append(HubspaceWaterTimer(hs, friendlyName, "1", debug))
-        entities.append(HubspaceWaterTimer(hs, friendlyName, "2", debug))
-    else:
-        _LOGGER.debug("creating lights")
-        entities.append(HubspaceLight(hs, friendlyName, debug))
-
-    return entities
-
-
-def manual_discovery(hs: HubSpace, friendly_names: list[str], room_names: list[str], debug: bool) -> list:
-    """Add entities based on names
-
-    :param hs: HubSpace connection
-    :param friendly_names: List of names to add to Home Assistant
-    :param room_names: List of rooms to search that contain
-        entities that should be added to Home Assistant
-    :param debug: If debug is enabled
-
-    :return: List of created entities to add to Home Assistant
-    """
-    entities = []
-    for friendly_name in friendly_names:
-        _LOGGER.debug("friendlyName " + friendly_name)
-        [childId, model, deviceId, deviceClass] = hs.getChildId(friendly_name)
-        if deviceClass == "fan" and model == "":
-            model = "DriskolFan"
-            _LOGGER.debug("Unknown model fan, setting as Driskol")
-            _LOGGER.debug("If your fan is not a Driskol, raise an issue")
-        _LOGGER.debug("Switch on Model " + model)
-        _LOGGER.debug("childId: " + childId)
-        _LOGGER.debug("deviceId: " + deviceId)
-        _LOGGER.debug("deviceClass: " + deviceClass)
-        entities.extend(create_entity(hs, model, deviceClass, friendly_name, debug))
-
-    for room_name in room_names:
-        _LOGGER.debug("roomName " + room_name)
-        children = hs.getChildrenFromRoom(room_name)
-        for childId in children:
-            _LOGGER.debug("childId " + childId)
-            [childId, model, deviceId, deviceClass, friendlyName] = hs.getChildInfoById(
-                childId
-            )
-            _LOGGER.debug("Switch on Model " + model)
-            _LOGGER.debug("deviceId: " + deviceId)
-            _LOGGER.debug("deviceClass: " + deviceClass)
-            _LOGGER.debug("friendlyName: " + friendlyName)
-            entities.extend(create_entity(entities, hs, model, deviceClass, friendlyName, debug))
-    return entities
-
-
-def auto_discovery(hs: HubSpace, debug: bool) -> list:
-    """Query HubSpace and find devices to add
-
-    :param hs: HubSpace connection
-    :param debug: If debug is enabled
-
-    :return: List of created entities to add to Home Assistant
-    """
-    entities = []
-    _LOGGER.debug("Attempting automatic discovery")
-    for [
-        childId,
-        model,
-        deviceId,
-        deviceClass,
-        friendlyName,
-        functions,
-    ] in hs.discoverDeviceIds():
-        _LOGGER.debug("childId " + childId)
-        _LOGGER.debug("Switch on Model " + model)
-        _LOGGER.debug("deviceId: " + deviceId)
-        _LOGGER.debug("deviceClass: " + deviceClass)
-        _LOGGER.debug("friendlyName: " + friendlyName)
-        _LOGGER.debug("functions: " + str(functions))
-
-        if deviceClass == "fan":
-            if model == "":
-                model = "DriskolFan"
-                _LOGGER.debug("Unknown model fan, setting as Driskol")
-                _LOGGER.debug("If your fan is not a Driskol, raise an issue")
-            entities.append(
-                HubspaceFan(
-                    hs, friendlyName, debug, childId, model, deviceId, deviceClass
-                )
-            )
-        elif deviceClass == "light" or deviceClass == "switch":
-            entities.append(
-                HubspaceLight(
-                    hs,
-                    friendlyName,
-                    debug,
-                    childId,
-                    model,
-                    deviceId,
-                    deviceClass,
-                    functions,
-                )
-            )
-        elif deviceClass == "power-outlet":
-            for function in functions:
-                if function.get("functionClass") == "toggle":
-                    try:
-                        _LOGGER.debug(
-                            f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}"
-                        )
-                        outletIndex = function.get("functionInstance").split("-")[1]
-                        entities.append(
-                            HubspaceOutlet(
-                                hs,
-                                friendlyName,
-                                outletIndex,
-                                debug,
-                                childId,
-                                model,
-                                deviceId,
-                                deviceClass,
-                            )
-                        )
-                    except IndexError:
-                        _LOGGER.debug("Error extracting outlet index")
-        elif deviceClass == "landscape-transformer":
-            for function in functions:
-                if function.get("functionClass") == "toggle":
-                    try:
-                        _LOGGER.debug(
-                            f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}"
-                        )
-                        outletIndex = function.get("functionInstance").split("-")[1]
-                        entities.append(
-                            HubspaceTransformer(
-                                hs,
-                                friendlyName,
-                                outletIndex,
-                                debug,
-                                childId,
-                                model,
-                                deviceId,
-                                deviceClass,
-                            )
-                        )
-                    except IndexError:
-                        _LOGGER.debug("Error extracting outlet index")
-        elif deviceClass == "water-timer":
-            for function in functions:
-                if function.get("functionClass") == "toggle":
-                    try:
-                        _LOGGER.debug(
-                            f"Found toggle with id {function.get('id')} and instance {function.get('functionInstance')}"
-                        )
-                        outletIndex = function.get("functionInstance").split("-")[1]
-                        entities.append(
-                            HubspaceWaterTimer(
-                                hs,
-                                friendlyName,
-                                outletIndex,
-                                debug,
-                                childId,
-                                model,
-                                deviceId,
-                                deviceClass,
-                            )
-                        )
-                    except IndexError:
-                        _LOGGER.debug("Error extracting outlet index")
-    return entities
-
-
-def setup_platform(
-    hass: HomeAssistant,
-    config: ConfigType,
-    add_entities: AddEntitiesCallback,
-    discovery_info: DiscoveryInfoType | None = None,
-) -> None:
-    """Set up the Awesome Light platform."""
-
-    # Assign configuration variables.
-    # The configuration check takes care they are present.
-
-    username = config[CONF_USERNAME]
-    password = config.get(CONF_PASSWORD)
-    debug = config.get(CONF_DEBUG)
-    try:
-        hs = HubSpace(username, password)
-    except requests.exceptions.ReadTimeout as ex:
-        # Where does this exception come from? The integration will break either way
-        # but more spectacularly since the exception is not imported
-        raise PlatformNotReady(
-            f"Connection error while connecting to hubspace: {ex}"
-        ) from ex
-
-    entities = []
-    friendly_names: list[str] = config.get(CONF_FRIENDLYNAMES, [])
-    room_names: list[str] = config.get(CONF_ROOMNAMES, [])
-    if any([friendly_names, room_names]):
-        entities.extend(manual_discovery(hs, friendly_names, room_names, debug))
-    else:
-        entities.extend(auto_discovery(hs, debug))
-    if entities:
-        add_entities(entities)
-
-    def my_service(call: ServiceCall) -> None:
-        """My first service."""
-        _LOGGER.info("Received data" + str(call.data))
-        name = SERVICE_NAME
-        entity_ids = call.data["entity_id"]
-        functionClass = call.data["functionClass"]
-        value = call.data["value"]
-
-        if "functionInstance" in call.data:
-            functionInstance = call.data["functionInstance"]
-        else:
-            functionInstance = None
-
-        for entity_id in entity_ids:
-            _LOGGER.info("entity_id: " + str(entity_id))
-            for i in entities:
-                if i.entity_id == entity_id:
-                    _LOGGER.info("Found Entity")
-                    i.send_command(functionClass, value, functionInstance)
-
-    # Register our service with Home Assistant.
-    hass.services.register("hubspace", "send_command", my_service)
-
-
-class HubspaceLight(LightEntity):
-    """Representation of an Awesome Light."""
+    _enable_turn_on_off_backwards_compatibility = False
 
     def __init__(
         self,
-        hs,
-        friendlyname,
-        debug,
-        childId=None,
-        model=None,
-        deviceId=None,
-        deviceClass=None,
-        functions=None,
+        hs: HubSpaceDataUpdateCoordinator,
+        friendly_name: str,
+        child_id: Optional[str] = None,
+        model: Optional[str] = None,
+        device_id: Optional[str] = None,
+        functions: Optional[list[dict]] = None,
     ) -> None:
-        """Initialize an AwesomeLight."""
+        super().__init__(hs, context=child_id)
+        self._name: str = friendly_name
+        self.coordinator = hs
+        self._hs = hs.conn
+        self._child_id: str = child_id
+        self._state: Optional[str] = None
+        self._bonus_attrs = {
+            "model": model,
+            "deviceId": device_id,
+            "Child ID": self._child_id,
+        }
+        self._instance_attrs: dict[str, str] = {}
+        # Entity-specific
+        self._color_modes: set[ColorMode] = set()
+        self._color_mode: Optional[ColorMode] = None
+        self._color_temp: Optional[int] = None
+        self._temperature_choices: Optional[set[Any]] = set()
+        self._temperature_prefix: str = ""
+        self._supported_brightness: Optional[list[int]] = []
+        self._brightness: Optional[int] = None
+        self._rgb: RGB = RGB(red=0, green=0, blue=0)
+        self._supported_features: LightEntityFeature = LightEntityFeature(0)
+        self._effect_list: Optional[list[str]] = None
+        self._current_effect: Optional[str] = None
 
-        _LOGGER.debug("Light Name: ")
-        _LOGGER.debug(friendlyname)
-        self._name = friendlyname
+        functions = functions or []
+        self.process_functions(functions)
+        self._adjust_supported_modes()
 
-        self._debug = debug
-        self._state = "off"
-        self._childId = childId
-        self._model = model
-        self._brightness = None
-        self._usePowerFunctionInstance = None
-        self._hs = hs
-        self._deviceId = deviceId
-        self._debugInfo = None
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self.update_states()
+        self.async_write_ha_state()
 
-        # colorMode == 'color' || 'white'
-        self._colorMode = None
-        self._colorTemp = None
-        self._min_mireds = None
-        self._max_mireds = None
-        self._rgbColor = None
-        self._temperature_choices = None
-        self._temperature_suffix = None
-        if None in (childId, model, deviceId, deviceClass) or "" in (childId, model, deviceId, deviceClass):
-            [
-                self._childId,
-                self._model,
-                self._deviceId,
-                deviceClass,
-            ] = self._hs.getChildId(self._name)
-        if functions is None:
-            functions = self._hs.getFunctions(self._childId)
+    def process_functions(self, functions: list[dict]) -> None:
+        """Process available functions
 
-        self._supported_color_modes = []
 
-        # https://www.homedepot.com/p/Commercial-Electric-500-Watt-Single-Pole-Smart-Hubspace-Dimmer-with-Motion-Sensor-White-HPDA311CWB/317249353
-        if self._model == "HPDA311CWB":
-            self._supported_color_modes.extend([ColorMode.BRIGHTNESS])
-
-        # https://www.homedepot.com/p/Defiant-15-Amp-120-Volt-Smart-Hubspace-Outdoor-Single-Outlet-Wi-Fi-Bluetooth-Plug-HPPA51CWB/316341409
-        # https://www.homedepot.com/p/Defiant-15-Amp-120-Volt-Smart-Hubspace-Wi-Fi-Bluetooth-Plug-with-1-Outlet-HPPA11AWB/315636834
-        if (
-            self._model == "HPPA51CWB"
-            or self._model == "HPPA11AWBA023"
-            or self._model == "HPSA11CWB"
-            or self._model == "HPPA11CWB"
-            or self._model == "YardStake"
-        ):
-            self._supported_color_modes.extend([ColorMode.ONOFF])
-        # https://www.homedepot.com/p/EcoSmart-16-ft-Smart-Hubspace-RGB-and-Tunable-White-Tape-Light-Works-with-Amazon-Alexa-and-Google-Assistant-AL-TP-RGBCW-60/314680856
-        if (
-            self._model == "HPKA315CWB"
-            or self._model == "HPPA52CWBA023"
-        ):
-            self._usePowerFunctionInstance = "primary"
-            self._supported_color_modes.extend([ColorMode.RGB, ColorMode.WHITE])
-        
-        if (
-            self._model == "AL-TP-RGBCW-60-2116, AL-TP-RGBCW-60-2232"
-        ):
-            self._usePowerFunctionInstance = "primary"
-            self._supported_color_modes.extend([ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE])
-            self._max_mireds = 454
-            self._min_mireds = 154
-            
-        # https://www.homedepot.com/p/EcoSmart-6-5-ft-Smart-RGWBIC-Dynamic-Color-Changing-Dimmable-Plug-In-LED-Strip-Light-Powered-by-Hubspace-AL-TP-RGBICTW-6/324731690
-        if (
-            self._model == "AL-TP-RGBICTW-6"
-        ):
-            self._usePowerFunctionInstance = "primary"
-            self._supported_color_modes.extend([ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE])
-            self._max_mireds = 454
-            self._min_mireds = 154
-        
-        # https://www.homedepot.com/p/Commercial-Electric-4-in-Smart-Hubspace-Color-Selectable-CCT-Integrated-LED-Recessed-Light-Trim-Works-with-Amazon-Alexa-and-Google-538551010/314199717
-        # https://www.homedepot.com/p/Commercial-Electric-6-in-Smart-Hubspace-Ultra-Slim-New-Construction-and-Remodel-RGB-W-LED-Recessed-Kit-Works-with-Amazon-Alexa-and-Google-50292/313556988
-        #  https://www.homedepot.com/p/EcoSmart-120-Watt-Equivalent-Smart-Hubspace-PAR38-Color-Changing-CEC-LED-Light-Bulb-with-Voice-Control-1-Bulb-11PR38120RGBWH1/318411934
-        # https://www.homedepot.com/p/EcoSmart-60-Watt-Equivalent-Smart-Hubspace-A19-Color-Changing-CEC-LED-Light-Bulb-with-Voice-Control-1-Bulb-11A19060WRGBWH1/318411935
-        if (
-            self._model == "50291, 50292"
-            or self._model == "11PR38120RGBWH1"
-            or self._model == "11A21100WRGBWH1"
-            or self._model == "11A19060WRGBWH1"
-            or self._model == "12A19060WRGBWH2"
-        ):
-            self._supported_color_modes.extend(
-                [ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE]
-            )
-            self._max_mireds = 454
-            self._min_mireds = 154
-
-        # fan
-        # https://www.homedepot.com/p/Home-Decorators-Collection-Driskol-60-in-White-Color-Changing-LED-Matte-Black-Smart-Ceiling-Fan-with-Light-Kit-and-Remote-Powered-by-Hubspace-56052/319830774
-        # https://www.homedepot.com/p/Home-Decorators-Collection-Vinwood-56-in-Indoor-White-Color-Changing-LED-Brushed-Nickel-Smart-Hubspace-Ceiling-Fan-with-Remote-Control-56002/320816365
-        if self._model == "52133, 37833" or self._model == "76278, 37278" or self._model == "DriskolFan" or self._model == "VinwoodFan" or self._model == "CF2003" or self._model == "NevaliFan":
-            self._usePowerFunctionInstance = "light-power"
-            self._supported_color_modes.extend([ColorMode.BRIGHTNESS])
-            self._temperature_suffix = "K"
-            self._temperature_choices = []
-            for function in functions:
-                if function.get("functionClass") == "color-temperature":
-                    for value in function.get("values"):
-                        temperatureName = value.get("name")
-                        if isinstance(
-                            temperatureName, str
-                        ) and temperatureName.endswith(self._temperature_suffix):
-                            try:
-                                temperatureValue = int(
-                                    temperatureName[: -len(self._temperature_suffix)]
-                                )
-                            except ValueError:
-                                _LOGGER.debug(
-                                    f"Can't convert temperatureName {temperatureName} to int"
-                                )
-                                temperatureValue = None
-                            if (
-                                temperatureValue is not None
-                                and temperatureValue not in self._temperature_choices
-                            ):
-                                self._temperature_choices.append(temperatureValue)
-            if len(self._temperature_choices):
-                self._supported_color_modes.extend(
-                    [ColorMode.COLOR_TEMP, ColorMode.WHITE]
-                )
-                self._max_mireds = 1000000 // min(self._temperature_choices) + 1
-                self._min_mireds = 1000000 // max(self._temperature_choices)
-            else:
-                self._temperature_choices = None
-
-        # https://www.homedepot.com/p/Commercial-Electric-5-in-6-in-Smart-Hubspace-Color-Selectable-CCT-Integrated-LED-Recessed-Light-Trim-Works-with-Amazon-Alexa-and-Google-538561010/314254248
-        if self._model == "538551010, 538561010, 538552010, 538562010" or self._model == "G19226" or self._model == "HB-10521-HS" or self._model == "17122-HS-WT" or self._model == "CD44bRGBW15W" or self._model == "CD44bRGBW11W":
-            self._supported_color_modes.extend(
-                [ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE]
-            )
-            self._max_mireds = 370
-            self._min_mireds = 154
-        # https://www.homedepot.com/p/Hampton-Bay-Lakeshore-13-in-Matte-Black-Smart-Hubspace-CCT-and-RGB-Selectable-LED-Flush-Mount-SMACADER-MAGB01/317216753
-        if (
-            self._model
-            == "SMACADER-MAGD01, SMACADER-MAGB01, SMACADER-MAGW01, CAD1aERMAGW26, CAD1aERMAGP26, CAD1aERMAGA26"
-        ):
-            self._supported_color_modes.extend(
-                [ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE]
-            )
-            self._max_mireds = 370
-            self._min_mireds = 154
-        # https://www.homedepot.com/p/Hampton-Bay-10-Watt-Equivalent-Low-Voltage-Black-LED-Outdoor-Landscape-Spotlight-with-Smart-App-Control-3-Pack-Powered-by-Hubspace-L08557/318145795
-        if (
-            self._model == "L08557"
-        ):
-            self._supported_color_modes.extend(
-                [ColorMode.RGB, ColorMode.COLOR_TEMP, ColorMode.WHITE]
-            )
-            self._max_mireds = 370
-            self._min_mireds = 154
-        if (
-            self._model == "ZandraFan"
-        ):
-            self._supported_color_modes.extend(
-                [ColorMode.COLOR_TEMP, ColorMode.BRIGHTNESS, ColorMode.WHITE]
-            )
-            self._usePowerFunctionInstance = "light-power"
-            self._max_mireds = 370
-            self._min_mireds = 154
-            
-        # If model not found, use On/Off Only as a failsafe
-        if not self._supported_color_modes:
-            self._supported_color_modes.extend([ColorMode.ONOFF])
-
-    async def async_setup_entry(hass, entry):
-        """Set up the media player platform for Sonos."""
-
-        platform = entity_platform.async_get_current_platform()
-
-        platform.async_register_entity_service(
-            "send_command",
-            {
-                vol.Required("functionClass"): cv.string,
-                vol.Required("value"): cv.string,
-                vol.Optional("functionInstance"): cv.string,
-            },
-            "send_command",
-        )
-
-    @property
-    def name(self) -> str:
-        """Return the display name of this light."""
-        return self._name
-
-    @property
-    def unique_id(self) -> str:
-        """Return the display name of this light."""
-        return self._childId
-
-    @property
-    def color_mode(self) -> ColorMode:
-        if self._colorMode == "color":
-            return ColorMode.RGB
-        return self._colorMode
-
-    @property
-    def supported_color_modes(self) -> set[ColorMode]:
-        """Flag supported color modes."""
-        return {*self._supported_color_modes}
-
-    @property
-    def brightness(self) -> int or None:
-        """Return the brightness of this light between 0..255."""
-        return self._brightness
-
-    @property
-    def color_temp(self) -> int | None:
-        """Return the CT color value in mireds."""
-        return _convert_color_temp(self._color_temp)
-
-    @property
-    def min_mireds(self) -> int or None:
-        """Return the coldest color_temp that this light supports."""
-        return self._min_mireds
-
-    @property
-    def max_mireds(self) -> int or None:
-        """Return the warmest color_temp that this light supports."""
-        return self._max_mireds
-
-    @property
-    def is_on(self) -> bool | None:
-        """Return true if light is on."""
-        if self._state is None:
-            return None
-        else:    
-            return self._state == "on"
-
-    def send_command(self, field_name, field_state, functionInstance=None) -> None:
-        self._hs.setState(self._childId, field_name, field_state, functionInstance)
-
-    def set_send_state(self, field_name, field_state) -> None:
-        self._hs.setState(self._childId, field_name, field_state)
-
-    def turn_on(self, **kwargs: Any) -> None:
-        state = self._hs.setPowerState(
-            self._childId, "on", self._usePowerFunctionInstance
-        )
-
-        if ATTR_BRIGHTNESS in kwargs and (
-            ColorMode.ONOFF not in self._supported_color_modes
-        ):
-            brightness = kwargs.get(ATTR_BRIGHTNESS, self._brightness)
-            self._hs.setState(
-                self._childId, "brightness", _brightness_to_hubspace(brightness)
-            )
-
-        if ATTR_RGB_COLOR in kwargs and any(
-            mode in COLOR_MODES_COLOR for mode in self._supported_color_modes
-        ):
-            self._hs.setRGB(self._childId, *kwargs[ATTR_RGB_COLOR])
-
-        if ATTR_WHITE in kwargs and (
-            any(mode in COLOR_MODES_COLOR for mode in self._supported_color_modes)
-            or ColorMode.COLOR_TEMP in self._supported_color_modes
-        ):
-            self._colorMode = ATTR_WHITE
-            self._hs.setState(self._childId, "color-mode", self._colorMode)
-            brightness = kwargs.get(ATTR_WHITE, self._brightness)
-            self._hs.setState(
-                self._childId, "brightness", _brightness_to_hubspace(brightness)
-            )
-
-        if ATTR_COLOR_TEMP in kwargs and (
-            any(mode in COLOR_MODES_COLOR for mode in self._supported_color_modes)
-            or ColorMode.COLOR_TEMP in self._supported_color_modes
-        ):
-            self._color_temp = _convert_color_temp(kwargs[ATTR_COLOR_TEMP])
-            if self._temperature_choices is not None:
-                self._color_temp = self._temperature_choices[
-                    min(
-                        range(len(self._temperature_choices)),
-                        key=lambda i: abs(
-                            self._temperature_choices[i] - self._color_temp
-                        ),
-                    )
+        :param functions: Functions that are supported from the API
+        """
+        for function in functions:
+            if function.get("functionInstance"):
+                self._instance_attrs[function["functionClass"]] = function[
+                    "functionInstance"
                 ]
-            if self._temperature_suffix is not None:
-                self._hs.setState(
-                    self._childId,
-                    "color-temperature",
-                    str(self._color_temp) + self._temperature_suffix,
+            if function["functionClass"] == "power":
+                self._color_modes.add(ColorMode.ONOFF)
+                _LOGGER.debug("Adding a new feature - on / off")
+            elif function["functionClass"] == "color-temperature":
+                if len(function["values"]) > 1:
+                    self._temperature_choices, self._temperature_prefix = (
+                        process_color_temps(function["values"])
+                    )
+                else:
+                    self._temperature_choices = process_range(function["values"][0])
+                    self._temperature_prefix = "K"
+                if self._temperature_choices:
+                    self._color_modes.add(ColorMode.COLOR_TEMP)
+                    _LOGGER.debug("Adding a new feature - color temperature")
+            elif function["functionClass"] == "brightness":
+                temp_bright = process_range(function["values"][0])
+                if temp_bright:
+                    self._supported_brightness = temp_bright
+                    self._color_modes.add(ColorMode.BRIGHTNESS)
+                    _LOGGER.debug("Adding a new feature - brightness")
+            elif function["functionClass"] == "color-rgb":
+                self._color_modes.add(ColorMode.RGB)
+                _LOGGER.debug("Adding a new feature - rgb")
+            elif function["functionClass"] == "color-mode":
+                for value in function["values"]:
+                    if value["name"] == "white":
+                        # @TODO - Is white the same thing as color temp?
+                        self._color_modes.add(ColorMode.COLOR_TEMP)
+            elif function["functionClass"] == "color-sequence":
+                self._instance_attrs.pop(function["functionClass"], None)
+                if function["functionInstance"] == "custom":
+                    self._instance_attrs["effects"] = function["functionInstance"]
+                    self._effect_list = sorted(list(process_names(function["values"])))
+                    self._supported_features |= LightEntityFeature.EFFECT
+                # @TODO - Is this what HA expects for transitions?
+                # elif function["functionInstance"] == "preset":
+                #     self._instance_attrs["transition"] = function["functionInstance"]
+                #     self._transition_list = sorted(list(process_names(function["values"])))
+                #     self._supported_features |= LightEntityFeature.TRANSITION
+            else:
+                _LOGGER.debug(
+                    "Unsupported feature found, %s", function["functionClass"]
                 )
-            else:
-                self._hs.setState(self._childId, "color-temperature", self._color_temp)
+                self._instance_attrs.pop(function["functionClass"], None)
 
-    @property
-    def rgb_color(self):
-        """Return the rgb value."""
-        return self._rgbColor
+    def update_states(self) -> None:
+        """Load initial states into the device
 
-    @property
-    def extra_state_attributes(self):
-        """Return the state attributes."""
-        attr = {}
-        attr["model"] = self._model
-        attr["deviceId"] = self._deviceId
-        attr["devbranch"] = False
-
-        attr["debugInfo"] = self._debugInfo
-
-        return attr
-
-    def turn_off(self, **kwargs: Any) -> None:
-        """Instruct the light to turn off."""
-        state = self._hs.setPowerState(
-            self._childId, "off", self._usePowerFunctionInstance
-        )
-
-    @property
-    def should_poll(self):
-        """Turn on polling"""
-        return True
-
-    def update(self) -> None:
-        """Fetch new state data for this light.
-
-        This is the only method that should fetch new data for Home Assistant.
+        When determining the current color mode, we should only read the latest update
+        as every value is reported.
         """
-        self._state = self._hs.getPowerState(self._childId)
-
-        if self._debug:
-            self._debugInfo = self._hs.getDebugInfo(self._childId)
-
-        # ColorMode.ONOFF is the only color mode that doesn't support brightness
-        if ColorMode.ONOFF not in self._supported_color_modes:
-            self._brightness = _brightness_to_hass(
-                self._hs.getState(self._childId, "brightness")
+        states: list[HubSpaceState] = self.coordinator.data[ENTITY_LIGHT][
+            self._child_id
+        ].states
+        if not states:
+            _LOGGER.debug(
+                "No states found for %s. Maybe hasn't polled yet?", self._child_id
             )
-
-        if any(mode in COLOR_MODES_COLOR for mode in self._supported_color_modes):
-            self._rgbColor = self._hs.getRGB(self._childId)
-
-        if (
-            any(mode in COLOR_MODES_COLOR for mode in self._supported_color_modes)
-            or ColorMode.COLOR_TEMP in self._supported_color_modes
-        ):
-            self._colorMode = self._hs.getState(self._childId, "color-mode")
-            self._color_temp = self._hs.getState(self._childId, "color-temperature")
-            if (
-                self._temperature_suffix is not None
-                and isinstance(self._color_temp, str)
-                and self._color_temp.endswith(self._temperature_suffix)
+        additional_attrs = []
+        latest_update: int = 0
+        # functionClass -> internal attribute
+        for state in states:
+            if state.functionClass == "power":
+                self._state = state.value
+            elif state.functionClass == "color-temperature":
+                if isinstance(state.value, str) and state.value.endswith("K"):
+                    state.value = state.value[0:-1]
+                self._color_temp = int(state.value)
+            elif state.functionClass == "brightness":
+                self._brightness = _brightness_to_hass(state.value)
+            elif state.functionClass == "color-mode":
+                if state.lastUpdateTime <= latest_update:
+                    continue
+                latest_update = state.lastUpdateTime
+                if state.value in ["rgb", "sequence"]:
+                    self._color_mode = ColorMode.RGB
+                else:
+                    self._color_mode = ColorMode.COLOR_TEMP
+            elif state.functionClass == "color-rgb":
+                self._rgb = RGB(
+                    red=state.value["color-rgb"].get("r", 0),
+                    green=state.value["color-rgb"].get("g", 0),
+                    blue=state.value["color-rgb"].get("b", 0),
+                )
+            elif state.functionClass == "color-mode":
+                if state.lastUpdateTime <= latest_update:
+                    continue
+                latest_update = state.lastUpdateTime
+                if state.value == "rgb":
+                    self._color_mode = ColorMode.RGB
+            elif (
+                state.functionClass == "color-sequence"
+                and state.functionInstance == "custom"
             ):
-                self._color_temp = self._color_temp[: -len(self._temperature_suffix)]
+                if state.lastUpdateTime <= latest_update:
+                    self._current_effect = None
+                    continue
+                latest_update = state.lastUpdateTime
+                self._current_effect = state.value
+            elif state.functionClass in additional_attrs:
+                self._bonus_attrs[state.functionClass] = state.value
 
+    @property
+    def should_poll(self):
+        return False
 
-class HubspaceOutlet(LightEntity):
-    """Representation of an Awesome Light."""
-
-    def __init__(
-        self,
-        hs,
-        friendlyname,
-        outletIndex,
-        debug,
-        childId=None,
-        model=None,
-        deviceId=None,
-        deviceClass=None,
-    ) -> None:
-        """Initialize an AwesomeLight."""
-
-        self._name = friendlyname + "_outlet_" + outletIndex
-
-        self._debug = debug
-        self._state = "off"
-        self._childId = childId
-        self._model = model
-        self._brightness = None
-        self._usePrimaryFunctionInstance = False
-        self._hs = hs
-        self._deviceId = deviceId
-        self._debugInfo = None
-        self._outletIndex = outletIndex
-
-        if None in (childId, model, deviceId, deviceClass):
-            [
-                self._childId,
-                self._model,
-                self._deviceId,
-                deviceClass,
-            ] = self._hs.getChildId(friendlyname)
-    
-    async def async_setup_entry(hass, entry):
-        """Set up the media player platform for Sonos."""
-
-        platform = entity_platform.async_get_current_platform()
-
-        platform.async_register_entity_service(
-            "send_command",
-            {
-                vol.Required("functionClass"): cv.string,
-                vol.Required("value"): cv.string,
-                vol.Optional("functionInstance"): cv.string,
-            },
-            "send_command",
-        )
-        
+    # Entity-specific properties
     @property
     def name(self) -> str:
         """Return the display name of this light."""
@@ -765,748 +289,210 @@ class HubspaceOutlet(LightEntity):
     @property
     def unique_id(self) -> str:
         """Return the display name of this light."""
-        return self._childId + "_" + self._outletIndex
-
-    @property
-    def color_mode(self) -> ColorMode:
-        """Return the color mode of the light."""
-        return ColorMode.ONOFF
-
-    @property
-    def supported_color_modes(self) -> set[ColorMode]:
-        """Flag supported color modes."""
-        return {self.color_mode}
-    
-    def send_command(self, field_name, field_state, functionInstance=None) -> None:
-        self._hs.setState(self._childId, field_name, field_state, functionInstance)
-
-    def set_send_state(self, field_name, field_state) -> None:
-        self._hs.setState(self._childId, field_name, field_state)
-        
-    @property
-    def is_on(self) -> bool | None:
-        """Return true if light is on."""
-        if self._state is None:
-            return None
-        else:    
-            return self._state == "on"
-
-    def turn_on(self, **kwargs: Any) -> None:
-        self._hs.setStateInstance(
-            self._childId, "toggle", "outlet-" + self._outletIndex, "on"
-        )
-        #self.update()
+        return self._child_id
 
     @property
     def extra_state_attributes(self):
         """Return the state attributes."""
-        attr = {}
-        attr["model"] = self._model
-        attr["deviceId"] = self._deviceId + "_" + self._outletIndex
-        attr["devbranch"] = False
+        return self._bonus_attrs
 
-        attr["debugInfo"] = self._debugInfo
-
-        return attr
-
-    def turn_off(self, **kwargs: Any) -> None:
-        """Instruct the light to turn off."""
-        self._hs.setStateInstance(
-            self._childId, "toggle", "outlet-" + self._outletIndex, "off"
-        )
-        #self.update()
-
-    @property
-    def should_poll(self):
-        """Turn on polling"""
-        return True
-
-    def update(self) -> None:
-        """Fetch new state data for this light.
-
-        This is the only method that should fetch new data for Home Assistant.
-        """
-        self._state = self._hs.getStateInstance(
-            self._childId, "toggle", "outlet-" + self._outletIndex
-        )
-        if self._debug:
-            self._debugInfo = self._hs.getDebugInfo(self._childId)
-
-
-class HubspaceFan(LightEntity):
-    """Representation of an Awesome Light."""
-
-    def __init__(
-        self,
-        hs,
-        friendlyname,
-        debug,
-        childId=None,
-        model=None,
-        deviceId=None,
-        deviceClass=None,
-    ) -> None:
-        """Initialize an AwesomeLight."""
-
-        if None in (childId, model, deviceId, deviceClass):
-            self._name = friendlyname + "_fan"
-        else:
-            self._name = friendlyname
-
-        self._debug = debug
-        self._state = "off"
-        self._childId = childId
-        self._model = model
-        self._brightness = None
-        self._usePrimaryFunctionInstance = False
-        self._hs = hs
-        self._deviceId = deviceId
-        self._debugInfo = None
-
-        if None in (childId, model, deviceId, deviceClass):
-            [
-                self._childId,
-                self._model,
-                self._deviceId,
-                deviceClass,
-            ] = self._hs.getChildId(friendlyname)
-
-    async def async_setup_entry(hass, entry):
-        """Set up the media player platform for Sonos."""
-
-        platform = entity_platform.async_get_current_platform()
-
-        platform.async_register_entity_service(
-            "send_command",
-            {
-                vol.Required("functionClass"): cv.string,
-                vol.Required("value"): cv.string,
-                vol.Optional("functionInstance"): cv.string,
-            },
-            "send_command",
-        )
-        
-    @property
-    def name(self) -> str:
-        """Return the display name of this light."""
-        return self._name
-
-    @property
-    def unique_id(self) -> str:
-        """Return the display name of this light."""
-        return self._childId + "_fan"
-
-    def send_command(self, field_name, field_state, functionInstance=None) -> None:
-        self._hs.setState(self._childId, field_name, field_state, functionInstance)
-
-    def set_send_state(self, field_name, field_state) -> None:
-        self._hs.setState(self._childId, field_name, field_state)
-        
     @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
         if self._state is None:
             return None
-        else:    
+        else:
             return self._state == "on"
 
-    def turn_on(self, **kwargs: Any) -> None:
-        self._hs.setStateInstance(self._childId, "power", "fan-power", "on")
-
-        # Homeassistant uses 0-255
-        brightness = kwargs.get(ATTR_BRIGHTNESS, self._brightness)
-        brightnessPercent = _brightness_to_hubspace(brightness)
-        
-        
-        if self._model == "DriskolFan":
-            if brightnessPercent < 40:
-                speed = "020"
-            elif brightnessPercent < 50:
-                speed = "040"
-            elif brightnessPercent < 70:
-                speed = "060"
-            elif brightnessPercent < 90:
-                speed = "080"
-            else:
-                speed = "100"
-            speedstring = "fan-speed-5-" + speed
-        elif self._model == "CF2003":
-            if brightnessPercent < 20:
-                speed = "016"
-            if brightnessPercent < 40:
-                speed = "033"    
-            elif brightnessPercent < 55:
-                speed = "050"
-            elif brightnessPercent < 75:
-                speed = "066"
-            elif brightnessPercent < 90:
-                speed = "083"
-            else:
-                speed = "100"
-            speedstring = "fan-speed-6-" + speed    
-        elif self._model == "NevaliFan":
-            if brightnessPercent < 40:
-                speed = "033"    
-            elif brightnessPercent < 75:
-                speed = "066"
-            else:
-                speed = "100"
-            speedstring = "fan-speed-3-" + speed
-        elif self._model == "TagerFan":    
-            if brightnessPercent < 25:
-                speed = "020"
-            elif brightnessPercent < 35:
-                speed = "030"
-            elif brightnessPercent < 45:
-                speed = "040" 
-            elif brightnessPercent < 55:
-                speed = "050"    
-            elif brightnessPercent < 65:
-                speed = "060"
-            elif brightnessPercent < 75:
-                speed = "070"
-            elif brightnessPercent < 85:
-                speed = "080"
-            elif brightnessPercent < 95:
-                speed = "090"
-            else:
-                speed = "100"
-            speedstring = "fan-speed-9-" + speed
-        else:
-            if brightnessPercent < 30:
-                speed = "025"
-            elif brightnessPercent < 60:
-                speed = "050"
-            elif brightnessPercent < 85:
-                speed = "075"
-            else:
-                speed = "100"
-            speedstring = "fan-speed-" + speed
-        
-        self._hs.setStateInstance(self._childId, "fan-speed", "fan-speed", speedstring)
-        #self.update()
-
     @property
-    def color_mode(self) -> ColorMode:
-        return ColorMode.BRIGHTNESS
+    def device_info(self) -> DeviceInfo:
+        """Return the device info."""
+        model = (
+            self._bonus_attrs["model"] if self._bonus_attrs["model"] != "TBD" else None
+        )
+        return DeviceInfo(
+            identifiers={(DOMAIN, self._bonus_attrs["deviceId"])},
+            name=self.name,
+            model=model,
+        )
 
     @property
     def supported_color_modes(self) -> set[ColorMode]:
         """Flag supported color modes."""
-        return {self.color_mode}
+        if not self._color_modes:
+            return {ColorMode.UNKNOWN}
+        else:
+            return {*self._color_modes}
 
     @property
-    def brightness(self) -> int or None:
-        """Return the brightness of this light between 0..255."""
+    def color_mode(self) -> Optional[ColorMode]:
+        return self._color_mode
+
+    @property
+    def brightness(self) -> int | None:
+        """Return the brightness of this light between 1..255."""
         return self._brightness
 
     @property
-    def extra_state_attributes(self):
-        """Return the state attributes."""
-        attr = {}
-        attr["model"] = self._model
-        if self._name.endswith("_fan"):
-            attr["deviceId"] = self._deviceId + "_fan"
-        else:
-            attr["deviceId"] = self._deviceId
-        attr["devbranch"] = False
+    def min_color_temp_kelvin(self) -> int:
+        return min(self._temperature_choices)
 
-        attr["debugInfo"] = self._debugInfo
+    @property
+    def max_color_temp_kelvin(self) -> int:
+        return max(self._temperature_choices)
 
-        return attr
+    @property
+    def color_temp_kelvin(self) -> int:
+        return self._color_temp
 
-    def turn_off(self, **kwargs: Any) -> None:
-        """Instruct the light to turn off."""
-        self._hs.setStateInstance(self._childId, "power", "fan-power", "off")
-        if self._model != "DriskolFan":
-            self._hs.setStateInstance(
-                self._childId, "fan-speed", "fan-speed", "fan-speed-000"
+    @property
+    def rgb_color(self) -> tuple[int, int, int]:
+        return (
+            self._rgb.red,
+            self._rgb.green,
+            self._rgb.blue,
+        )
+
+    @property
+    def supported_features(self) -> LightEntityFeature:
+        return self._supported_features
+
+    @property
+    def effect_list(self) -> list[str]:
+        return self._effect_list
+
+    @property
+    def effect(self) -> Optional[str]:
+        return self._current_effect
+
+    # Entity-specific functions
+    def _adjust_supported_modes(self):
+        """Adjust supported color modes to de-duplicate"""
+        mode_temp = {ColorMode.BRIGHTNESS, ColorMode.COLOR_TEMP}
+        mode_bright = {ColorMode.BRIGHTNESS, ColorMode.ONOFF}
+        if mode_temp & self._color_modes == mode_temp:
+            self._color_modes.remove(ColorMode.BRIGHTNESS)
+            self._color_mode = ColorMode.COLOR_TEMP
+        if mode_bright & self._color_modes == mode_bright:
+            self._color_modes.remove(ColorMode.ONOFF)
+            self._color_mode = ColorMode.BRIGHTNESS
+        if len(self._color_modes) > 1 and ColorMode.ONOFF in self._color_modes:
+            self._color_modes.remove(ColorMode.ONOFF)
+        if not self._color_mode and self._color_modes:
+            self._color_mode = list(self._color_modes)[0]
+
+    async def async_turn_on(self, **kwargs) -> None:
+        _LOGGER.info("Adjusting light %s with %s", self._child_id, kwargs)
+        self._state = "on"
+        states_to_set = [
+            HubSpaceState(
+                functionClass="power",
+                functionInstance=self._instance_attrs.get("power", None),
+                value="on",
             )
-        else:
-            self._hs.setStateInstance(
-                self._childId, "fan-speed", "fan-speed", "fan-speed-5-000"
+        ]
+        if ATTR_BRIGHTNESS in kwargs:
+            brightness = kwargs.get(ATTR_BRIGHTNESS, self._brightness)
+            states_to_set.append(
+                HubSpaceState(
+                    functionClass="brightness",
+                    functionInstance=self._instance_attrs.get("brightness", None),
+                    value=_brightness_to_hubspace(brightness),
+                )
             )
-        #self.update()
+            self._brightness = brightness
+        if ATTR_COLOR_TEMP_KELVIN in kwargs:
+            color_to_set = list(self._temperature_choices)[0]
+            # I am not sure how to set specific values, so find the value
+            # that is closest without going over
+            for temperature in self._temperature_choices:
+                if kwargs[ATTR_COLOR_TEMP_KELVIN] <= temperature:
+                    color_to_set = temperature
+                    break
+                states_to_set.append(
+                    HubSpaceState(
+                        functionClass="color-temperature",
+                        functionInstance=self._instance_attrs.get(
+                            "color-temperature", None
+                        ),
+                        value=f"{temperature}{self._temperature_prefix}",
+                    )
+                )
+            self._color_temp = color_to_set
+        if ATTR_RGB_COLOR in kwargs:
+            self._color_mode = ColorMode.RGB
+            self._rgb = RGB(
+                red=kwargs[ATTR_RGB_COLOR][0],
+                green=kwargs[ATTR_RGB_COLOR][1],
+                blue=kwargs[ATTR_RGB_COLOR][2],
+            )
+            states_to_set.append(
+                HubSpaceState(
+                    functionClass="color-rgb",
+                    functionInstance=self._instance_attrs.get("color-rgb", None),
+                    value=kwargs[ATTR_RGB_COLOR],
+                )
+            )
+        if ATTR_EFFECT in kwargs:
+            self._current_effect = kwargs[ATTR_EFFECT]
+            effect_states = [
+                HubSpaceState(
+                    functionClass="color-sequence",
+                    functionInstance="preset",
+                    value="custom",
+                ),
+                HubSpaceState(
+                    functionClass="color-sequence",
+                    functionInstance=self._instance_attrs.get("effects", None),
+                    value=self._current_effect,
+                ),
+            ]
+            states_to_set.extend(effect_states)
+            self._color_mode = ColorMode.RGB
+        await self._hs.set_device_states(self._child_id, states_to_set)
+        self.async_write_ha_state()
 
-    @property
-    def should_poll(self):
-        """Turn on polling"""
-        return True
-
-    def update(self) -> None:
-        """Fetch new state data for this light.
-
-        This is the only method that should fetch new data for Home Assistant.
-        """
-        self._state = self._hs.getStateInstance(self._childId, "power", "fan-power")
-        fanspeed = self._hs.getStateInstance(self._childId, "fan-speed", "fan-speed")
-        brightness = 0
-
-        if fanspeed == "fan-speed-000":
-            brightness = 0
-        elif fanspeed == "fan-speed-025":
-            brightness = 63
-        elif fanspeed == "fan-speed-050":
-            brightness = 127
-        elif fanspeed == "fan-speed-075":
-            brightness = 191
-        elif fanspeed == "fan-speed-100":
-            brightness = 255
-            
-        if fanspeed == "fan-speed-5-000":
-            brightness = 0
-        elif fanspeed == "fan-speed-5-020":
-            brightness = 51
-        elif fanspeed == "fan-speed-5-040":
-            brightness = 102
-        elif fanspeed == "fan-speed-5-060":
-            brightness = 153
-        elif fanspeed == "fan-speed-5-080":
-            brightness = 204    
-        elif fanspeed == "fan-speed-100":
-            brightness = 255
-            
-        if fanspeed == "fan-speed-6-000":
-            brightness = 0
-        elif fanspeed == "fan-speed-6-016":
-            brightness = 51
-        elif fanspeed == "fan-speed-6-033":
-            brightness = 102
-        elif fanspeed == "fan-speed-6-050":
-            brightness = 128    
-        elif fanspeed == "fan-speed-6-066":
-            brightness = 153
-        elif fanspeed == "fan-speed-6-083":
-            brightness = 204    
-        elif fanspeed == "fan-speed-6-100":
-            brightness = 255    
-
-        if fanspeed == "fan-speed-000":
-            brightness = 0
-        elif fanspeed == "fan-speed-3-033":
-            brightness = 102
-        elif fanspeed == "fan-speed-3-066":
-            brightness = 153
-        elif fanspeed == "fan-speed-3-100":
-            brightness = 255
-            
-        # For Tager Fan
-        if fanspeed == "fan-speed-000":
-            brightness = 0
-        elif fanspeed == "fan-speed-9-020":
-            brightness = 50
-        elif fanspeed == "fan-speed-9-030":
-            brightness = 75
-        elif fanspeed == "fan-speed-9-040":
-            brightness = 100
-        elif fanspeed == "fan-speed-9-050":
-            brightness = 125    
-        elif fanspeed == "fan-speed-9-060":
-            brightness = 150
-        elif fanspeed == "fan-speed-9-070":
-            brightness = 175    
-        elif fanspeed == "fan-speed-9-080":
-            brightness = 200
-        elif fanspeed == "fan-speed-9-090":
-            brightness = 225
-        elif fanspeed == "fan-speed-9-100":
-            brightness = 255
-            
-        self._brightness = brightness
-
-        if self._debug:
-            self._debugInfo = self._hs.getDebugInfo(self._childId)
-
-
-class HubspaceTransformer(LightEntity):
-    """Representation of an Awesome Light."""
-
-    def __init__(
-        self,
-        hs,
-        friendlyname,
-        outletIndex,
-        debug,
-        childId=None,
-        model=None,
-        deviceId=None,
-        deviceClass=None,
-    ) -> None:
-        """Initialize an AwesomeLight."""
-
-        self._name = friendlyname + "_transformer_" + outletIndex
-
-        self._debug = debug
+    async def async_turn_off(self, **kwargs) -> None:
+        _LOGGER.debug("Adjusting light %s with %s", self._child_id, kwargs)
         self._state = "off"
-        self._childId = childId
-        self._model = model
-        self._brightness = None
-        self._usePrimaryFunctionInstance = False
-        self._hs = hs
-        self._deviceId = deviceId
-        self._debugInfo = None
-        self._watts = None
-        self._volts = None
+        states_to_set = [
+            HubSpaceState(
+                functionClass="power",
+                functionInstance=self._instance_attrs.get("power", None),
+                value=self._state,
+            )
+        ]
+        await self._hs.set_device_states(self._child_id, states_to_set)
+        self.async_write_ha_state()
 
-        self._outletIndex = outletIndex
-        if None in (childId, model, deviceId, deviceClass):
-            [
-                self._childId,
-                self._model,
-                self._deviceId,
-                deviceClass,
-            ] = self._hs.getChildId(friendlyname)
 
-    async def async_setup_entry(hass, entry):
-        """Set up the media player platform for Sonos."""
-
-        platform = entity_platform.async_get_current_platform()
-
-        platform.async_register_entity_service(
-            "send_command",
-            {
-                vol.Required("functionClass"): cv.string,
-                vol.Required("value"): cv.string,
-                vol.Optional("functionInstance"): cv.string,
-            },
-            "send_command",
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: HubSpaceConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Add Fan entities from a config_entry."""
+    coordinator_hubspace: HubSpaceDataUpdateCoordinator = (
+        entry.runtime_data.coordinator_hubspace
+    )
+    entities: list[HubspaceLight] = []
+    device_registry = dr.async_get(hass)
+    for entity in coordinator_hubspace.data[ENTITY_LIGHT].values():
+        _LOGGER.debug("Adding a %s, %s", entity.device_class, entity.friendly_name)
+        device_registry.async_get_or_create(
+            config_entry_id=entry.entry_id,
+            identifiers={(DOMAIN, entity.device_id)},
+            name=entity.friendly_name,
+            model=entity.model,
+            manufacturer=entity.manufacturerName,
         )
-        
-    def send_command(self, field_name, field_state, functionInstance=None) -> None:
-        self._hs.setState(self._childId, field_name, field_state, functionInstance)
-
-    def set_send_state(self, field_name, field_state) -> None:
-        self._hs.setState(self._childId, field_name, field_state)
-        
-    @property
-    def name(self) -> str:
-        """Return the display name of this light."""
-        return self._name
-
-    @property
-    def unique_id(self) -> str:
-        """Return the display name of this light."""
-        return self._childId + "_" + self._outletIndex
-
-    @property
-    def color_mode(self) -> ColorMode:
-        """Return the color mode of the light."""
-        return ColorMode.ONOFF
-
-    @property
-    def supported_color_modes(self) -> set[ColorMode]:
-        """Flag supported color modes."""
-        return {self.color_mode}
-
-    @property
-    def is_on(self) -> bool | None:
-        """Return true if light is on."""
-        if self._state is None:
-            return None
-        else:    
-            return self._state == "on"
-
-    def turn_on(self, **kwargs: Any) -> None:
-        self._hs.setStateInstance(
-            self._childId, "toggle", "zone-" + self._outletIndex, "on"
+        ha_entity = HubspaceLight(
+            coordinator_hubspace,
+            entity.friendly_name,
+            child_id=entity.id,
+            model=entity.model,
+            device_id=entity.device_id,
+            functions=entity.functions,
         )
-        #self.update()
-
-    @property
-    def extra_state_attributes(self):
-        """Return the state attributes."""
-        attr = {}
-        attr["model"] = self._model
-        attr["deviceId"] = self._deviceId + "_" + self._outletIndex
-        attr["devbranch"] = False
-        attr["watts"] = self._watts
-        attr["volts"] = self._volts
-
-        attr["debugInfo"] = self._debugInfo
-
-        return attr
-
-    def turn_off(self, **kwargs: Any) -> None:
-        """Instruct the light to turn off."""
-        self._hs.setStateInstance(
-            self._childId, "toggle", "zone-" + self._outletIndex, "off"
-        )
-        #self.update()
-
-    @property
-    def should_poll(self):
-        """Turn on polling"""
-        return True
-
-    def update(self) -> None:
-        """Fetch new state data for this light.
-
-        This is the only method that should fetch new data for Home Assistant.
-        """
-        self._state = self._hs.getStateInstance(
-            self._childId, "toggle", "zone-" + self._outletIndex
-        )
-
-        if self._outletIndex == "1":
-            self._watts = self._hs.getState(self._childId, "watts")
-            self._volts = self._hs.getState(self._childId, "output-voltage-switch")
-
-        if self._debug:
-            self._debugInfo = self._hs.getDebugInfo(self._childId)
-
-
-class HubspaceLock(LightEntity):
-    """Representation of an Awesome Light."""
-
-    def __init__(
-        self,
-        hs,
-        friendlyname,
-        debug,
-        childId=None,
-        model=None,
-        deviceId=None,
-        deviceClass=None,
-    ) -> None:
-        """Initialize an AwesomeLight."""
-
-        self._name = friendlyname
-
-        self._debug = debug
-        self._state = "unlocked"
-        self._childId = childId
-        self._model = model
-        self._brightness = None
-        self._usePrimaryFunctionInstance = False
-        self._hs = hs
-        self._deviceId = deviceId
-        self._debugInfo = None
-        self._batterylevel = None
-        self._lastevent = None
-
-        if None in (childId, model, deviceId, deviceClass):
-            [
-                self._childId,
-                self._model,
-                self._deviceId,
-                deviceClass,
-            ] = self._hs.getChildId(friendlyname)
-    
-    async def async_setup_entry(hass, entry):
-        """Set up the media player platform for Sonos."""
-
-        platform = entity_platform.async_get_current_platform()
-
-        platform.async_register_entity_service(
-            "send_command",
-            {
-                vol.Required("functionClass"): cv.string,
-                vol.Required("value"): cv.string,
-                vol.Optional("functionInstance"): cv.string,
-            },
-            "send_command",
-        )
-    
-    def send_command(self, field_name, field_state, functionInstance=None) -> None:
-        self._hs.setState(self._childId, field_name, field_state, functionInstance)
-
-    def set_send_state(self, field_name, field_state) -> None:
-        self._hs.setState(self._childId, field_name, field_state)
-    
-    @property
-    def name(self) -> str:
-        """Return the display name of this light."""
-        return self._name
-
-    @property
-    def unique_id(self) -> str:
-        """Return the display name of this light."""
-        return self._childId
-
-    @property
-    def color_mode(self) -> ColorMode:
-        """Return the color mode of the light."""
-        return ColorMode.ONOFF
-
-    @property
-    def supported_color_modes(self) -> set[ColorMode]:
-        """Flag supported color modes."""
-        return {self.color_mode}
-
-    @property
-    def is_on(self) -> bool | None:
-        """Return true if light is on."""
-        if self._state is None:
-            return None
-        else:    
-            return self._state == "locked"
-
-    def turn_on(self, **kwargs: Any) -> None:
-        self._hs.setState(self._childId, "lock-control", "locking")
-        self._state = "locked"
-        #self.update()
-
-    @property
-    def extra_state_attributes(self):
-        """Return the state attributes."""
-        attr = {}
-        attr["model"] = self._model
-        attr["deviceId"] = self._deviceId
-        attr["devbranch"] = False
-        attr["battery-level"] = self._batterylevel
-        attr["last-event"] = self._lastevent
-
-        attr["debugInfo"] = self._debugInfo
-
-        return attr
-
-    def turn_off(self, **kwargs: Any) -> None:
-        """Instruct the light to turn off."""
-        self._hs.setState(self._childId, "lock-control", "unlocking")
-        self._state = "unlocked"
-        #self.update()
-
-    @property
-    def should_poll(self):
-        """Turn on polling"""
-        return True
-
-    def update(self) -> None:
-        """Fetch new state data for this light.
-
-        This is the only method that should fetch new data for Home Assistant.
-        """
-        self._state = self._hs.getState(self._childId, "lock-control")
-
-        self._batterylevel = self._hs.getState(self._childId, "battery-level")
-        self._lastevent = self._hs.getState(self._childId, "last-event")
-
-        if self._debug:
-            self._debugInfo = self._hs.getDebugInfo(self._childId)
-
-class HubspaceWaterTimer(LightEntity):
-    """Representation of an Awesome Light."""
-
-    def __init__(
-        self,
-        hs,
-        friendlyname,
-        outletIndex,
-        debug,
-        childId=None,
-        model=None,
-        deviceId=None,
-        deviceClass=None,
-    ) -> None:
-        """Initialize an AwesomeLight."""
-
-        self._name = friendlyname + "_spigot_" + outletIndex
-
-        self._debug = debug
-        self._state = "off"
-        self._childId = childId
-        self._model = model
-        self._brightness = None
-        self._usePrimaryFunctionInstance = False
-        self._hs = hs
-        self._deviceId = deviceId
-        self._debugInfo = None
-        self._outletIndex = outletIndex
-
-        if None in (childId, model, deviceId, deviceClass):
-            [
-                self._childId,
-                self._model,
-                self._deviceId,
-                deviceClass,
-            ] = self._hs.getChildId(friendlyname)
-
-    async def async_setup_entry(hass, entry):
-        """Set up the media player platform for Sonos."""
-
-        platform = entity_platform.async_get_current_platform()
-
-        platform.async_register_entity_service(
-            "send_command",
-            {
-                vol.Required("functionClass"): cv.string,
-                vol.Required("value"): cv.string,
-                vol.Optional("functionInstance"): cv.string,
-            },
-            "send_command",
-        )
-        
-    @property
-    def name(self) -> str:
-        """Return the display name of this light."""
-        return self._name
-
-    @property
-    def unique_id(self) -> str:
-        """Return the display name of this light."""
-        return self._childId + "_" + self._outletIndex
-
-    @property
-    def color_mode(self) -> ColorMode:
-        """Return the color mode of the light."""
-        return ColorMode.ONOFF
-
-    @property
-    def supported_color_modes(self) -> set[ColorMode]:
-        """Flag supported color modes."""
-        return {self.color_mode}
-
-    def send_command(self, field_name, field_state, functionInstance=None) -> None:
-        self._hs.setState(self._childId, field_name, field_state, functionInstance)
-
-    def set_send_state(self, field_name, field_state) -> None:
-        self._hs.setState(self._childId, field_name, field_state)
-        
-    @property
-    def is_on(self) -> bool | None:
-        """Return true if light is on."""
-        if self._state is None:
-            return None
-        else:    
-            return self._state == "on"
-
-    def turn_on(self, **kwargs: Any) -> None:
-        self._hs.setStateInstance(
-            self._childId, "toggle", "spigot-" + self._outletIndex, "on"
-        )
-        #self.update()
-
-    @property
-    def extra_state_attributes(self):
-        """Return the state attributes."""
-        attr = {}
-        attr["model"] = self._model
-        attr["deviceId"] = self._deviceId + "_" + self._outletIndex
-        attr["devbranch"] = False
-
-        attr["debugInfo"] = self._debugInfo
-
-        return attr
-
-    def turn_off(self, **kwargs: Any) -> None:
-        """Instruct the light to turn off."""
-        self._hs.setStateInstance(
-            self._childId, "toggle", "spigot-" + self._outletIndex, "off"
-        )
-        #self.update()
-
-    @property
-    def should_poll(self):
-        """Turn on polling"""
-        return True
-
-    def update(self) -> None:
-        """Fetch new state data for this light.
-
-        This is the only method that should fetch new data for Home Assistant.
-        """
-        self._state = self._hs.getStateInstance(
-            self._childId, "toggle", "spigot-" + self._outletIndex
-        )
-        if self._debug:
-            self._debugInfo = self._hs.getDebugInfo(self._childId)
+        entities.append(ha_entity)
+    async_add_entities(entities)

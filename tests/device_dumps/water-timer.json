@@ -1,0 +1,966 @@
+[
+    {
+        "id": "60eb18c9-8510-4bcd-be3f-493dfb351268",
+        "device_id": "86114564-7acd-4542-9be9-8fd798a22b06",
+        "model": "TBD",
+        "device_class": "water-timer",
+        "default_name": "Watering Timer",
+        "default_image": "2-spigot-watering-timer-icon",
+        "friendly_name": "friendly-device-0",
+        "functions": [
+            {
+                "id": "ca37e791-802c-4e94-bae3-802701f6f371",
+                "createdTimestampMs": 1709067413381,
+                "updatedTimestampMs": 1709067413381,
+                "functionClass": "max-on-time",
+                "functionInstance": "spigot-2",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "39875415-cc7d-4a2d-b651-2766472b35ac",
+                        "createdTimestampMs": 1709067413393,
+                        "updatedTimestampMs": 1709067413393,
+                        "name": "max-on-time-2",
+                        "deviceValues": [
+                            {
+                                "id": "a778b41f-4fa9-49a9-a9d9-576297d06376",
+                                "createdTimestampMs": 1709067413404,
+                                "updatedTimestampMs": 1709067413404,
+                                "type": "attribute",
+                                "key": "102"
+                            }
+                        ],
+                        "range": {
+                            "min": 1,
+                            "max": 360,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "6c420899-5347-48bc-b24e-35e74c058b66",
+                "createdTimestampMs": 1709067413478,
+                "updatedTimestampMs": 1709067413478,
+                "functionClass": "schedule-pause",
+                "functionInstance": "rain-delay",
+                "type": "object",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "39ab7289-b5a6-45c0-bba7-dc0b24d9e97c",
+                        "createdTimestampMs": 1709067413489,
+                        "updatedTimestampMs": 1709067413489,
+                        "name": "schedule-pause-time",
+                        "deviceValues": [
+                            {
+                                "id": "ad33229a-bc0a-42ef-a6c2-0d22c4817861",
+                                "createdTimestampMs": 1709067413501,
+                                "updatedTimestampMs": 1709067413501,
+                                "type": "attribute",
+                                "key": "49999",
+                                "format": "schedule-pause-time-array"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "b8b8887b-7179-4b91-8b4d-9982155117a0",
+                "createdTimestampMs": 1709067413289,
+                "updatedTimestampMs": 1709067413289,
+                "functionClass": "timer",
+                "functionInstance": "spigot-1",
+                "type": "numeric",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "b31ebf23-358b-4e44-b9b8-703af209c1fb",
+                        "createdTimestampMs": 1709067413300,
+                        "updatedTimestampMs": 1709067413300,
+                        "name": "timer-1",
+                        "deviceValues": [
+                            {
+                                "id": "9be20657-5916-43d6-8d57-8da72e3bcb9e",
+                                "createdTimestampMs": 1709067413311,
+                                "updatedTimestampMs": 1709067413311,
+                                "type": "attribute",
+                                "key": "51"
+                            }
+                        ],
+                        "range": {
+                            "min": 0,
+                            "max": 360,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "ca4f7db7-1e13-42c8-8cfc-8befeaebae1a",
+                "createdTimestampMs": 1709067413509,
+                "updatedTimestampMs": 1709067413509,
+                "functionClass": "battery-level",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "bca52767-b822-4a61-9600-395f3400d715",
+                        "createdTimestampMs": 1709067413520,
+                        "updatedTimestampMs": 1709067413520,
+                        "name": "battery-level",
+                        "deviceValues": [
+                            {
+                                "id": "45d7e406-28f7-4c0b-a56a-6fb8c5945ad7",
+                                "createdTimestampMs": 1709067413532,
+                                "updatedTimestampMs": 1709067413532,
+                                "type": "attribute",
+                                "key": "65079"
+                            }
+                        ],
+                        "range": {
+                            "min": 0,
+                            "max": 100,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "e057be2a-26a5-4707-bdbd-272b4006c328",
+                "createdTimestampMs": 1709067413413,
+                "updatedTimestampMs": 1709067413413,
+                "functionClass": "schedule-pause",
+                "functionInstance": "active",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "12f28bb1-3aa1-4899-a4a1-9e85a8a9d5c3",
+                        "createdTimestampMs": 1709067413424,
+                        "updatedTimestampMs": 1709067413424,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "d41ec02f-5196-49e0-982f-f9373fea7511",
+                                "createdTimestampMs": 1709067413444,
+                                "updatedTimestampMs": 1709067413444,
+                                "type": "attribute",
+                                "key": "49998",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "ca2f9460-4b7f-41fe-b7c3-b5261bdb18c5",
+                        "createdTimestampMs": 1709067413458,
+                        "updatedTimestampMs": 1709067413458,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "78f446dc-0cdc-41d2-9626-f82677f8892e",
+                                "createdTimestampMs": 1709067413470,
+                                "updatedTimestampMs": 1709067413470,
+                                "type": "attribute",
+                                "key": "49998",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "8b9e146a-b92f-4acd-975f-5243688c410b",
+                "createdTimestampMs": 1709067413349,
+                "updatedTimestampMs": 1709067413349,
+                "functionClass": "max-on-time",
+                "functionInstance": "spigot-1",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "2e1581a7-1ea1-4775-aa31-d2b0ff3bade2",
+                        "createdTimestampMs": 1709067413362,
+                        "updatedTimestampMs": 1709067413362,
+                        "name": "max-on-time-1",
+                        "deviceValues": [
+                            {
+                                "id": "bc7ce8c5-a35b-43cb-9190-a52ea638f021",
+                                "createdTimestampMs": 1709067413373,
+                                "updatedTimestampMs": 1709067413373,
+                                "type": "attribute",
+                                "key": "101"
+                            }
+                        ],
+                        "range": {
+                            "min": 1,
+                            "max": 360,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "4af30330-468e-4e28-9a68-a71905afec18",
+                "createdTimestampMs": 1709067413191,
+                "updatedTimestampMs": 1709067413191,
+                "functionClass": "toggle",
+                "functionInstance": "spigot-1",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "6f3a2b11-7f15-4422-9c4b-2ee80c70c895",
+                        "createdTimestampMs": 1709067413202,
+                        "updatedTimestampMs": 1709067413202,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "49d7dad9-fe5e-4a3b-aa55-24252363f6b2",
+                                "createdTimestampMs": 1709067413212,
+                                "updatedTimestampMs": 1709067413212,
+                                "type": "attribute",
+                                "key": "2",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "3e3c6c8e-269b-4046-920a-703c84d09170",
+                        "createdTimestampMs": 1709067413220,
+                        "updatedTimestampMs": 1709067413220,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "cbd146a1-1bf2-4998-b553-a322854cf372",
+                                "createdTimestampMs": 1709067413230,
+                                "updatedTimestampMs": 1709067413230,
+                                "type": "attribute",
+                                "key": "2",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "70c3fe20-3183-48fd-8b0d-05143c5e84ef",
+                "createdTimestampMs": 1709067413123,
+                "updatedTimestampMs": 1709067413123,
+                "functionClass": "power",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "58b47afa-4852-40bc-a1d3-8f78b3ede366",
+                        "createdTimestampMs": 1709067413172,
+                        "updatedTimestampMs": 1709067413172,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "419c1d51-c1f4-4b3a-9f5e-02dc7a041d0a",
+                                "createdTimestampMs": 1709067413183,
+                                "updatedTimestampMs": 1709067413183,
+                                "type": "attribute",
+                                "key": "1",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "45a0a9a7-ea70-42a1-aef6-c4b0a05826c4",
+                        "createdTimestampMs": 1709067413141,
+                        "updatedTimestampMs": 1709067413141,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "fc9f525c-22b0-459e-b37f-d2f83d41deff",
+                                "createdTimestampMs": 1709067413159,
+                                "updatedTimestampMs": 1709067413159,
+                                "type": "attribute",
+                                "key": "1",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "35f5af84-35fd-41fb-af0d-a7a36e6ff22a",
+                "createdTimestampMs": 1709067413238,
+                "updatedTimestampMs": 1709067413238,
+                "functionClass": "toggle",
+                "functionInstance": "spigot-2",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "9af76add-dd26-43b7-a9b7-c420c43caa23",
+                        "createdTimestampMs": 1709067413250,
+                        "updatedTimestampMs": 1709067413250,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "e76e0ae2-4fdf-4e28-8610-91ab1fbfa827",
+                                "createdTimestampMs": 1709067413261,
+                                "updatedTimestampMs": 1709067413261,
+                                "type": "attribute",
+                                "key": "3",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "3ebb87c9-6c03-47b0-b7d6-59b7bf2ca16f",
+                        "createdTimestampMs": 1709067413269,
+                        "updatedTimestampMs": 1709067413269,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "06b7914e-2b8d-4675-aa5a-b4d7318f14d7",
+                                "createdTimestampMs": 1709067413281,
+                                "updatedTimestampMs": 1709067413281,
+                                "type": "attribute",
+                                "key": "3",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "b332ebf1-643b-40b7-8915-d7d7f9403665",
+                "createdTimestampMs": 1709067413319,
+                "updatedTimestampMs": 1709067413319,
+                "functionClass": "timer",
+                "functionInstance": "spigot-2",
+                "type": "numeric",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "2d5de196-e611-4b1e-8e0e-6aa2b525ca2d",
+                        "createdTimestampMs": 1709067413330,
+                        "updatedTimestampMs": 1709067413330,
+                        "name": "timer-2",
+                        "deviceValues": [
+                            {
+                                "id": "8d4d0542-36de-4511-b9ca-bd1d7aaf10bf",
+                                "createdTimestampMs": 1709067413342,
+                                "updatedTimestampMs": 1709067413342,
+                                "type": "attribute",
+                                "key": "52"
+                            }
+                        ],
+                        "range": {
+                            "min": 0,
+                            "max": 360,
+                            "step": 1
+                        }
+                    }
+                ]
+            }
+        ],
+        "states": [
+            {
+                "functionClass": "max-on-time",
+                "value": 1,
+                "lastUpdateTime": 0,
+                "functionInstance": "spigot-2"
+            },
+            {
+                "functionClass": "schedule-pause",
+                "value": {
+                    "schedule-pause-time-array": {
+                        "schedulePauseTimeArray": []
+                    }
+                },
+                "lastUpdateTime": 0,
+                "functionInstance": "rain-delay"
+            },
+            {
+                "functionClass": "timer",
+                "value": 0,
+                "lastUpdateTime": 0,
+                "functionInstance": "spigot-1"
+            },
+            {
+                "functionClass": "battery-level",
+                "value": 100,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "schedule-pause",
+                "value": "off",
+                "lastUpdateTime": 0,
+                "functionInstance": "active"
+            },
+            {
+                "functionClass": "max-on-time",
+                "value": 15,
+                "lastUpdateTime": 0,
+                "functionInstance": "spigot-1"
+            },
+            {
+                "functionClass": "toggle",
+                "value": "off",
+                "lastUpdateTime": 0,
+                "functionInstance": "spigot-1"
+            },
+            {
+                "functionClass": "power",
+                "value": "off",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "toggle",
+                "value": "on",
+                "lastUpdateTime": 0,
+                "functionInstance": "spigot-2"
+            },
+            {
+                "functionClass": "timer",
+                "value": 0,
+                "lastUpdateTime": 0,
+                "functionInstance": "spigot-2"
+            },
+            {
+                "functionClass": "wifi-mac-address",
+                "value": "d974c636-03db-444a-a547-312e3b63d8bd",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "geo-coordinates",
+                "value": null,
+                "lastUpdateTime": 0,
+                "functionInstance": "system-device-location"
+            },
+            {
+                "functionClass": "scheduler-flags",
+                "value": 1,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "available",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "visible",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "direct",
+                "value": false,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "ble-mac-address",
+                "value": "81ac21a1-10c1-4b28-9549-60affd42e9a2",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            }
+        ],
+        "children": [],
+        "manufacturerName": "Husky"
+    },
+    {
+        "id": "c2943f90-d2e6-48c7-a636-a86bd317ec36",
+        "device_id": "86114564-7acd-4542-9be9-8fd798a22b06",
+        "model": "TBD",
+        "device_class": "water-timer",
+        "default_name": "Watering Timer",
+        "default_image": "2-spigot-watering-timer-icon",
+        "friendly_name": "friendly-device-1",
+        "functions": [
+            {
+                "id": "ca37e791-802c-4e94-bae3-802701f6f371",
+                "createdTimestampMs": 1709067413381,
+                "updatedTimestampMs": 1709067413381,
+                "functionClass": "max-on-time",
+                "functionInstance": "spigot-2",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "39875415-cc7d-4a2d-b651-2766472b35ac",
+                        "createdTimestampMs": 1709067413393,
+                        "updatedTimestampMs": 1709067413393,
+                        "name": "max-on-time-2",
+                        "deviceValues": [
+                            {
+                                "id": "a778b41f-4fa9-49a9-a9d9-576297d06376",
+                                "createdTimestampMs": 1709067413404,
+                                "updatedTimestampMs": 1709067413404,
+                                "type": "attribute",
+                                "key": "102"
+                            }
+                        ],
+                        "range": {
+                            "min": 1,
+                            "max": 360,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "6c420899-5347-48bc-b24e-35e74c058b66",
+                "createdTimestampMs": 1709067413478,
+                "updatedTimestampMs": 1709067413478,
+                "functionClass": "schedule-pause",
+                "functionInstance": "rain-delay",
+                "type": "object",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "39ab7289-b5a6-45c0-bba7-dc0b24d9e97c",
+                        "createdTimestampMs": 1709067413489,
+                        "updatedTimestampMs": 1709067413489,
+                        "name": "schedule-pause-time",
+                        "deviceValues": [
+                            {
+                                "id": "ad33229a-bc0a-42ef-a6c2-0d22c4817861",
+                                "createdTimestampMs": 1709067413501,
+                                "updatedTimestampMs": 1709067413501,
+                                "type": "attribute",
+                                "key": "49999",
+                                "format": "schedule-pause-time-array"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "b8b8887b-7179-4b91-8b4d-9982155117a0",
+                "createdTimestampMs": 1709067413289,
+                "updatedTimestampMs": 1709067413289,
+                "functionClass": "timer",
+                "functionInstance": "spigot-1",
+                "type": "numeric",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "b31ebf23-358b-4e44-b9b8-703af209c1fb",
+                        "createdTimestampMs": 1709067413300,
+                        "updatedTimestampMs": 1709067413300,
+                        "name": "timer-1",
+                        "deviceValues": [
+                            {
+                                "id": "9be20657-5916-43d6-8d57-8da72e3bcb9e",
+                                "createdTimestampMs": 1709067413311,
+                                "updatedTimestampMs": 1709067413311,
+                                "type": "attribute",
+                                "key": "51"
+                            }
+                        ],
+                        "range": {
+                            "min": 0,
+                            "max": 360,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "ca4f7db7-1e13-42c8-8cfc-8befeaebae1a",
+                "createdTimestampMs": 1709067413509,
+                "updatedTimestampMs": 1709067413509,
+                "functionClass": "battery-level",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "bca52767-b822-4a61-9600-395f3400d715",
+                        "createdTimestampMs": 1709067413520,
+                        "updatedTimestampMs": 1709067413520,
+                        "name": "battery-level",
+                        "deviceValues": [
+                            {
+                                "id": "45d7e406-28f7-4c0b-a56a-6fb8c5945ad7",
+                                "createdTimestampMs": 1709067413532,
+                                "updatedTimestampMs": 1709067413532,
+                                "type": "attribute",
+                                "key": "65079"
+                            }
+                        ],
+                        "range": {
+                            "min": 0,
+                            "max": 100,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "e057be2a-26a5-4707-bdbd-272b4006c328",
+                "createdTimestampMs": 1709067413413,
+                "updatedTimestampMs": 1709067413413,
+                "functionClass": "schedule-pause",
+                "functionInstance": "active",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "12f28bb1-3aa1-4899-a4a1-9e85a8a9d5c3",
+                        "createdTimestampMs": 1709067413424,
+                        "updatedTimestampMs": 1709067413424,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "d41ec02f-5196-49e0-982f-f9373fea7511",
+                                "createdTimestampMs": 1709067413444,
+                                "updatedTimestampMs": 1709067413444,
+                                "type": "attribute",
+                                "key": "49998",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "ca2f9460-4b7f-41fe-b7c3-b5261bdb18c5",
+                        "createdTimestampMs": 1709067413458,
+                        "updatedTimestampMs": 1709067413458,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "78f446dc-0cdc-41d2-9626-f82677f8892e",
+                                "createdTimestampMs": 1709067413470,
+                                "updatedTimestampMs": 1709067413470,
+                                "type": "attribute",
+                                "key": "49998",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "8b9e146a-b92f-4acd-975f-5243688c410b",
+                "createdTimestampMs": 1709067413349,
+                "updatedTimestampMs": 1709067413349,
+                "functionClass": "max-on-time",
+                "functionInstance": "spigot-1",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "2e1581a7-1ea1-4775-aa31-d2b0ff3bade2",
+                        "createdTimestampMs": 1709067413362,
+                        "updatedTimestampMs": 1709067413362,
+                        "name": "max-on-time-1",
+                        "deviceValues": [
+                            {
+                                "id": "bc7ce8c5-a35b-43cb-9190-a52ea638f021",
+                                "createdTimestampMs": 1709067413373,
+                                "updatedTimestampMs": 1709067413373,
+                                "type": "attribute",
+                                "key": "101"
+                            }
+                        ],
+                        "range": {
+                            "min": 1,
+                            "max": 360,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "4af30330-468e-4e28-9a68-a71905afec18",
+                "createdTimestampMs": 1709067413191,
+                "updatedTimestampMs": 1709067413191,
+                "functionClass": "toggle",
+                "functionInstance": "spigot-1",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "6f3a2b11-7f15-4422-9c4b-2ee80c70c895",
+                        "createdTimestampMs": 1709067413202,
+                        "updatedTimestampMs": 1709067413202,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "49d7dad9-fe5e-4a3b-aa55-24252363f6b2",
+                                "createdTimestampMs": 1709067413212,
+                                "updatedTimestampMs": 1709067413212,
+                                "type": "attribute",
+                                "key": "2",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "3e3c6c8e-269b-4046-920a-703c84d09170",
+                        "createdTimestampMs": 1709067413220,
+                        "updatedTimestampMs": 1709067413220,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "cbd146a1-1bf2-4998-b553-a322854cf372",
+                                "createdTimestampMs": 1709067413230,
+                                "updatedTimestampMs": 1709067413230,
+                                "type": "attribute",
+                                "key": "2",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "70c3fe20-3183-48fd-8b0d-05143c5e84ef",
+                "createdTimestampMs": 1709067413123,
+                "updatedTimestampMs": 1709067413123,
+                "functionClass": "power",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "58b47afa-4852-40bc-a1d3-8f78b3ede366",
+                        "createdTimestampMs": 1709067413172,
+                        "updatedTimestampMs": 1709067413172,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "419c1d51-c1f4-4b3a-9f5e-02dc7a041d0a",
+                                "createdTimestampMs": 1709067413183,
+                                "updatedTimestampMs": 1709067413183,
+                                "type": "attribute",
+                                "key": "1",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "45a0a9a7-ea70-42a1-aef6-c4b0a05826c4",
+                        "createdTimestampMs": 1709067413141,
+                        "updatedTimestampMs": 1709067413141,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "fc9f525c-22b0-459e-b37f-d2f83d41deff",
+                                "createdTimestampMs": 1709067413159,
+                                "updatedTimestampMs": 1709067413159,
+                                "type": "attribute",
+                                "key": "1",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "35f5af84-35fd-41fb-af0d-a7a36e6ff22a",
+                "createdTimestampMs": 1709067413238,
+                "updatedTimestampMs": 1709067413238,
+                "functionClass": "toggle",
+                "functionInstance": "spigot-2",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "9af76add-dd26-43b7-a9b7-c420c43caa23",
+                        "createdTimestampMs": 1709067413250,
+                        "updatedTimestampMs": 1709067413250,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "e76e0ae2-4fdf-4e28-8610-91ab1fbfa827",
+                                "createdTimestampMs": 1709067413261,
+                                "updatedTimestampMs": 1709067413261,
+                                "type": "attribute",
+                                "key": "3",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "3ebb87c9-6c03-47b0-b7d6-59b7bf2ca16f",
+                        "createdTimestampMs": 1709067413269,
+                        "updatedTimestampMs": 1709067413269,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "06b7914e-2b8d-4675-aa5a-b4d7318f14d7",
+                                "createdTimestampMs": 1709067413281,
+                                "updatedTimestampMs": 1709067413281,
+                                "type": "attribute",
+                                "key": "3",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "b332ebf1-643b-40b7-8915-d7d7f9403665",
+                "createdTimestampMs": 1709067413319,
+                "updatedTimestampMs": 1709067413319,
+                "functionClass": "timer",
+                "functionInstance": "spigot-2",
+                "type": "numeric",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "2d5de196-e611-4b1e-8e0e-6aa2b525ca2d",
+                        "createdTimestampMs": 1709067413330,
+                        "updatedTimestampMs": 1709067413330,
+                        "name": "timer-2",
+                        "deviceValues": [
+                            {
+                                "id": "8d4d0542-36de-4511-b9ca-bd1d7aaf10bf",
+                                "createdTimestampMs": 1709067413342,
+                                "updatedTimestampMs": 1709067413342,
+                                "type": "attribute",
+                                "key": "52"
+                            }
+                        ],
+                        "range": {
+                            "min": 0,
+                            "max": 360,
+                            "step": 1
+                        }
+                    }
+                ]
+            }
+        ],
+        "states": [
+            {
+                "functionClass": "max-on-time",
+                "value": 1,
+                "lastUpdateTime": 0,
+                "functionInstance": "spigot-2"
+            },
+            {
+                "functionClass": "schedule-pause",
+                "value": {
+                    "schedule-pause-time-array": {
+                        "schedulePauseTimeArray": []
+                    }
+                },
+                "lastUpdateTime": 0,
+                "functionInstance": "rain-delay"
+            },
+            {
+                "functionClass": "timer",
+                "value": 0,
+                "lastUpdateTime": 0,
+                "functionInstance": "spigot-1"
+            },
+            {
+                "functionClass": "battery-level",
+                "value": 100,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "schedule-pause",
+                "value": "off",
+                "lastUpdateTime": 0,
+                "functionInstance": "active"
+            },
+            {
+                "functionClass": "max-on-time",
+                "value": 15,
+                "lastUpdateTime": 0,
+                "functionInstance": "spigot-1"
+            },
+            {
+                "functionClass": "toggle",
+                "value": "off",
+                "lastUpdateTime": 0,
+                "functionInstance": "spigot-1"
+            },
+            {
+                "functionClass": "power",
+                "value": "off",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "toggle",
+                "value": "off",
+                "lastUpdateTime": 0,
+                "functionInstance": "spigot-2"
+            },
+            {
+                "functionClass": "timer",
+                "value": 0,
+                "lastUpdateTime": 0,
+                "functionInstance": "spigot-2"
+            },
+            {
+                "functionClass": "wifi-mac-address",
+                "value": "ce7fc255-e90a-47b7-848f-53b482129b1a",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "geo-coordinates",
+                "value": null,
+                "lastUpdateTime": 0,
+                "functionInstance": "system-device-location"
+            },
+            {
+                "functionClass": "scheduler-flags",
+                "value": 1,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "available",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "visible",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "direct",
+                "value": false,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "ble-mac-address",
+                "value": "452d7cfb-0d80-4bc9-a615-68f5f30eb361",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            }
+        ],
+        "children": [],
+        "manufacturerName": "Husky"
+    }
+]

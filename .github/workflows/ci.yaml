@@ -12,7 +12,7 @@ jobs:
     runs-on: "ubuntu-latest"
     strategy:
       matrix:
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.12"]
 
     steps:
       - uses: actions/checkout@v4
@@ -26,3 +26,7 @@ jobs:
       - name: Execute Tests
         run: |
           pytest
+      - name: Execute Linting
+        # Run on 3.11 since its broken on 3.12
+        run: |
+          pre-commit

@@ -31,7 +31,7 @@ for unique_time in unique_times:
 	random_increasing_offset += random.randint(1, 1000000)
 
 # Replace Lat / Long
-latlong_re = re.compile('"(-?[0-9]{1,3}\.[0-9]*)"')
+latlong_re = re.compile(r'"(-?[0-9]{1,3}\.[0-9]*)"')
 unique_latlongs = set(re.findall(latlong_re, infile))
 for unique_latlong in unique_latlongs:
 	infile = infile.replace(unique_latlong, str(random.random()))
