@@ -19,11 +19,19 @@ device types:
    * Color Sequences
    * Dimming
    * RGB
+   * Not working
+     * HS (missing data dump for this device)
+     * RGBW (missing data dump for this device)
+     * RGBWW (missing data dump for this device)
+     * WHITE (missing data dump for this device)
+     * XY (missing data dump for this device)
  * power-outlet
    * On/Off
+   * Not working
+     * Power Monitoring (Missing data dumps for this information)
  * switch
    * On/Off
- * landscape-transformer (maybe)
+ * landscape-transformer (missing data dump for this device)
    * On/Off
  * water-valve
    * Open / Close
@@ -31,7 +39,7 @@ device types:
 ### Breaking Change:
 Configuration is done through the `Add Integrations` rather than configuration.yaml.
 Some devices may not work after moving the configuration to the integration. Please review
-the docs on how to gather the device data. RGB Lights need additional work.
+the docs on how to gather the device data.
 
 Now supports services for capability not provided by the integration. See Services section below
 

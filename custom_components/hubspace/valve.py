@@ -1,7 +1,11 @@
 import logging
 from typing import Optional
 
-from homeassistant.components.valve import ValveDeviceClass, ValveEntity
+from homeassistant.components.valve import (
+    ValveDeviceClass,
+    ValveEntity,
+    ValveEntityFeature,
+)
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.device_registry import DeviceInfo
@@ -51,6 +55,10 @@ class HubSpaceValve(CoordinatorEntity, ValveEntity):
             "Child ID": self._child_id,
         }
         # Entity-specific
+        # Assume that all HubSpace devices allow for open / close
+        self._supported_features: ValveEntityFeature = (
+            ValveEntityFeature.OPEN | ValveEntityFeature.CLOSE
+        )
         self._instance = instance
         self._current_valve_position: int | None = None
         self._reports_position: bool = True
