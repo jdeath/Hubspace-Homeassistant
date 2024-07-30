@@ -37,13 +37,15 @@ device types:
    * Open / Close
 
 ### Breaking Change:
+@Expl0dingBanana did amazing work to allow configuration via the UI, async calls, and robust autoscan. A few devices are left to be tested.
+
 Configuration is done through the `Add Integrations` rather than configuration.yaml.
 Some devices may not work after moving the configuration to the integration. Please review
 the docs on how to gather the device data.
 
 Now supports services for capability not provided by the integration. See Services section below
 
-Thanks to @dloveall this release will automatically discover most devices. Specifying your friendlynames is still possible, but this now finds most models attached to your account. There may be some that are not auto discovered.
+Thanks to @dloveall and now @Expl0dingBanana this release will automatically discover most devices. Specifying your friendlynames is still possible, but this now finds most models attached to your account. There may be some that are not auto discovered.
 
 Since some of the internals were changed, so your light name may change. For instance, light.friendlyname might turn into light.friendlyname_2
 
