@@ -37,7 +37,7 @@ device types:
    * Open / Close
 
 ### Breaking Change:
-@Expl0dingBanana did amazing work to allow configuration via the UI, async calls, and robust autoscan. A few devices are left to be tested.
+@Expl0dingBanana did amazing work to allow configuration via the UI, async calls, robust autoscan, and treating devices correctly instead of everything as a light. A few devices are left to be tested.
 
 Configuration is done through the `Add Integrations` rather than configuration.yaml.
 Some devices may not work after moving the configuration to the integration. Please review
@@ -45,9 +45,9 @@ the docs on how to gather the device data.
 
 Now supports services for capability not provided by the integration. See Services section below
 
-Thanks to @dloveall and now @Expl0dingBanana this release will automatically discover most devices. Specifying your friendlynames is still possible, but this now finds most models attached to your account. There may be some that are not auto discovered.
+Thanks to @dloveall and now @Expl0dingBanana this release will automatically discover most devices. Post an issue, if your device is no longer found.
 
-Since some of the internals were changed, so your light name may change. For instance, light.friendlyname might turn into light.friendlyname_2
+Since some of the internals were changed, so your light name may change. locks will now be locks, fans actual fans, etc 
 
 To solve this, go to Settings->Devices and Services->Entities
 find the light.friendlyname and delete it. then find the light.friendlyname_2 and rename it light.friendlyname
