@@ -27,8 +27,6 @@ device types:
      * XY (missing data dump for this device)
  * power-outlet
    * On/Off
-   * Not working
-     * Power Monitoring (Missing data dumps for this information)
  * switch
    * On/Off
  * landscape-transformer (missing data dump for this device)
@@ -41,23 +39,21 @@ device types:
 
 Configuration is done through the `Add Integrations` rather than configuration.yaml.
 Some devices may not work after moving the configuration to the integration. Please review
-the docs on how to gather the device data to send to the developer. 
+the docs on how to gather the device data to send to the developer.
 
 Now supports services for capability not provided by the integration. See Services section below
 
 Thanks to @dloveall and now @Expl0dingBanana this release will automatically discover most devices. Post an issue, if your device is no longer found.
 
-Since some of the internals were changed, so your light name may change. locks will now be locks, fans actual fans, etc 
+Since some of the internals were changed, so your light name may change. locks will now be locks, fans actual fans, etc
 
 To solve this, go to Settings->Devices and Services->Entities
 find the light.friendlyname and delete it. then find the light.friendlyname_2 and rename it light.friendlyname
 
 ### Information :
 This integration talks to the HubSpace API to set and retrieve states for all
-of your registered devices. After performing the configuration, it will
-register all devices unless specified by `friendlyNames` and/or `roomNames`. Once
-the devices are discovered, it will determine device capability and show
-correctly within Home Assistant.
+of your registered devices. Once  the devices are discovered, it will determine
+device capability and show correctly within Home Assistant.
 
 _Thanks to everyone who starred my repo! To star it click on the image below, then it will be on top right. Thanks!_
 
@@ -97,7 +93,7 @@ If your username or password is incorrect, the form will not be submitted.
    * Check the logs for any warning / errors around hubspace and report the issue.
    * If no warning / error messages exist around HubSpace, the device type is likely
      not supported. Refer to the troubleshooting section to grab anonymized logs and
-     open a new issue with the logs and state thedevice that did not discover
+     open a new issue with the logs and state the device that did not discover
  * I have a device and its missing functionality
    * Refer to the troubleshooting section to grab anonymized logs and
      open a new issue with the logs and state the device that is not working
@@ -150,7 +146,7 @@ the following setup steps must be run:
        ```
  * Download the anonymizer code
    * ```bash
-     python -c "import requests; data=requests.get('https://raw.githubusercontent.com/Expl0dingBanana/Hubspace-Homeassistant/rework-tmp/custom_components/hubspace/anonomyize_data.py').text; fh=open('anonomyize_data.py', 'w'); fh.write(data); fh.close();"
+     python -c "import requests; data=requests.get('https://raw.githubusercontent.com/jdeath/Hubspace-Homeassistant/main/custom_components/hubspace/anonomyize_data.py').text; fh=open('anonomyize_data.py', 'w'); fh.write(data); fh.close();"
      ```
  * Run the anonymizer code (but fill in username and password)
    * Determine the device (gets child_id and friendly names)
@@ -171,7 +167,7 @@ the following setup steps must be run:
 #### Through the UI
 Gathering data through the UI provides a less targeted approach to gathering data
 as it will pull all devices. This may be required if a device cannot be fixed with
-a normal data dump or you are not comfortable running python on your system. It requires
+a normal data dump, or you are not comfortable running python on your system. It requires
 the add-on `File Editor` or a similar add-on /  integration that enables you to download
 files from Home Assistant. After  the file downloader has been installed onto Home
 Assistant, the following steps are required to gather the data:

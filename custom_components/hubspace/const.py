@@ -6,7 +6,13 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.const import PERCENTAGE, SIGNAL_STRENGTH_DECIBELS, EntityCategory
+from homeassistant.const import (
+    PERCENTAGE,
+    SIGNAL_STRENGTH_DECIBELS,
+    EntityCategory,
+    UnitOfElectricPotential,
+    UnitOfPower,
+)
 
 DOMAIN = "hubspace"
 CONF_FRIENDLYNAMES: Final = "friendlynames"
@@ -49,18 +55,32 @@ UNMAPPED_DEVICE_CLASSES: Final[list[str]] = [
 
 # Sensors that apply to any device that it is found on
 SENSORS_GENERAL = {
-    "wifi-rssi": SensorEntityDescription(
-        key="wifi-rssi",
-        device_class=SensorDeviceClass.SIGNAL_STRENGTH,
-        entity_category=EntityCategory.DIAGNOSTIC,
-        native_unit_of_measurement=SIGNAL_STRENGTH_DECIBELS,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
     "battery-level": SensorEntityDescription(
         key="battery-level",
         device_class=SensorDeviceClass.BATTERY,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=PERCENTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    "output-voltage-switch": SensorEntityDescription(
+        key="output-voltage-switch",
+        device_class=SensorDeviceClass.VOLTAGE,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    "watts": SensorEntityDescription(
+        key="watts",
+        device_class=SensorDeviceClass.POWER,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        native_unit_of_measurement=UnitOfPower.WATT,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    "wifi-rssi": SensorEntityDescription(
+        key="wifi-rssi",
+        device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        native_unit_of_measurement=SIGNAL_STRENGTH_DECIBELS,
         state_class=SensorStateClass.MEASUREMENT,
     ),
 }
