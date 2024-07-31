@@ -41,7 +41,7 @@ device types:
 
 Configuration is done through the `Add Integrations` rather than configuration.yaml.
 Some devices may not work after moving the configuration to the integration. Please review
-the docs on how to gather the device data.
+the docs on how to gather the device data to send to the developer. 
 
 Now supports services for capability not provided by the integration. See Services section below
 
@@ -82,7 +82,7 @@ Then once it's there (still in HACS) click the INSTALL button
 Manual method: copy the hubspace/ folder in the repo to `<config_dir>/custom_components/hubspace/`.
 
 ### Configuration
-After HubSpace has been added through HACs and Home Assistant has been removed, the
+After HubSpace has been added through HACs, the
 configuration continues within the UI like other integrations. First select `Settings`
 on the navigation bar, then select `Devices & services`, ensure you are on the
 `Integrations` tab, then finally select `ADD INTEGRATION` at the bottom right
