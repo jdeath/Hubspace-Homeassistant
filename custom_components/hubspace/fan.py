@@ -41,6 +41,7 @@ class HubspaceFan(CoordinatorEntity, FanEntity):
     :ivar _preset_modes: List of available preset modes for the device
     :ivar _supported_features: Features that the fan supports, where each
         feature is an Enum from FanEntityFeature.
+    :ivar _availability: If the device is available within HubSpace
     :ivar _fan_speeds: List of available fan speeds for the device from HubSpace
     :ivar _bonus_attrs: Attributes relayed to Home Assistant that do not need to be
         tracked in their own class variables
@@ -76,6 +77,7 @@ class HubspaceFan(CoordinatorEntity, FanEntity):
         self._preset_mode: Optional[str] = None
         self._preset_modes: set[str] = set()
         self._supported_features: FanEntityFeature = FanEntityFeature(0)
+        self._availability: Optional[bool] = None
         self._fan_speeds: list[Union[str, int]] = []
         self._fan_speed: Optional[str] = None
         self._bonus_attrs = {
@@ -141,7 +143,6 @@ class HubspaceFan(CoordinatorEntity, FanEntity):
         additional_attrs = [
             "wifi-ssid",
             "wifi-mac-address",
-            "available",
             "ble-mac-address",
         ]
         # functionClass -> internal attribute
@@ -172,6 +173,10 @@ class HubspaceFan(CoordinatorEntity, FanEntity):
     def unique_id(self) -> str:
         """Return the display name of this light."""
         return self._child_id
+
+    @property
+    def available(self) -> bool:
+        return self._availability is True
 
     @property
     def extra_state_attributes(self):

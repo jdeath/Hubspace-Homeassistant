@@ -26,6 +26,7 @@ class HubSpaceLock(CoordinatorEntity, LockEntity):
         tracked in their own class variables
     :ivar _current_position: Current position of the device
     :ivar _supported_features: Supported features of the device
+    :ivar _availability: If the device is available within HubSpace
     """
 
     def __init__(
@@ -47,6 +48,7 @@ class HubSpaceLock(CoordinatorEntity, LockEntity):
             "deviceId": device_id,
             "Child ID": self._child_id,
         }
+        self._availability: Optional[bool] = None
         # Entity-specific
         self._current_position: Optional[str] = None
         self._supported_features: Optional[LockEntityFeature] = LockEntityFeature(0)
@@ -55,7 +57,6 @@ class HubSpaceLock(CoordinatorEntity, LockEntity):
 
     def process_functions(self, functions: list[dict]) -> None:
         """Process available functions
-
 
         :param functions: Functions that are supported from the API
         """
@@ -84,7 +85,9 @@ class HubSpaceLock(CoordinatorEntity, LockEntity):
         _LOGGER.debug("About to update using %s", states)
         # functionClass -> internal attribute
         for state in states:
-            if state.functionClass == "lock-control":
+            if state.functionClass == "available":
+                self._availability = state.value
+            elif state.functionClass == "lock-control":
                 _LOGGER.debug("Found lock-control and setting to %s", state.value)
                 self._current_position = state.value
 
@@ -97,6 +100,10 @@ class HubSpaceLock(CoordinatorEntity, LockEntity):
     def unique_id(self) -> str:
         """Return the HubSpace ID"""
         return self._child_id
+
+    @property
+    def available(self) -> bool:
+        return self._availability is True
 
     @property
     def extra_state_attributes(self):

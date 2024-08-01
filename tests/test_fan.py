@@ -89,7 +89,6 @@ class Test_HubSpaceFan:
                     "Child ID": None,
                     "wifi-ssid": "71e7209f-b932-44b9-ba2f-a8179f68c3ac",
                     "wifi-mac-address": "e1119e0a-688d-45df-9882-a76549db9bc3",
-                    "available": True,
                     "ble-mac-address": "07346a23-350b-4606-8d86-67217ec7a688",
                 },
             ),

@@ -25,6 +25,7 @@ class HubSpaceSwitch(CoordinatorEntity, SwitchEntity):
     :ivar _state: If the device is on / off
     :ivar _bonus_attrs: Attributes relayed to Home Assistant that do not need to be
         tracked in their own class variables
+    :ivar _availability: If the device is available within HubSpace
     :ivar _device_class: Device class used during lookup
     :ivar _instance: functionInstance within the HS device
     """
@@ -50,6 +51,7 @@ class HubSpaceSwitch(CoordinatorEntity, SwitchEntity):
             "deviceId": device_id,
             "Child ID": self._child_id,
         }
+        self._availability: Optional[bool] = None
         # Entity-specific
         self._device_class = device_class
         self._instance = instance
@@ -71,7 +73,9 @@ class HubSpaceSwitch(CoordinatorEntity, SwitchEntity):
             )
         # functionClass -> internal attribute
         for state in states:
-            if state.functionClass != "power":
+            if state.functionClass == "available":
+                self._availability = state.value
+            elif state.functionClass != "power":
                 continue
             if not self._instance:
                 self._state = state.value
@@ -97,6 +101,10 @@ class HubSpaceSwitch(CoordinatorEntity, SwitchEntity):
             return f"{self._child_id}-{self._instance}"
         else:
             return self._child_id
+
+    @property
+    def available(self) -> bool:
+        return self._availability is True
 
     @property
     def extra_state_attributes(self):

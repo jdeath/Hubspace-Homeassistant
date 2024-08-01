@@ -95,6 +95,7 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
     :ivar _state: If the device is on / off
     :ivar _bonus_attrs: Attributes relayed to Home Assistant that do not need to be
         tracked in their own class variables
+    :ivar _availability: If the device is available within HubSpace
     :ivar _instance_attrs: Additional attributes that are required when
         POSTing to HubSpace
     :ivar _color_modes: Supported options for the light
@@ -137,6 +138,7 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
             "deviceId": device_id,
             "Child ID": self._child_id,
         }
+        self._availability: Optional[bool] = None
         self._instance_attrs: dict[str, str] = {}
         # Entity-specific
         self._color_modes: set[ColorMode] = set()
@@ -273,6 +275,8 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
                 self._current_effect = state.value
             elif state.functionClass in additional_attrs:
                 self._bonus_attrs[state.functionClass] = state.value
+            elif state.functionClass == "available":
+                self._availability = state.value
 
     @property
     def should_poll(self):
@@ -288,6 +292,10 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
     def unique_id(self) -> str:
         """Return the display name of this light."""
         return self._child_id
+
+    @property
+    def available(self) -> bool:
+        return self._availability is True
 
     @property
     def extra_state_attributes(self):

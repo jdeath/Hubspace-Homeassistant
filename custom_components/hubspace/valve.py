@@ -29,6 +29,7 @@ class HubSpaceValve(CoordinatorEntity, ValveEntity):
     :ivar _state: If the device is on / off
     :ivar _bonus_attrs: Attributes relayed to Home Assistant that do not need to be
         tracked in their own class variables
+    :ivar _availability: If the device is available within HubSpace
     :ivar _instance: functionInstance within the HS device
     :ivar _current_valve_position: Current position of the valve
     :ivar _reports_position: Reports position of the valve
@@ -54,6 +55,7 @@ class HubSpaceValve(CoordinatorEntity, ValveEntity):
             "deviceId": device_id,
             "Child ID": self._child_id,
         }
+        self._availability: Optional[bool] = None
         # Entity-specific
         # Assume that all HubSpace devices allow for open / close
         self._supported_features: ValveEntityFeature = (
@@ -80,7 +82,9 @@ class HubSpaceValve(CoordinatorEntity, ValveEntity):
             )
         # functionClass -> internal attribute
         for state in states:
-            if state.functionClass != "toggle":
+            if state.functionClass == "available":
+                self._availability = state.value
+            elif state.functionClass != "toggle":
                 continue
             if not self._instance:
                 self._state = state.value
@@ -106,6 +110,10 @@ class HubSpaceValve(CoordinatorEntity, ValveEntity):
             return f"{self._child_id}-{self._instance}"
         else:
             return self._child_id
+
+    @property
+    def available(self) -> bool:
+        return self._availability is True
 
     @property
     def supported_features(self) -> ValveEntityFeature:
