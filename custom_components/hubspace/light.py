@@ -181,7 +181,6 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
                 else:
                     self._temperature_choices = process_range(function["values"][0])
                 if self._temperature_choices:
-                    _LOGGER.warning(function.get("type"))
                     self._temperature_prefix = (
                         "K" if function.get("type", None) != "numeric" else ""
                     )
