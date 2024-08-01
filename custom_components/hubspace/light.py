@@ -70,20 +70,18 @@ class RGB:
     blue: int = 0
 
 
-def process_color_temps(color_temps: dict) -> tuple[list[int], str]:
+def process_color_temps(color_temps: dict) -> list[int]:
     """Determine the supported color temps
 
     :param color_temps: Result from functions["values"]
     """
     supported_temps = []
-    prefix = ""
     for temp in color_temps:
         color_temp = temp["name"]
         if isinstance(color_temp, str) and color_temp.endswith("K"):
-            prefix = "k"
             color_temp = color_temp[0:-1]
         supported_temps.append(int(color_temp))
-    return sorted(supported_temps), prefix
+    return sorted(supported_temps)
 
 
 class HubspaceLight(CoordinatorEntity, LightEntity):
@@ -179,13 +177,14 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
                 _LOGGER.debug("Adding a new feature - on / off")
             elif function["functionClass"] == "color-temperature":
                 if len(function["values"]) > 1:
-                    self._temperature_choices, self._temperature_prefix = (
-                        process_color_temps(function["values"])
-                    )
+                    self._temperature_choices = process_color_temps(function["values"])
                 else:
                     self._temperature_choices = process_range(function["values"][0])
-                    self._temperature_prefix = "K"
                 if self._temperature_choices:
+                    _LOGGER.warning(function.get("type"))
+                    self._temperature_prefix = (
+                        "K" if function.get("type", None) != "numeric" else ""
+                    )
                     self._color_modes.add(ColorMode.COLOR_TEMP)
                     _LOGGER.debug("Adding a new feature - color temperature")
             elif function["functionClass"] == "brightness":
@@ -403,22 +402,32 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
             self._brightness = brightness
         if ATTR_COLOR_TEMP_KELVIN in kwargs:
             color_to_set = list(self._temperature_choices)[0]
+            temp_states = []
+            if ColorMode.RGB in self.supported_color_modes:
+                temp_states.append(
+                    HubSpaceState(
+                        functionClass="color-mode",
+                        functionInstance=self._instance_attrs.get("color-mode", None),
+                        value="white",
+                    )
+                )
             # I am not sure how to set specific values, so find the value
             # that is closest without going over
             for temperature in self._temperature_choices:
                 if kwargs[ATTR_COLOR_TEMP_KELVIN] <= temperature:
                     color_to_set = temperature
                     break
-                states_to_set.append(
-                    HubSpaceState(
-                        functionClass="color-temperature",
-                        functionInstance=self._instance_attrs.get(
-                            "color-temperature", None
-                        ),
-                        value=f"{temperature}{self._temperature_prefix}",
-                    )
+            temp_states.append(
+                HubSpaceState(
+                    functionClass="color-temperature",
+                    functionInstance=self._instance_attrs.get(
+                        "color-temperature", None
+                    ),
+                    value=f"{color_to_set}{self._temperature_prefix}",
                 )
+            )
             self._color_temp = color_to_set
+            states_to_set.extend(temp_states)
         if ATTR_RGB_COLOR in kwargs:
             self._color_mode = ColorMode.RGB
             self._rgb = RGB(
@@ -426,12 +435,25 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
                 green=kwargs[ATTR_RGB_COLOR][1],
                 blue=kwargs[ATTR_RGB_COLOR][2],
             )
-            states_to_set.append(
-                HubSpaceState(
-                    functionClass="color-rgb",
-                    functionInstance=self._instance_attrs.get("color-rgb", None),
-                    value=kwargs[ATTR_RGB_COLOR],
-                )
+            states_to_set.extend(
+                [
+                    HubSpaceState(
+                        functionClass="color-mode",
+                        functionInstance=self._instance_attrs.get("color-mode", None),
+                        value="color",
+                    ),
+                    HubSpaceState(
+                        functionClass="color-rgb",
+                        functionInstance=self._instance_attrs.get("color-rgb", None),
+                        value={
+                            "color-rgb": {
+                                "r": self._rgb.red,
+                                "g": self._rgb.green,
+                                "b": self._rgb.blue,
+                            }
+                        },
+                    ),
+                ]
             )
         if ATTR_EFFECT in kwargs:
             self._current_effect = kwargs[ATTR_EFFECT]
