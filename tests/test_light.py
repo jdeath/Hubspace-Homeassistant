@@ -17,6 +17,7 @@ switch_dimmer = create_devices_from_data("switch-HPDA311CWB.json")
 switch_dimmer_light = switch_dimmer[0]
 
 rgb_temp_light = create_devices_from_data("light-rgb_temp.json")[0]
+light_a21 = create_devices_from_data("light-a21.json")[0]
 
 
 @pytest.fixture
@@ -44,6 +45,7 @@ def temperature_light(mocked_coordinator):
                     ColorMode.BRIGHTNESS,
                 },
                 "_supported_brightness": [x for x in range(1, 101)],
+                "_temperature_prefix": "K",
             },
         ),
         (
@@ -66,6 +68,22 @@ def temperature_light(mocked_coordinator):
                 },
                 "_supported_brightness": [x for x in range(1, 101)],
                 "_temperature_choices": [x for x in range(2200, 6501, 100)],
+                "_temperature_prefix": "",
+            },
+        ),
+        (
+            light_a21.functions,
+            {
+                "_instance_attrs": {"effects": "custom"},
+                "_color_modes": {
+                    ColorMode.ONOFF,
+                    ColorMode.BRIGHTNESS,
+                    ColorMode.RGB,
+                    ColorMode.COLOR_TEMP,
+                },
+                "_supported_brightness": [x for x in range(1, 101)],
+                "_temperature_choices": [x for x in range(2200, 6501, 100)],
+                "_temperature_prefix": "",
             },
         ),
     ],
