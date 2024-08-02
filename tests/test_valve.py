@@ -18,8 +18,8 @@ spigot = create_devices_from_data("water-timer.json")[0]
 @pytest.mark.parametrize(
     "instance,states,expected_attrs",
     [
-        ("spigot-1", spigot.states, {"_state": "off"}),
-        ("spigot-2", spigot.states, {"_state": "on"}),
+        ("spigot-1", spigot.states, {"_state": "off", "_availability": True}),
+        ("spigot-2", spigot.states, {"_state": "on", "_availability": True}),
     ],
 )
 async def test_update_states(instance, states, expected_attrs, empty_valve):

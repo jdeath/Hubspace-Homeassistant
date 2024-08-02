@@ -21,6 +21,7 @@ def empty_lock(mocked_coordinator):
             lock_tbd_instance.states,
             {
                 "_current_position": "locked",
+                "_availability": True,
             },
             {
                 "Child ID": None,
