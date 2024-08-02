@@ -414,7 +414,7 @@
             },
             {
                 "functionClass": "toggle",
-                "value": "off",
+                "value": "on",
                 "lastUpdateTime": 0,
                 "functionInstance": "zone-2"
             },

@@ -35,7 +35,6 @@ class HubSpaceSwitch(CoordinatorEntity, SwitchEntity):
         hs: HubSpaceDataUpdateCoordinator,
         friendly_name: str,
         instance: Optional[str],
-        device_class: str,
         child_id: Optional[str] = None,
         model: Optional[str] = None,
         device_id: Optional[str] = None,
@@ -53,7 +52,6 @@ class HubSpaceSwitch(CoordinatorEntity, SwitchEntity):
         }
         self._availability: Optional[bool] = None
         # Entity-specific
-        self._device_class = device_class
         self._instance = instance
 
     @callback
@@ -75,11 +73,11 @@ class HubSpaceSwitch(CoordinatorEntity, SwitchEntity):
         for state in states:
             if state.functionClass == "available":
                 self._availability = state.value
-            elif state.functionClass != "power":
+            elif state.functionClass != self.primary_class:
                 continue
-            if not self._instance:
-                self._state = state.value
-            elif state.functionInstance == self._instance:
+            elif self._instance and state.functionInstance != self._instance:
+                continue
+            else:
                 self._state = state.value
 
     @property
@@ -131,12 +129,16 @@ class HubSpaceSwitch(CoordinatorEntity, SwitchEntity):
             model=model,
         )
 
+    @property
+    def primary_class(self) -> str:
+        return "toggle" if self._instance else "power"
+
     async def async_turn_on(self, **kwargs) -> None:
         _LOGGER.debug("Enabling %s on %s", self._instance, self._child_id)
         self._state = "on"
         states_to_set = [
             HubSpaceState(
-                functionClass="toggle" if self._instance else "power",
+                functionClass=self.primary_class,
                 functionInstance=self._instance,
                 value=self._state,
             )
@@ -172,7 +174,6 @@ async def setup_entry_toggled(
             coordinator_hubspace,
             entity.friendly_name,
             instance,
-            entity.device_class,
             child_id=entity.id,
             model=entity.model,
             device_id=entity.device_id,
@@ -190,7 +191,6 @@ async def setup_basic_switch(
         coordinator_hubspace,
         entity.friendly_name,
         None,
-        entity.device_class,
         child_id=entity.id,
         model=entity.model,
         device_id=entity.device_id,
