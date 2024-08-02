@@ -41,7 +41,7 @@ Configuration is done through the `Add Integrations` rather than configuration.y
 Some devices may not work after moving the configuration to the integration. Please review
 the docs on how to gather the device data to send to the developer.
 
-Now supports services for capability not provided by the integration. See Services section below
+No longer supports services. Many often used services are incorperated into the device types. Hopefully will be added back 
 
 Thanks to @dloveall and now @Expl0dingBanana this release will automatically discover most devices. Post an issue, if your device is no longer found.
 
