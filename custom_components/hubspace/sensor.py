@@ -2,6 +2,7 @@ import logging
 from typing import Any
 
 from homeassistant.components.sensor import SensorEntity, SensorEntityDescription
+from homeassistant.components.sensor import const as sensor_const
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -23,11 +24,13 @@ class HubSpaceSensor(CoordinatorEntity, SensorEntity):
         coordinator: HubSpaceDataUpdateCoordinator,
         description: SensorEntityDescription,
         device: HubSpaceDevice,
+        is_numeric: bool,
     ) -> None:
         super().__init__(coordinator, context=device.id)
         self.coordinator = coordinator
         self.entity_description = description
         self._device = device
+        self._is_numeric: bool = is_numeric
         self._sensor_value = None
 
     @callback
@@ -47,6 +50,8 @@ class HubSpaceSensor(CoordinatorEntity, SensorEntity):
             )
         for state in states:
             if state.functionClass == self.entity_description.key:
+                if self._is_numeric and isinstance(state.value, str):
+                    state.value = int("".join(i for i in state.value if i.isdigit()))
                 self._sensor_value = state.value
 
     @property
@@ -96,6 +101,9 @@ async def async_setup_entry(
                 dev.id,
                 sensor.key,
             )
-            ha_entity = HubSpaceSensor(coordinator_hubspace, sensor, dev)
+            is_numeric = (
+                sensor.device_class not in sensor_const.NON_NUMERIC_DEVICE_CLASSES
+            )
+            ha_entity = HubSpaceSensor(coordinator_hubspace, sensor, dev, is_numeric)
             entities.append(ha_entity)
     async_add_entities(entities)
