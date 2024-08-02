@@ -158,3 +158,26 @@ async def get_sensors(
         )
         required_sensors.append(sensor)
     return required_sensors
+
+
+async def create_devices_from_data(
+    file_name: str,
+) -> list[hubspace_async.HubSpaceDevice]:
+    """Generate devices from a data dump
+
+    :param file_name: Name of the file to load
+    """
+    current_path: str = os.path.dirname(os.path.realpath(__file__))
+    async with aiofiles.open(os.path.join(current_path, file_name), "r") as fh:
+        data = await fh.read()
+    devices = json.loads(data)
+    processed = []
+    for device in devices:
+        processed_states = []
+        for state in device["states"]:
+            processed_states.append(hubspace_async.HubSpaceState(**state))
+        device["states"] = processed_states
+        if "children" not in device:
+            device["children"] = []
+        processed.append(hubspace_async.HubSpaceDevice(**device))
+    return processed

@@ -156,6 +156,8 @@ class HubspaceFan(CoordinatorEntity, FanEntity):
                 self._current_direction = state.value
             elif state.functionClass == "power":
                 self._state = state.value
+            elif state.functionClass == "available":
+                self._availability = state.value
             elif state.functionClass in additional_attrs:
                 self._bonus_attrs[state.functionClass] = state.value
 

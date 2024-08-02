@@ -82,6 +82,7 @@ class Test_HubSpaceFan:
                     "_fan_speed": "fan-speed-6-050",
                     "_current_direction": "reverse",
                     "_state": "on",
+                    "_availability": True,
                 },
                 {
                     "model": None,

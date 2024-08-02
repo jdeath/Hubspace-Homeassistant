@@ -103,6 +103,7 @@ def test_process_functions(functions, expected_attrs, empty_light):
                 "_state": "on",
                 "_color_temp": 3000,
                 "_brightness": 114,
+                "_availability": True,
             },
             {
                 "Child ID": None,
