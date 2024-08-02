@@ -203,7 +203,7 @@ async def async_setup_entry(
     entry: HubSpaceConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Add Fan entities from a config_entry."""
+    """Add Switch entities from a config_entry."""
     coordinator_hubspace: HubSpaceDataUpdateCoordinator = (
         entry.runtime_data.coordinator_hubspace
     )
@@ -231,5 +231,4 @@ async def async_setup_entry(
             model=entity.model,
             manufacturer=entity.manufacturerName,
         )
-        entities.extend(new_devs)
     async_add_entities(entities)
