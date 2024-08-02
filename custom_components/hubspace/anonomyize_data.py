@@ -110,6 +110,13 @@ def anonymize_state(state: HubSpaceState):
     fake_state["lastUpdateTime"] = 0
     if fake_state["functionClass"] == "wifi-ssid":
         fake_state["value"] = str(uuid4())
+    elif fake_state["functionClass"] == "geo-coordinates":
+        fake_state["value"] = {
+            "geo-coordinates": {
+                "latitude": "0",
+                "longitude": "0"
+            }
+        }
     elif isinstance(state.value, str):
         if "mac" in state.functionClass:
             fake_state["value"] = str(uuid4())
