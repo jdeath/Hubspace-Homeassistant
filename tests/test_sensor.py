@@ -1,18 +1,31 @@
+import pytest
+
 from custom_components.hubspace import const, sensor
 
 from .utils import create_devices_from_data
 
 door_lock = create_devices_from_data("door-lock-TBD.json")
+transformer = create_devices_from_data("transformer.json")
 
 
-def test_sensor(mocked_coordinator):
+@pytest.mark.parametrize(
+    "sensor_descr,device,is_numeric,expected",
+    [
+        (const.SENSORS_GENERAL["battery-level"], door_lock[0], True, 80),
+        (const.SENSORS_GENERAL["output-voltage-switch"], transformer[0], True, 12),
+        (const.SENSORS_GENERAL["watts"], transformer[0], True, 0),
+        (const.SENSORS_GENERAL["wifi-rssi"], transformer[0], True, -51),
+    ],
+)
+def test_sensor(sensor_descr, device, is_numeric, expected, mocked_coordinator):
     empty_sensor = sensor.HubSpaceSensor(
         mocked_coordinator,
-        const.SENSORS_GENERAL["battery-level"],
-        door_lock[0],
+        sensor_descr,
+        device,
+        is_numeric,
     )
-    empty_sensor.coordinator.data[const.ENTITY_SENSOR][door_lock[0].id] = {
-        "device": door_lock[0]
-    }
+    empty_sensor.coordinator.data[const.ENTITY_SENSOR][device.id] = {"device": device}
     empty_sensor.update_states()
-    assert empty_sensor.native_value == 80
+    # Ensure the state can be correctly calculated
+    empty_sensor.state
+    assert empty_sensor.native_value == expected
