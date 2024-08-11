@@ -125,7 +125,7 @@ class HubspaceFan(CoordinatorEntity, FanEntity):
                 _LOGGER.debug("Adding a new feature - direction")
             elif function["functionClass"] == "power":
                 _LOGGER.debug("Adding a new feature - on / off")
-                # This code is in the mainline but unreleased
+                # Added in 2024.8.0
                 with suppress(AttributeError):
                     self._supported_features |= FanEntityFeature.TURN_ON
                     self._supported_features |= FanEntityFeature.TURN_OFF
