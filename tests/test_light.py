@@ -1,3 +1,5 @@
+import copy
+
 import pytest
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
@@ -5,6 +7,7 @@ from homeassistant.components.light import (
     ATTR_RGB_COLOR,
     ColorMode,
 )
+from hubspace_async import HubSpaceDevice, HubSpaceState
 
 from custom_components.hubspace import light
 
@@ -18,6 +21,46 @@ switch_dimmer_light = switch_dimmer[0]
 
 rgb_temp_light = create_devices_from_data("light-rgb_temp.json")[0]
 light_a21 = create_devices_from_data("light-a21.json")[0]
+
+
+def modify_state(device: HubSpaceDevice, new_state):
+    for ind, state in enumerate(device.states):
+        if state.functionClass != new_state.functionClass:
+            continue
+        if (
+            new_state.functionInstance
+            and new_state.functionInstance != state.functionInstance
+        ):
+            continue
+        device.states[ind] = new_state
+        break
+
+
+light_a21_mode_change = copy.deepcopy(light_a21)
+a21_state_rgb = HubSpaceState(
+    functionClass="color-mode",
+    value="color",
+    lastUpdateTime=1234,
+    functionInstance=None,
+)
+modify_state(light_a21_mode_change, a21_state_rgb)
+
+light_a21_effect = copy.deepcopy(light_a21)
+modify_state(light_a21_effect, a21_state_rgb)
+a21_state_effect = HubSpaceState(
+    functionClass="color-sequence",
+    value="rainbow",
+    lastUpdateTime=12345,
+    functionInstance="custom",
+)
+a21_state_mode = HubSpaceState(
+    functionClass="color-mode",
+    value="sequence",
+    lastUpdateTime=12345,
+    functionInstance=None,
+)
+modify_state(light_a21_effect, a21_state_effect)
+modify_state(light_a21_effect, a21_state_mode)
 
 
 @pytest.fixture
@@ -95,6 +138,46 @@ def test_process_functions(functions, expected_attrs, empty_light):
 
 
 @pytest.mark.parametrize(
+    "states, expected",
+    [
+        # color-mode not present
+        (fan_zandra_light.states, None),
+        # color-mode is present, use the value
+        (light_a21_mode_change.states, "color"),
+    ],
+)
+def test_get_hs_mode(states, expected, empty_light):
+    assert empty_light.get_hs_mode(states) == expected
+
+
+@pytest.mark.parametrize(
+    "device, expected",
+    [
+        # no color-mode but COLOR_TEMP is supported
+        (
+            fan_zandra_light,
+            {"_color_mode": ColorMode.COLOR_TEMP, "_current_effect": None},
+        ),
+        # RGB
+        (
+            light_a21_mode_change,
+            {"_color_mode": ColorMode.RGB, "_current_effect": None},
+        ),
+        # white - white isn't implemented so its temp
+        (light_a21, {"_color_mode": ColorMode.COLOR_TEMP, "_current_effect": None}),
+        # effect
+        (
+            light_a21_effect,
+            {"_color_mode": ColorMode.BRIGHTNESS, "_current_effect": "rainbow"},
+        ),
+    ],
+)
+def test_determine_states_from_hs_mode(device, expected, mocker, empty_light):
+    empty_light.process_functions(device.functions)
+    assert empty_light.determine_states_from_hs_mode(device.states) == expected
+
+
+@pytest.mark.parametrize(
     "states, expected_attrs, extra_attrs",
     [
         (
@@ -110,16 +193,40 @@ def test_process_functions(functions, expected_attrs, empty_light):
                 "deviceId": None,
                 "model": None,
             },
-        )
+        ),
+        # Switch from white to RGB
+        (
+            light_a21_mode_change.states,
+            {
+                "_state": "on",
+                "_color_temp": 4000,
+                "_brightness": 127,
+                "_availability": True,
+                "_color_mode": light.ColorMode.RGB,
+                "_current_effect": None,
+            },
+            {},
+        ),
+        # set current effect
+        (
+            light_a21_effect.states,
+            {
+                "_state": "on",
+                "_color_temp": 4000,
+                "_brightness": 127,
+                "_availability": True,
+                "_current_effect": "rainbow",
+                "_color_mode": light.ColorMode.BRIGHTNESS,
+            },
+            {},
+        ),
     ],
 )
-def test_update_states(states, expected_attrs, extra_attrs, empty_light):
-    empty_light.states = states
-    empty_light.coordinator.data[fan_zandra_light.device_class][
-        empty_light._child_id
-    ] = empty_light
+def test_update_states(states, expected_attrs, extra_attrs, empty_light, mocker):
+    mocker.patch.object(empty_light, "get_device_states", return_value=states)
     empty_light.update_states()
-    assert empty_light.extra_state_attributes == extra_attrs
+    if extra_attrs:
+        assert empty_light.extra_state_attributes == extra_attrs
     for key, val in expected_attrs.items():
         assert getattr(empty_light, key) == val
 
