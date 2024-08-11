@@ -102,7 +102,7 @@ def temperature_light(mocked_coordinator):
         (
             rgb_temp_light.functions,
             {
-                "_instance_attrs": {"effects": "custom"},
+                "_instance_attrs": {},
                 "_color_modes": {
                     ColorMode.ONOFF,
                     ColorMode.BRIGHTNESS,
@@ -117,7 +117,7 @@ def temperature_light(mocked_coordinator):
         (
             light_a21.functions,
             {
-                "_instance_attrs": {"effects": "custom"},
+                "_instance_attrs": {},
                 "_color_modes": {
                     ColorMode.ONOFF,
                     ColorMode.BRIGHTNESS,
@@ -127,6 +127,31 @@ def temperature_light(mocked_coordinator):
                 "_supported_brightness": [x for x in range(1, 101)],
                 "_temperature_choices": [x for x in range(2200, 6501, 100)],
                 "_temperature_prefix": "",
+                "_effects": {
+                    "custom": [
+                        "chill",
+                        "christmas",
+                        "clarity",
+                        "dinner-party",
+                        "focus",
+                        "getting-ready",
+                        "july-4th",
+                        "moonlight",
+                        "nightlight",
+                        "rainbow",
+                        "sleep",
+                        "valentines-day",
+                        "wake-up",
+                    ],
+                    "preset": [
+                        "custom",
+                        "fade-3",
+                        "fade-7",
+                        "flash",
+                        "jump-3",
+                        "jump-7",
+                    ],
+                },
             },
         ),
     ],
@@ -268,6 +293,49 @@ def test_extra_state_attributes(mocked_coordinator):
         "deviceId": device_id,
         "Child ID": child_id,
     }
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "device, effect, expected",
+    [
+        # Preset state
+        (
+            light_a21,
+            "fade-3",
+            [
+                HubSpaceState(
+                    functionClass="color-sequence",
+                    functionInstance="preset",
+                    value="fade-3",
+                ),
+            ],
+        ),
+        # custom state
+        (
+            light_a21,
+            "getting-ready",
+            [
+                HubSpaceState(
+                    functionClass="color-sequence",
+                    functionInstance="preset",
+                    value="custom",
+                ),
+                HubSpaceState(
+                    functionClass="color-sequence",
+                    functionInstance="custom",
+                    value="getting-ready",
+                ),
+            ],
+        ),
+    ],
+)
+async def test_determine_effect_states(device, effect, expected, empty_light):
+    empty_light.process_functions(device.functions)
+    res = await empty_light.determine_effect_states(effect)
+    assert len(res) == len(expected)
+    for ind, state in enumerate(res):
+        assert state == expected[ind]
 
 
 @pytest.mark.asyncio

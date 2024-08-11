@@ -1,7 +1,9 @@
 """Platform for fan integration."""
 
+import contextlib
 import dataclasses
 import logging
+from collections import defaultdict
 from typing import Any, Optional
 
 from homeassistant.components.light import (
@@ -106,6 +108,7 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
     :ivar _brightness: Current brightness of the light
     :ivar _supported_brightness: Supported brightness of the light
     :ivar _rgb: Current RGB values
+    :ivar _effects: Dictionary of supported effects
 
 
     :param hs: HubSpace connector
@@ -150,7 +153,7 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
         self._brightness: Optional[int] = None
         self._rgb: RGB = RGB(red=0, green=0, blue=0)
         self._supported_features: LightEntityFeature = LightEntityFeature(0)
-        self._effect_list: Optional[list[str]] = None
+        self._effects: dict[str, list[str]] = defaultdict(list)
         self._current_effect: Optional[str] = None
 
         functions = functions or []
@@ -204,15 +207,10 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
                         self._color_modes.add(ColorMode.COLOR_TEMP)
             elif function["functionClass"] == "color-sequence":
                 self._instance_attrs.pop(function["functionClass"], None)
-                if function["functionInstance"] == "custom":
-                    self._instance_attrs["effects"] = function["functionInstance"]
-                    self._effect_list = sorted(list(process_names(function["values"])))
-                    self._supported_features |= LightEntityFeature.EFFECT
-                # @TODO - Is this what HA expects for transitions?
-                # elif function["functionInstance"] == "preset":
-                #     self._instance_attrs["transition"] = function["functionInstance"]
-                #     self._transition_list = sorted(list(process_names(function["values"])))
-                #     self._supported_features |= LightEntityFeature.TRANSITION
+                self._effects[function["functionInstance"]] = sorted(
+                    list(process_names(function["values"]))
+                )
+                self._supported_features |= LightEntityFeature.EFFECT
             else:
                 _LOGGER.debug(
                     "Unsupported feature found, %s", function["functionClass"]
@@ -289,13 +287,17 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
             color_mode_states["_color_mode"] = ColorMode.COLOR_TEMP
         elif ColorMode.BRIGHTNESS in self.supported_color_modes:
             color_mode_states["_color_mode"] = ColorMode.BRIGHTNESS
+        tracked_sequences = {}
         for state in states:
-            if (
-                state.functionClass == "color-sequence"
-                and state.functionInstance == "custom"
-                and color_mode == "sequence"
-            ):
-                color_mode_states["_current_effect"] = state.value
+            if state.functionClass == "color-sequence":
+                tracked_sequences[state.functionInstance] = state.value
+        if color_mode == "sequence":
+            if tracked_sequences["preset"] != "custom":
+                color_mode_states["_current_effect"] = tracked_sequences["preset"]
+            else:
+                color_mode_states["_current_effect"] = tracked_sequences[
+                    tracked_sequences["preset"]
+                ]
         return color_mode_states
 
     @property
@@ -385,7 +387,12 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
 
     @property
     def effect_list(self) -> list[str]:
-        return self._effect_list
+        avail = []
+        for effects in self._effects.values():
+            avail.extend(effects)
+        with contextlib.suppress(ValueError):
+            avail.remove("custom")
+        return avail
 
     @property
     def effect(self) -> Optional[str]:
@@ -484,22 +491,42 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
             )
         if ATTR_EFFECT in kwargs:
             self._current_effect = kwargs[ATTR_EFFECT]
-            effect_states = [
-                HubSpaceState(
-                    functionClass="color-sequence",
-                    functionInstance="preset",
-                    value="custom",
-                ),
-                HubSpaceState(
-                    functionClass="color-sequence",
-                    functionInstance=self._instance_attrs.get("effects", None),
-                    value=self._current_effect,
-                ),
-            ]
-            states_to_set.extend(effect_states)
+            effect_states = await self.determine_effect_states(self._current_effect)
+            if effect_states:
+                states_to_set.extend(effect_states)
             self._color_mode = ColorMode.RGB
         await self._hs.set_device_states(self._child_id, states_to_set)
         self.async_write_ha_state()
+
+    async def determine_effect_states(self, effect: str) -> list[HubSpaceState]:
+        """Determine states for a given effect
+
+        :param effect: Effect that is being set
+        """
+        states: list[HubSpaceState] = []
+        seq_key = None
+        for effect_group, effects in self._effects.items():
+            if effect not in effects:
+                continue
+            seq_key = effect_group
+            break
+        preset_val = effect if effect in self._effects["preset"] else seq_key
+        states.append(
+            HubSpaceState(
+                functionClass="color-sequence",
+                functionInstance="preset",
+                value=preset_val,
+            )
+        )
+        if effect not in self._effects["preset"]:
+            states.append(
+                HubSpaceState(
+                    functionClass="color-sequence",
+                    functionInstance=seq_key,
+                    value=effect,
+                )
+            )
+        return states
 
     async def async_turn_off(self, **kwargs) -> None:
         _LOGGER.debug("Adjusting light %s with %s", self._child_id, kwargs)
