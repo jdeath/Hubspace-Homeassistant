@@ -16,6 +16,7 @@ process_functions_expected = (
     | FanEntityFeature.SET_SPEED
     | FanEntityFeature.DIRECTION
 )
+# Added in 2024.8.0
 with suppress(AttributeError):
     process_functions_expected |= FanEntityFeature.TURN_ON | FanEntityFeature.TURN_OFF
 
@@ -217,5 +218,8 @@ class Test_HubSpaceFan:
 
     @pytest.mark.asyncio
     async def test_async_turn_off(self, empty_fan):
+        # Added in 2024.8.0
+        with suppress(AttributeError):
+            empty_fan._supported_features |= fan.FanEntityFeature.TURN_OFF
         await empty_fan.async_turn_off()
         assert empty_fan._state == "off"
