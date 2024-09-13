@@ -9,6 +9,7 @@ from typing import Any, Optional
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from hubspace_async import HubSpaceConnection, InvalidAuth
 
 from .const import DOMAIN
@@ -38,7 +39,7 @@ class HubSpaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         try:
             async with timeout(10):
                 self.conn = HubSpaceConnection(
-                    user_input[CONF_USERNAME], user_input[CONF_PASSWORD]
+                    user_input[CONF_USERNAME], user_input[CONF_PASSWORD], websession=async_get_clientsession(self.hass),
                 )
                 await self.conn.get_account_id()
         except TimeoutError:
