@@ -39,7 +39,7 @@ class HubSpaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         try:
             async with timeout(10):
                 self.conn = HubSpaceConnection(
-                    user_input[CONF_USERNAME], user_input[CONF_PASSWORD], websession=async_get_clientsession(self.hass),
+                    user_input[CONF_USERNAME], user_input[CONF_PASSWORD],
                 )
                 await self.conn.get_account_id()
         except TimeoutError:
