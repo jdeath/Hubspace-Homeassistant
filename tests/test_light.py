@@ -21,6 +21,7 @@ switch_dimmer_light = switch_dimmer[0]
 
 rgb_temp_light = create_devices_from_data("light-rgb_temp.json")[0]
 light_a21 = create_devices_from_data("light-a21.json")[0]
+rgbw_led_strip = create_devices_from_data("rgbw-led-strip.json")[0]
 
 
 def modify_state(device: HubSpaceDevice, new_state):
@@ -142,6 +143,36 @@ def temperature_light(mocked_coordinator):
                         "sleep",
                         "valentines-day",
                         "wake-up",
+                    ],
+                    "preset": [
+                        "custom",
+                        "fade-3",
+                        "fade-7",
+                        "flash",
+                        "jump-3",
+                        "jump-7",
+                    ],
+                },
+            },
+        ),
+        (
+            rgbw_led_strip.functions,
+            {
+                "_instance_attrs": {},
+                "_color_modes": {
+                    ColorMode.ONOFF,
+                    ColorMode.BRIGHTNESS,
+                    ColorMode.RGB,
+                },
+                "_supported_brightness": [x for x in range(1, 101)],
+                "_temperature_choices": set(),
+                "_temperature_prefix": "",
+                "_effects": {
+                    "custom": [
+                        "christmas",
+                        "july-4th",
+                        "rainbow",
+                        "valentines-day",
                     ],
                     "preset": [
                         "custom",
