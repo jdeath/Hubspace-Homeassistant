@@ -35,8 +35,10 @@ class HubSpaceData:
 type HubSpaceConfigEntry = ConfigEntry[HubSpaceData]
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: HubSpaceData) -> bool:
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up HubSpace as config entry."""
+    # HACS doesnt seem to do the migration so force it
+    await async_migrate_entry(hass, entry)
     websession = async_get_clientsession(hass)
     conn = HubSpaceConnection(
         entry.data[CONF_USERNAME], entry.data[CONF_PASSWORD], websession=websession
