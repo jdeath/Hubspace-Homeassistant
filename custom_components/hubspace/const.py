@@ -20,6 +20,10 @@ CONF_ROOMNAMES: Final = "roomnames"
 CONF_DEBUG: Final = "debug"
 UPDATE_INTERVAL_OBSERVATION = timedelta(seconds=30)
 HUB_IDENTIFIER: Final[str] = "hubspace_debug"
+DEFAULT_TIMEOUT: Final[int] = 10000
+
+VERSION_MAJOR: Final[int] = 2
+VERSION_MINOR: Final[int] = 0
 
 
 ENTITY_FAN: Final[str] = "fan"
