@@ -5,11 +5,12 @@
             "user": {
                 "data": {
                     "username": "Username",
-                    "password": "Password"
+                    "password": "Password",
+                    "timeout": "timeout"
                 },
                 "data_description": {
                     "username": "Username",
-                    "password": "Password"
+                    "password": "Timeout in milliseconds for the connection. (Default: 10000)"
                 }
             }
         },

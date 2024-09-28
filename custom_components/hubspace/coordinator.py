@@ -29,12 +29,14 @@ class HubSpaceDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self,
         hass: HomeAssistant,
         conn: hubspace_async.HubSpaceConnection,
+        timeout: int,
         friendly_names: list[str],
         room_names: list[str],
         update_interval: timedelta,
     ) -> None:
         """Initialize."""
         self.conn = conn
+        self.timeout = timeout
         self.tracked_devices: list[hubspace_async.HubSpaceDevice] = []
         self.states: dict[str, list[hubspace_async.HubSpaceState]] = {}
         self.friendly_names = friendly_names
@@ -50,7 +52,7 @@ class HubSpaceDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         super().__init__(
             hass,
             _LOGGER,
-            name="hubspace",
+            name=const.DOMAIN,
             update_interval=update_interval,
         )
 
@@ -98,7 +100,7 @@ class HubSpaceDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     async def hs_data_update(self) -> None:
         """Update the data via library."""
         try:
-            async with timeout(10):
+            async with timeout(self.timeout):
                 await self.conn.populate_data()
         except Exception as error:
             raise UpdateFailed(error) from error
