@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import logging
 from asyncio import timeout
 from typing import Any, Optional
@@ -9,7 +10,7 @@ from typing import Any, Optional
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_USERNAME
-from hubspace_async import HubSpaceConnection, InvalidAuth
+from hubspace_async import HubSpaceConnection, InvalidAuth, InvalidResponse
 
 from .const import DEFAULT_TIMEOUT, DOMAIN
 from .const import VERSION_MAJOR as const_maj
@@ -51,7 +52,7 @@ class HubSpaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 await self.conn.get_account_id()
         except TimeoutError:
             err_type = "cannot_connect"
-        except InvalidAuth:
+        except (InvalidAuth, InvalidResponse):
             err_type = "invalid_auth"
         except Exception:
             _LOGGER.exception("Unexpected exception")
@@ -73,9 +74,12 @@ class HubSpaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     await self.conn.account_id, raise_on_progress=False
                 )
                 # self._abort_if_unique_id_configured()
+                await self.conn.client.close()
                 return self.async_create_entry(title=DOMAIN, data=user_input)
             else:
                 errors["base"] = err_type
+        with contextlib.suppress(Exception):
+            await self.conn.client.close()
         return self.async_show_form(
             step_id="user",
             data_schema=LOGIN_SCHEMA,
