@@ -11,7 +11,9 @@ from homeassistant import config_entries
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_USERNAME
 from hubspace_async import HubSpaceConnection, InvalidAuth
 
-from .const import DEFAULT_TIMEOUT, DOMAIN, VERSION_MAJOR as const_maj, VERSION_MINOR as const_min
+from .const import DEFAULT_TIMEOUT, DOMAIN
+from .const import VERSION_MAJOR as const_maj
+from .const import VERSION_MINOR as const_min
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -22,7 +24,7 @@ LOGIN_REQS = {
 OPTIONAL = {
     vol.Required(CONF_TIMEOUT): int,
 }
-LOGIN_SCHEMA = vol.Schema(LOGIN_REQS|OPTIONAL)
+LOGIN_SCHEMA = vol.Schema(LOGIN_REQS | OPTIONAL)
 RECONFIG_SCHEMA = vol.Schema(OPTIONAL)
 
 
@@ -71,10 +73,7 @@ class HubSpaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     await self.conn.account_id, raise_on_progress=False
                 )
                 # self._abort_if_unique_id_configured()
-                return self.async_create_entry(
-                    title=DOMAIN,
-                    data=user_input
-                )
+                return self.async_create_entry(title=DOMAIN, data=user_input)
             else:
                 errors["base"] = err_type
         return self.async_show_form(
