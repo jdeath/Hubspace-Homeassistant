@@ -200,11 +200,6 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
             elif function["functionClass"] == "color-rgb":
                 self._color_modes.add(ColorMode.RGB)
                 _LOGGER.debug("Adding a new feature - rgb")
-            elif function["functionClass"] == "color-mode":
-                for value in function["values"]:
-                    if value["name"] == "white":
-                        # @TODO - Is white the same thing as color temp?
-                        self._color_modes.add(ColorMode.COLOR_TEMP)
             elif function["functionClass"] == "color-sequence":
                 self._instance_attrs.pop(function["functionClass"], None)
                 self._effects[function["functionInstance"]] = sorted(
