@@ -5,17 +5,19 @@
             "user": {
                 "data": {
                     "username": "Username",
-                    "password": "Password"
+                    "password": "Password",
+                    "timeout": "timeout"
                 },
                 "data_description": {
                     "username": "Username",
-                    "password": "Password"
+                    "password": "Timeout in milliseconds for the connection. (Default: 10000)"
                 }
             }
         },
         "error": {
-            "base": "Connection timed out",
-            "unknown": "Unable to authentication. Please verify Username and Password"
+            "cannot_connect": "Connection timed out when reaching the server.",
+            "invalid_auth": "Unable to authenticate with the provided credentials",
+            "unknown": "Unknown error occurred. Please review to the logs"
         }
     },
     "services": {

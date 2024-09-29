@@ -4,13 +4,13 @@ import logging
 from dataclasses import dataclass
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, Platform
+from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_USERNAME, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.device_registry import DeviceEntry
 from hubspace_async import HubSpaceConnection
 
-from .const import UPDATE_INTERVAL_OBSERVATION
+from .const import DEFAULT_TIMEOUT, UPDATE_INTERVAL_OBSERVATION
 from .coordinator import HubSpaceDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -35,7 +35,7 @@ class HubSpaceData:
 type HubSpaceConfigEntry = ConfigEntry[HubSpaceData]
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: HubSpaceData) -> bool:
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up HubSpace as config entry."""
     websession = async_get_clientsession(hass)
     conn = HubSpaceConnection(
@@ -45,6 +45,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: HubSpaceData) -> bool:
     coordinator_hubspace = HubSpaceDataUpdateCoordinator(
         hass,
         conn,
+        entry.data[CONF_TIMEOUT],
         [],
         [],
         UPDATE_INTERVAL_OBSERVATION,
@@ -75,3 +76,23 @@ async def async_remove_config_entry_device(
             if x.device_id == device_id
         ]
     )
+
+
+async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
+    _LOGGER.debug(
+        "Migrating configuration from version %s.%s",
+        config_entry.version,
+        config_entry.minor_version,
+    )
+    if config_entry.version == 1:
+        new_data = {**config_entry.data}
+        new_data[CONF_TIMEOUT] = DEFAULT_TIMEOUT
+        hass.config_entries.async_update_entry(
+            config_entry, data=new_data, version=2, minor_version=0
+        )
+    _LOGGER.debug(
+        "Migration to configuration version %s.%s successful",
+        config_entry.version,
+        config_entry.minor_version,
+    )
+    return True
