@@ -16,6 +16,7 @@ from .coordinator import HubSpaceDataUpdateCoordinator
 _LOGGER = logging.getLogger(__name__)
 
 PLATFORMS = [
+    Platform.BINARY_SENSOR,
     Platform.FAN,
     Platform.LIGHT,
     Platform.LOCK,

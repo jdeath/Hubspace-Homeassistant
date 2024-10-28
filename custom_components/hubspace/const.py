@@ -1,6 +1,10 @@
 from datetime import timedelta
 from typing import Final
 
+from homeassistant.components.binary_sensor import (
+    BinarySensorDeviceClass,
+    BinarySensorEntityDescription,
+)
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntityDescription,
@@ -26,6 +30,8 @@ VERSION_MAJOR: Final[int] = 2
 VERSION_MINOR: Final[int] = 0
 
 
+ENTITY_BINARY_SENSOR: Final[str] = "binary_sensor"
+ENTITY_CLIMATE: Final[str] = "climate"
 ENTITY_FAN: Final[str] = "fan"
 ENTITY_LIGHT: Final[str] = "light"
 ENTITY_LOCK: Final[str] = "lock"
@@ -34,6 +40,7 @@ ENTITY_SWITCH: Final[str] = "switch"
 ENTITY_VALVE: Final[str] = "valve"
 
 DEVICE_CLASS_FAN: Final[str] = "fan"
+DEVICE_CLASS_FREEZER: Final[str] = "freezer"
 DEVICE_CLASS_LIGHT: Final[str] = "light"
 DEVICE_CLASS_SWITCH: Final[str] = "switch"
 DEVICE_CLASS_OUTLET: Final[str] = "power-outlet"
@@ -42,6 +49,7 @@ DEVICE_CLASS_DOOR_LOCK: Final[str] = "door-lock"
 DEVICE_CLASS_WATER_TIMER: Final[str] = "water-timer"
 
 DEVICE_CLASS_TO_ENTITY_MAP: Final[dict[str, str]] = {
+    DEVICE_CLASS_FREEZER: ENTITY_CLIMATE,
     DEVICE_CLASS_FAN: ENTITY_FAN,
     DEVICE_CLASS_LIGHT: ENTITY_LIGHT,
     DEVICE_CLASS_DOOR_LOCK: ENTITY_LOCK,
@@ -87,4 +95,33 @@ SENSORS_GENERAL = {
         native_unit_of_measurement=SIGNAL_STRENGTH_DECIBELS,
         state_class=SensorStateClass.MEASUREMENT,
     ),
+}
+
+BINARY_SENSORS = {
+    "freezer": {
+        "error|mcu-communication-failure": BinarySensorEntityDescription(
+            key="error|mcu-communication-failure",
+            name="MCU",
+            device_class=BinarySensorDeviceClass.PROBLEM,
+            entity_category=EntityCategory.DIAGNOSTIC,
+        ),
+        "error|fridge-high-temperature-alert": BinarySensorEntityDescription(
+            key="error|fridge-high-temperature-alert",
+            name="Fridge High Temp Alert",
+            device_class=BinarySensorDeviceClass.PROBLEM,
+            entity_category=EntityCategory.DIAGNOSTIC,
+        ),
+        "error|freezer-high-temperature-alert": BinarySensorEntityDescription(
+            key="error|freezer-high-temperature-alert",
+            name="Freezer High Temp Alert",
+            device_class=BinarySensorDeviceClass.PROBLEM,
+            entity_category=EntityCategory.DIAGNOSTIC,
+        ),
+        "error|temperature-sensor-failure": BinarySensorEntityDescription(
+            key="error|temperature-sensor-failure",
+            name="Sensor Failure",
+            device_class=BinarySensorDeviceClass.PROBLEM,
+            entity_category=EntityCategory.DIAGNOSTIC,
+        ),
+    }
 }
