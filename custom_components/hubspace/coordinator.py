@@ -10,6 +10,7 @@ from typing import Any, NewType, Union
 
 import aiofiles
 import hubspace_async
+from homeassistant.components.binary_sensor import BinarySensorEntityDescription
 from homeassistant.components.sensor import SensorEntityDescription
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
@@ -43,9 +44,12 @@ class HubSpaceDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self.room_names = room_names
         # We only want to perform the sensor checks once per device
         # to reduce the same computing
-        self.sensors: defaultdict[str, list] = defaultdict(list)
+        self.sensors: dict[str, defaultdict] = {
+            const.ENTITY_BINARY_SENSOR: defaultdict(dict),
+            const.ENTITY_SENSOR: defaultdict(dict),
+        }
         self._sensor_checks: list[str] = []
-        # HubSpace loves to duplicate data across multiple devices and
+        # HubSpace loves to duplicate data across multiple devices, and
         # we only want to add it once
         self._added_sensors: list[str] = []
 
@@ -56,26 +60,37 @@ class HubSpaceDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             update_interval=update_interval,
         )
 
-    async def process_sensor_devs(self, dev: hubspace_async.HubSpaceDevice) -> list:
+    async def process_sensor_devs(self, dev: hubspace_async.HubSpaceDevice):
         """Get sensors from a device"""
         if dev.id not in self._sensor_checks:
             _LOGGER.debug(
                 "Performing sensor checks for device %s [%s]", dev.friendly_name, dev.id
             )
             self._sensor_checks.append(dev.id)
-
+            # sensors
             if sensors := await get_sensors(dev):
-                de_duped_sensors = []
-                for sensor in sensors:
-                    if dev.device_id:
-                        unique = f"{dev.device_id}_{sensor.key}"
-                    else:
-                        unique = f"{dev.id}_{sensor.key}"
-                    if unique not in self._added_sensors:
-                        self._added_sensors.append(unique)
-                        de_duped_sensors.append(sensor)
-                self.sensors[dev.id] = de_duped_sensors
-        return self.sensors[dev.id]
+                self.sensors[const.ENTITY_SENSOR][dev.id] = (
+                    await self.process_sensor_dev(dev, sensors)
+                )
+            # binary sensors
+            if sensors := await get_binary_sensors(dev):
+                self.sensors[const.ENTITY_BINARY_SENSOR][dev.id] = (
+                    await self.process_sensor_dev(dev, sensors)
+                )
+
+    async def process_sensor_dev(
+        self, dev: hubspace_async.HubSpaceDevice, sensors: list
+    ) -> list:
+        de_duped = []
+        for sensor in sensors:
+            if dev.device_id:
+                unique = f"{dev.device_id}_{sensor.key}"
+            else:
+                unique = f"{dev.id}_{sensor.key}"
+            if unique not in self._added_sensors:
+                self._added_sensors.append(unique)
+                de_duped.append(sensor)
+        return de_duped
 
     async def _async_update_data(
         self,
@@ -135,10 +150,16 @@ class HubSpaceDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 continue
             _LOGGER.debug("Adding device %s to %s", dev.friendly_name, mapped)
             devices[mapped][dev.id] = dev
-            if dev_sensors := await self.process_sensor_devs(dev):
+            await self.process_sensor_devs(dev)
+            if dev.id in self.sensors[const.ENTITY_SENSOR]:
                 devices[const.ENTITY_SENSOR][dev.id] = {
                     "device": dev,
-                    "sensors": dev_sensors,
+                    "sensors": self.sensors[const.ENTITY_SENSOR][dev.id],
+                }
+            if dev.id in self.sensors[const.ENTITY_BINARY_SENSOR]:
+                devices[const.ENTITY_BINARY_SENSOR][dev.id] = {
+                    "device": dev,
+                    "sensors": self.sensors[const.ENTITY_BINARY_SENSOR][dev.id],
                 }
         return devices
 
@@ -159,6 +180,26 @@ async def get_sensors(
             dev.id,
         )
         required_sensors.append(sensor)
+    return required_sensors
+
+
+async def get_binary_sensors(
+    dev: hubspace_async.HubSpaceDevice,
+) -> list[BinarySensorEntityDescription]:
+    required_sensors: list[BinarySensorEntityDescription] = []
+    binary_sensors = const.BINARY_SENSORS.get(dev.device_class, {})
+    for state in dev.states:
+        key = state.functionClass
+        if state.functionInstance:
+            key += f"|{state.functionInstance}"
+        if key in binary_sensors:
+            required_sensors.append(binary_sensors[key])
+            _LOGGER.debug(
+                "Found a binary sensor, %s, attached to %s [%s]",
+                key,
+                dev.friendly_name,
+                dev.id,
+            )
     return required_sensors
 
 
