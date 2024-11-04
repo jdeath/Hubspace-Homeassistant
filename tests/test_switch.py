@@ -1,14 +1,28 @@
 import pytest
+from hubspace_async import HubSpaceDevice
 
 from custom_components.hubspace import switch
 from custom_components.hubspace.const import ENTITY_SWITCH
 
 from .utils import create_devices_from_data
 
+dummy_device = HubSpaceDevice(
+    "child_id",
+    "device_id",
+    "test_model",
+    "switch",
+    "device_name",
+    "friendly_image",
+    "test switch",
+    functions=[],
+    states=[],
+    children=[],
+)
+
 
 @pytest.fixture
 def single_switch(mocked_coordinator):
-    yield switch.HubSpaceSwitch(mocked_coordinator, "test switch", None)
+    yield switch.HubSpaceSwitch(mocked_coordinator, dummy_device, instance=None)
 
 
 transformer = create_devices_from_data("transformer.json")[0]
@@ -25,9 +39,9 @@ transformer = create_devices_from_data("transformer.json")[0]
 async def test_update_states(instance, states, expected_attrs, single_switch):
     single_switch._instance = instance
     single_switch.states = states
-    single_switch.coordinator.data[ENTITY_SWITCH][
-        single_switch._child_id
-    ] = single_switch
+    single_switch.coordinator.data[ENTITY_SWITCH][single_switch._child_id] = {
+        "device": single_switch
+    }
     single_switch.update_states()
     for key, val in expected_attrs.items():
         assert getattr(single_switch, key) == val

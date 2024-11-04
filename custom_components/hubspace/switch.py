@@ -2,112 +2,47 @@ import logging
 from typing import Optional
 
 from homeassistant.components.switch import SwitchEntity
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
-from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from hubspace_async import HubSpaceDevice, HubSpaceState
 
 from . import HubSpaceConfigEntry
 from .const import DOMAIN, ENTITY_SWITCH
 from .coordinator import HubSpaceDataUpdateCoordinator
+from .hubspace_entity import HubSpaceEntity
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class HubSpaceSwitch(CoordinatorEntity, SwitchEntity):
+class HubSpaceSwitch(HubSpaceEntity, SwitchEntity):
     """HubSpace switch-type that can communicate with Home Assistant
 
-    :ivar _name: Name of the device
-    :ivar _hs: HubSpace connector
-    :ivar _child_id: ID used when making requests to HubSpace
-    :ivar _state: If the device is on / off
-    :ivar _bonus_attrs: Attributes relayed to Home Assistant that do not need to be
-        tracked in their own class variables
-    :ivar _availability: If the device is available within HubSpace
-    :ivar _device_class: Device class used during lookup
     :ivar _instance: functionInstance within the HS device
+    :ivar _state: Current state of the switch
     """
+
+    ENTITY_TYPE = ENTITY_SWITCH
 
     def __init__(
         self,
-        hs: HubSpaceDataUpdateCoordinator,
-        friendly_name: str,
+        coordinator: HubSpaceDataUpdateCoordinator,
+        device: HubSpaceDevice,
         instance: Optional[str],
-        child_id: Optional[str] = None,
-        model: Optional[str] = None,
-        device_id: Optional[str] = None,
     ) -> None:
-        super().__init__(hs, context=child_id)
-        self._name: str = friendly_name
-        self.coordinator = hs
-        self._hs = hs.conn
-        self._child_id: str = child_id
+        self._instance: Optional[str] = instance
         self._state: Optional[str] = None
-        self._bonus_attrs = {
-            "model": model,
-            "deviceId": device_id,
-            "Child ID": self._child_id,
-        }
-        self._availability: Optional[bool] = None
-        # Entity-specific
-        self._instance = instance
-
-    @callback
-    def _handle_coordinator_update(self) -> None:
-        """Handle updated data from the coordinator."""
-        self.update_states()
-        self.async_write_ha_state()
+        super().__init__(coordinator, device)
 
     def update_states(self) -> None:
         """Load initial states into the device"""
-        states: list[HubSpaceState] = self.coordinator.data[ENTITY_SWITCH][
-            self._child_id
-        ].states
-        if not states:
-            _LOGGER.debug(
-                "No states found for %s. Maybe hasn't polled yet?", self._child_id
-            )
-        # functionClass -> internal attribute
-        for state in states:
+        for state in self.get_device_states():
             if state.functionClass == "available":
                 self._availability = state.value
             elif state.functionClass != self.primary_class:
                 continue
-            elif self._instance and state.functionInstance != self._instance:
-                continue
-            else:
+            elif not self._instance or state.functionInstance == self._instance:
                 self._state = state.value
-
-    @property
-    def should_poll(self):
-        return False
-
-    @property
-    def name(self) -> str:
-        """Return the display name"""
-        if self._instance:
-            return f"{self._name} - {self._instance}"
-        else:
-            return self._name
-
-    @property
-    def unique_id(self) -> str:
-        """Return the HubSpace ID"""
-        if self._instance:
-            return f"{self._child_id}-{self._instance}"
-        else:
-            return self._child_id
-
-    @property
-    def available(self) -> bool:
-        return self._availability is True
-
-    @property
-    def extra_state_attributes(self):
-        """Return the state attributes."""
-        return self._bonus_attrs
 
     @property
     def is_on(self) -> bool | None:
@@ -116,18 +51,6 @@ class HubSpaceSwitch(CoordinatorEntity, SwitchEntity):
             return None
         else:
             return self._state == "on"
-
-    @property
-    def device_info(self) -> DeviceInfo:
-        """Return the device info."""
-        model = (
-            self._bonus_attrs["model"] if self._bonus_attrs["model"] != "TBD" else None
-        )
-        return DeviceInfo(
-            identifiers={(DOMAIN, self._bonus_attrs["deviceId"])},
-            name=self._name,
-            model=model,
-        )
 
     @property
     def primary_class(self) -> str:
@@ -172,11 +95,8 @@ async def setup_entry_toggled(
         _LOGGER.debug("Adding a %s [%s] @ %s", entity.device_class, entity.id, instance)
         ha_entity = HubSpaceSwitch(
             coordinator_hubspace,
-            entity.friendly_name,
-            instance,
-            child_id=entity.id,
-            model=entity.model,
-            device_id=entity.device_id,
+            entity,
+            instance=instance,
         )
         valid.append(ha_entity)
     return valid
@@ -189,11 +109,8 @@ async def setup_basic_switch(
     _LOGGER.debug("No toggleable elements found. Setting up as a basic switch")
     ha_entity = HubSpaceSwitch(
         coordinator_hubspace,
-        entity.friendly_name,
-        None,
-        child_id=entity.id,
-        model=entity.model,
-        device_id=entity.device_id,
+        entity,
+        instance=None,
     )
     return ha_entity
 
