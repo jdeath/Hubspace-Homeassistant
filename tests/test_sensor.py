@@ -17,14 +17,14 @@ transformer = create_devices_from_data("transformer.json")
         (const.SENSORS_GENERAL["wifi-rssi"], transformer[0], True, -51),
     ],
 )
-def test_sensor(sensor_descr, device, is_numeric, expected, mocked_coordinator):
+def test_sensor(sensor_descr, device, is_numeric, expected, mocked_coordinator, mocker):
     empty_sensor = sensor.HubSpaceSensor(
         mocked_coordinator,
         sensor_descr,
         device,
         is_numeric,
     )
-    empty_sensor.coordinator.data[const.ENTITY_SENSOR][device.id] = {"device": device}
+    mocker.patch.object(empty_sensor, "get_device_states", return_value=device.states)
     empty_sensor.update_states()
     # Ensure the state can be correctly calculated
     empty_sensor.state

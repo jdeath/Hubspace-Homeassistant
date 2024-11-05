@@ -15,16 +15,15 @@ from homeassistant.components.light import (
     LightEntity,
     LightEntityFeature,
 )
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
-from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from hubspace_async import HubSpaceState
+from hubspace_async import HubSpaceDevice, HubSpaceState
 
 from . import HubSpaceConfigEntry
 from .const import DOMAIN, ENTITY_LIGHT
 from .coordinator import HubSpaceDataUpdateCoordinator
+from .hubspace_entity import HubSpaceEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -86,64 +85,32 @@ def process_color_temps(color_temps: dict) -> list[int]:
     return sorted(supported_temps)
 
 
-class HubspaceLight(CoordinatorEntity, LightEntity):
+class HubspaceLight(HubSpaceEntity, LightEntity):
     """HubSpace light that can communicate with Home Assistant
 
     @TODO - Support for HS, RGBW, RGBWW, XY
 
-    :ivar _name: Name of the device
-    :ivar _hs: HubSpace connector
-    :ivar _child_id: ID used when making requests to HubSpace
-    :ivar _state: If the device is on / off
-    :ivar _bonus_attrs: Attributes relayed to Home Assistant that do not need to be
-        tracked in their own class variables
-    :ivar _availability: If the device is available within HubSpace
-    :ivar _instance_attrs: Additional attributes that are required when
-        POSTing to HubSpace
-    :ivar _color_modes: Supported options for the light
+    :ivar _brightness: Current brightness of the light
     :ivar _color_mode: Current color mode of the light
+    :ivar _color_modes: Supported options for the light
     :ivar _color_temp: Current temperature of the light
+    :ivar _current_effect: Current effect of the light
+    :ivar _effects: Dictionary of supported effects
+    :ivar _rgb: Current RGB values
+    :ivar _state: Current state of the fan
+    :ivar _supported_brightness: Supported brightness of the light
+    :ivar _supported_features: Features supported by the light
     :ivar _temperature_choices: Supported temperatures of the light
     :ivar _temperature_prefix: Prefix for HubSpace
-    :ivar _brightness: Current brightness of the light
-    :ivar _supported_brightness: Supported brightness of the light
-    :ivar _rgb: Current RGB values
-    :ivar _effects: Dictionary of supported effects
-
-
-    :param hs: HubSpace connector
-    :param friendly_name: The friendly name of the device
-    :param child_id: ID used when making requests to HubSpace
-    :param model: Model of the device
-    :param device_id: Parent Device ID
-    :param functions: List of supported functions for the device
     """
+
+    ENTITY_TYPE = ENTITY_LIGHT
 
     _enable_turn_on_off_backwards_compatibility = False
 
     def __init__(
-        self,
-        hs: HubSpaceDataUpdateCoordinator,
-        friendly_name: str,
-        child_id: Optional[str] = None,
-        model: Optional[str] = None,
-        device_id: Optional[str] = None,
-        functions: Optional[list[dict]] = None,
+        self, coordinator: HubSpaceDataUpdateCoordinator, device: HubSpaceDevice
     ) -> None:
-        super().__init__(hs, context=child_id)
-        self._name: str = friendly_name
-        self.coordinator = hs
-        self._hs = hs.conn
-        self._child_id: str = child_id
-        self._state: Optional[str] = None
-        self._bonus_attrs = {
-            "model": model,
-            "deviceId": device_id,
-            "Child ID": self._child_id,
-        }
-        self._availability: Optional[bool] = None
-        self._instance_attrs: dict[str, str] = {}
-        # Entity-specific
         self._color_modes: set[ColorMode] = set()
         self._color_mode: Optional[ColorMode] = None
         self._color_temp: Optional[int] = None
@@ -155,16 +122,9 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
         self._supported_features: LightEntityFeature = LightEntityFeature(0)
         self._effects: dict[str, list[str]] = defaultdict(list)
         self._current_effect: Optional[str] = None
-
-        functions = functions or []
-        self.process_functions(functions)
+        self._state: Optional[str] = None
+        super().__init__(coordinator, device)
         self._adjust_supported_modes()
-
-    @callback
-    def _handle_coordinator_update(self) -> None:
-        """Handle updated data from the coordinator."""
-        self.update_states()
-        self.async_write_ha_state()
 
     def process_functions(self, functions: list[dict]) -> None:
         """Process available functions
@@ -211,15 +171,6 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
                     "Unsupported feature found, %s", function["functionClass"]
                 )
                 self._instance_attrs.pop(function["functionClass"], None)
-
-    def get_device_states(self) -> list[HubSpaceState]:
-        try:
-            return self.coordinator.data[ENTITY_LIGHT][self._child_id].states
-        except KeyError:
-            _LOGGER.debug(
-                "No device found for %s. Maybe hasn't polled yet?", self._child_id
-            )
-            return []
 
     def update_states(self) -> None:
         """Load initial states into the device
@@ -296,48 +247,12 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
         return color_mode_states
 
     @property
-    def should_poll(self):
-        return False
-
-    # Entity-specific properties
-    @property
-    def name(self) -> str:
-        """Return the display name of this light."""
-        return self._name
-
-    @property
-    def unique_id(self) -> str:
-        """Return the display name of this light."""
-        return self._child_id
-
-    @property
-    def available(self) -> bool:
-        return self._availability is True
-
-    @property
-    def extra_state_attributes(self):
-        """Return the state attributes."""
-        return self._bonus_attrs
-
-    @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
         if self._state is None:
             return None
         else:
             return self._state == "on"
-
-    @property
-    def device_info(self) -> DeviceInfo:
-        """Return the device info."""
-        model = (
-            self._bonus_attrs["model"] if self._bonus_attrs["model"] != "TBD" else None
-        )
-        return DeviceInfo(
-            identifiers={(DOMAIN, self._bonus_attrs["deviceId"])},
-            name=self.name,
-            model=model,
-        )
 
     @property
     def supported_color_modes(self) -> set[ColorMode]:
@@ -490,7 +405,7 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
             if effect_states:
                 states_to_set.extend(effect_states)
             self._color_mode = ColorMode.RGB
-        await self._hs.set_device_states(self._child_id, states_to_set)
+        await self.set_device_states(states_to_set)
         self.async_write_ha_state()
 
     async def determine_effect_states(self, effect: str) -> list[HubSpaceState]:
@@ -533,7 +448,7 @@ class HubspaceLight(CoordinatorEntity, LightEntity):
                 value=self._state,
             )
         ]
-        await self._hs.set_device_states(self._child_id, states_to_set)
+        await self.set_device_states(states_to_set)
         self.async_write_ha_state()
 
 
@@ -557,13 +472,6 @@ async def async_setup_entry(
             model=entity.model,
             manufacturer=entity.manufacturerName,
         )
-        ha_entity = HubspaceLight(
-            coordinator_hubspace,
-            entity.friendly_name,
-            child_id=entity.id,
-            model=entity.model,
-            device_id=entity.device_id,
-            functions=entity.functions,
-        )
+        ha_entity = HubspaceLight(coordinator_hubspace, entity)
         entities.append(ha_entity)
     async_add_entities(entities)

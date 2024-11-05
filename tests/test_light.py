@@ -24,6 +24,20 @@ light_a21 = create_devices_from_data("light-a21.json")[0]
 rgbw_led_strip = create_devices_from_data("rgbw-led-strip.json")[0]
 
 
+dummy_device = HubSpaceDevice(
+    "child_id",
+    "device_id",
+    "test_model",
+    "light",
+    "device_name",
+    "friendly_image",
+    "test light",
+    functions=[],
+    states=[],
+    children=[],
+)
+
+
 def modify_state(device: HubSpaceDevice, new_state):
     for ind, state in enumerate(device.states):
         if state.functionClass != new_state.functionClass:
@@ -66,12 +80,12 @@ modify_state(light_a21_effect, a21_state_mode)
 
 @pytest.fixture
 def empty_light(mocked_coordinator):
-    yield light.HubspaceLight(mocked_coordinator, "test light")
+    yield light.HubspaceLight(mocked_coordinator, dummy_device)
 
 
 @pytest.fixture
 def temperature_light(mocked_coordinator):
-    temp_light = light.HubspaceLight(mocked_coordinator, "test light")
+    temp_light = light.HubspaceLight(mocked_coordinator, dummy_device)
     temp_light._temperature_choices = [2700, 3000, 3500]
     yield temp_light
 
@@ -234,7 +248,7 @@ def test_determine_states_from_hs_mode(device, expected, mocker, empty_light):
 
 
 @pytest.mark.parametrize(
-    "states, expected_attrs, extra_attrs",
+    "states, expected_attrs",
     [
         (
             fan_zandra_light.states,
@@ -243,11 +257,6 @@ def test_determine_states_from_hs_mode(device, expected, mocker, empty_light):
                 "_color_temp": 3000,
                 "_brightness": 114,
                 "_availability": True,
-            },
-            {
-                "Child ID": None,
-                "deviceId": None,
-                "model": None,
             },
         ),
         # Switch from white to RGB
@@ -261,7 +270,6 @@ def test_determine_states_from_hs_mode(device, expected, mocker, empty_light):
                 "_color_mode": light.ColorMode.RGB,
                 "_current_effect": None,
             },
-            {},
         ),
         # set current effect
         (
@@ -274,15 +282,12 @@ def test_determine_states_from_hs_mode(device, expected, mocker, empty_light):
                 "_current_effect": "rainbow",
                 "_color_mode": light.ColorMode.BRIGHTNESS,
             },
-            {},
         ),
     ],
 )
-def test_update_states(states, expected_attrs, extra_attrs, empty_light, mocker):
+def test_update_states(states, expected_attrs, empty_light, mocker):
     mocker.patch.object(empty_light, "get_device_states", return_value=states)
     empty_light.update_states()
-    if extra_attrs:
-        assert empty_light.extra_state_attributes == extra_attrs
     for key, val in expected_attrs.items():
         assert getattr(empty_light, key) == val
 
@@ -292,7 +297,7 @@ def test_name(empty_light):
 
 
 def test_unique_id(empty_light):
-    empty_light._child_id = "beans"
+    empty_light._device.id = "beans"
     assert empty_light.unique_id == "beans"
 
 
@@ -306,24 +311,6 @@ def test_unique_id(empty_light):
 def test_is_on(state, expected, empty_light):
     empty_light._state = state
     assert empty_light.is_on == expected
-
-
-def test_extra_state_attributes(mocked_coordinator):
-    model = "bean model"
-    device_id = "bean-123"
-    child_id = "bean-123-123"
-    test_fan = light.HubspaceLight(
-        mocked_coordinator,
-        "test light",
-        model=model,
-        device_id=device_id,
-        child_id=child_id,
-    )
-    assert test_fan.extra_state_attributes == {
-        "model": model,
-        "deviceId": device_id,
-        "Child ID": child_id,
-    }
 
 
 @pytest.mark.asyncio
