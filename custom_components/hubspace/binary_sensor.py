@@ -1,25 +1,31 @@
 import logging
-from typing import Any
+from typing import Any, Optional
 
 from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
     BinarySensorEntityDescription,
 )
-from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from hubspace_async import HubSpaceDevice, HubSpaceState
+from hubspace_async import HubSpaceDevice
 
 from . import HubSpaceConfigEntry
-from .const import DOMAIN, ENTITY_BINARY_SENSOR
+from .const import ENTITY_BINARY_SENSOR
 from .coordinator import HubSpaceDataUpdateCoordinator
+from .hubspace_entity import HubSpaceEntity
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class HubSpaceBinarySensor(CoordinatorEntity, BinarySensorEntity):
-    """HubSpace child sensor component"""
+class HubSpaceBinarySensor(HubSpaceEntity, BinarySensorEntity):
+    """HubSpace child sensor component
+
+    :ivar _function_class: functionClass within the payload
+    :ivar _function_instance: functionInstance within the payload
+    :ivar _sensor_value: Current value of the sensor
+    """
+
+    ENTITY_TYPE: str = ENTITY_BINARY_SENSOR
 
     def __init__(
         self,
@@ -27,34 +33,20 @@ class HubSpaceBinarySensor(CoordinatorEntity, BinarySensorEntity):
         description: BinarySensorEntityDescription,
         device: HubSpaceDevice,
     ) -> None:
-        super().__init__(coordinator, context=device.id)
-        self.coordinator = coordinator
         self.entity_description = description
         search_data = description.key.split("|", 1)
-        self._function_instance = None
+        self._function_class: str
+        self._function_instance: Optional[str] = None
         try:
             self._function_class, self._function_instance = search_data
         except ValueError:
             self._function_class = search_data
-        self._device = device
-        self._sensor_value = None
-
-    @callback
-    def _handle_coordinator_update(self) -> None:
-        """Handle updated data from the coordinator."""
-        self.update_states()
-        self.async_write_ha_state()
+        self._sensor_value: Optional[str] = None
+        super().__init__(coordinator, device)
 
     def update_states(self) -> None:
         """Handle updated data from the coordinator."""
-        states: list[HubSpaceState] = self.coordinator.data[ENTITY_BINARY_SENSOR][
-            self._device.id
-        ]["device"].states
-        if not states:
-            _LOGGER.debug(
-                "No states found for %s. Maybe hasn't polled yet?", self._device.id
-            )
-        for state in states:
+        for state in self.get_device_states():
             if state.functionClass == self._function_class:
                 if (
                     self._function_instance
@@ -62,24 +54,6 @@ class HubSpaceBinarySensor(CoordinatorEntity, BinarySensorEntity):
                 ):
                     continue
                 self._sensor_value = state.value
-
-    @property
-    def unique_id(self) -> str:
-        return f"{self._device.id}_{self.entity_description.key}"
-
-    @property
-    def name(self) -> str:
-        return f"{self._device.friendly_name}: {self.entity_description.name}"
-
-    @property
-    def device_info(self) -> DeviceInfo:
-        """Return the device info."""
-        model = self._device.model if self._device.model != "TBD" else None
-        return DeviceInfo(
-            identifiers={(DOMAIN, self._device.device_id)},
-            name=self._device.friendly_name,
-            model=model,
-        )
 
     @property
     def device_class(self) -> Any:
