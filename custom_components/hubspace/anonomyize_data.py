@@ -15,13 +15,18 @@ logger = logging.getLogger(__name__)
 FNAME_IND = 0
 
 
-async def generate_anon_data(conn: HubSpaceConnection, anon_name: bool=False,) -> dict:
+async def generate_anon_data(
+    conn: HubSpaceConnection,
+    anon_name: bool = False,
+) -> dict:
     devices = await conn.devices
     fake_devices = []
     parents = await generate_parent_mapping(devices)
     device_links = {}
     for dev in devices.values():
-        fake_devices.append(await anonymize_device(dev, parents, device_links, anon_name))
+        fake_devices.append(
+            await anonymize_device(dev, parents, device_links, anon_name)
+        )
     return fake_devices
 
 
@@ -76,7 +81,10 @@ async def output_devices(conn: HubSpaceConnection):
 
 
 async def anonymize_device_lookup(
-    conn: HubSpaceConnection, friendly_name: str = None, child_id: str = None, anon_name: bool = False,
+    conn: HubSpaceConnection,
+    friendly_name: str = None,
+    child_id: str = None,
+    anon_name: bool = False,
 ):
     """Output anonymized device data for a device
 
@@ -117,7 +125,10 @@ async def anonymize_device_lookup(
 
 
 async def anonymize_device(
-    dev: HubSpaceDevice, parent_mapping: dict, device_links: dict, anon_name,
+    dev: HubSpaceDevice,
+    parent_mapping: dict,
+    device_links: dict,
+    anon_name,
 ):
     fake_dev = asdict(dev)
     if anon_name:
@@ -204,7 +215,11 @@ try:
     @click.pass_context
     async def friendly_name(ctx, fn, anon_name):
         """Output all devices associated to the name"""
-        click.echo(await anonymize_device_lookup(ctx.obj["conn"], friendly_name=fn, anon_name=anon_name))
+        click.echo(
+            await anonymize_device_lookup(
+                ctx.obj["conn"], friendly_name=fn, anon_name=anon_name
+            )
+        )
 
     @cli.command()
     @click.option("--child_id", required=True, help="Child ID")
@@ -212,7 +227,11 @@ try:
     @click.pass_context
     async def child_id(ctx, child_id, anon_name):
         """Output all devices associated to the child_id"""
-        click.echo(await anonymize_device_lookup(ctx.obj["conn"], child_id=child_id, anon_name=anon_name))
+        click.echo(
+            await anonymize_device_lookup(
+                ctx.obj["conn"], child_id=child_id, anon_name=anon_name
+            )
+        )
 
     @cli.command()
     @click.option("--child_id", required=True, help="Child ID")
