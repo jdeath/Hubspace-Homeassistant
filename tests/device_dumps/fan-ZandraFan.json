@@ -328,6 +328,7 @@
                 ]
             }
         ],
+        "children": [],
         "states": [
             {
                 "functionClass": "toggle",
@@ -624,6 +625,7 @@
                 ]
             }
         ],
+        "children": [],
         "states": [
             {
                 "functionClass": "power",
@@ -819,6 +821,10 @@
                     }
                 ]
             }
+        ],
+        "children": [
+            "066c0e38-c49b-4f60-b805-486dc07cab74",
+            "3a0c5015-c19d-417f-8e08-e71cd5bc221b"
         ],
         "states": [
             {

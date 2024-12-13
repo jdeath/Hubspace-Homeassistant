@@ -108,8 +108,9 @@ class HubSpaceDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 await fh.write(json.dumps(data, indent=4))
             dev_raw = os.path.join(curr_directory, "_dump_hs_raw.json")
             _LOGGER.debug("Writing out raw device data to %s", dev_raw)
+            data = await anonomyize_data.generate_raw_data(self.conn)
             async with aiofiles.open(dev_raw, "w") as fh:
-                await fh.write(json.dumps(self.conn.raw_devices, indent=4))
+                await fh.write(json.dumps(data, indent=4))
         return await self.process_tracked_devices()
 
     async def hs_data_update(self) -> None:

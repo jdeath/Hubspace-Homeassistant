@@ -133,7 +133,7 @@ the following setup steps must be run:
        ```
  * Download requirements
    * ```sh
-     python -m pip install requests "hubspace_async>=0.0.5" click
+     python -m pip install requests "hubspace_async>=0.0.5" asyncclick
      ```
  * Goto your home directory
    * Unix
