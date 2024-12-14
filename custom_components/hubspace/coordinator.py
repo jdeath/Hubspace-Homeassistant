@@ -149,6 +149,13 @@ class HubSpaceDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                         "Found a known unmapped device_class, %s", dev.device_class
                     )
                 continue
+            # @TODO - Dirty fix. Need to revamp discovery to automatically determing this
+            if (
+                dev.device_class == "power-outlet"
+                and dev.default_name == "Smart Stake Timer"
+            ):
+                _LOGGER.info("Main device found, skipping for now")
+                continue
             _LOGGER.debug("Adding device %s to %s", dev.friendly_name, mapped)
             devices[mapped][dev.id] = dev
             await self.process_sensor_devs(dev)
