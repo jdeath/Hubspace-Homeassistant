@@ -22,12 +22,14 @@ freezer = create_devices_from_data("freezer.json")[0]
         ),
     ],
 )
-def test_sensor(sensor_descr, device, expected, mocked_coordinator, mocker):
+def test_sensor(sensor_descr, device, expected, mocked_coordinator):
     empty_sensor = binary_sensor.HubSpaceBinarySensor(
         mocked_coordinator,
         sensor_descr,
         device,
     )
-    mocker.patch.object(empty_sensor, "get_device_states", return_value=device.states)
+    empty_sensor.coordinator.data[const.ENTITY_BINARY_SENSOR][device.id] = {
+        "device": device
+    }
     empty_sensor.update_states()
     assert empty_sensor.is_on == expected

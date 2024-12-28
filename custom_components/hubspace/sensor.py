@@ -1,29 +1,23 @@
 import logging
-from typing import Any, Optional
+from typing import Any
 
 from homeassistant.components.sensor import SensorEntity, SensorEntityDescription
 from homeassistant.components.sensor import const as sensor_const
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from hubspace_async import HubSpaceDevice
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from hubspace_async import HubSpaceDevice, HubSpaceState
 
 from . import HubSpaceConfigEntry
-from .const import ENTITY_SENSOR
+from .const import DOMAIN, ENTITY_SENSOR
 from .coordinator import HubSpaceDataUpdateCoordinator
-from .hubspace_entity import HubSpaceEntity
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class HubSpaceSensor(HubSpaceEntity, SensorEntity):
-    """HubSpace child sensor component
-
-    :ivar entity_description: Description of the entity
-    :ivar _is_numeric: If the sensor is a numeric value
-    :ivar _sensor_value: Current value of the sensor
-    """
-
-    ENTITY_TYPE = ENTITY_SENSOR
+class HubSpaceSensor(CoordinatorEntity, SensorEntity):
+    """HubSpace child sensor component"""
 
     def __init__(
         self,
@@ -32,18 +26,51 @@ class HubSpaceSensor(HubSpaceEntity, SensorEntity):
         device: HubSpaceDevice,
         is_numeric: bool,
     ) -> None:
-        super().__init__(coordinator, device)
-        self.entity_description: SensorEntityDescription = description
+        super().__init__(coordinator, context=device.id)
+        self.coordinator = coordinator
+        self.entity_description = description
+        self._device = device
         self._is_numeric: bool = is_numeric
-        self._sensor_value: Optional[bool] = None
+        self._sensor_value = None
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self.update_states()
+        self.async_write_ha_state()
 
     def update_states(self) -> None:
         """Handle updated data from the coordinator."""
-        for state in self.get_device_states():
+        states: list[HubSpaceState] = self.coordinator.data[ENTITY_SENSOR][
+            self._device.id
+        ]["device"].states
+        if not states:
+            _LOGGER.debug(
+                "No states found for %s. Maybe hasn't polled yet?", self._device.id
+            )
+        for state in states:
             if state.functionClass == self.entity_description.key:
                 if self._is_numeric and isinstance(state.value, str):
                     state.value = int("".join(i for i in state.value if i.isdigit()))
                 self._sensor_value = state.value
+
+    @property
+    def unique_id(self) -> str:
+        return f"{self._device.id}_{self.entity_description.key}"
+
+    @property
+    def name(self) -> str:
+        return f"{self._device.friendly_name}: {self.entity_description.key}"
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return the device info."""
+        model = self._device.model if self._device.model != "TBD" else None
+        return DeviceInfo(
+            identifiers={(DOMAIN, self._device.device_id)},
+            name=self._device.friendly_name,
+            model=model,
+        )
 
     @property
     def native_value(self) -> Any:

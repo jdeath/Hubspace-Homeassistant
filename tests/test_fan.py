@@ -2,7 +2,6 @@ from contextlib import suppress
 
 import pytest
 from homeassistant.components.fan import FanEntityFeature
-from hubspace_async import HubSpaceDevice
 
 from custom_components.hubspace import fan
 from custom_components.hubspace.const import ENTITY_FAN
@@ -10,19 +9,6 @@ from custom_components.hubspace.const import ENTITY_FAN
 from .utils import create_devices_from_data
 
 fan_zandra = create_devices_from_data("fan-ZandraFan.json")
-
-dummy_device = HubSpaceDevice(
-    "child_id",
-    "device_id",
-    "test_model",
-    "fan",
-    "device_name",
-    "friendly_image",
-    "test fan",
-    functions=[],
-    states=[],
-    children=[],
-)
 
 
 process_functions_expected = (
@@ -37,12 +23,12 @@ with suppress(AttributeError):
 
 @pytest.fixture
 def empty_fan(mocked_coordinator):
-    yield fan.HubspaceFan(mocked_coordinator, dummy_device)
+    yield fan.HubspaceFan(mocked_coordinator, "test fan")
 
 
 @pytest.fixture
 def speed_fan(mocked_coordinator):
-    test_fan = fan.HubspaceFan(mocked_coordinator, dummy_device)
+    test_fan = fan.HubspaceFan(mocked_coordinator, "test fan")
     test_fan._supported_features = process_functions_expected
     test_fan._fan_speeds = [
         "fan-speed-6-016",
@@ -100,9 +86,9 @@ class Test_HubSpaceFan:
                     "_availability": True,
                 },
                 {
-                    "model": "test_model",
-                    "deviceId": "device_id",
-                    "Child ID": "child_id",
+                    "model": None,
+                    "deviceId": None,
+                    "Child ID": None,
                     "wifi-ssid": "71e7209f-b932-44b9-ba2f-a8179f68c3ac",
                     "wifi-mac-address": "e1119e0a-688d-45df-9882-a76549db9bc3",
                     "ble-mac-address": "07346a23-350b-4606-8d86-67217ec7a688",
@@ -112,9 +98,7 @@ class Test_HubSpaceFan:
     )
     def test_update_states(self, states, expected_attrs, extra_attrs, empty_fan):
         empty_fan.states = states
-        empty_fan.coordinator.data[ENTITY_FAN][empty_fan._child_id] = {
-            "device": empty_fan
-        }
+        empty_fan.coordinator.data[ENTITY_FAN][empty_fan._child_id] = empty_fan
         empty_fan.update_states()
         assert empty_fan.extra_state_attributes == extra_attrs
         for key, val in expected_attrs.items():
@@ -124,7 +108,7 @@ class Test_HubSpaceFan:
         assert empty_fan.name == "test fan"
 
     def test_unique_id(self, empty_fan):
-        empty_fan._device.id = "beans"
+        empty_fan._child_id = "beans"
         assert empty_fan.unique_id == "beans"
 
     @pytest.mark.parametrize(
@@ -142,19 +126,13 @@ class Test_HubSpaceFan:
         model = "bean model"
         device_id = "bean-123"
         child_id = "bean-123-123"
-        dummy_device = HubSpaceDevice(
-            child_id,
-            device_id,
-            model,
-            "fan",
-            "device_name",
-            "friendly_image",
+        test_fan = fan.HubspaceFan(
+            mocked_coordinator,
             "test fan",
-            functions=[],
-            states=[],
-            children=[],
+            model=model,
+            device_id=device_id,
+            child_id=child_id,
         )
-        test_fan = fan.HubspaceFan(mocked_coordinator, dummy_device)
         assert test_fan.extra_state_attributes == {
             "model": model,
             "deviceId": device_id,
