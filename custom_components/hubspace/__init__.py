@@ -1,82 +1,42 @@
 """Hubspace integration."""
 
 import logging
-from dataclasses import dataclass
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_USERNAME, Platform
+from homeassistant.const import CONF_TIMEOUT, CONF_USERNAME
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.device_registry import DeviceEntry
-from hubspace_async import HubSpaceConnection
+from homeassistant.helpers import device_registry as dr
 
-from .const import DEFAULT_TIMEOUT, UPDATE_INTERVAL_OBSERVATION
-from .coordinator import HubSpaceDataUpdateCoordinator
+from .bridge import HubspaceBridge
+from .const import (
+    DEFAULT_POLLING_INTERVAL_SEC,
+    DEFAULT_TIMEOUT,
+    DOMAIN,
+    POLLING_TIME_STR,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORMS = [
-    Platform.BINARY_SENSOR,
-    Platform.FAN,
-    Platform.LIGHT,
-    Platform.LOCK,
-    Platform.SENSOR,
-    Platform.SWITCH,
-    Platform.VALVE,
-]
-
-
-@dataclass
-class HubSpaceData:
-    """Data for HubSpace integration."""
-
-    coordinator_hubspace: HubSpaceDataUpdateCoordinator
-
-
-type HubSpaceConfigEntry = ConfigEntry[HubSpaceData]
-
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up HubSpace as config entry."""
-    websession = async_get_clientsession(hass)
-    conn = HubSpaceConnection(
-        entry.data[CONF_USERNAME], entry.data[CONF_PASSWORD], websession=websession
+    """Set up Hubspace as config entry."""
+    bridge = HubspaceBridge(hass, entry)
+    if not await bridge.async_initialize_bridge():
+        return False
+
+    # @TODO - Actions / Services
+
+    device_registry = dr.async_get(hass)
+    device_registry.async_get_or_create(
+        config_entry_id=entry.entry_id,
+        identifiers={
+            (DOMAIN, bridge.config_entry.data[CONF_USERNAME]),
+        },
+        name=f"hubspace-{bridge.config_entry.data[CONF_USERNAME]}",
+        manufacturer="Hubspace",
+        model="Cloud API",
     )
-
-    coordinator_hubspace = HubSpaceDataUpdateCoordinator(
-        hass,
-        conn,
-        entry.data[CONF_TIMEOUT],
-        [],
-        [],
-        UPDATE_INTERVAL_OBSERVATION,
-    )
-
-    await coordinator_hubspace.async_config_entry_first_refresh()
-
-    entry.runtime_data = HubSpaceData(
-        coordinator_hubspace=coordinator_hubspace,
-    )
-
-    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
-
-
-async def async_remove_config_entry_device(
-    hass: HomeAssistant, config_entry: HubSpaceConfigEntry, device_entry: DeviceEntry
-) -> bool:
-    """Remove a config entry from a device.
-
-    A device can only be removed if it is not present in the current API response
-    """
-    device_id = list(device_entry.identifiers)[0][1]
-    return not any(
-        [
-            x
-            for x in config_entry.runtime_data.coordinator_hubspace.tracked_devices
-            if x.device_id == device_id
-        ]
-    )
 
 
 async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
@@ -86,14 +46,63 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
         config_entry.minor_version,
     )
     if config_entry.version == 1:
-        new_data = {**config_entry.data}
-        new_data[CONF_TIMEOUT] = DEFAULT_TIMEOUT
-        hass.config_entries.async_update_entry(
-            config_entry, data=new_data, version=2, minor_version=0
-        )
+        await perform_v2_migration(hass, config_entry)
+    if config_entry.version == 2 and config_entry.minor_version == 0:
+        await perform_v3_migration(hass, config_entry)
     _LOGGER.debug(
         "Migration to configuration version %s.%s successful",
         config_entry.version,
         config_entry.minor_version,
     )
     return True
+
+
+async def perform_v2_migration(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
+    """Fixes for v2 migration
+
+    * Ensure CONF_TIMEOUT is present in the data
+    """
+    new_data = {**config_entry.data}
+    new_data[CONF_TIMEOUT] = DEFAULT_TIMEOUT
+    hass.config_entries.async_update_entry(
+        config_entry, data=new_data, version=2, minor_version=0
+    )
+
+
+async def perform_v3_migration(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
+    """Fixes for v3 migration
+
+    * Ensure CONF_TIMEOUT is present in options and removed from data
+    * Ensure POLLING_TIME_STR is set in options and removed from data (dev build)
+    * Ensure unique_id is set to the account in lowercase
+    * Ensure the title is set to the account in lowercase
+    """
+    options = {**config_entry.options}
+    data = {**config_entry.data}
+    options[POLLING_TIME_STR] = (
+        data.pop(POLLING_TIME_STR, None)
+        or options.get(POLLING_TIME_STR)
+        or DEFAULT_POLLING_INTERVAL_SEC
+    )
+    options[CONF_TIMEOUT] = (
+        data.pop(CONF_TIMEOUT, None) or options.get(CONF_TIMEOUT) or DEFAULT_TIMEOUT
+    )
+    # Previous versions may have used None for the unique ID
+    unique_id = config_entry.data[CONF_USERNAME].lower()
+    hass.config_entries.async_update_entry(
+        config_entry,
+        data=data,
+        options=options,
+        version=3,
+        minor_version=0,
+        unique_id=unique_id,
+        title=unique_id,
+    )
+
+
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Unload a config entry."""
+    unload_success = await hass.data[DOMAIN][entry.entry_id].async_reset()
+    if len(hass.data[DOMAIN]) == 0:
+        hass.data.pop(DOMAIN)
+    return unload_success

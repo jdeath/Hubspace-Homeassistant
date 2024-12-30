@@ -1,35 +1,46 @@
 import pytest
-
-from custom_components.hubspace import binary_sensor, const
+from homeassistant.helpers import entity_registry as er
 
 from .utils import create_devices_from_data
 
 freezer = create_devices_from_data("freezer.json")[0]
 
 
+@pytest.fixture
+async def mocked_entity(mocked_entry):
+    hass, entry, bridge = mocked_entry
+    await bridge.devices.initialize_elem(freezer)
+    bridge.devices._initialize = True
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    yield hass, entry, bridge
+    await bridge.close()
+
+
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "sensor_descr,device,expected",
+    "dev,expected_entities",
     [
         (
-            const.BINARY_SENSORS["freezer"]["error|mcu-communication-failure"],
             freezer,
-            False,
-        ),
-        (
-            const.BINARY_SENSORS["freezer"]["error|fridge-high-temperature-alert"],
-            freezer,
-            True,
+            [
+                "binary_sensor.friendly_device_0_error_mcu_communication_failure",
+                "binary_sensor.friendly_device_0_error_fridge_high_temperature_alert",
+                "binary_sensor.friendly_device_0_error_freezer_high_temperature_alert",
+                "binary_sensor.friendly_device_0_error_temperature_sensor_failure",
+            ],
         ),
     ],
 )
-def test_sensor(sensor_descr, device, expected, mocked_coordinator):
-    empty_sensor = binary_sensor.HubSpaceBinarySensor(
-        mocked_coordinator,
-        sensor_descr,
-        device,
-    )
-    empty_sensor.coordinator.data[const.ENTITY_BINARY_SENSOR][device.id] = {
-        "device": device
-    }
-    empty_sensor.update_states()
-    assert empty_sensor.is_on == expected
+async def test_async_setup_entry(dev, expected_entities, mocked_entry):
+    try:
+        hass, entry, bridge = mocked_entry
+        await bridge.devices.initialize_elem(dev)
+        bridge.devices._initialize = True
+        await hass.config_entries.async_setup(entry.entry_id)
+        await hass.async_block_till_done()
+        entity_reg = er.async_get(hass)
+        for entity in expected_entities:
+            assert entity_reg.async_get(entity) is not None
+    finally:
+        await bridge.close()

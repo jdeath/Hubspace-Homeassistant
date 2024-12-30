@@ -1,31 +1,77 @@
 import pytest
-
-from custom_components.hubspace import valve
-from custom_components.hubspace.const import ENTITY_VALVE
+from homeassistant.helpers import entity_registry as er
 
 from .utils import create_devices_from_data
 
+spigot = create_devices_from_data("water-timer.json")[0]
+spigot_1 = "valve.friendly_device_0_spigot_1"
+spigot_2 = "valve.friendly_device_0_spigot_2"
+
 
 @pytest.fixture
-def empty_valve(mocked_coordinator):
-    yield valve.HubSpaceValve(mocked_coordinator, "test valve", None)
-
-
-spigot = create_devices_from_data("water-timer.json")[0]
+async def mocked_entity(mocked_entry):
+    hass, entry, bridge = mocked_entry
+    await bridge.valves.initialize_elem(spigot)
+    await bridge.devices.initialize_elem(spigot)
+    bridge.valves._initialize = True
+    bridge.devices._initialize = True
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    yield hass, entry, bridge
+    await bridge.close()
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "instance,states,expected_attrs",
+    "dev,expected_entities",
     [
-        ("spigot-1", spigot.states, {"_state": "off", "_availability": True}),
-        ("spigot-2", spigot.states, {"_state": "on", "_availability": True}),
+        (
+            spigot,
+            [spigot_1, spigot_2],
+        ),
     ],
 )
-async def test_update_states(instance, states, expected_attrs, empty_valve):
-    empty_valve._instance = instance
-    empty_valve.states = states
-    empty_valve.coordinator.data[ENTITY_VALVE][empty_valve._child_id] = empty_valve
-    empty_valve.update_states()
-    for key, val in expected_attrs.items():
-        assert getattr(empty_valve, key) == val
+async def test_async_setup_entry(dev, expected_entities, mocked_entry):
+    try:
+        hass, entry, bridge = mocked_entry
+        await bridge.valves.initialize_elem(dev)
+        await bridge.devices.initialize_elem(dev)
+        bridge.valves._initialize = True
+        bridge.devices._initialize = True
+        await hass.config_entries.async_setup(entry.entry_id)
+        await hass.async_block_till_done()
+        entity_reg = er.async_get(hass)
+        for entity in expected_entities:
+            assert entity_reg.async_get(entity) is not None
+    finally:
+        await bridge.close()
+
+
+@pytest.mark.asyncio
+async def test_open_valve(mocked_entity):
+    hass, entry, bridge = mocked_entity
+    await hass.services.async_call(
+        "valve",
+        "open_valve",
+        {"entity_id": spigot_1},
+        blocking=True,
+    )
+    update_call = bridge.request.call_args_list[-1]
+    assert update_call.args[0] == "put"
+    payload = update_call.kwargs["json"]
+    assert payload["metadeviceId"] == spigot.id
+
+
+@pytest.mark.asyncio
+async def test_close_valve(mocked_entity):
+    hass, entry, bridge = mocked_entity
+    await hass.services.async_call(
+        "valve",
+        "close_valve",
+        {"entity_id": spigot_2},
+        blocking=True,
+    )
+    update_call = bridge.request.call_args_list[-1]
+    assert update_call.args[0] == "put"
+    payload = update_call.kwargs["json"]
+    assert payload["metadeviceId"] == spigot.id

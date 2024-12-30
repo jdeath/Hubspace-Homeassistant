@@ -1,11 +1,8 @@
-import asyncio
 import json
 import os
 from typing import Any
 
-from hubspace_async import HubSpaceConnection, HubSpaceDevice, HubSpaceState
-
-from custom_components.hubspace import anonomyize_data
+from aiohubspace.v1.device import HubspaceDevice, HubspaceState
 
 current_path: str = os.path.dirname(os.path.realpath(__file__))
 
@@ -19,30 +16,32 @@ def get_device_dump(file_name: str) -> Any:
         return json.load(fh)
 
 
-def create_devices_from_data(file_name: str) -> list[HubSpaceDevice]:
+def create_devices_from_data(file_name: str) -> list[HubspaceDevice]:
     """Generate devices from a data dump
 
     :param file_name: Name of the file to load
     """
     devices = get_device_dump(file_name)
-    processed = []
+    processed: list[HubspaceDevice] = []
     for device in devices:
         processed_states = []
         for state in device["states"]:
-            processed_states.append(HubSpaceState(**state))
+            processed_states.append(HubspaceState(**state))
         device["states"] = processed_states
         if "children" not in device:
             device["children"] = []
-        processed.append(HubSpaceDevice(**device))
+        processed.append(HubspaceDevice(**device))
     return processed
 
 
-def convert_hs_raw(data):
-    """Used for converting old data-dumps to new data dumps"""
-    loop = asyncio.get_event_loop()
-    conn = HubSpaceConnection(None, None)
-    loop.run_until_complete(conn._process_api_results(data))
-    devs = loop.run_until_complete(anonomyize_data.generate_anon_data(conn))
-    with open("converted.json", "w") as fh:
-        json.dump(devs, fh, indent=4)
-    return devs
+def modify_state(device: HubspaceDevice, new_state):
+    for ind, state in enumerate(device.states):
+        if state.functionClass != new_state.functionClass:
+            continue
+        if (
+            new_state.functionInstance
+            and new_state.functionInstance != state.functionInstance
+        ):
+            continue
+        device.states[ind] = new_state
+        break

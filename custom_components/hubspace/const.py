@@ -14,6 +14,7 @@ from homeassistant.const import (
     PERCENTAGE,
     SIGNAL_STRENGTH_DECIBELS,
     EntityCategory,
+    Platform,
     UnitOfElectricPotential,
     UnitOfPower,
 )
@@ -25,9 +26,23 @@ CONF_DEBUG: Final = "debug"
 UPDATE_INTERVAL_OBSERVATION = timedelta(seconds=30)
 HUB_IDENTIFIER: Final[str] = "hubspace_debug"
 DEFAULT_TIMEOUT: Final[int] = 10000
+DEFAULT_POLLING_INTERVAL_SEC: Final[int] = 30
+POLLING_TIME_STR: Final[str] = "polling_time"
 
-VERSION_MAJOR: Final[int] = 2
+VERSION_MAJOR: Final[int] = 3
 VERSION_MINOR: Final[int] = 0
+
+
+PLATFORMS: Final[list[Platform]] = [
+    Platform.BINARY_SENSOR,
+    Platform.BUTTON,
+    Platform.FAN,
+    Platform.LIGHT,
+    Platform.LOCK,
+    Platform.SENSOR,
+    Platform.SWITCH,
+    Platform.VALVE,
+]
 
 
 ENTITY_BINARY_SENSOR: Final[str] = "binary_sensor"
@@ -98,30 +113,28 @@ SENSORS_GENERAL = {
 }
 
 BINARY_SENSORS = {
-    "freezer": {
-        "error|mcu-communication-failure": BinarySensorEntityDescription(
-            key="error|mcu-communication-failure",
-            name="MCU",
-            device_class=BinarySensorDeviceClass.PROBLEM,
-            entity_category=EntityCategory.DIAGNOSTIC,
-        ),
-        "error|fridge-high-temperature-alert": BinarySensorEntityDescription(
-            key="error|fridge-high-temperature-alert",
-            name="Fridge High Temp Alert",
-            device_class=BinarySensorDeviceClass.PROBLEM,
-            entity_category=EntityCategory.DIAGNOSTIC,
-        ),
-        "error|freezer-high-temperature-alert": BinarySensorEntityDescription(
-            key="error|freezer-high-temperature-alert",
-            name="Freezer High Temp Alert",
-            device_class=BinarySensorDeviceClass.PROBLEM,
-            entity_category=EntityCategory.DIAGNOSTIC,
-        ),
-        "error|temperature-sensor-failure": BinarySensorEntityDescription(
-            key="error|temperature-sensor-failure",
-            name="Sensor Failure",
-            device_class=BinarySensorDeviceClass.PROBLEM,
-            entity_category=EntityCategory.DIAGNOSTIC,
-        ),
-    }
+    "error|mcu-communication-failure": BinarySensorEntityDescription(
+        key="error|mcu-communication-failure",
+        name="MCU",
+        device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "error|fridge-high-temperature-alert": BinarySensorEntityDescription(
+        key="error|fridge-high-temperature-alert",
+        name="Fridge High Temp Alert",
+        device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "error|freezer-high-temperature-alert": BinarySensorEntityDescription(
+        key="error|freezer-high-temperature-alert",
+        name="Freezer High Temp Alert",
+        device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "error|temperature-sensor-failure": BinarySensorEntityDescription(
+        key="error|temperature-sensor-failure",
+        name="Sensor Failure",
+        device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
 }

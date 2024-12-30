@@ -1,79 +1,77 @@
 import pytest
-
-from custom_components.hubspace import lock
-from custom_components.hubspace.const import ENTITY_LOCK
+from homeassistant.helpers import entity_registry as er
 
 from .utils import create_devices_from_data
 
 lock_tbd = create_devices_from_data("door-lock-TBD.json")
 lock_tbd_instance = lock_tbd[0]
+lock_id = "lock.friendly_device_0_lock"
 
 
 @pytest.fixture
-def empty_lock(mocked_coordinator):
-    yield lock.HubSpaceLock(mocked_coordinator, "test lock")
+async def transformer_entity(mocked_entry):
+    hass, entry, bridge = mocked_entry
+    await bridge.locks.initialize_elem(lock_tbd_instance)
+    await bridge.devices.initialize_elem(lock_tbd_instance)
+    bridge.locks._initialize = True
+    bridge.devices._initialize = True
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    yield hass, entry, bridge
+    await bridge.close()
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "states, expected_attrs, extra_attrs",
+    "dev,expected_entities",
     [
         (
-            lock_tbd_instance.states,
-            {
-                "_current_position": "locked",
-                "_availability": True,
-            },
-            {
-                "Child ID": None,
-                "deviceId": None,
-                "model": None,
-            },
-        )
+            lock_tbd_instance,
+            [lock_id],
+        ),
     ],
 )
-def test_update_states(states, expected_attrs, extra_attrs, empty_lock):
-    empty_lock.states = states
-    empty_lock.coordinator.data[ENTITY_LOCK][empty_lock._child_id] = empty_lock
-    empty_lock.update_states()
-    assert empty_lock.extra_state_attributes == extra_attrs
-    for key, val in expected_attrs.items():
-        assert getattr(empty_lock, key) == val
+async def test_async_setup_entry(dev, expected_entities, mocked_entry):
+    try:
+        hass, entry, bridge = mocked_entry
+        await bridge.locks.initialize_elem(dev)
+        await bridge.devices.initialize_elem(dev)
+        bridge.locks._initialize = True
+        bridge.devices._initialize = True
+        await hass.config_entries.async_setup(entry.entry_id)
+        await hass.async_block_till_done()
+        entity_reg = er.async_get(hass)
+        for entity in expected_entities:
+            assert entity_reg.async_get(entity) is not None
+    finally:
+        await bridge.close()
 
 
-def test_name(empty_lock):
-    assert empty_lock.name == "test lock"
-
-
-def test_unique_id(empty_lock):
-    empty_lock._child_id = "beans"
-    assert empty_lock.unique_id == "beans"
-
-
-def test_extra_state_attributes(mocked_coordinator):
-    model = "bean model"
-    device_id = "bean-123"
-    child_id = "bean-123-123"
-    test_fan = lock.HubSpaceLock(
-        mocked_coordinator,
-        "test lock",
-        model=model,
-        device_id=device_id,
-        child_id=child_id,
+@pytest.mark.asyncio
+async def test_unlock(transformer_entity):
+    hass, entry, bridge = transformer_entity
+    await hass.services.async_call(
+        "lock",
+        "unlock",
+        {"entity_id": lock_id},
+        blocking=True,
     )
-    assert test_fan.extra_state_attributes == {
-        "model": model,
-        "deviceId": device_id,
-        "Child ID": child_id,
-    }
+    update_call = bridge.request.call_args_list[-1]
+    assert update_call.args[0] == "put"
+    payload = update_call.kwargs["json"]
+    assert payload["metadeviceId"] == lock_tbd_instance.id
 
 
 @pytest.mark.asyncio
-async def test_async_lock(empty_lock):
-    await empty_lock.async_lock()
-    assert empty_lock._current_position == "locking"
-
-
-@pytest.mark.asyncio
-async def test_async_unlock(empty_lock):
-    await empty_lock.async_unlock()
-    assert empty_lock._current_position == "unlocking"
+async def test_lock(transformer_entity):
+    hass, entry, bridge = transformer_entity
+    await hass.services.async_call(
+        "lock",
+        "lock",
+        {"entity_id": lock_id},
+        blocking=True,
+    )
+    update_call = bridge.request.call_args_list[-1]
+    assert update_call.args[0] == "put"
+    payload = update_call.kwargs["json"]
+    assert payload["metadeviceId"] == lock_tbd_instance.id

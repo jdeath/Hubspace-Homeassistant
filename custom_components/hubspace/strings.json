@@ -6,14 +6,28 @@
                 "data": {
                     "username": "[%key:common::config_flow::data::username%]",
                     "password": "[%key:common::config_flow::data::password%]",
-                    "timeout": "[%key:common::config_flow::data::password%]"
+                    "timeout": "[%key:common::config_flow::data::timeout%]",
+                    "polling_time": "[%key:component::hubspace::step::step::init::polling_time%]"
                 }
             }
         },
         "error": {
             "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
             "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
-            "unknown": "[%key:common::config_flow::error::unknown%]"
+            "unknown": "[%key:common::config_flow::error::unknown%]",
+            "polling_too_short": "[%key:component::hubspace::step::error::polling_too_short%]"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "polling_time": "[%key:component::hubspace::options::step::init::polling_time%]"
+                }
+            }
+        },
+        "error": {
+            "polling_too_short": "[%key:component::hubspace::options::error::polling_too_short%]"
         }
     },
     "services": {

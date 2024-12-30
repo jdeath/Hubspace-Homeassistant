@@ -6,18 +6,39 @@
                 "data": {
                     "username": "Username",
                     "password": "Password",
-                    "timeout": "timeout"
+                    "timeout": "Connection Timeout",
+                    "polling_time": "Polling time"
                 },
                 "data_description": {
-                    "username": "Username",
-                    "password": "Timeout in milliseconds for the connection. (Default: 10000)"
+                    "username": "Hubspace Username",
+                    "password": "Hubspace Password",
+                    "timeout": "Connection Timeout (Default: 10000)",
+                    "polling_time": "Time in seconds between polling intervals (Default: 30)"
                 }
             }
         },
         "error": {
             "cannot_connect": "Connection timed out when reaching the server.",
             "invalid_auth": "Unable to authenticate with the provided credentials",
-            "unknown": "Unknown error occurred. Please review to the logs"
+            "unknown": "Unknown error occurred. Please review to the logs",
+            "polling_too_short": "Interval must be at least 2 seconds"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "timeout": "Connection Timeout",
+                    "polling_time": "Polling time"
+                },
+                "data_description": {
+                    "timeout": "Time in ms for a connection failure (Default: 10000)",
+                    "polling_time": "Time in seconds between polling intervals (Default: 30)"
+                }
+            }
+        },
+        "error": {
+            "polling_too_short": "Interval must be at least 2 seconds"
         }
     },
     "services": {
