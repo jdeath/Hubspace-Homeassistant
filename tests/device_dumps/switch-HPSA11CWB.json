@@ -1,0 +1,241 @@
+[
+  {
+        "id": "e7828752-34ee-492e-a44a-5a6b8c9dce60",
+        "device_id": "d3f986f7-3c4a-446e-87e8-e4e1dc97d053",
+        "model": "TBD",
+        "device_class": "switch",
+        "default_name": "Switch",
+        "default_image": "smart-switch-icon",
+        "friendly_name": "Basement Furnace",
+        "functions": [
+            {
+                "id": "f0ae9fa1-b483-4f6a-ab24-30f8f89d075b",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "power",
+                "type": "category",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "def43e64-33d9-44c6-8a49-0581b1a31cf5",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "a2186d19-9386-4f1f-9a1f-719737ae1143",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "1",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "9c4ae450-b36b-4849-9f74-102164c8e4bf",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "99d4434e-231a-4fd1-8972-dc0d02f60cdf",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "1",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "c461c9f6-5f36-4cf1-afc8-a890665b9b04",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "timer",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "404672ab-ff47-4821-9161-82ebae820b9b",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "timer",
+                        "deviceValues": [
+                            {
+                                "id": "76640f9d-0abb-42af-a963-e46d1bc27ba7",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "52"
+                            }
+                        ],
+                        "range": {
+                            "min": 0,
+                            "max": 1440,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "ffdcf4b6-af85-4f96-acba-8e3f42609135",
+                "createdTimestampMs": 0,
+                "updatedTimestampMs": 0,
+                "functionClass": "led-configuration",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "63bb29c6-6e61-4c68-941d-849c196b171c",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "2f84d8ac-bdb8-4c0b-96fb-50c815683478",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "205",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "820b38b5-d0bf-4ead-a254-29f1da64b0bf",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "847b1036-0057-4423-ab75-8b416d1c1d9b",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "205",
+                                "value": "2"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "35682d36-d7fa-443f-bea7-a2429aa7bf67",
+                        "createdTimestampMs": 0,
+                        "updatedTimestampMs": 0,
+                        "name": "blink",
+                        "deviceValues": [
+                            {
+                                "id": "528225e0-498c-4603-8d29-78b21475c49e",
+                                "createdTimestampMs": 0,
+                                "updatedTimestampMs": 0,
+                                "type": "attribute",
+                                "key": "205",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            }
+        ],
+        "states": [
+            {
+                "functionClass": "power",
+                "value": "off",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "timer",
+                "value": 0,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "led-configuration",
+                "value": "blink",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-ssid",
+                "value": "963ea2b8-5e2c-4db1-997d-96c84bdb24da",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-rssi",
+                "value": -47,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-steady-state",
+                "value": "connected",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-setup-state",
+                "value": "connected",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-mac-address",
+                "value": "bfa63cd3-64f3-4776-9f3c-6918bcfc34b9",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "geo-coordinates",
+                "value": {
+                    "geo-coordinates": {
+                        "latitude": "0",
+                        "longitude": "0"
+                    }
+                },
+                "lastUpdateTime": 0,
+                "functionInstance": "system-device-location"
+            },
+            {
+                "functionClass": "scheduler-flags",
+                "value": 0,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "available",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "visible",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "direct",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "ble-mac-address",
+                "value": "9e7dbfe9-9871-4705-b97c-61dbe79df422",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            }
+        ],
+        "children": [],
+        "manufacturerName": "Commercial Electric"
+    }
+]
