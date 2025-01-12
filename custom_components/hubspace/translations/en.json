@@ -50,13 +50,17 @@
                     "name": "Value",
                     "description": "The value you want to send"
                 },
-                "function_class": {
+                "functionClass": {
                     "name": "Function Class",
                     "description": "functionClass you want to send"
                 },
-                "function_instance": {
+                "functionInstance": {
                     "name": "Function Instance",
                     "description": "functionInstance you want to send"
+                },
+                "account": {
+                    "name": "Account",
+                    "description": "Hubspace account that contains the device. Optional"
                 }
             }
         }
