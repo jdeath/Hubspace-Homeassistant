@@ -57,8 +57,8 @@ async def test_service_valid_no_username(
             service_data={
                 "entity_id": [entity_id],
                 "value": "off",
-                "functionClass": "power",
-                "functionInstance": "light-power",
+                "function_class": "power",
+                "function_instance": "light-power",
                 "account": account,
             },
             blocking=True,
@@ -104,8 +104,8 @@ async def test_service_valid_no_username(
                     service_data={
                         "entity_id": [entity_id],
                         "value": "off",
-                        "functionClass": "power",
-                        "functionInstance": "light-power",
+                        "function_class": "power",
+                        "function_instance": "light-power",
                         "account": account,
                     },
                     blocking=True,
@@ -118,8 +118,8 @@ async def test_service_valid_no_username(
                 service_data={
                     "entity_id": [entity_id],
                     "value": "off",
-                    "functionClass": "power",
-                    "functionInstance": "light-power",
+                    "function_class": "power",
+                    "function_instance": "light-power",
                     "account": account,
                 },
                 blocking=True,

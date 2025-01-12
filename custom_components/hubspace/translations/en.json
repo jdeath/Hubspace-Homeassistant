@@ -50,11 +50,11 @@
                     "name": "Value",
                     "description": "The value you want to send"
                 },
-                "functionClass": {
+                "function_class": {
                     "name": "Function Class",
                     "description": "functionClass you want to send"
                 },
-                "functionInstance": {
+                "function_instance": {
                     "name": "Function Instance",
                     "description": "functionInstance you want to send"
                 },

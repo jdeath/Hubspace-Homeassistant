@@ -39,13 +39,13 @@
                     "name": "[%key:component::hubspace::services::send_command::fields::value::name%]",
                     "description": "[%key:component::hubspace::services::send_command::fields::value::description%]"
                 },
-                "functionClass": {
-                    "name": "[%key:component::hubspace::services::send_command::fields::functionClass::name%]",
-                    "description": "[%key:component::hubspace::services::send_command::fields::functionClass::description%]"
+                "function_class": {
+                    "name": "[%key:component::hubspace::services::send_command::fields::function_class::name%]",
+                    "description": "[%key:component::hubspace::services::send_command::fields::function_class::description%]"
                 },
-                "functionInstance": {
-                    "name": "[%key:component::hubspace::services::send_command::fields::functionInstance::name%]",
-                    "description": "[%key:component::hubspace::services::send_command::fields::functionInstance::description%]"
+                "function_instance": {
+                    "name": "[%key:component::hubspace::services::send_command::fields::function_instance::name%]",
+                    "description": "[%key:component::hubspace::services::send_command::fields::function_instance::description%]"
                 },
                 "account": {
                     "name": "[%key:component::hubspace::services::send_command::fields::account::name%]",
