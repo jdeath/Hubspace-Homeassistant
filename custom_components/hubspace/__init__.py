@@ -14,6 +14,7 @@ from .const import (
     DOMAIN,
     POLLING_TIME_STR,
 )
+from .services import async_register_services
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -24,7 +25,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if not await bridge.async_initialize_bridge():
         return False
 
-    # @TODO - Actions / Services
+    async_register_services(hass)
 
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(
