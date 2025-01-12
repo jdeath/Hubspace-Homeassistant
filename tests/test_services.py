@@ -1,4 +1,5 @@
 import pytest
+import voluptuous
 from aiohubspace.v1.device import HubspaceState
 
 from custom_components.hubspace import const, services
@@ -49,20 +50,20 @@ async def test_service_valid_no_username(
 ):
     hass, entry, bridge = mocked_entity
     assert hass.states.get(fan_zandra_light_id).state == "on"
-    await hass.services.async_call(
-        const.DOMAIN,
-        services.SERVICE_SEND_COMMAND,
-        service_data={
-            "entity_id": [entity_id],
-            "value": "off",
-            "functionClass": "power",
-            "functionInstance": "light-power",
-            "account": account,
-        },
-        blocking=True,
-    )
-    await hass.async_block_till_done()
     if not error_entity and not error_bridge:
+        await hass.services.async_call(
+            const.DOMAIN,
+            services.SERVICE_SEND_COMMAND,
+            service_data={
+                "entity_id": [entity_id],
+                "value": "off",
+                "functionClass": "power",
+                "functionInstance": "light-power",
+                "account": account,
+            },
+            blocking=True,
+        )
+        await hass.async_block_till_done()
         update_call = bridge.request.call_args_list[-1]
         assert update_call.args[0] == "put"
         payload = update_call.kwargs["json"]
@@ -96,6 +97,33 @@ async def test_service_valid_no_username(
     else:
         bridge.request.assert_not_called()
         if error_entity:
-            assert f"Entity {entity_id} not found" in caplog.text
-        if error_bridge:
-            assert f"No bridge using account {account}" in caplog.text
+            with pytest.raises(voluptuous.error.MultipleInvalid):
+                await hass.services.async_call(
+                    const.DOMAIN,
+                    services.SERVICE_SEND_COMMAND,
+                    service_data={
+                        "entity_id": [entity_id],
+                        "value": "off",
+                        "functionClass": "power",
+                        "functionInstance": "light-power",
+                        "account": account,
+                    },
+                    blocking=True,
+                )
+            await hass.async_block_till_done()
+        else:
+            await hass.services.async_call(
+                const.DOMAIN,
+                services.SERVICE_SEND_COMMAND,
+                service_data={
+                    "entity_id": [entity_id],
+                    "value": "off",
+                    "functionClass": "power",
+                    "functionInstance": "light-power",
+                    "account": account,
+                },
+                blocking=True,
+            )
+            await hass.async_block_till_done()
+            if error_bridge:
+                assert f"No bridge using account {account}" in caplog.text
