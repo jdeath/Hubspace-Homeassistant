@@ -14,8 +14,8 @@ from .const import DOMAIN
 
 SERVICE_SEND_COMMAND = "send_command"
 
-SERVICE_SEND_COMMAND_FUNC_CLASS: Final[str] = "functionClass"
-SERVICE_SEND_COMMAND_FUNC_INSTANCE: Final[str] = "functionInstance"
+SERVICE_SEND_COMMAND_FUNC_CLASS: Final[str] = "function_class"
+SERVICE_SEND_COMMAND_FUNC_INSTANCE: Final[str] = "function_instance"
 SERVICE_SEND_COMMAND_VALUE: Final[str] = "value"
 SERVICE_SEND_COMMAND_ACCOUNT: Final[str] = "account"
 
