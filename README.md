@@ -42,6 +42,10 @@ are as follows:
 
 ## Changelog
 
+ * 4.1.0
+
+   * Re-implement the action / service send_command
+
  * 4.0.1
 
    * Fixed an issue where fans could cause an UHE if they did not support
