@@ -57,6 +57,10 @@
                 "function_instance": {
                     "name": "Function Instance",
                     "description": "functionInstance you want to send"
+                },
+                "account": {
+                    "name": "Account",
+                    "description": "Hubspace account that contains the device. Optional"
                 }
             }
         }

@@ -32,20 +32,24 @@
     },
     "services": {
         "send_command": {
-            "name": "Send Command",
-            "description": "Sends a custom hubspace API command.",
+            "name": "[%key:component::hubspace::services::send_command::name%]",
+            "description": "[%key:component::hubspace::services::send_command::description%]",
             "fields": {
                 "value": {
-                    "name": "Value",
-                    "description": "The value you want to send"
+                    "name": "[%key:component::hubspace::services::send_command::fields::value::name%]",
+                    "description": "[%key:component::hubspace::services::send_command::fields::value::description%]"
                 },
                 "function_class": {
-                    "name": "Function Class",
-                    "description": "functionClass you want to send"
+                    "name": "[%key:component::hubspace::services::send_command::fields::function_class::name%]",
+                    "description": "[%key:component::hubspace::services::send_command::fields::function_class::description%]"
                 },
                 "function_instance": {
-                    "name": "Function Instance",
-                    "description": "functionInstance you want to send"
+                    "name": "[%key:component::hubspace::services::send_command::fields::function_instance::name%]",
+                    "description": "[%key:component::hubspace::services::send_command::fields::function_instance::description%]"
+                },
+                "account": {
+                    "name": "[%key:component::hubspace::services::send_command::fields::account::name%]",
+                    "description": "[%key:component::hubspace::services::send_command::fields::account::description%]"
                 }
             }
         }

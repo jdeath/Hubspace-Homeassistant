@@ -3,8 +3,18 @@ send_command:
   target:
     entity:
       integration: hubspace
-      domain: light
+      domain:
+        - fan
+        - light
+        - lock
+        - switch
+        - valve
   fields:
+    account:
+      name: account
+      description: Username associated with the device. If not present, it will use the first Hubspace instance
+      required: false
+      example: your.email@gmail.com
     value:
       name: value
       description: value you want to send
