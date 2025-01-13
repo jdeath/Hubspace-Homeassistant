@@ -8,6 +8,11 @@ fan_zandra_instance = fan_zandra[0]
 fan_zandra_entity_id = "fan.friendly_device_2_fan"
 
 
+exhaust_fan = create_devices_from_data("fan-exhaust-fan.json")
+exhaust_fan_instance = exhaust_fan[3]
+exhaust_fan_instance_entity_id = "fan.r3_closet_fan"
+
+
 @pytest.fixture
 async def mocked_entity(mocked_entry):
     hass, entry, bridge = mocked_entry
@@ -23,16 +28,17 @@ async def mocked_entity(mocked_entry):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "dev,expected_entities",
+    "dev,root_dev,expected_entities",
     [
-        (fan_zandra_instance, [fan_zandra_entity_id]),
+        (fan_zandra_instance, fan_zandra[2], [fan_zandra_entity_id]),
+        (exhaust_fan_instance, exhaust_fan[2], [exhaust_fan_instance_entity_id]),
     ],
 )
-async def test_async_setup_entry(dev, expected_entities, mocked_entry):
+async def test_async_setup_entry(dev, root_dev, expected_entities, mocked_entry):
     try:
         hass, entry, bridge = mocked_entry
         await bridge.fans.initialize_elem(dev)
-        await bridge.devices.initialize_elem(fan_zandra[2])
+        await bridge.devices.initialize_elem(root_dev)
         bridge.fans._initialize = True
         bridge.devices._initialize = True
         await hass.config_entries.async_setup(entry.entry_id)
