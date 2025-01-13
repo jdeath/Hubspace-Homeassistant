@@ -42,6 +42,11 @@ are as follows:
 
 ## Changelog
 
+ * 4.0.1
+
+   * Fixed an issue where fans could cause an UHE if they did not support
+     some functionality
+
  * 4.0.0
 
    * BREAK: Sensors have new names. Old sensors marked as unavailable can be removed.
