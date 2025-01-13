@@ -27,14 +27,14 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
     ) -> None:
         super().__init__(bridge, controller, resource)
         self._supported_features: FanEntityFeature = FanEntityFeature(0)
-        if self.device.supports_on:
+        if self.resource.supports_on:
             self._supported_features |= FanEntityFeature.TURN_ON
             self._supported_features |= FanEntityFeature.TURN_OFF
-        if self.device.supports_direction:
+        if self.resource.supports_direction:
             self._supported_features |= FanEntityFeature.DIRECTION
-        if self.device.supports_speed:
+        if self.resource.supports_speed:
             self._supported_features |= FanEntityFeature.SET_SPEED
-        if self.device.supports_presets:
+        if self.resource.supports_presets:
             self._supported_features |= FanEntityFeature.PRESET_MODE
 
     @property
@@ -44,7 +44,10 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
     @property
     def is_on(self) -> bool | None:
         """Return true if fan is spinning"""
-        return self.resource.is_on
+        if self._supported_features & FanEntityFeature.TURN_ON:
+            return self.resource.is_on
+        else:
+            return None
 
     @property
     def current_direction(self):
@@ -61,22 +64,33 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
 
     @property
     def percentage(self):
-        return self.resource.speed.speed
+        if self.supported_features & FanEntityFeature.SET_SPEED:
+            return self.resource.speed.speed
+        return None
 
     @property
     def preset_mode(self):
-        if self.resource.preset.enabled:
+        if (
+            self.supported_features & FanEntityFeature.PRESET_MODE
+            and self.resource.preset
+        ):
             return "breeze"
         else:
             return None
 
     @property
     def preset_modes(self):
-        return list(PRESET_HS_TO_HA.values())
+        if self.supported_features & FanEntityFeature.PRESET_MODE:
+            return list(PRESET_HS_TO_HA.values())
+        else:
+            return None
 
     @property
     def speed_count(self):
-        return len(self.resource.speed.speeds)
+        if self.supported_features & FanEntityFeature.SET_SPEED:
+            return len(self.resource.speed.speeds)
+        else:
+            return None
 
     @update_decorator
     async def async_turn_on(

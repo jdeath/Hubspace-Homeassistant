@@ -1,0 +1,1283 @@
+[
+    {
+        "id": "0a58b83c-bc8f-4184-aa83-2f42eb726043",
+        "device_id": "910dfb1a-18ad-4bda-b94f-27ee23645fd1",
+        "model": null,
+        "device_class": null,
+        "default_name": null,
+        "default_image": null,
+        "friendly_name": "Home",
+        "functions": [],
+        "states": [],
+        "children": [
+            "b9800f94-4c1a-40af-8f35-e05630e71238",
+            "7e439123-d3db-441a-a098-b1fe9fa2d3c1",
+            "55b062cd-1112-4837-9cd5-044e12ded2e6",
+            "a6c5e61e-f40d-4455-bcda-a36a69f37b38"
+        ],
+        "manufacturerName": null
+    },
+    {
+        "id": "4ca7734a-fcd6-4e7f-bd15-fdde243a9c09",
+        "device_id": "910dfb1a-18ad-4bda-b94f-27ee23645fd1",
+        "model": null,
+        "device_class": null,
+        "default_name": null,
+        "default_image": null,
+        "friendly_name": "Rocky3 Bedroom",
+        "functions": [],
+        "states": [],
+        "children": [
+            "5b4f1372-bfaf-46d5-b236-6fd26a8cc9a6",
+            "5cd4d869-e1f8-4d34-9ad4-5ef44796f548",
+            "57fd02c2-e8af-4224-9d58-4d72fca28841"
+        ],
+        "manufacturerName": null
+    },
+    {
+        "id": "44620d02-8b62-49ce-afe8-1ea8f15e0ec5",
+        "device_id": "7475607b-c3ea-4afe-a465-1c11c5c09985",
+        "model": "",
+        "device_class": "exhaust-fan",
+        "default_name": "Exhaust Fan",
+        "default_image": "exhaust-fan-icon",
+        "friendly_name": "R3 Closet",
+        "functions": [
+            {
+                "id": "af2f7826-990d-44bd-a8a1-d890438c7f1a",
+                "createdTimestampMs": 1714413738948,
+                "updatedTimestampMs": 1714413738948,
+                "functionClass": "motion-detection",
+                "functionInstance": "motion-detection",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "d303f7a7-b4b0-4dcc-9314-34fc704aaa73",
+                        "createdTimestampMs": 1714413738976,
+                        "updatedTimestampMs": 1714413738976,
+                        "name": "motion-detected",
+                        "deviceValues": [
+                            {
+                                "id": "297dbdbb-b04d-40a2-9e45-b0a54ae37ee2",
+                                "createdTimestampMs": 1714413738986,
+                                "updatedTimestampMs": 1714413738986,
+                                "type": "attribute",
+                                "key": "401",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "cc291905-12a1-4646-8893-aaa33d728f11",
+                        "createdTimestampMs": 1714413738958,
+                        "updatedTimestampMs": 1714413738958,
+                        "name": "no-motion",
+                        "deviceValues": [
+                            {
+                                "id": "708a577a-eb4b-4726-acd9-e79f6b194908",
+                                "createdTimestampMs": 1714413738969,
+                                "updatedTimestampMs": 1714413738969,
+                                "type": "attribute",
+                                "key": "401",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "95f5aee5-e2b6-4d94-b955-30af0d8cd76d",
+                "createdTimestampMs": 1714413738796,
+                "updatedTimestampMs": 1714413738796,
+                "functionClass": "toggle",
+                "functionInstance": "humidity-sensor-led",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "cfef2a2e-3177-4f74-9754-7cb46f5e105e",
+                        "createdTimestampMs": 1714413738824,
+                        "updatedTimestampMs": 1714413738824,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "40b0eba5-c2d9-4b30-b9a3-46c2fc8bd9f5",
+                                "createdTimestampMs": 1714413738834,
+                                "updatedTimestampMs": 1714413738834,
+                                "type": "attribute",
+                                "key": "109",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "f9b3e18d-d020-4f27-8280-90503bf7699d",
+                        "createdTimestampMs": 1714413738806,
+                        "updatedTimestampMs": 1714413738806,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "efc62df4-111f-48a2-b660-1bc0932c14db",
+                                "createdTimestampMs": 1714413738817,
+                                "updatedTimestampMs": 1714413738817,
+                                "type": "attribute",
+                                "key": "109",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "6fd6e549-a0ef-45f1-b1b8-439cd5aa9edb",
+                "createdTimestampMs": 1714413738904,
+                "updatedTimestampMs": 1714413738904,
+                "functionClass": "toggle",
+                "functionInstance": "motion-sensor-led",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "12e7ffd9-455c-4506-bb3a-d5ef4f2cf2a0",
+                        "createdTimestampMs": 1714413738914,
+                        "updatedTimestampMs": 1714413738914,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "34bd9e92-37a3-4215-92f0-5d925ca2cd11",
+                                "createdTimestampMs": 1714413738924,
+                                "updatedTimestampMs": 1714413738924,
+                                "type": "attribute",
+                                "key": "111",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "d2265bbc-2304-44eb-aa7f-24d5ad124791",
+                        "createdTimestampMs": 1714413738931,
+                        "updatedTimestampMs": 1714413738931,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "876ec8f8-ac70-441e-aa13-9e29d66e4c78",
+                                "createdTimestampMs": 1714413738941,
+                                "updatedTimestampMs": 1714413738941,
+                                "type": "attribute",
+                                "key": "111",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "0a10c36d-4c92-4ee8-ba05-dbfb574df0f1",
+                "createdTimestampMs": 1714413738577,
+                "updatedTimestampMs": 1714413738577,
+                "functionClass": "auto-off-timer",
+                "functionInstance": "auto-off",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "7fa6e8e5-ce41-4a9e-b782-e05839cbf76d",
+                        "createdTimestampMs": 1714413738592,
+                        "updatedTimestampMs": 1714413738592,
+                        "name": "Auto Off Timer",
+                        "deviceValues": [
+                            {
+                                "id": "9bdb55d4-6122-48d0-9105-33ac73c019dd",
+                                "createdTimestampMs": 1714413738603,
+                                "updatedTimestampMs": 1714413738603,
+                                "type": "attribute",
+                                "key": "50"
+                            }
+                        ],
+                        "range": {
+                            "min": 60,
+                            "max": 1800,
+                            "step": 60
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "dcd842ee-7fb7-47c4-afe3-2cab551bf209",
+                "createdTimestampMs": 1714413738654,
+                "updatedTimestampMs": 1714413738654,
+                "functionClass": "toggle",
+                "functionInstance": "humidity-detection-enabled",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "38f25a2a-862d-4e68-8bc7-68092231ed56",
+                        "createdTimestampMs": 1714413738664,
+                        "updatedTimestampMs": 1714413738664,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "6168e0b7-617e-4cfa-8df2-0a9f9413fa55",
+                                "createdTimestampMs": 1714413738675,
+                                "updatedTimestampMs": 1714413738675,
+                                "type": "attribute",
+                                "key": "107",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "db913cb3-b7c0-4cad-984f-13805a02cb61",
+                        "createdTimestampMs": 1714413738682,
+                        "updatedTimestampMs": 1714413738682,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "ccd138e6-cf2d-41b6-acfe-3716a2149ec6",
+                                "createdTimestampMs": 1714413738692,
+                                "updatedTimestampMs": 1714413738692,
+                                "type": "attribute",
+                                "key": "107",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "d087e0fd-fc08-4269-8e9b-6d28b290115d",
+                "createdTimestampMs": 1714413738993,
+                "updatedTimestampMs": 1714413738993,
+                "functionClass": "humidity-threshold-met",
+                "functionInstance": "humidity-threshold-met",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "d2656e1e-ee1d-4557-a798-5f792c0f54a0",
+                        "createdTimestampMs": 1714413739003,
+                        "updatedTimestampMs": 1714413739003,
+                        "name": "below-threshold",
+                        "deviceValues": [
+                            {
+                                "id": "1bd2437f-df63-4817-bde9-c46f0380eb15",
+                                "createdTimestampMs": 1714413739013,
+                                "updatedTimestampMs": 1714413739013,
+                                "type": "attribute",
+                                "key": "403",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "7454267b-0ab2-4b13-b0c8-470a3e9101dd",
+                        "createdTimestampMs": 1714413739020,
+                        "updatedTimestampMs": 1714413739020,
+                        "name": "above-threshold",
+                        "deviceValues": [
+                            {
+                                "id": "4d3e8e8e-e171-4ff3-9884-c31c0e540706",
+                                "createdTimestampMs": 1714413739030,
+                                "updatedTimestampMs": 1714413739030,
+                                "type": "attribute",
+                                "key": "403",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "2595b167-d008-4cb8-b4bb-af3ab9e5d368",
+                "createdTimestampMs": 1714413738841,
+                "updatedTimestampMs": 1714413738841,
+                "functionClass": "motion-action",
+                "functionInstance": "exhaust-fan",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "843814f3-0a52-42fd-a5be-354da8f861a5",
+                        "createdTimestampMs": 1714413738887,
+                        "updatedTimestampMs": 1714413738887,
+                        "name": "both",
+                        "deviceValues": [
+                            {
+                                "id": "bc0e2bed-f819-4e64-9bc5-9fa4689b5586",
+                                "createdTimestampMs": 1714413738897,
+                                "updatedTimestampMs": 1714413738897,
+                                "type": "attribute",
+                                "key": "110",
+                                "value": "3"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "3c203cea-fc73-4b4c-b511-6a115f0e66ee",
+                        "createdTimestampMs": 1714413738851,
+                        "updatedTimestampMs": 1714413738851,
+                        "name": "light",
+                        "deviceValues": [
+                            {
+                                "id": "ecfff3a3-558c-488c-bb33-ad001a9bc113",
+                                "createdTimestampMs": 1714413738862,
+                                "updatedTimestampMs": 1714413738862,
+                                "type": "attribute",
+                                "key": "110",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "5ac08da8-129a-46b4-95a1-010ef2861e22",
+                        "createdTimestampMs": 1714413738869,
+                        "updatedTimestampMs": 1714413738869,
+                        "name": "fan",
+                        "deviceValues": [
+                            {
+                                "id": "196f8678-8b29-49a0-9471-c03d20c36532",
+                                "createdTimestampMs": 1714413738879,
+                                "updatedTimestampMs": 1714413738879,
+                                "type": "attribute",
+                                "key": "110",
+                                "value": "2"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "76d292a1-03e0-4815-8c83-decc7e2da855",
+                "createdTimestampMs": 1714413738699,
+                "updatedTimestampMs": 1714413738699,
+                "functionClass": "sensitivity",
+                "functionInstance": "humidity-sensitivity",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "44bae6ec-1981-44cb-94a2-0f269ea431d0",
+                        "createdTimestampMs": 1714413738744,
+                        "updatedTimestampMs": 1714413738744,
+                        "name": "3-medium",
+                        "deviceValues": [
+                            {
+                                "id": "139eadc4-c4c2-4505-b433-2c5e7b31346c",
+                                "createdTimestampMs": 1714413738754,
+                                "updatedTimestampMs": 1714413738754,
+                                "type": "attribute",
+                                "key": "108",
+                                "value": "2"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "9edfa7b9-92e8-417e-bc81-a42d67662f39",
+                        "createdTimestampMs": 1714413738779,
+                        "updatedTimestampMs": 1714413738779,
+                        "name": "5-high",
+                        "deviceValues": [
+                            {
+                                "id": "276f1fe4-7184-42dc-806d-266bf4170e80",
+                                "createdTimestampMs": 1714413738789,
+                                "updatedTimestampMs": 1714413738789,
+                                "type": "attribute",
+                                "key": "108",
+                                "value": "4"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "4249da66-64ec-4a40-917e-c52abf8379b7",
+                        "createdTimestampMs": 1714413738762,
+                        "updatedTimestampMs": 1714413738762,
+                        "name": "4-medium-high",
+                        "deviceValues": [
+                            {
+                                "id": "3f988065-43de-42e8-abd0-dc6be6b0c1de",
+                                "createdTimestampMs": 1714413738772,
+                                "updatedTimestampMs": 1714413738772,
+                                "type": "attribute",
+                                "key": "108",
+                                "value": "3"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "6cf107f8-2e10-49a7-ae7a-f15da2385de6",
+                        "createdTimestampMs": 1714413738726,
+                        "updatedTimestampMs": 1714413738726,
+                        "name": "2-low-medium",
+                        "deviceValues": [
+                            {
+                                "id": "91d1dd6e-8df4-4d86-84f3-398b1f69e8d0",
+                                "createdTimestampMs": 1714413738736,
+                                "updatedTimestampMs": 1714413738736,
+                                "type": "attribute",
+                                "key": "108",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "e8d0638d-dc5c-4a0f-98d1-66a39ed3374a",
+                        "createdTimestampMs": 1714413738709,
+                        "updatedTimestampMs": 1714413738709,
+                        "name": "1-low",
+                        "deviceValues": [
+                            {
+                                "id": "68155ff6-3356-4dc2-8d12-2117a5b29650",
+                                "createdTimestampMs": 1714413738719,
+                                "updatedTimestampMs": 1714413738719,
+                                "type": "attribute",
+                                "key": "108",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "e5f27523-d492-402b-9921-a7b74fa0ed1a",
+                "createdTimestampMs": 1714413738483,
+                "updatedTimestampMs": 1714413738483,
+                "functionClass": "toggle",
+                "functionInstance": "speaker-power",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "c0f8d5fa-b543-4f75-9f42-eb915f89950a",
+                        "createdTimestampMs": 1714413738511,
+                        "updatedTimestampMs": 1714413738511,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "957c6f3e-e9c2-422c-a17d-59594cad7f7d",
+                                "createdTimestampMs": 1714413738525,
+                                "updatedTimestampMs": 1714413738525,
+                                "type": "attribute",
+                                "key": "30",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "cf65f2b2-c3ec-49df-9c8c-28af6df3b181",
+                        "createdTimestampMs": 1714413738494,
+                        "updatedTimestampMs": 1714413738494,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "e42428be-da9e-4563-ba7c-11ad66e56f7e",
+                                "createdTimestampMs": 1714413738504,
+                                "updatedTimestampMs": 1714413738504,
+                                "type": "attribute",
+                                "key": "30",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "768905b4-6f68-4d5c-963d-fd0b57125cb1",
+                "createdTimestampMs": 1714413738532,
+                "updatedTimestampMs": 1714413738532,
+                "functionClass": "power",
+                "functionInstance": "primary",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "f7ffc37f-a5d8-4059-b156-7314d9170f22",
+                        "createdTimestampMs": 1714413738543,
+                        "updatedTimestampMs": 1714413738543,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "3cfe85c8-d472-4a54-8383-b6c888a6af05",
+                                "createdTimestampMs": 1714413738553,
+                                "updatedTimestampMs": 1714413738553,
+                                "type": "attribute",
+                                "key": "40",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "6cd7cb4d-cbbb-40cd-9130-820d4f04eb45",
+                        "createdTimestampMs": 1714413738560,
+                        "updatedTimestampMs": 1714413738560,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "be311e8d-02a9-4c18-88d4-be6cda21cf9c",
+                                "createdTimestampMs": 1714413738570,
+                                "updatedTimestampMs": 1714413738570,
+                                "type": "attribute",
+                                "key": "40",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "10f3566f-5a67-4875-874e-c2c92a7c1673",
+                "createdTimestampMs": 1714413738610,
+                "updatedTimestampMs": 1714413738610,
+                "functionClass": "toggle",
+                "functionInstance": "motion-detection-enabled-exhaust-fan",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "3c4c3e37-ef55-4485-9a3f-487fb2d471e6",
+                        "createdTimestampMs": 1714413738637,
+                        "updatedTimestampMs": 1714413738637,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "704597b3-8a71-42cd-a003-84e486e5ab7d",
+                                "createdTimestampMs": 1714413738647,
+                                "updatedTimestampMs": 1714413738647,
+                                "type": "attribute",
+                                "key": "101",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "203fe726-2c73-4c8c-8c42-96da3306dc76",
+                        "createdTimestampMs": 1714413738620,
+                        "updatedTimestampMs": 1714413738620,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "5094f7e6-2f45-4a0f-b8c7-02bf8ff4e50f",
+                                "createdTimestampMs": 1714413738630,
+                                "updatedTimestampMs": 1714413738630,
+                                "type": "attribute",
+                                "key": "101",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            }
+        ],
+        "states": [
+            {
+                "functionClass": "motion-detection",
+                "value": "motion-detected",
+                "lastUpdateTime": 0,
+                "functionInstance": "motion-detection"
+            },
+            {
+                "functionClass": "toggle",
+                "value": "off",
+                "lastUpdateTime": 0,
+                "functionInstance": "humidity-sensor-led"
+            },
+            {
+                "functionClass": "toggle",
+                "value": "on",
+                "lastUpdateTime": 0,
+                "functionInstance": "motion-sensor-led"
+            },
+            {
+                "functionClass": "auto-off-timer",
+                "value": 1200,
+                "lastUpdateTime": 0,
+                "functionInstance": "auto-off"
+            },
+            {
+                "functionClass": "toggle",
+                "value": "off",
+                "lastUpdateTime": 0,
+                "functionInstance": "humidity-detection-enabled"
+            },
+            {
+                "functionClass": "humidity-threshold-met",
+                "value": "below-threshold",
+                "lastUpdateTime": 0,
+                "functionInstance": "humidity-threshold-met"
+            },
+            {
+                "functionClass": "motion-action",
+                "value": "light",
+                "lastUpdateTime": 0,
+                "functionInstance": "exhaust-fan"
+            },
+            {
+                "functionClass": "sensitivity",
+                "value": "3-medium",
+                "lastUpdateTime": 0,
+                "functionInstance": "humidity-sensitivity"
+            },
+            {
+                "functionClass": "toggle",
+                "value": "on",
+                "lastUpdateTime": 0,
+                "functionInstance": "speaker-power"
+            },
+            {
+                "functionClass": "power",
+                "value": "on",
+                "lastUpdateTime": 0,
+                "functionInstance": "primary"
+            },
+            {
+                "functionClass": "toggle",
+                "value": "on",
+                "lastUpdateTime": 0,
+                "functionInstance": "motion-detection-enabled-exhaust-fan"
+            },
+            {
+                "functionClass": "wifi-ssid",
+                "value": "d80e054e-3245-4aad-9859-6c236679a60d",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-rssi",
+                "value": -65,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-steady-state",
+                "value": "connected",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-setup-state",
+                "value": "connected",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-mac-address",
+                "value": "085edfc8-f13b-461a-9451-4aabaca5c2f2",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "geo-coordinates",
+                "value": {
+                    "geo-coordinates": {
+                        "latitude": "0",
+                        "longitude": "0"
+                    }
+                },
+                "lastUpdateTime": 0,
+                "functionInstance": "system-device-location"
+            },
+            {
+                "functionClass": "scheduler-flags",
+                "value": 0,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "available",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "visible",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "direct",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "ble-mac-address",
+                "value": "ccc1db5e-fea8-4e43-895c-05dbd5cc1e44",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            }
+        ],
+        "children": [
+            "c6627fad-38a3-4643-928c-bb03c801f717",
+            "239cad23-b667-49a3-b11a-a077beb50e80"
+        ],
+        "manufacturerName": "Commercial Electric"
+    },
+    {
+        "id": "239cad23-b667-49a3-b11a-a077beb50e80",
+        "device_id": "7475607b-c3ea-4afe-a465-1c11c5c09985",
+        "model": "",
+        "device_class": "fan",
+        "default_name": "Fan",
+        "default_image": "exhaust-fan-icon",
+        "friendly_name": "Fan",
+        "functions": [
+            {
+                "id": "210bf46d-9cb0-4f4b-80a5-7b4402a82f44",
+                "createdTimestampMs": 1714413738455,
+                "updatedTimestampMs": 1714413738455,
+                "functionClass": "fan-runtime-below-threshold",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "1ee152e8-bb76-4a9b-be1c-9a911e86cabd",
+                        "createdTimestampMs": 1714413738466,
+                        "updatedTimestampMs": 1714413738466,
+                        "name": "fan-runtime-below-threshold",
+                        "deviceValues": [
+                            {
+                                "id": "dd3968e8-461b-415a-8d6c-de69f5cfd7bc",
+                                "createdTimestampMs": 1714413738476,
+                                "updatedTimestampMs": 1714413738476,
+                                "type": "attribute",
+                                "key": "43"
+                            }
+                        ],
+                        "range": {
+                            "min": 1,
+                            "max": 30,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "eef80c3f-9b2f-41cd-8edc-0cab3c000aac",
+                "createdTimestampMs": 1714413738349,
+                "updatedTimestampMs": 1714413738349,
+                "functionClass": "power",
+                "functionInstance": "fan-power",
+                "type": "category",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "b8fad410-ba97-4825-8569-b6e8b7cd9a96",
+                        "createdTimestampMs": 1714413738360,
+                        "updatedTimestampMs": 1714413738360,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "be9dba49-4b48-4b30-9a36-d1f2af93fb46",
+                                "createdTimestampMs": 1714413738371,
+                                "updatedTimestampMs": 1714413738371,
+                                "type": "attribute",
+                                "key": "41",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "f4d0c163-1896-4925-ac35-eb2f505ed6b1",
+                        "createdTimestampMs": 1714413738379,
+                        "updatedTimestampMs": 1714413738379,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "c230d060-3938-4398-a7ff-9d064c82b5ae",
+                                "createdTimestampMs": 1714413738390,
+                                "updatedTimestampMs": 1714413738390,
+                                "type": "attribute",
+                                "key": "41",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "cc6031d4-fb57-46f2-bb3d-18befcbdbd11",
+                "createdTimestampMs": 1714413738398,
+                "updatedTimestampMs": 1714413738398,
+                "functionClass": "fan-speed",
+                "functionInstance": "exhaust-fan-speed",
+                "type": "category",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "999b34a3-e6ea-4c97-aa77-393f9d010133",
+                        "createdTimestampMs": 1714413738409,
+                        "updatedTimestampMs": 1714413738409,
+                        "name": "fan-speed-2-050",
+                        "deviceValues": [
+                            {
+                                "id": "c1392999-37d8-4265-a32e-fbbff0931cbb",
+                                "createdTimestampMs": 1714413738426,
+                                "updatedTimestampMs": 1714413738426,
+                                "type": "attribute",
+                                "key": "42",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "d7925130-8a66-4fe7-8897-938fca84de08",
+                        "createdTimestampMs": 1714413738437,
+                        "updatedTimestampMs": 1714413738437,
+                        "name": "fan-speed-2-100",
+                        "deviceValues": [
+                            {
+                                "id": "6337191e-beaf-4028-9e84-48d6c3f5a759",
+                                "createdTimestampMs": 1714413738447,
+                                "updatedTimestampMs": 1714413738447,
+                                "type": "attribute",
+                                "key": "42",
+                                "value": "2"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            }
+        ],
+        "states": [
+            {
+                "functionClass": "fan-runtime-below-threshold",
+                "value": 20,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "power",
+                "value": "off",
+                "lastUpdateTime": 0,
+                "functionInstance": "fan-power"
+            },
+            {
+                "functionClass": "fan-speed",
+                "value": "fan-speed-2-100",
+                "lastUpdateTime": 0,
+                "functionInstance": "exhaust-fan-speed"
+            },
+            {
+                "functionClass": "wifi-ssid",
+                "value": "fdd4354b-2d99-4fa1-afe5-c1e9e770fa82",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-rssi",
+                "value": -65,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-steady-state",
+                "value": "connected",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-setup-state",
+                "value": "connected",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-mac-address",
+                "value": "c284f8aa-beb8-41a3-a9be-c88161961890",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "geo-coordinates",
+                "value": {
+                    "geo-coordinates": {
+                        "latitude": "0",
+                        "longitude": "0"
+                    }
+                },
+                "lastUpdateTime": 0,
+                "functionInstance": "system-device-location"
+            },
+            {
+                "functionClass": "scheduler-flags",
+                "value": 0,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "available",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "visible",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "direct",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "ble-mac-address",
+                "value": "e12bb361-03a9-4eaf-958a-588ed1065b78",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            }
+        ],
+        "children": [],
+        "manufacturerName": "Commercial Electric"
+    },
+    {
+        "id": "c6627fad-38a3-4643-928c-bb03c801f717",
+        "device_id": "7475607b-c3ea-4afe-a465-1c11c5c09985",
+        "model": "",
+        "device_class": "light",
+        "default_name": "Light",
+        "default_image": "exhaust-fan-icon",
+        "friendly_name": "Light",
+        "functions": [
+            {
+                "id": "39525b1d-e807-4df5-9f62-a60b1fa0f5e0",
+                "createdTimestampMs": 1714413738181,
+                "updatedTimestampMs": 1714413738181,
+                "functionClass": "brightness",
+                "type": "numeric",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "53c82795-784f-4864-a43d-63301a5a4932",
+                        "createdTimestampMs": 1714413738192,
+                        "updatedTimestampMs": 1714413738192,
+                        "name": "brightness",
+                        "deviceValues": [
+                            {
+                                "id": "d9932c86-3d06-4947-a23b-07fdb547d5d0",
+                                "createdTimestampMs": 1714413738203,
+                                "updatedTimestampMs": 1714413738203,
+                                "type": "attribute",
+                                "key": "2"
+                            }
+                        ],
+                        "range": {
+                            "min": 1,
+                            "max": 100,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "f819a9ab-9d10-45e0-b00f-daed08a1f1db",
+                "createdTimestampMs": 1714413738272,
+                "updatedTimestampMs": 1714413738272,
+                "functionClass": "color-mode",
+                "type": "category",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "302d85ec-933a-4e52-b564-78dd2658bfaa",
+                        "createdTimestampMs": 1714413738317,
+                        "updatedTimestampMs": 1714413738317,
+                        "name": "night-light",
+                        "hints": [
+                            "no-brightness"
+                        ],
+                        "deviceValues": [
+                            {
+                                "id": "549fa9fc-cebe-42f9-83d4-4a72eb868a6b",
+                                "createdTimestampMs": 1714413738328,
+                                "updatedTimestampMs": 1714413738328,
+                                "type": "attribute",
+                                "key": "5",
+                                "value": "5"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "5ead039f-1bed-4fbe-9912-cc47d7ff188c",
+                        "createdTimestampMs": 1714413738282,
+                        "updatedTimestampMs": 1714413738282,
+                        "name": "color",
+                        "deviceValues": [
+                            {
+                                "id": "e7fe08d5-a4e6-4e54-beda-ac76ecd6de20",
+                                "createdTimestampMs": 1714413738292,
+                                "updatedTimestampMs": 1714413738292,
+                                "type": "attribute",
+                                "key": "5",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "aa4f43ca-a0d8-4669-847b-aaae6bf14b91",
+                        "createdTimestampMs": 1714413738299,
+                        "updatedTimestampMs": 1714413738299,
+                        "name": "white",
+                        "deviceValues": [
+                            {
+                                "id": "7d143c03-3855-4feb-9ef8-3b86cd9f7630",
+                                "createdTimestampMs": 1714413738310,
+                                "updatedTimestampMs": 1714413738310,
+                                "type": "attribute",
+                                "key": "5",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "9a176346-68a7-4f59-a24d-999debf8766a",
+                "createdTimestampMs": 1714413737996,
+                "updatedTimestampMs": 1714413737996,
+                "functionClass": "power",
+                "functionInstance": "light-power",
+                "type": "category",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "311ffc4b-e970-4508-9d67-86ec1b8b041d",
+                        "createdTimestampMs": 1714413738163,
+                        "updatedTimestampMs": 1714413738163,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "f289c853-443e-4c2b-a19d-de26c5681b21",
+                                "createdTimestampMs": 1714413738173,
+                                "updatedTimestampMs": 1714413738173,
+                                "type": "attribute",
+                                "key": "1",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "6f2b7cca-c5c7-46a0-b2c9-c6731a4ef793",
+                        "createdTimestampMs": 1714413738058,
+                        "updatedTimestampMs": 1714413738058,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "41efc333-3e9e-4019-9f71-b2ba45fa52c3",
+                                "createdTimestampMs": 1714413738118,
+                                "updatedTimestampMs": 1714413738118,
+                                "type": "attribute",
+                                "key": "1",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "c695b328-9bef-48a7-9477-07abfd41cc87",
+                "createdTimestampMs": 1714413738210,
+                "updatedTimestampMs": 1714413738210,
+                "functionClass": "color-temperature",
+                "type": "numeric",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "a130eeb0-bfa0-42f2-98c5-5077a0ef41b7",
+                        "createdTimestampMs": 1714413738221,
+                        "updatedTimestampMs": 1714413738221,
+                        "name": "color-temperature",
+                        "deviceValues": [
+                            {
+                                "id": "0560dceb-3fed-4a54-b4d6-b218c697ef32",
+                                "createdTimestampMs": 1714413738236,
+                                "updatedTimestampMs": 1714413738236,
+                                "type": "attribute",
+                                "key": "3"
+                            }
+                        ],
+                        "range": {
+                            "min": 2700,
+                            "max": 6500,
+                            "step": 100
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "89c9f923-4d42-4946-b311-1a373dcf4a50",
+                "createdTimestampMs": 1714413738243,
+                "updatedTimestampMs": 1714413738243,
+                "functionClass": "color-rgb",
+                "type": "object",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "89d31490-dfc0-46df-9657-c9feb97733e0",
+                        "createdTimestampMs": 1714413738254,
+                        "updatedTimestampMs": 1714413738254,
+                        "name": "color-rgb",
+                        "deviceValues": [
+                            {
+                                "id": "144a78d6-06f2-42ac-b8d2-413f2dfbf389",
+                                "createdTimestampMs": 1714413738265,
+                                "updatedTimestampMs": 1714413738265,
+                                "type": "attribute",
+                                "key": "4",
+                                "format": "color-rgb"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            }
+        ],
+        "states": [
+            {
+                "functionClass": "brightness",
+                "value": 50,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "color-mode",
+                "value": "white",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "power",
+                "value": "on",
+                "lastUpdateTime": 0,
+                "functionInstance": "light-power"
+            },
+            {
+                "functionClass": "color-temperature",
+                "value": 3500,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "color-rgb",
+                "value": {
+                    "color-rgb": {
+                        "r": 255,
+                        "b": 0,
+                        "g": 0
+                    }
+                },
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-ssid",
+                "value": "0980685c-21e2-485e-a0bd-6e9b1582810b",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-rssi",
+                "value": -65,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-steady-state",
+                "value": "connected",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-setup-state",
+                "value": "connected",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-mac-address",
+                "value": "4a2cd42e-a061-4cc5-9be8-81c6e576489b",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "geo-coordinates",
+                "value": {
+                    "geo-coordinates": {
+                        "latitude": "0",
+                        "longitude": "0"
+                    }
+                },
+                "lastUpdateTime": 0,
+                "functionInstance": "system-device-location"
+            },
+            {
+                "functionClass": "scheduler-flags",
+                "value": 0,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "available",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "visible",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "direct",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "ble-mac-address",
+                "value": "bbd5ce57-92f8-44ac-9a5f-6180459e4cc3",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            }
+        ],
+        "children": [],
+        "manufacturerName": "Commercial Electric"
+    }
+]
