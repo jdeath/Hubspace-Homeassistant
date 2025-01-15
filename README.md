@@ -42,6 +42,10 @@ are as follows:
 
 ## Changelog
 
+ * 4.1.1
+
+   * Fix an issue where locks were not controllable
+
  * 4.1.0
 
    * Re-implement the action / service send_command
