@@ -56,7 +56,7 @@ class HubspaceLock(HubspaceBaseEntity, LockEntity):
         await self.bridge.async_request_call(
             self.controller.set_state,
             device_id=self.resource.id,
-            lock_position=features.CurrentPositionEnum.LOCKING,
+            lock_position=features.CurrentPositionEnum.UNLOCKING,
         )
 
     @update_decorator
@@ -65,7 +65,7 @@ class HubspaceLock(HubspaceBaseEntity, LockEntity):
         await self.bridge.async_request_call(
             self.controller.set_state,
             device_id=self.resource.id,
-            lock_position=features.CurrentPositionEnum.UNLOCKING,
+            lock_position=features.CurrentPositionEnum.LOCKING,
         )
 
 

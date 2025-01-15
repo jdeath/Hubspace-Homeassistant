@@ -42,14 +42,13 @@ class HubspaceBaseEntity(Entity):  # pylint: disable=hass-enforce-class-module
         self.bridge = bridge
         self.controller = controller
         self.resource = resource
-        self.device = controller.get_device(resource.id)
         self.logger = bridge.logger.getChild(resource.type.value)
 
         # Entity class attributes
         unique_id = f"{resource.id}.{instance}" if instance else resource.id
         self._attr_unique_id = unique_id or resource.id
         self._attr_has_entity_name = (
-            True if self.device.device_information.name else False
+            True if self.resource.device_information.name else False
         )
 
         if instance is not False:
@@ -66,7 +65,7 @@ class HubspaceBaseEntity(Entity):  # pylint: disable=hass-enforce-class-module
         self.async_on_remove(
             self.controller.subscribe(
                 self._handle_event,
-                self.device.id,
+                self.resource.id,
                 EventType.RESOURCE_UPDATED,
             )
         )
@@ -75,9 +74,9 @@ class HubspaceBaseEntity(Entity):  # pylint: disable=hass-enforce-class-module
     def available(self) -> bool:
         """Return entity availability."""
         # entities without a device attached should be always available
-        if self.device is None:
+        if self.resource is None:
             return True
-        return self.device.available
+        return self.resource.available
 
     @callback
     def on_update(self) -> None:
