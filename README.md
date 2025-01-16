@@ -42,6 +42,10 @@ are as follows:
 
 ## Changelog
 
+ * 4.2.0
+
+   * Added supported for Glass Door control
+
  * 4.1.1
 
    * Fix an issue where locks were not controllable
