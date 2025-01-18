@@ -31,7 +31,19 @@ are as follows:
    * Dimming
    * RGB
 
- * Outlet / Switch / Transformer
+ * Outlet
+
+   * On/Off
+
+ * Smart Glass
+
+   * On/Off
+
+ * Switch
+
+   * On/Off
+
+ * Transformer
 
    * On/Off
 
@@ -41,6 +53,10 @@ are as follows:
 
 
 ## Changelog
+
+ * 4.2.0
+
+   * Added supported for Glass Door control
 
  * 4.1.1
 
