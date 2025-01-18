@@ -31,7 +31,19 @@ are as follows:
    * Dimming
    * RGB
 
- * Outlet / Switch / Transformer
+ * Outlet
+
+   * On/Off
+
+ * Smart Glass
+
+   * On/Off
+
+ * Switch
+
+   * On/Off
+
+ * Transformer
 
    * On/Off
 
