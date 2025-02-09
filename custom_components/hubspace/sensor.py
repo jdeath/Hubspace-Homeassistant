@@ -29,10 +29,6 @@ class HubspaceSensorEntity(HubspaceBaseEntity, SensorEntity):
         self._attr_name = sensor
 
     @property
-    def native_unit_of_measurement(self) -> str | None:
-        return self.resource.sensors[self._attr_name].unit
-
-    @property
     def native_value(self) -> Any:
         """Return the current value"""
         return self.resource.sensors[self._attr_name].value
@@ -59,12 +55,8 @@ async def async_setup_entry(
     sensor_entities = []
     for entity in controller:
         for sensor in entity.sensors.keys():
-            if sensor not in SENSORS_GENERAL:
-                controller._logger.warning(
-                    "Unknown sensor %s found in %s", sensor, entity.id
-                )
-                continue
-            sensor_entities.append(make_entity(entity, sensor))
+            if sensor in SENSORS_GENERAL:
+                sensor_entities.append(make_entity(entity, sensor))
     async_add_entities(sensor_entities)
     # register listener for new entities
     config_entry.async_on_unload(

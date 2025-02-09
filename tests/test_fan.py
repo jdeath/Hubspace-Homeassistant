@@ -1,5 +1,5 @@
 import pytest
-from aiohubspace.v1.device import HubspaceState
+from aiohubspace import HubspaceState
 from homeassistant.helpers import entity_registry as er
 
 from .utils import create_devices_from_data, modify_state
@@ -53,7 +53,7 @@ async def test_async_setup_entry(dev, root_dev, expected_entities, mocked_entry)
 
 @pytest.mark.asyncio
 async def test_turn_on(mocked_entity):
-    hass, entry, bridge = mocked_entity
+    hass, _, bridge = mocked_entity
     bridge.fans._items[fan_zandra_instance.id].on.on = False
     await hass.services.async_call(
         "fan",
@@ -116,7 +116,7 @@ async def test_turn_on_limited(mocked_entry):
 
 @pytest.mark.asyncio
 async def test_turn_off(mocked_entity):
-    hass, entry, bridge = mocked_entity
+    hass, _, bridge = mocked_entity
     bridge.fans._items[fan_zandra_instance.id].on.on = True
     await hass.services.async_call(
         "fan",
@@ -128,3 +128,81 @@ async def test_turn_off(mocked_entity):
     assert update_call.args[0] == "put"
     payload = update_call.kwargs["json"]
     assert payload["metadeviceId"] == fan_zandra_instance.id
+
+
+@pytest.mark.asyncio
+async def test_set_percentage(mocked_entity):
+    hass, _, bridge = mocked_entity
+    bridge.fans._items[fan_zandra_instance.id].on.on = False
+    await hass.services.async_call(
+        "fan",
+        "set_percentage",
+        {"entity_id": fan_zandra_entity_id, "percentage": 100},
+        blocking=True,
+    )
+    update_call = bridge.request.call_args_list[-1]
+    assert update_call.args[0] == "put"
+    payload = update_call.kwargs["json"]
+    assert payload["metadeviceId"] == fan_zandra_instance.id
+    assert payload["values"][1]["value"] == "fan-speed-6-100"
+
+
+@pytest.mark.asyncio
+async def test_set_preset_mode(mocked_entity):
+    hass, _, bridge = mocked_entity
+    bridge.fans._items[fan_zandra_instance.id].on.on = False
+    bridge.fans._items[fan_zandra_instance.id].preset.enabled = False
+    await hass.services.async_call(
+        "fan",
+        "set_preset_mode",
+        {"entity_id": fan_zandra_entity_id, "preset_mode": "breeze"},
+        blocking=True,
+    )
+    update_call = bridge.request.call_args_list[-1]
+    assert update_call.args[0] == "put"
+    payload = update_call.kwargs["json"]
+    assert payload["metadeviceId"] == fan_zandra_instance.id
+    assert payload["values"][1]["functionInstance"] == "comfort-breeze"
+    assert payload["values"][1]["value"] == "enabled"
+
+
+@pytest.mark.asyncio
+async def test_set_direction(mocked_entity):
+    hass, _, bridge = mocked_entity
+    bridge.fans._items[fan_zandra_instance.id].on.on = False
+    bridge.fans._items[fan_zandra_instance.id].direction.forward = False
+    await hass.services.async_call(
+        "fan",
+        "set_direction",
+        {"entity_id": fan_zandra_entity_id, "direction": "forward"},
+        blocking=True,
+    )
+    update_call = bridge.request.call_args_list[-1]
+    assert update_call.args[0] == "put"
+    payload = update_call.kwargs["json"]
+    assert payload["metadeviceId"] == fan_zandra_instance.id
+    assert payload["values"][1]["value"] == "forward"
+
+
+@pytest.mark.asyncio
+async def test_add_new_device(mocked_entry):
+    hass, entry, bridge = mocked_entry
+    assert len(bridge.devices.items) == 0
+    # Register callbacks
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    assert len(bridge.devices._subscribers) > 0
+    assert len(bridge.devices._subscribers["*"]) > 0
+    # Now generate update event by emitting the json we've sent as incoming event
+    fan_zandra = create_devices_from_data("fan-ZandraFan.json")
+    event = {
+        "type": "add",
+        "device_id": fan_zandra[0].id,
+        "device": fan_zandra[0],
+    }
+    bridge.emit_event("add", event)
+    await hass.async_block_till_done()
+    expected_entities = ["fan.friendly_device_0_fan"]
+    entity_reg = er.async_get(hass)
+    for entity in expected_entities:
+        assert entity_reg.async_get(entity) is not None

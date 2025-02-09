@@ -2,7 +2,7 @@ import json
 import os
 from typing import Any
 
-from aiohubspace.v1.device import HubspaceDevice, HubspaceState
+from aiohubspace import HubspaceDevice, HubspaceState
 
 current_path: str = os.path.dirname(os.path.realpath(__file__))
 

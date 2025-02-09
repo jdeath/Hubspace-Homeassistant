@@ -1,11 +1,10 @@
 from functools import partial
 
-from aiohubspace.v1 import HubspaceBridgeV1
-from aiohubspace.v1.controllers.event import EventType
-from aiohubspace.v1.controllers.light import LightController
-from aiohubspace.v1.models.light import Light
+from aiohubspace import EventType
+from aiohubspace.v1 import HubspaceBridgeV1, LightController
+from aiohubspace.v1.models import Light
 from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
+    ATTR_BRIGHTNESS_PCT,
     ATTR_COLOR_TEMP_KELVIN,
     ATTR_EFFECT,
     ATTR_RGB_COLOR,
@@ -17,22 +16,11 @@ from homeassistant.components.light import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.util.color import value_to_brightness
 
 from .bridge import HubspaceBridge
 from .const import DOMAIN
 from .entity import HubspaceBaseEntity, update_decorator
-
-
-def _brightness_to_hass(value):
-    if value is None:
-        value = 0
-    return int(value) * 255 // 100
-
-
-def _brightness_to_hubspace(value):
-    if value is None:
-        return None
-    return value * 100 // 255
 
 
 class HubspaceLight(HubspaceBaseEntity, LightEntity):
@@ -57,47 +45,34 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
 
     @property
     def brightness(self) -> int | None:
-        return _brightness_to_hass(self.resource.brightness)
+        return value_to_brightness((1, 100), self.resource.brightness)
 
     @property
     def color_mode(self) -> ColorMode:
-        if not self.resource.color_mode:
-            return next(iter(self._attr_supported_color_modes)) or ColorMode.ONOFF
-        elif self.resource.color_mode.mode == "color":
-            return ColorMode.RGB
-        elif self.resource.color_mode.mode == "white":
-            if ColorMode.COLOR_TEMP in self._attr_supported_color_modes:
-                return ColorMode.COLOR_TEMP
-            elif ColorMode.BRIGHTNESS in self._attr_supported_color_modes:
-                return ColorMode.BRIGHTNESS
-            else:
-                return ColorMode.ONOFF
-        else:
-            return list(self._attr_supported_color_modes)[-1]
+        return get_color_mode(self.resource, self._attr_supported_color_modes)
 
     @property
     def color_temp_kelvin(self) -> int | None:
-        if self.resource.color_temperature:
-            return self.resource.color_temperature.temperature
-        else:
-            return None
+        return (
+            self.resource.color_temperature.temperature
+            if self.resource.color_temperature
+            else None
+        )
 
     @property
     def effect(self) -> str | None:
-        if self.resource.effect and self.resource.color_mode.mode == "sequence":
-            return self.resource.effect.effect
-        else:
-            return None
+        return (
+            self.resource.effect.effect
+            if (self.resource.effect and self.resource.color_mode.mode == "sequence")
+            else None
+        )
 
     @property
     def effect_list(self) -> list[str] | None:
-        if self.resource.effect:
-            all_effects = []
-            for effects in self.resource.effect.effects.values():
-                all_effects.extend(effects)
-            return all_effects
-        else:
-            return None
+        all_effects = []
+        for effects in self.resource.effect.effects.values() or []:
+            all_effects.extend(effects)
+        return all_effects or None
 
     @property
     def is_on(self) -> bool | None:
@@ -105,28 +80,31 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
 
     @property
     def max_color_temp_kelvin(self) -> int | None:
-        if self.resource.color_temperature:
-            return max(self.resource.color_temperature.supported)
-        else:
-            return None
+        return (
+            max(self.resource.color_temperature.supported)
+            if self.resource.color_temperature
+            else None
+        )
 
     @property
     def min_color_temp_kelvin(self) -> int | None:
-        if self.resource.color_temperature:
-            return min(self.resource.color_temperature.supported)
-        else:
-            return None
+        return (
+            min(self.resource.color_temperature.supported)
+            if self.resource.color_temperature
+            else None
+        )
 
     @property
     def rgb_color(self) -> tuple[int, int, int] | None:
-        if self.resource.color:
-            return (
+        return (
+            (
                 self.resource.color.red,
                 self.resource.color.green,
                 self.resource.color.blue,
             )
-        else:
-            return None
+            if self.resource.color
+            else None
+        )
 
     @property
     def supported_color_modes(self) -> set[ColorMode]:
@@ -141,9 +119,7 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
 
     @update_decorator
     async def async_turn_on(self, **kwargs) -> None:
-        brightness: int | None = _brightness_to_hubspace(
-            kwargs.get(ATTR_BRIGHTNESS, None)
-        )
+        brightness: int | None = kwargs.get(ATTR_BRIGHTNESS_PCT, None)
         temperature: int | None = kwargs.get(ATTR_COLOR_TEMP_KELVIN, None)
         color: tuple[int, int, int] | None = kwargs.get(ATTR_RGB_COLOR, None)
         effect: str | None = kwargs.get(ATTR_EFFECT, None)
@@ -174,6 +150,27 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
         )
 
 
+def get_color_mode(resource: Light, supported_modes: set[ColorMode]) -> ColorMode:
+    """Determine the correct mode
+
+    :param resource: Light from aiohubspace
+    :param supported_modes: Supported color modes
+    """
+    if not resource.color_mode:
+        return list(supported_modes)[0] if len(supported_modes) else ColorMode.ONOFF
+    elif resource.color_mode.mode == "color":
+        return ColorMode.RGB
+    elif resource.color_mode.mode == "white":
+        if ColorMode.COLOR_TEMP in supported_modes:
+            return ColorMode.COLOR_TEMP
+        elif ColorMode.BRIGHTNESS in supported_modes:
+            return ColorMode.BRIGHTNESS
+        else:
+            return ColorMode.ONOFF
+    else:
+        return list(supported_modes)[-1] if len(supported_modes) else ColorMode.ONOFF
+
+
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
@@ -186,7 +183,7 @@ async def async_setup_entry(
     make_entity = partial(HubspaceLight, bridge, controller)
 
     @callback
-    def async_add_entity(resource: Light) -> None:
+    def async_add_entity(event_type: EventType, resource: Light) -> None:
         """Add an entity."""
         async_add_entities([make_entity(resource)])
 

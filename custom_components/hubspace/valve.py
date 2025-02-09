@@ -80,7 +80,7 @@ async def async_setup_entry(
         instances = hs_resource.open.keys()
         for instance in instances:
             if len(instances) == 1 or instance is not None:
-                hs_resource_entities.append(make_entity(resource, instance))
+                hs_resource_entities.append(make_entity(hs_resource, instance))
         return hs_resource_entities
 
     @callback

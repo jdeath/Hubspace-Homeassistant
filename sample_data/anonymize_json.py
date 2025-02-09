@@ -23,7 +23,7 @@ for unique_uuid in unique_uuids:
 # Replace Times
 # 13 digits includes dates since late 2001
 # Keep times in relative order, add random value less than ~15 minutes
-time_re = re.compile('[0-9]{13}')
+time_re = re.compile('\d{13}')
 unique_times = sorted(set(re.findall(time_re, infile)))
 random_increasing_offset = random.randint(1, 1000000)
 for unique_time in unique_times:
@@ -31,7 +31,7 @@ for unique_time in unique_times:
 	random_increasing_offset += random.randint(1, 1000000)
 
 # Replace Lat / Long
-latlong_re = re.compile(r'"(-?[0-9]{1,3}\.[0-9]*)"')
+latlong_re = re.compile(r'"(-?\d{1,3}\.\d*)"')
 unique_latlongs = set(re.findall(latlong_re, infile))
 for unique_latlong in unique_latlongs:
 	infile = infile.replace(unique_latlong, str(random.random()))
@@ -45,7 +45,7 @@ for unique_friendlyname in unique_friendlynames:
 	i += 1
 
 # Replace MACs
-mac_re = re.compile('"([0-9a-f]{12})"')
+mac_re = re.compile('"(\d{12})"')
 unique_macs = set(re.findall(mac_re, infile))
 for unique_mac in unique_macs:
 	infile = infile.replace(unique_mac, '%12x' % random.randrange(16**12))

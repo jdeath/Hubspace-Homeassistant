@@ -1,6 +1,6 @@
 import pytest
+from aiohubspace import HubspaceState
 from aiohubspace.v1.controllers.lock import features
-from aiohubspace.v1.device import HubspaceState
 from homeassistant.helpers import entity_registry as er
 
 from .utils import create_devices_from_data, modify_state
@@ -11,7 +11,7 @@ lock_id = "lock.friendly_device_0_lock"
 
 
 @pytest.fixture
-async def lock_entity(mocked_entry):
+async def mocked_entity(mocked_entry):
     hass, entry, bridge = mocked_entry
     await bridge.locks.initialize_elem(lock_tbd_instance)
     await bridge.devices.initialize_elem(lock_tbd_instance)
@@ -50,8 +50,8 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry):
 
 
 @pytest.mark.asyncio
-async def test_unlock(lock_entity):
-    hass, entry, bridge = lock_entity
+async def test_unlock(mocked_entity):
+    hass, _, bridge = mocked_entity
     await hass.services.async_call(
         "lock",
         "unlock",
@@ -91,8 +91,8 @@ async def test_unlock(lock_entity):
 
 
 @pytest.mark.asyncio
-async def test_lock(lock_entity):
-    hass, entry, bridge = lock_entity
+async def test_lock(mocked_entity):
+    hass, _, bridge = mocked_entity
     await hass.services.async_call(
         "lock",
         "lock",
@@ -129,3 +129,27 @@ async def test_lock(lock_entity):
         == features.CurrentPositionEnum.LOCKING
     )
     assert hass.states.get(lock_id).state == "locking"
+
+
+@pytest.mark.asyncio
+async def test_add_new_device(mocked_entry):
+    hass, entry, bridge = mocked_entry
+    assert len(bridge.devices.items) == 0
+    # Register callbacks
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    assert len(bridge.devices._subscribers) > 0
+    assert len(bridge.devices._subscribers["*"]) > 0
+    # Now generate update event by emitting the json we've sent as incoming event
+    hs_new_dev = create_devices_from_data("door-lock-TBD.json")[0]
+    event = {
+        "type": "add",
+        "device_id": hs_new_dev.id,
+        "device": hs_new_dev,
+    }
+    bridge.emit_event("add", event)
+    await hass.async_block_till_done()
+    expected_entities = [lock_id]
+    entity_reg = er.async_get(hass)
+    for entity in expected_entities:
+        assert entity_reg.async_get(entity) is not None

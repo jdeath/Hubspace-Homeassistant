@@ -4,9 +4,10 @@ from typing import Any, Callable
 
 import aiohttp
 from aiohttp import client_exceptions
-from aiohubspace import HubspaceBridgeV1, InvalidAuth, InvalidResponse
+from aiohubspace import InvalidAuth, InvalidResponse
+from aiohubspace.v1 import HubspaceBridgeV1
 from homeassistant import core
-from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
+from homeassistant.config_entries import SOURCE_USER, ConfigEntry
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_USERNAME
 from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers import aiohttp_client
@@ -39,7 +40,7 @@ class HubspaceBridge:
         hass.data.setdefault(DOMAIN, {})[self.config_entry.entry_id] = self
 
     async def async_initialize_bridge(self) -> bool:
-        """Initialize Connection with the Hue API."""
+        """Initialize Connection with the Hubspace API."""
         setup_ok = False
         try:
             async with asyncio.timeout(self.config_entry.options[CONF_TIMEOUT]):
@@ -76,7 +77,7 @@ class HubspaceBridge:
         return True
 
     async def async_request_call(self, task: Callable, *args, **kwargs) -> Any:
-        """Send request to the Hue bridge."""
+        """Send request to the bridge."""
         try:
             return await task(*args, **kwargs)
         except aiohttp.ClientError as err:
@@ -111,16 +112,6 @@ class HubspaceBridge:
 
         return unload_success
 
-    async def handle_unauthorized_error(self) -> None:
-        """Create a new config flow when the authorization is no longer valid."""
-        if not self.authorized:
-            return
-        self.logger.error(
-            "Unable to authorize to Hubspace, setup the linking again",
-        )
-        self.authorized = False
-        create_config_flow(self.hass, self.config_entry.data[CONF_USERNAME])
-
 
 async def _update_listener(hass: core.HomeAssistant, entry: ConfigEntry) -> None:
     """Handle ConfigEntry options update."""
@@ -129,10 +120,11 @@ async def _update_listener(hass: core.HomeAssistant, entry: ConfigEntry) -> None
 
 def create_config_flow(hass: core.HomeAssistant, username: str) -> None:
     """Start a config flow."""
+    # @TODO - This should be a reconfig for password
     hass.async_create_task(
         hass.config_entries.flow.async_init(
             DOMAIN,
-            context={"source": SOURCE_IMPORT},
+            context={"source": SOURCE_USER},
             data={CONF_USERNAME: username},
         )
     )

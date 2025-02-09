@@ -1,11 +1,9 @@
 from functools import partial
 from typing import Any
 
-from aiohubspace.v1 import HubspaceBridgeV1
-from aiohubspace.v1.controllers.device import DeviceController
-from aiohubspace.v1.controllers.event import EventType
-from aiohubspace.v1.models.device import Device
-from aiohubspace.v1.models.sensor import HubspaceSensor
+from aiohubspace import EventType
+from aiohubspace.v1 import DeviceController, HubspaceBridgeV1
+from aiohubspace.v1.models import Device, HubspaceSensor
 from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
     BinarySensorEntityDescription,
@@ -39,10 +37,6 @@ class HubspaceBinarySensorEntity(HubspaceBaseEntity, BinarySensorEntity):
         self._attr_name = sensor
 
     @property
-    def native_unit_of_measurement(self) -> str | None:
-        return self.resource.sensors[self._attr_name].unit
-
-    @property
     def native_value(self) -> Any:
         """Return the current value"""
         return self.resource.sensors[self._attr_name].value
@@ -71,7 +65,9 @@ async def async_setup_entry(
         for sensor in entity.binary_sensors.keys():
             if sensor not in BINARY_SENSORS:
                 controller._logger.warning(
-                    "Unknown sensor %s found in %s", sensor, entity.id
+                    "Unknown sensor %s found in %s. Please open a bug report",
+                    sensor,
+                    entity.id,
                 )
                 continue
             sensor_entities.append(make_entity(entity, sensor))

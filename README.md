@@ -54,6 +54,11 @@ are as follows:
 
 ## Changelog
 
+ * 4.3.0
+
+   * Convert to aiohubspace
+   * Fix sensor units
+
  * 4.2.0
 
    * Added supported for Glass Door control
