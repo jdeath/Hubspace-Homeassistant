@@ -56,7 +56,7 @@ are as follows:
 
  * 4.3.0
 
-   * Convert to aiohubspace
+   * Convert to aiohubspace==1.x
    * Fix sensor units
 
  * 4.2.0
