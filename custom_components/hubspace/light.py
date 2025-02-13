@@ -45,7 +45,11 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
 
     @property
     def brightness(self) -> int | None:
-        return value_to_brightness((1, 100), self.resource.brightness)
+        return (
+            value_to_brightness((1, 100), self.resource.brightness)
+            if self.resource.dimming
+            else None
+        )
 
     @property
     def color_mode(self) -> ColorMode:

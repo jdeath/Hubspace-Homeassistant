@@ -1,6 +1,13 @@
 import pytest
 from aiohubspace import HubspaceState
-from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import (
+    ATTR_BRIGHTNESS,
+    ATTR_COLOR_MODE,
+    ATTR_COLOR_TEMP_KELVIN,
+    ATTR_EFFECT,
+    ATTR_RGB_COLOR,
+    ColorMode,
+)
 from homeassistant.helpers import entity_registry as er
 
 from custom_components.hubspace import light
@@ -51,27 +58,27 @@ async def mocked_dimmer(mocked_entry):
     "color_mode, supported, expected",
     [
         # No current mode and none supported
-        (None, {}, light.ColorMode.ONOFF),
+        (None, {}, ColorMode.ONOFF),
         # No current mode and a mode is supported
-        (None, {light.ColorMode.COLOR_TEMP}, light.ColorMode.COLOR_TEMP),
+        (None, {ColorMode.COLOR_TEMP}, ColorMode.COLOR_TEMP),
         # RGB mode
-        ("color", {}, light.ColorMode.RGB),
+        ("color", {}, ColorMode.RGB),
         # White - Temp
         (
             "white",
-            {light.ColorMode.COLOR_TEMP, light.ColorMode.ONOFF},
-            light.ColorMode.COLOR_TEMP,
+            {ColorMode.COLOR_TEMP, ColorMode.ONOFF},
+            ColorMode.COLOR_TEMP,
         ),
         # White - Brightness
         (
             "white",
-            {light.ColorMode.BRIGHTNESS, light.ColorMode.ONOFF},
-            light.ColorMode.BRIGHTNESS,
+            {ColorMode.BRIGHTNESS, ColorMode.ONOFF},
+            ColorMode.BRIGHTNESS,
         ),
         # White - fallback
-        ("white", set(), light.ColorMode.ONOFF),
+        ("white", set(), ColorMode.ONOFF),
         # Just fallback
-        (None, set(), light.ColorMode.ONOFF),
+        (None, set(), ColorMode.ONOFF),
     ],
 )
 def test_get_color_mode(color_mode, supported, expected, mocked_entity):
@@ -152,8 +159,217 @@ async def test_turn_on(mocked_entity):
     }
     bridge.emit_event("update", event)
     await hass.async_block_till_done()
-    assert bridge.lights._items[light_a21.id].is_on
+    entity = hass.states.get(light_a21_id)
+    assert entity is not None
+    assert entity.state == "on"
+    assert entity.attributes["brightness"] == 64
     assert bridge.lights._items[light_a21.id].brightness == 25
+
+
+@pytest.mark.asyncio
+async def test_turn_on_temp(mocked_entity):
+    hass, _, bridge = mocked_entity
+    bridge.lights._items[light_a21.id].on.on = False
+    bridge.lights._items[light_a21.id].color_mode.mode = "no"
+    await hass.services.async_call(
+        "light",
+        "turn_on",
+        {"entity_id": light_a21_id, ATTR_COLOR_TEMP_KELVIN: 3000},
+        blocking=True,
+    )
+    update_call = bridge.request.call_args_list[-1]
+    assert update_call.args[0] == "put"
+    payload = update_call.kwargs["json"]
+    assert payload["metadeviceId"] == light_a21.id
+    assert len(payload["values"]) == 3
+    power_payload = payload["values"][0]
+    assert power_payload["functionClass"] == "power"
+    assert power_payload["functionInstance"] is None
+    assert power_payload["value"] == "on"
+    assert payload["values"][1]["value"] == "white"
+    assert payload["values"][2]["value"] == "3000"
+    # Now generate update event by emitting the json we've sent as incoming event
+    hs_device_update = create_devices_from_data("light-a21.json")[0]
+    modify_state(
+        hs_device_update,
+        HubspaceState(
+            functionClass="power",
+            functionInstance=None,
+            value="on",
+        ),
+    )
+    modify_state(
+        hs_device_update,
+        HubspaceState(
+            functionClass="color-temperature",
+            functionInstance=None,
+            value=3000,
+        ),
+    )
+    modify_state(
+        hs_device_update,
+        HubspaceState(
+            functionClass="color-mode",
+            functionInstance=None,
+            value="white",
+        ),
+    )
+    event = {
+        "type": "update",
+        "device_id": light_a21.id,
+        "device": hs_device_update,
+    }
+    bridge.emit_event("update", event)
+    await hass.async_block_till_done()
+    entity = hass.states.get(light_a21_id)
+    assert entity is not None
+    assert entity.state == "on"
+    assert entity.attributes[ATTR_EFFECT] is None
+    assert entity.attributes[ATTR_COLOR_TEMP_KELVIN] == 3000
+    assert entity.attributes[ATTR_COLOR_MODE] == ColorMode.COLOR_TEMP
+
+
+@pytest.mark.asyncio
+async def test_turn_on_color(mocked_entity):
+    hass, _, bridge = mocked_entity
+    bridge.lights._items[light_a21.id].on.on = False
+    bridge.lights._items[light_a21.id].color_mode.mode = "no"
+    await hass.services.async_call(
+        "light",
+        "turn_on",
+        {"entity_id": light_a21_id, ATTR_RGB_COLOR: (50, 100, 150)},
+        blocking=True,
+    )
+    update_call = bridge.request.call_args_list[-1]
+    assert update_call.args[0] == "put"
+    payload = update_call.kwargs["json"]
+    assert payload["metadeviceId"] == light_a21.id
+    assert len(payload["values"]) == 3
+    power_payload = payload["values"][0]
+    assert power_payload["functionClass"] == "power"
+    assert power_payload["functionInstance"] is None
+    assert power_payload["value"] == "on"
+    assert payload["values"][1]["value"] == {"color-rgb": {"b": 150, "g": 100, "r": 50}}
+    assert payload["values"][2]["value"] == "color"
+    # Now generate update event by emitting the json we've sent as incoming event
+    hs_device_update = create_devices_from_data("light-a21.json")[0]
+    modify_state(
+        hs_device_update,
+        HubspaceState(
+            functionClass="power",
+            functionInstance=None,
+            value="on",
+        ),
+    )
+    modify_state(
+        hs_device_update,
+        HubspaceState(
+            functionClass="color-rgb",
+            functionInstance=None,
+            value={
+                "color-rgb": {
+                    "r": 50,
+                    "g": 100,
+                    "b": 150,
+                }
+            },
+        ),
+    )
+    modify_state(
+        hs_device_update,
+        HubspaceState(
+            functionClass="color-mode",
+            functionInstance=None,
+            value="color",
+        ),
+    )
+    event = {
+        "type": "update",
+        "device_id": light_a21.id,
+        "device": hs_device_update,
+    }
+    bridge.emit_event("update", event)
+    await hass.async_block_till_done()
+    entity = hass.states.get(light_a21_id)
+    assert entity is not None
+    assert entity.state == "on"
+    assert entity.attributes[ATTR_EFFECT] is None
+    assert entity.attributes[ATTR_COLOR_TEMP_KELVIN] is None
+    assert entity.attributes[ATTR_COLOR_MODE] == ColorMode.RGB
+    assert entity.attributes[ATTR_RGB_COLOR] == (50, 100, 150)
+
+
+@pytest.mark.asyncio
+async def test_turn_on_effect(mocked_entity):
+    hass, _, bridge = mocked_entity
+    bridge.lights._items[light_a21.id].on.on = False
+    bridge.lights._items[light_a21.id].color_mode.mode = "no"
+    await hass.services.async_call(
+        "light",
+        "turn_on",
+        {"entity_id": light_a21_id, ATTR_EFFECT: "rainbow"},
+        blocking=True,
+    )
+    update_call = bridge.request.call_args_list[-1]
+    assert update_call.args[0] == "put"
+    payload = update_call.kwargs["json"]
+    assert payload["metadeviceId"] == light_a21.id
+    assert len(payload["values"]) == 4
+    power_payload = payload["values"][0]
+    assert power_payload["functionClass"] == "power"
+    assert power_payload["functionInstance"] is None
+    assert power_payload["value"] == "on"
+    assert payload["values"][1]["value"] == "sequence"
+    assert payload["values"][2]["value"] == "custom"
+    assert payload["values"][3]["value"] == "rainbow"
+    # Now generate update event by emitting the json we've sent as incoming event
+    hs_device_update = create_devices_from_data("light-a21.json")[0]
+    modify_state(
+        hs_device_update,
+        HubspaceState(
+            functionClass="power",
+            functionInstance=None,
+            value="on",
+        ),
+    )
+    modify_state(
+        hs_device_update,
+        HubspaceState(
+            functionClass="color-mode",
+            functionInstance=None,
+            value="sequence",
+        ),
+    )
+    modify_state(
+        hs_device_update,
+        HubspaceState(
+            functionClass="color-sequence",
+            functionInstance="preset",
+            value="custom",
+        ),
+    )
+    modify_state(
+        hs_device_update,
+        HubspaceState(
+            functionClass="color-sequence",
+            functionInstance="custom",
+            value="rainbow",
+        ),
+    )
+    event = {
+        "type": "update",
+        "device_id": light_a21.id,
+        "device": hs_device_update,
+    }
+    bridge.emit_event("update", event)
+    await hass.async_block_till_done()
+    assert bridge.lights._items[light_a21.id].effect.effect == "rainbow"
+    assert bridge.lights._items[light_a21.id].color_mode.mode == "sequence"
+    entity = hass.states.get(light_a21_id)
+    assert entity is not None
+    assert entity.state == "on"
+    assert entity.attributes[ATTR_EFFECT] == "rainbow"
+    assert entity.attributes[ATTR_COLOR_TEMP_KELVIN] is None
 
 
 @pytest.mark.asyncio
@@ -192,7 +408,9 @@ async def test_turn_on_dimmer(mocked_dimmer):
     }
     bridge.emit_event("update", event)
     await hass.async_block_till_done()
-    assert bridge.lights._items[switch_dimmer_light.id].is_on
+    entity = hass.states.get(switch_dimmer_light_id)
+    assert entity is not None
+    assert entity.state == "on"
 
 
 @pytest.mark.asyncio
@@ -209,6 +427,9 @@ async def test_turn_off(mocked_entity):
     assert update_call.args[0] == "put"
     payload = update_call.kwargs["json"]
     assert payload["metadeviceId"] == light_a21.id
+    entity = hass.states.get(light_a21_id)
+    assert entity is not None
+    assert entity.state == "off"
 
 
 @pytest.mark.asyncio
@@ -248,7 +469,9 @@ async def test_turn_off_dimmer(mocked_dimmer):
     }
     bridge.emit_event("update", event)
     await hass.async_block_till_done()
-    assert not bridge.lights._items[switch_dimmer_light.id].is_on
+    entity = hass.states.get(switch_dimmer_light_id)
+    assert entity is not None
+    assert entity.state == "off"
 
 
 @pytest.mark.asyncio
