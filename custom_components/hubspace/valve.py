@@ -41,7 +41,9 @@ class HubspaceValve(HubspaceBaseEntity, ValveEntity):
 
     @property
     def current_valve_position(self) -> int:
-        return 100 if self.resource.open[self.instance] else 0
+        feature = self.resource.open.get(self.instance)
+        if feature:
+            return 100 if feature.open else 0
 
     @update_decorator
     async def async_open_valve(self, **kwargs) -> None:

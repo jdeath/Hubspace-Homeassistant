@@ -104,7 +104,9 @@ async def test_turn_on_toggle(mocked_entity_toggled):
     }
     bridge.emit_event("update", event)
     await hass.async_block_till_done()
-    assert bridge.switches._items[transformer_update.id].on["zone-3"].on
+    entity = hass.states.get(transformer_entity_zone_3)
+    assert entity is not None
+    assert entity.state == "on"
 
 
 @pytest.mark.asyncio
@@ -143,8 +145,9 @@ async def test_turn_on(mocked_entity):
     }
     bridge.emit_event("update", event)
     await hass.async_block_till_done()
-    assert bridge.switches._items[hs_switch_update.id].on[None].on
-    assert hass.states.get(hs_switch_id).state == "on"
+    entity = hass.states.get(hs_switch_id)
+    assert entity is not None
+    assert entity.state == "on"
 
 
 @pytest.mark.asyncio
@@ -177,7 +180,9 @@ async def test_turn_off_toggle(mocked_entity_toggled):
     }
     bridge.emit_event("update", event)
     await hass.async_block_till_done()
-    assert not bridge.switches._items[transformer_update.id].on["zone-2"].on
+    entity = hass.states.get(transformer_entity_zone_2)
+    assert entity is not None
+    assert entity.state == "off"
 
 
 @pytest.mark.asyncio
@@ -216,7 +221,6 @@ async def test_turn_off(mocked_entity):
     }
     bridge.emit_event("update", event)
     await hass.async_block_till_done()
-    assert not bridge.switches._items[hs_switch_update.id].on[None].on
     test_switch = hass.states.get(hs_switch_id)
     assert test_switch is not None
     assert test_switch.state == "off"

@@ -31,9 +31,6 @@ class HubspaceSwitch(HubspaceBaseEntity, SwitchEntity):
         feature = self.resource.on.get(self.instance, None)
         if feature:
             return feature.on
-        self.logger.debug(
-            "Unable to find instance %s on %s", self.instance, self._attr_name
-        )
 
     @update_decorator
     async def async_turn_on(
