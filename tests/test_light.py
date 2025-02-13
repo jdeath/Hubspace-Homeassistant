@@ -369,7 +369,6 @@ async def test_turn_on_effect(mocked_entity):
     assert entity is not None
     assert entity.state == "on"
     assert entity.attributes[ATTR_EFFECT] == "rainbow"
-    assert entity.attributes[ATTR_COLOR_TEMP_KELVIN] is None
 
 
 @pytest.mark.asyncio

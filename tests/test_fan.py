@@ -1,5 +1,10 @@
 import pytest
 from aiohubspace import HubspaceState
+from homeassistant.components.fan import (
+    ATTR_DIRECTION,
+    ATTR_PERCENTAGE,
+    ATTR_PRESET_MODE,
+)
 from homeassistant.helpers import entity_registry as er
 
 from .utils import create_devices_from_data, modify_state
@@ -58,13 +63,45 @@ async def test_turn_on(mocked_entity):
     await hass.services.async_call(
         "fan",
         "turn_on",
-        {"entity_id": fan_zandra_entity_id},
+        {"entity_id": fan_zandra_entity_id, ATTR_PERCENTAGE: 50},
         blocking=True,
     )
     update_call = bridge.request.call_args_list[-1]
     assert update_call.args[0] == "put"
     payload = update_call.kwargs["json"]
     assert payload["metadeviceId"] == fan_zandra_instance.id
+    await hass.async_block_till_done()
+    entity = hass.states.get(fan_zandra_entity_id)
+    assert entity is not None
+    assert entity.state == "on"
+    assert entity.attributes[ATTR_PERCENTAGE] == 50
+    assert entity.attributes[ATTR_PRESET_MODE] is None
+
+
+@pytest.mark.asyncio
+async def test_turn_on_preset(mocked_entity):
+    hass, _, bridge = mocked_entity
+    bridge.fans._items[fan_zandra_instance.id].on.on = False
+    await hass.services.async_call(
+        "fan",
+        "turn_on",
+        {
+            "entity_id": fan_zandra_entity_id,
+            ATTR_PERCENTAGE: 50,
+            ATTR_PRESET_MODE: "breeze",
+        },
+        blocking=True,
+    )
+    update_call = bridge.request.call_args_list[-1]
+    assert update_call.args[0] == "put"
+    payload = update_call.kwargs["json"]
+    assert payload["metadeviceId"] == fan_zandra_instance.id
+    await hass.async_block_till_done()
+    entity = hass.states.get(fan_zandra_entity_id)
+    assert entity is not None
+    assert entity.state == "on"
+    assert entity.attributes[ATTR_PERCENTAGE] == 50
+    assert entity.attributes[ATTR_PRESET_MODE] == "breeze"
 
 
 @pytest.mark.asyncio
@@ -128,6 +165,10 @@ async def test_turn_off(mocked_entity):
     assert update_call.args[0] == "put"
     payload = update_call.kwargs["json"]
     assert payload["metadeviceId"] == fan_zandra_instance.id
+    await hass.async_block_till_done()
+    entity = hass.states.get(fan_zandra_entity_id)
+    assert entity is not None
+    assert entity.state == "off"
 
 
 @pytest.mark.asyncio
@@ -145,6 +186,11 @@ async def test_set_percentage(mocked_entity):
     payload = update_call.kwargs["json"]
     assert payload["metadeviceId"] == fan_zandra_instance.id
     assert payload["values"][1]["value"] == "fan-speed-6-100"
+    await hass.async_block_till_done()
+    entity = hass.states.get(fan_zandra_entity_id)
+    assert entity is not None
+    assert entity.state == "on"
+    assert entity.attributes[ATTR_PERCENTAGE] == 100
 
 
 @pytest.mark.asyncio
@@ -155,7 +201,7 @@ async def test_set_preset_mode(mocked_entity):
     await hass.services.async_call(
         "fan",
         "set_preset_mode",
-        {"entity_id": fan_zandra_entity_id, "preset_mode": "breeze"},
+        {"entity_id": fan_zandra_entity_id, ATTR_PRESET_MODE: "breeze"},
         blocking=True,
     )
     update_call = bridge.request.call_args_list[-1]
@@ -164,6 +210,11 @@ async def test_set_preset_mode(mocked_entity):
     assert payload["metadeviceId"] == fan_zandra_instance.id
     assert payload["values"][1]["functionInstance"] == "comfort-breeze"
     assert payload["values"][1]["value"] == "enabled"
+    await hass.async_block_till_done()
+    entity = hass.states.get(fan_zandra_entity_id)
+    assert entity is not None
+    assert entity.state == "on"
+    assert entity.attributes[ATTR_PRESET_MODE] == "breeze"
 
 
 @pytest.mark.asyncio
@@ -182,6 +233,28 @@ async def test_set_direction(mocked_entity):
     payload = update_call.kwargs["json"]
     assert payload["metadeviceId"] == fan_zandra_instance.id
     assert payload["values"][1]["value"] == "forward"
+    await hass.async_block_till_done()
+    entity = hass.states.get(fan_zandra_entity_id)
+    assert entity is not None
+    assert entity.state == "on"
+    assert entity.attributes[ATTR_DIRECTION] is True
+    # Reverse the fan
+    await hass.services.async_call(
+        "fan",
+        "set_direction",
+        {"entity_id": fan_zandra_entity_id, "direction": "reverse"},
+        blocking=True,
+    )
+    update_call = bridge.request.call_args_list[-1]
+    assert update_call.args[0] == "put"
+    payload = update_call.kwargs["json"]
+    assert payload["metadeviceId"] == fan_zandra_instance.id
+    assert payload["values"][0]["value"] == "reverse"
+    await hass.async_block_till_done()
+    entity = hass.states.get(fan_zandra_entity_id)
+    assert entity is not None
+    assert entity.state == "on"
+    assert entity.attributes[ATTR_DIRECTION] is False
 
 
 @pytest.mark.asyncio

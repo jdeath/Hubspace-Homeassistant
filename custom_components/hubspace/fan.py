@@ -66,7 +66,7 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
             "breeze"
             if (
                 self.supported_features & FanEntityFeature.PRESET_MODE
-                and self.resource.preset
+                and self.resource.preset.enabled
             )
             else None
         )
