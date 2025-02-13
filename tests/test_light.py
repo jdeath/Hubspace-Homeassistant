@@ -1,5 +1,6 @@
 import pytest
 from aiohubspace import HubspaceState
+from homeassistant.components.light import ATTR_BRIGHTNESS
 from homeassistant.helpers import entity_registry as er
 
 from custom_components.hubspace import light
@@ -112,13 +113,47 @@ async def test_turn_on(mocked_entity):
     await hass.services.async_call(
         "light",
         "turn_on",
-        {"entity_id": light_a21_id},
+        {"entity_id": light_a21_id, ATTR_BRIGHTNESS: 64},
         blocking=True,
     )
     update_call = bridge.request.call_args_list[-1]
     assert update_call.args[0] == "put"
     payload = update_call.kwargs["json"]
     assert payload["metadeviceId"] == light_a21.id
+    assert len(payload["values"]) == 2
+    power_payload = payload["values"][0]
+    brightness_payload = payload["values"][1]
+    assert power_payload["functionClass"] == "power"
+    assert power_payload["functionInstance"] is None
+    assert power_payload["value"] == "on"
+    assert brightness_payload["value"] == 25
+    # Now generate update event by emitting the json we've sent as incoming event
+    hs_device_update = create_devices_from_data("light-a21.json")[0]
+    modify_state(
+        hs_device_update,
+        HubspaceState(
+            functionClass="power",
+            functionInstance=None,
+            value="on",
+        ),
+    )
+    modify_state(
+        hs_device_update,
+        HubspaceState(
+            functionClass="brightness",
+            functionInstance=None,
+            value=25,
+        ),
+    )
+    event = {
+        "type": "update",
+        "device_id": light_a21.id,
+        "device": hs_device_update,
+    }
+    bridge.emit_event("update", event)
+    await hass.async_block_till_done()
+    assert bridge.lights._items[light_a21.id].is_on
+    assert bridge.lights._items[light_a21.id].brightness == 25
 
 
 @pytest.mark.asyncio

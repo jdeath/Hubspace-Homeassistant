@@ -4,7 +4,7 @@ from aiohubspace import EventType
 from aiohubspace.v1 import HubspaceBridgeV1, LightController
 from aiohubspace.v1.models import Light
 from homeassistant.components.light import (
-    ATTR_BRIGHTNESS_PCT,
+    ATTR_BRIGHTNESS,
     ATTR_COLOR_TEMP_KELVIN,
     ATTR_EFFECT,
     ATTR_RGB_COLOR,
@@ -16,7 +16,7 @@ from homeassistant.components.light import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.util.color import value_to_brightness
+from homeassistant.util.color import brightness_to_value, value_to_brightness
 
 from .bridge import HubspaceBridge
 from .const import DOMAIN
@@ -119,7 +119,9 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
 
     @update_decorator
     async def async_turn_on(self, **kwargs) -> None:
-        brightness: int | None = kwargs.get(ATTR_BRIGHTNESS_PCT, None)
+        brightness: int | None = None
+        if ATTR_BRIGHTNESS in kwargs:
+            brightness = int(brightness_to_value((1, 100), kwargs[ATTR_BRIGHTNESS]))
         temperature: int | None = kwargs.get(ATTR_COLOR_TEMP_KELVIN, None)
         color: tuple[int, int, int] | None = kwargs.get(ATTR_RGB_COLOR, None)
         effect: str | None = kwargs.get(ATTR_EFFECT, None)
