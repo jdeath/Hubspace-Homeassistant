@@ -57,8 +57,16 @@ are as follows:
  * 4.3.0
 
    * Convert to aiohubspace==1.x
-   * Fix sensor units
-   * Fix binary sensors displaying unknown
+   * Added a device for the Hubspace account
+   * Added a button to the Hubspace account device for generating debug logs
+   * Added a button to the Hubspace account device for generating raw
+   * Fixed an issue where Binary Sensors would not display the proper value
+   * Fixed an issue in config flow reauth
+   * Fixed an issue for fans while effect could be improperly displayed
+   * Fixed an issue where adding new lights to the Hubspace account would cause a UHE
+   * Fixed an issue where sensors could cause a UHE for the value
+   * Fixed an issue where adding new valves to the Hubspace account would cause a UHE
+   * Fixed an issue where valves would always show as open
 
  * 4.2.0
 
