@@ -41,7 +41,9 @@ class HubspaceValve(HubspaceBaseEntity, ValveEntity):
 
     @property
     def current_valve_position(self) -> int:
-        return 100 if self.resource.open[self.instance] else 0
+        feature = self.resource.open.get(self.instance)
+        if feature:
+            return 100 if feature.open else 0
 
     @update_decorator
     async def async_open_valve(self, **kwargs) -> None:
@@ -80,7 +82,7 @@ async def async_setup_entry(
         instances = hs_resource.open.keys()
         for instance in instances:
             if len(instances) == 1 or instance is not None:
-                hs_resource_entities.append(make_entity(resource, instance))
+                hs_resource_entities.append(make_entity(hs_resource, instance))
         return hs_resource_entities
 
     @callback

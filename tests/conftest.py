@@ -1,7 +1,7 @@
 import logging
 
 import pytest
-from aiohubspace import HubspaceBridgeV1
+from aiohubspace import v1
 from aiohubspace.v1.controllers.event import EventType
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_USERNAME
 from pytest_homeassistant_custom_component.common import MockConfigEntry
@@ -19,8 +19,8 @@ def auto_enable_custom_integrations(enable_custom_integrations):
 
 
 @pytest.fixture(scope="function")
-async def mocked_bridge(mocker) -> HubspaceBridgeV1:
-    hs_bridge: HubspaceBridgeV1 = HubspaceBridgeV1("username2", "password2")
+async def mocked_bridge(mocker) -> v1.HubspaceBridgeV1:
+    hs_bridge: v1.HubspaceBridgeV1 = v1.HubspaceBridgeV1("username2", "password2")
     mocker.patch.object(
         hs_bridge,
         "get_account_id",
@@ -44,11 +44,17 @@ async def mocked_bridge(mocker) -> HubspaceBridgeV1:
     hs_bridge.__aexit__ = mocker.AsyncMock()
     # Ensure its "fake" initialized
     for controller in hs_bridge.controllers:
-        res_filter = [x.value for x in controller.ITEM_TYPES]
-        hs_bridge.events.subscribe(
-            controller._handle_event,
-            resource_filter=tuple(res_filter),
-        )
+        res_filter = tuple(x.value for x in controller.ITEM_TYPES)
+        if res_filter:
+            hs_bridge.events.subscribe(
+                controller._handle_event,
+                resource_filter=res_filter,
+            )
+        else:
+            # Subscribe to all events
+            hs_bridge.events.subscribe(
+                controller._handle_event,
+            )
     yield hs_bridge
 
 

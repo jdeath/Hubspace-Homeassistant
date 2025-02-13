@@ -15,13 +15,15 @@ from .bridge import HubspaceBridge
 from .const import DOMAIN
 
 if TYPE_CHECKING:
-    from aiohubspace.v1.models.device import Device
-    from aiohubspace.v1.models.fan import Fan
-    from aiohubspace.v1.models.light import Light
-    from aiohubspace.v1.models.lock import Lock
-    from aiohubspace.v1.models.sensor import HubspaceSensor
-    from aiohubspace.v1.models.switch import Switch
-    from aiohubspace.v1.models.valve import Valve
+    from aiohubspace.v1.models import (
+        Device,
+        Fan,
+        HubspaceSensor,
+        Light,
+        Lock,
+        Switch,
+        Valve,
+    )
 
     type HubspaceResource = Device | Fan | Light | Lock | HubspaceSensor | Switch | Valve
 

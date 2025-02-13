@@ -1,6 +1,6 @@
 import pytest
 import voluptuous
-from aiohubspace.v1.device import HubspaceState
+from aiohubspace import HubspaceState
 
 from custom_components.hubspace import const, services
 
@@ -48,7 +48,7 @@ async def mocked_entity(mocked_entry):
 async def test_service_valid_no_username(
     account, entity_id, error_entity, error_bridge, mocked_entity, caplog
 ):
-    hass, entry, bridge = mocked_entity
+    hass, _, bridge = mocked_entity
     assert hass.states.get(fan_zandra_light_id).state == "on"
     if not error_entity and not error_bridge:
         await hass.services.async_call(

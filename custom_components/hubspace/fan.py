@@ -1,11 +1,9 @@
-from contextlib import suppress
 from functools import partial
 from typing import Any, Optional
 
-from aiohubspace.v1 import HubspaceBridgeV1
-from aiohubspace.v1.controllers.event import EventType
-from aiohubspace.v1.controllers.fan import FanController
-from aiohubspace.v1.models.fan import Fan
+from aiohubspace import EventType
+from aiohubspace.v1 import FanController, HubspaceBridgeV1
+from aiohubspace.v1.models import Fan
 from homeassistant.components.fan import FanEntity, FanEntityFeature
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
@@ -44,53 +42,50 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
     @property
     def is_on(self) -> bool | None:
         """Return true if fan is spinning"""
-        if self._supported_features & FanEntityFeature.TURN_ON:
-            return self.resource.is_on
-        else:
-            return None
+        return (
+            self.resource.is_on
+            if self._supported_features & FanEntityFeature.TURN_ON
+            else None
+        )
 
     @property
     def current_direction(self):
         return self.resource.current_direction
 
     @property
-    def oscillating(self):
-        """Determine if the fan is currently oscillating
-
-        I do not believe any Hubspace fan supports oscillation but
-        adding in the property.
-        """
-        return False
-
-    @property
     def percentage(self):
-        if self.supported_features & FanEntityFeature.SET_SPEED:
-            return self.resource.speed.speed
-        return None
+        return (
+            self.resource.speed.speed
+            if self.supported_features & FanEntityFeature.SET_SPEED
+            else None
+        )
 
     @property
     def preset_mode(self):
-        if (
-            self.supported_features & FanEntityFeature.PRESET_MODE
-            and self.resource.preset
-        ):
-            return "breeze"
-        else:
-            return None
+        return (
+            "breeze"
+            if (
+                self.supported_features & FanEntityFeature.PRESET_MODE
+                and self.resource.preset.enabled
+            )
+            else None
+        )
 
     @property
     def preset_modes(self):
-        if self.supported_features & FanEntityFeature.PRESET_MODE:
-            return list(PRESET_HS_TO_HA.values())
-        else:
-            return None
+        return (
+            list(PRESET_HS_TO_HA.values())
+            if self.supported_features & FanEntityFeature.PRESET_MODE
+            else None
+        )
 
     @property
     def speed_count(self):
-        if self.supported_features & FanEntityFeature.SET_SPEED:
-            return len(self.resource.speed.speeds)
-        else:
-            return None
+        return (
+            len(self.resource.speed.speeds)
+            if self.supported_features & FanEntityFeature.SET_SPEED
+            else None
+        )
 
     @update_decorator
     async def async_turn_on(
@@ -100,10 +95,6 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
         **kwargs: Any,
     ) -> None:
         """Turn on the entity."""
-        self.logger.debug("Adjusting entity %s with %s", self.resource.id, kwargs)
-        with suppress(AttributeError):
-            if not self._supported_features & FanEntityFeature.TURN_ON:
-                raise NotImplementedError
         await self.bridge.async_request_call(
             self.controller.set_state,
             device_id=self.resource.id,
@@ -118,10 +109,6 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
         **kwargs: Any,
     ) -> None:
         """Turn off the fan."""
-        self.logger.debug("Adjusting entity %s with %s", self.resource.id, kwargs)
-        with suppress(AttributeError):
-            if not self._supported_features & FanEntityFeature.TURN_OFF:
-                raise NotImplementedError
         await self.bridge.async_request_call(
             self.controller.set_state,
             device_id=self.resource.id,
@@ -131,38 +118,32 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
     @update_decorator
     async def async_set_percentage(self, percentage: int) -> None:
         """Set the speed percentage of the fan."""
-        if (
-            self._supported_features & FanEntityFeature.SET_SPEED
-            and percentage is not None
-        ):
-            await self.bridge.async_request_call(
-                self.controller.set_state,
-                device_id=self.resource.id,
-                on=True,
-                speed=percentage,
-            )
+        await self.bridge.async_request_call(
+            self.controller.set_state,
+            device_id=self.resource.id,
+            on=True,
+            speed=percentage,
+        )
 
     @update_decorator
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode of the fan."""
-        if self._supported_features & FanEntityFeature.PRESET_MODE:
-            await self.bridge.async_request_call(
-                self.controller.set_state,
-                device_id=self.resource.id,
-                on=True,
-                preset=True if preset_mode else False,
-            )
+        await self.bridge.async_request_call(
+            self.controller.set_state,
+            device_id=self.resource.id,
+            on=True,
+            preset=True if preset_mode else False,
+        )
 
     @update_decorator
     async def async_set_direction(self, direction: str) -> None:
         """Set the direction of the fan."""
-        if self._supported_features & FanEntityFeature.DIRECTION:
-            await self.bridge.async_request_call(
-                self.controller.set_state,
-                device_id=self.resource.id,
-                on=True,
-                forward=True if direction == "forward" else False,
-            )
+        await self.bridge.async_request_call(
+            self.controller.set_state,
+            device_id=self.resource.id,
+            on=True,
+            forward=True if direction == "forward" else False,
+        )
 
 
 async def async_setup_entry(

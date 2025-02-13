@@ -8,7 +8,8 @@ from asyncio import timeout
 from typing import Any, Optional
 
 import voluptuous as vol
-from aiohubspace import HubspaceBridgeV1, InvalidAuth
+from aiohubspace import InvalidAuth
+from aiohubspace.v1 import HubspaceBridgeV1
 from homeassistant import config_entries
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_USERNAME
 from homeassistant.core import callback
@@ -74,7 +75,7 @@ class HubspaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle a flow initialized by the user."""
         errors: dict[str, str] = {}
         if user_input is not None:
-            user_input[CONF_TIMEOUT] = user_input[CONF_TIMEOUT] or DEFAULT_TIMEOUT
+            user_input[CONF_TIMEOUT] = user_input.get(CONF_TIMEOUT) or DEFAULT_TIMEOUT
             if not (err_type := await self.validate_auth(user_input)):
                 if user_input[POLLING_TIME_STR] == 0:
                     user_input[POLLING_TIME_STR] = 30

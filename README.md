@@ -54,22 +54,36 @@ are as follows:
 
 ## Changelog
 
+ * 4.3.0
+
+   * Convert to aiohubspace==1.x
+   * Added a device for the Hubspace account
+   * Added a button to the Hubspace account device for generating debug logs
+   * Added a button to the Hubspace account device for generating raw
+   * Fixed an issue where Binary Sensors would not display the proper value
+   * Fixed an issue in config flow reauth
+   * Fixed an issue for fans while effect could be improperly displayed
+   * Fixed an issue where adding new lights to the Hubspace account would cause a UHE
+   * Fixed an issue where sensors could cause a UHE for the value ([#132](https://github.com/jdeath/Hubspace-Homeassistant/issues/132))
+   * Fixed an issue where adding new valves to the Hubspace account would cause a UHE
+   * Fixed an issue where valves would always show as open
+
  * 4.2.0
 
-   * Added supported for Glass Door control
+   * Added supported for Glass Door control ([#127](https://github.com/jdeath/Hubspace-Homeassistant/issues/127))
 
  * 4.1.1
 
-   * Fix an issue where locks were not controllable
+   * Fix an issue where locks were not controllable ([#128](https://github.com/jdeath/Hubspace-Homeassistant/issues/128))
 
  * 4.1.0
 
-   * Re-implement the action / service send_command
+   * Re-implement the action / service send_command ([#94](https://github.com/jdeath/Hubspace-Homeassistant/issues/94))
 
  * 4.0.1
 
    * Fixed an issue where fans could cause an UHE if they did not support
-     some functionality
+     some functionality ([#125](https://github.com/jdeath/Hubspace-Homeassistant/issues/125))
 
  * 4.0.0
 
