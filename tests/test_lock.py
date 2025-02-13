@@ -129,6 +129,28 @@ async def test_lock(mocked_entity):
         == features.CurrentPositionEnum.LOCKING
     )
     assert hass.states.get(lock_id).state == "locking"
+    # Now generate update event by emitting the json we've sent as incoming event
+    lock_update = create_devices_from_data("door-lock-TBD.json")[0]
+    modify_state(
+        lock_update,
+        HubspaceState(
+            functionClass="lock-control",
+            functionInstance=None,
+            value="locked",
+        ),
+    )
+    event = {
+        "type": "update",
+        "device_id": lock_update.id,
+        "device": lock_update,
+    }
+    bridge.emit_event("update", event)
+    await hass.async_block_till_done()
+    assert (
+        bridge.locks._items[lock_update.id].position.position
+        == features.CurrentPositionEnum.LOCKED
+    )
+    assert hass.states.get(lock_id).state == "locked"
 
 
 @pytest.mark.asyncio
