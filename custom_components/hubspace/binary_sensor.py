@@ -1,5 +1,4 @@
 from functools import partial
-from typing import Any
 
 from aiohubspace import EventType
 from aiohubspace.v1 import DeviceController, HubspaceBridgeV1
@@ -37,9 +36,9 @@ class HubspaceBinarySensorEntity(HubspaceBaseEntity, BinarySensorEntity):
         self._attr_name = sensor
 
     @property
-    def native_value(self) -> Any:
+    def is_on(self) -> bool:
         """Return the current value"""
-        return self.resource.sensors[self._attr_name].value
+        return self.resource.binary_sensors[self._attr_name].value
 
 
 async def async_setup_entry(

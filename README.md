@@ -58,6 +58,7 @@ are as follows:
 
    * Convert to aiohubspace==1.x
    * Fix sensor units
+   * Fix binary sensors displaying unknown
 
  * 4.2.0
 
