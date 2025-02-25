@@ -15,13 +15,17 @@
                     "timeout": "Connection Timeout (Default: 10000)",
                     "polling_time": "Time in seconds between polling intervals (Default: 30)"
                 }
+            },
+            "reauth_confirm": {
+                "description": "The Hubspace integration needs to re-authenticate your account"
             }
         },
         "error": {
             "cannot_connect": "Connection timed out when reaching the server.",
             "invalid_auth": "Unable to authenticate with the provided credentials",
             "unknown": "Unknown error occurred. Please review to the logs",
-            "polling_too_short": "Interval must be at least 2 seconds"
+            "polling_too_short": "Interval must be at least 2 seconds",
+            "unique_id_mismatch": "Account name cannot be changed during reauth"
         }
     },
     "options": {
