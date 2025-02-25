@@ -259,3 +259,76 @@ async def test_HubspaceConfigFlow_async_step_user_reauth(
         assert result["reason"] == expected_code
         assert entry.data == expected_data
         assert entry.options == expected_options
+
+
+@pytest.mark.parametrize(
+    "config_dict,user_data,expected_options,error_code",
+    [
+        # Not set
+        (
+            {
+                "data": {CONF_USERNAME: "cool", CONF_PASSWORD: "beans"},
+                "options": {
+                    POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                    CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                },
+                "unique_id": "cool",
+            },
+            {
+                POLLING_TIME_STR: 0,
+                CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+            },
+            {
+                POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+            },
+            None,
+        ),
+        # Too short
+        (
+            {
+                "data": {CONF_USERNAME: "cool", CONF_PASSWORD: "beans"},
+                "options": {
+                    POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                    CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                },
+                "unique_id": "cool",
+            },
+            {
+                POLLING_TIME_STR: 1,
+                CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+            },
+            {
+                POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+            },
+            "polling_too_short",
+        ),
+    ],
+)
+async def test_HubspaceConfigFlow_async_step_options(
+    config_dict,
+    user_data,
+    expected_options,
+    error_code,
+    mocked_config_flow,
+    mocker,
+    hass,
+):
+    await setup.async_setup_component(hass, const.DOMAIN, {})
+    config_dict["domain"] = const.DOMAIN
+    entry = MockConfigEntry(**config_dict)
+    entry.add_to_hass(hass)
+    # Start options
+    result = await hass.config_entries.options.async_init(entry.entry_id)
+    assert result["type"] is FlowResultType.FORM
+    assert result["step_id"] == "init"
+    # Accept the second popup
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"],
+        user_input=user_data,
+    )
+    if error_code:
+        assert result["errors"]["base"] == error_code
+    else:
+        assert entry.options == expected_options

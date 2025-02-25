@@ -3,7 +3,7 @@ import os
 from enum import Enum
 
 import aiofiles
-from aiohubspace import anonymize_devices, get_hs_device
+from aiohubspace import EventType, anonymize_devices, get_hs_device
 from aiohubspace.v1 import HubspaceBridgeV1
 from homeassistant.components.button import ButtonEntity
 from homeassistant.config_entries import ConfigEntry
@@ -19,6 +19,14 @@ from .const import DOMAIN
 class DebugButtonEnum(Enum):
     ANON = "anon"
     RAW = "raw"
+    REAUTH = "reauth"
+
+
+DEVICE_NAMES = {
+    DebugButtonEnum.ANON: "Generate Debug",
+    DebugButtonEnum.RAW: "Generate Raw",
+    DebugButtonEnum.REAUTH: "Generate Reauth",
+}
 
 
 class DebugButton(ButtonEntity):
@@ -32,12 +40,10 @@ class DebugButton(ButtonEntity):
             identifiers={(DOMAIN, bridge.config_entry.data[CONF_USERNAME])},
         )
         self.instance = instance
-        if self.instance == DebugButtonEnum.ANON:
-            self._attr_name = "Generate Debug"
-            self._attr_unique_id = f"{bridge.config_entry.data[CONF_USERNAME]}-debug"
-        elif self.instance == DebugButtonEnum.RAW:
-            self._attr_name = "Generate Raw"
-            self._attr_unique_id = f"{bridge.config_entry.data[CONF_USERNAME]}-raw"
+        self._attr_name = DEVICE_NAMES[instance]
+        self._attr_unique_id = (
+            f"{bridge.config_entry.data[CONF_USERNAME]}-{instance.value}"
+        )
 
     async def async_press(self) -> None:
         """Handle the button press."""
@@ -54,6 +60,8 @@ class DebugButton(ButtonEntity):
             self.logger.debug("Writing out raw data to %s", data_dump)
             async with aiofiles.open(data_dump, "w") as fh:
                 await fh.write(json.dumps(data, indent=4))
+        elif self.instance == DebugButtonEnum.REAUTH:
+            self.api.events.emit(EventType.INVALID_AUTH)
 
 
 async def async_setup_entry(
@@ -67,5 +75,6 @@ async def async_setup_entry(
         [
             DebugButton(bridge, DebugButtonEnum.ANON),
             DebugButton(bridge, DebugButtonEnum.RAW),
+            DebugButton(bridge, DebugButtonEnum.REAUTH),
         ]
     )
