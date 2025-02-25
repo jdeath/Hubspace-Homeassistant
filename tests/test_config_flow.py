@@ -1,3 +1,5 @@
+import sys
+
 import pytest
 from aiohubspace import InvalidAuth
 from homeassistant import config_entries, setup
@@ -164,7 +166,7 @@ async def test_HubspaceConfigFlow_async_step_user(
     "config_dict,user_data,expected_data,expected_options,expected_code,error_code",
     [
         # Reauth happy path
-        (
+        pytest.param(
             {
                 "data": {CONF_USERNAME: "cool", CONF_PASSWORD: "beans"},
                 "options": {
@@ -189,6 +191,9 @@ async def test_HubspaceConfigFlow_async_step_user(
             },
             "reauth_successful",
             None,
+            marks=pytest.mark.skipif(
+                sys.version_info <= (3, 13), reason="DNS issues on 3.12"
+            ),
         ),
         # Changing username
         (
