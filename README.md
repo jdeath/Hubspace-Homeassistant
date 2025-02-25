@@ -54,6 +54,11 @@ are as follows:
 
 ## Changelog
 
+ * 4.4.0
+
+   * Implement reauth workflow
+   * Gracefully handle issues with Hubspace API
+
  * 4.3.0
 
    * Convert to aiohubspace==1.x
