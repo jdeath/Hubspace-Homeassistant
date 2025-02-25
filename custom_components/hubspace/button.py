@@ -19,13 +19,11 @@ from .const import DOMAIN
 class DebugButtonEnum(Enum):
     ANON = "anon"
     RAW = "raw"
-    REAUTH = "reauth"
 
 
 DEVICE_NAMES = {
     DebugButtonEnum.ANON: "Generate Debug",
     DebugButtonEnum.RAW: "Generate Raw",
-    DebugButtonEnum.REAUTH: "Generate Reauth",
 }
 
 
@@ -75,6 +73,5 @@ async def async_setup_entry(
         [
             DebugButton(bridge, DebugButtonEnum.ANON),
             DebugButton(bridge, DebugButtonEnum.RAW),
-            DebugButton(bridge, DebugButtonEnum.REAUTH),
         ]
     )
