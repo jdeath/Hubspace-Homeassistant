@@ -4,10 +4,10 @@ from typing import Any, Callable
 
 import aiohttp
 from aiohttp import client_exceptions
-from aiohubspace import InvalidAuth, InvalidResponse
+from aiohubspace import EventType, InvalidAuth, InvalidResponse
 from aiohubspace.v1 import HubspaceBridgeV1
 from homeassistant import core
-from homeassistant.config_entries import SOURCE_USER, ConfigEntry
+from homeassistant.config_entries import SOURCE_REAUTH, ConfigEntry
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_USERNAME
 from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers import aiohttp_client
@@ -41,6 +41,10 @@ class HubspaceBridge:
 
     async def async_initialize_bridge(self) -> bool:
         """Initialize Connection with the Hubspace API."""
+
+        def reauth(*args, **kwargs) -> None:
+            self.config_entry.async_start_reauth(self.hass)
+
         setup_ok = False
         try:
             async with asyncio.timeout(self.config_entry.options[CONF_TIMEOUT]):
@@ -48,7 +52,7 @@ class HubspaceBridge:
             setup_ok = True
         except (InvalidAuth, InvalidResponse):
             # Credentials have changed. Force a re-login
-            create_config_flow(self.hass, self.config_entry.data[CONF_USERNAME])
+            reauth()
             return False
         except (
             TimeoutError,
@@ -66,6 +70,10 @@ class HubspaceBridge:
             if not setup_ok:
                 await self.api.close()
 
+        # Subscribe to invalid_auth events
+        self.config_entry.async_on_unload(
+            self.api.events.subscribe(reauth, event_filter=EventType.INVALID_AUTH)
+        )
         # Init devices
         await async_setup_devices(self)
         await self.hass.config_entries.async_forward_entry_setups(
@@ -120,11 +128,10 @@ async def _update_listener(hass: core.HomeAssistant, entry: ConfigEntry) -> None
 
 def create_config_flow(hass: core.HomeAssistant, username: str) -> None:
     """Start a config flow."""
-    # @TODO - This should be a reconfig for password
     hass.async_create_task(
         hass.config_entries.flow.async_init(
             DOMAIN,
-            context={"source": SOURCE_USER},
+            context={"source": SOURCE_REAUTH},
             data={CONF_USERNAME: username},
         )
     )

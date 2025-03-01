@@ -1,3 +1,5 @@
+import sys
+
 import pytest
 from aiohubspace import InvalidAuth
 from homeassistant import config_entries, setup
@@ -158,3 +160,180 @@ async def test_HubspaceConfigFlow_async_step_user(
     else:
         assert result["type"] is FlowResultType.FORM
         assert result["errors"]["base"] == expected_code
+
+
+@pytest.mark.parametrize(
+    "config_dict,user_data,expected_data,expected_options,expected_code,error_code",
+    [
+        # Reauth happy path
+        pytest.param(
+            {
+                "data": {CONF_USERNAME: "cool", CONF_PASSWORD: "beans"},
+                "options": {
+                    POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                    CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                },
+                "unique_id": "cool",
+            },
+            {
+                CONF_USERNAME: "cool",
+                CONF_PASSWORD: "beans2",
+                POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+            },
+            {
+                CONF_USERNAME: "cool",
+                CONF_PASSWORD: "beans2",
+            },
+            {
+                POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+            },
+            "reauth_successful",
+            None,
+            marks=pytest.mark.skipif(
+                sys.version_info <= (3, 13), reason="DNS issues on 3.12"
+            ),
+        ),
+        # Changing username
+        (
+            {
+                "data": {CONF_USERNAME: "cool", CONF_PASSWORD: "beans"},
+                "options": {
+                    POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                    CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                },
+                "unique_id": "cool",
+            },
+            {
+                CONF_USERNAME: "cool2",
+                CONF_PASSWORD: "beans2",
+                POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+            },
+            {
+                CONF_USERNAME: "cool",
+                CONF_PASSWORD: "beans2",
+            },
+            {
+                POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+            },
+            None,
+            "unique_id_mismatch",
+        ),
+    ],
+)
+async def test_HubspaceConfigFlow_async_step_user_reauth(
+    config_dict,
+    user_data,
+    expected_data,
+    expected_options,
+    expected_code,
+    error_code,
+    mocked_config_flow,
+    mocker,
+    hass,
+):
+    await setup.async_setup_component(hass, const.DOMAIN, {})
+    config_dict["domain"] = const.DOMAIN
+    config_dict["source"] = config_entries.SOURCE_REAUTH
+    entry = MockConfigEntry(**config_dict)
+    entry.add_to_hass(hass)
+    # Start the reauth
+    result = await hass.config_entries.flow.async_init(
+        const.DOMAIN,
+        context={"source": config_entries.SOURCE_REAUTH, "entry_id": entry.entry_id},
+    )
+    assert result["type"] is FlowResultType.FORM
+    assert result["step_id"] == "reauth_confirm"
+    # Accept the second popup
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"],
+        user_input={},
+    )
+    # Set the new data
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"],
+        user_input=user_data,
+    )
+
+    if error_code:
+        assert result["errors"]["base"] == error_code
+    else:
+        assert result["reason"] == expected_code
+        assert entry.data == expected_data
+        assert entry.options == expected_options
+
+
+@pytest.mark.parametrize(
+    "config_dict,user_data,expected_options,error_code",
+    [
+        # Not set
+        (
+            {
+                "data": {CONF_USERNAME: "cool", CONF_PASSWORD: "beans"},
+                "options": {
+                    POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                    CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                },
+                "unique_id": "cool",
+            },
+            {
+                POLLING_TIME_STR: 0,
+                CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+            },
+            {
+                POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+            },
+            None,
+        ),
+        # Too short
+        (
+            {
+                "data": {CONF_USERNAME: "cool", CONF_PASSWORD: "beans"},
+                "options": {
+                    POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                    CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                },
+                "unique_id": "cool",
+            },
+            {
+                POLLING_TIME_STR: 1,
+                CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+            },
+            {
+                POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+            },
+            "polling_too_short",
+        ),
+    ],
+)
+async def test_HubspaceConfigFlow_async_step_options(
+    config_dict,
+    user_data,
+    expected_options,
+    error_code,
+    mocked_config_flow,
+    mocker,
+    hass,
+):
+    await setup.async_setup_component(hass, const.DOMAIN, {})
+    config_dict["domain"] = const.DOMAIN
+    entry = MockConfigEntry(**config_dict)
+    entry.add_to_hass(hass)
+    # Start options
+    result = await hass.config_entries.options.async_init(entry.entry_id)
+    assert result["type"] is FlowResultType.FORM
+    assert result["step_id"] == "init"
+    # Accept the second popup
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"],
+        user_input=user_data,
+    )
+    if error_code:
+        assert result["errors"]["base"] == error_code
+    else:
+        assert entry.options == expected_options

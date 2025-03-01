@@ -29,6 +29,11 @@ LOGIN_REQS = {
     vol.Required(CONF_USERNAME): str,
     vol.Required(CONF_PASSWORD): str,
 }
+REAUTH = vol.Schema(
+    {
+        vol.Required(CONF_PASSWORD): str,
+    }
+)
 OPTIONAL = {
     vol.Required(CONF_TIMEOUT): int,
     vol.Required(POLLING_TIME_STR): int,
@@ -69,33 +74,54 @@ class HubspaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             await self.bridge.close()
         return err_type
 
+    @staticmethod
+    def extract_user_data(user_input: dict[str, Any] | None) -> tuple[dict, dict]:
+        options = {}
+        data = {}
+        importable_options = [CONF_TIMEOUT, POLLING_TIME_STR]
+        for key in user_input:
+            if key in importable_options:
+                options[key] = user_input[key]
+            else:
+                data[key] = user_input[key]
+        return data, options
+
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
-    ) -> config_entries.ConfigFlowResult:
+    ) -> config_entries.ConfigFlowResult | dict:
         """Handle a flow initialized by the user."""
         errors: dict[str, str] = {}
         if user_input is not None:
             user_input[CONF_TIMEOUT] = user_input.get(CONF_TIMEOUT) or DEFAULT_TIMEOUT
+            user_input[POLLING_TIME_STR] = user_input.get(POLLING_TIME_STR) or 30
+            unique_id: str = user_input[CONF_USERNAME].lower()
+            await self.async_set_unique_id(unique_id, raise_on_progress=False)
+            data, options = self.extract_user_data(user_input)
+            if (
+                self.source == config_entries.SOURCE_REAUTH
+                and self._get_reauth_entry().unique_id != self.unique_id
+            ):
+                errors["base"] = "unique_id_mismatch"
+                return self.async_show_form(
+                    step_id="user",
+                    data_schema=LOGIN_SCHEMA,
+                    errors=errors,
+                )
             if not (err_type := await self.validate_auth(user_input)):
-                if user_input[POLLING_TIME_STR] == 0:
-                    user_input[POLLING_TIME_STR] = 30
                 if user_input[POLLING_TIME_STR] < 2:
                     errors["base"] = "polling_too_short"
                 else:
-                    unique_id: str = user_input[CONF_USERNAME].lower()
-                    await self.async_set_unique_id(unique_id, raise_on_progress=False)
-                    options = {}
-                    data = {}
-                    importable_options = [CONF_TIMEOUT, POLLING_TIME_STR]
-                    for key in user_input:
-                        if key in importable_options:
-                            options[key] = user_input[key]
-                        else:
-                            data[key] = user_input[key]
-                    self._abort_if_unique_id_configured(reload_on_update=True)
-                    return self.async_create_entry(
-                        title=unique_id, data=data, options=options
-                    )
+                    if self.source == config_entries.SOURCE_REAUTH:
+                        return self.async_update_reload_and_abort(
+                            self._get_reauth_entry(),
+                            data_updates=data,
+                            options=options,
+                        )
+                    else:
+                        self._abort_if_unique_id_configured(reload_on_update=True)
+                        return self.async_create_entry(
+                            title=unique_id, data=data, options=options
+                        )
             else:
                 errors["base"] = err_type
         with contextlib.suppress(Exception):
@@ -105,6 +131,23 @@ class HubspaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=LOGIN_SCHEMA,
             errors=errors,
         )
+
+    async def async_step_reauth(
+        self, user_input: dict[str, Any] | None = None
+    ) -> config_entries.ConfigFlowResult:
+        """Handle a reauth flow"""
+        return await self.async_step_reauth_confirm()
+
+    async def async_step_reauth_confirm(
+        self, user_input: dict[str, Any] | None = None
+    ) -> config_entries.ConfigFlowResult:
+        """Dialog that informs the user that reauth is required."""
+        if user_input is None:
+            return self.async_show_form(
+                step_id="reauth_confirm",
+                data_schema=vol.Schema({}),
+            )
+        return await self.async_step_user()
 
     @staticmethod
     @callback

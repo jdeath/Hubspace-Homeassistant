@@ -1,7 +1,9 @@
+import datetime
 import logging
 
 import pytest
 from aiohubspace import v1
+from aiohubspace.v1.auth import token_data
 from aiohubspace.v1.controllers.event import EventType
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_USERNAME
 from pytest_homeassistant_custom_component.common import MockConfigEntry
@@ -30,6 +32,10 @@ async def mocked_bridge(mocker) -> v1.HubspaceBridgeV1:
     mocker.patch.object(hs_bridge, "request", side_effect=mocker.AsyncMock())
     mocker.patch.object(hs_bridge, "initialize", side_effect=mocker.AsyncMock())
     mocker.patch.object(hs_bridge, "close", side_effect=mocker.AsyncMock())
+    hs_bridge._auth._token_data = token_data(
+        "mock-token", expiration=datetime.datetime.now().timestamp() + 200
+    )
+    hs_bridge._auth._refresh_token = "mock-refresh-token"
     # Force initialization so test elements are not overwritten
     for controller in hs_bridge._controllers:
         controller._initialized = True
