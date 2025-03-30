@@ -54,6 +54,11 @@ are as follows:
 
 ## Changelog
 
+ * 4.4.1
+
+   * Fixed an issue where valves were labeled as fans
+   * Fixed an issue where valves would not show the correct state
+
  * 4.4.0
 
    * Implement reauth workflow
