@@ -16,6 +16,19 @@ from .const import DOMAIN, PLATFORMS, POLLING_TIME_STR
 from .device import async_setup_devices
 
 
+def mock_get_data(filename):
+    import json
+    import os
+
+    current_file_path = os.path.abspath(__file__)
+    file_path = os.path.join(os.path.dirname(current_file_path), filename)
+
+    async def get_data():
+        return json.load(open(file_path))
+
+    return get_data
+
+
 class HubspaceBridge:
     """Manages a single Hubspace account"""
 
@@ -46,6 +59,10 @@ class HubspaceBridge:
             self.config_entry.async_start_reauth(self.hass)
 
         setup_ok = False
+
+        # Dev mocking
+        # self.api.fetch_data = mock_get_data("water-timer-raw.json")
+
         try:
             async with asyncio.timeout(self.config_entry.options[CONF_TIMEOUT]):
                 await self.api.initialize()
