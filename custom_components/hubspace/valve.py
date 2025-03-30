@@ -36,8 +36,7 @@ class HubspaceValve(HubspaceBaseEntity, ValveEntity):
 
     @property
     def reports_position(self) -> bool:
-        """Return true if device is on."""
-        return self.resource.open.get(self.instance, False)
+        return self.resource.open.get(self.instance) is not None
 
     @property
     def current_valve_position(self) -> int:

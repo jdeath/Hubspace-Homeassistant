@@ -29,7 +29,7 @@ async def mocked_entity(mocked_entry):
     [
         (
             spigot,
-            [spigot_1, spigot_2],
+            {spigot_1: "closed", spigot_2: "open"},
         ),
     ],
 )
@@ -43,8 +43,10 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry):
         await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
         entity_reg = er.async_get(hass)
-        for entity in expected_entities:
+        for entity, exp_state in expected_entities.items():
             assert entity_reg.async_get(entity) is not None
+            ent = hass.states.get(entity)
+            assert ent.state == exp_state
     finally:
         await bridge.close()
 
@@ -85,6 +87,7 @@ async def test_open_valve(mocked_entity):
     entity = hass.states.get(spigot_1)
     assert entity is not None
     assert entity.attributes[ATTR_CURRENT_POSITION] == 100
+    assert entity.state == "open"
 
 
 @pytest.mark.asyncio
@@ -122,8 +125,8 @@ async def test_close_valve(mocked_entity):
     await hass.async_block_till_done()
     entity = hass.states.get(spigot_1)
     assert entity is not None
-    print(entity.attributes)
     assert entity.attributes[ATTR_CURRENT_POSITION] == 0
+    assert entity.state == "closed"
 
 
 @pytest.mark.asyncio
