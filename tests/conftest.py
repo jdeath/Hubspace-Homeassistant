@@ -5,13 +5,15 @@ import pytest
 from aiohubspace import v1
 from aiohubspace.v1.auth import token_data
 from aiohubspace.v1.controllers.event import EventType
-from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_USERNAME
+from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.hubspace.const import (
     DEFAULT_POLLING_INTERVAL_SEC,
     DOMAIN,
     POLLING_TIME_STR,
+    VERSION_MAJOR,
+    VERSION_MINOR,
 )
 
 
@@ -72,11 +74,14 @@ async def mocked_entry(hass, mocker, mocked_bridge) -> MockConfigEntry:
         data={
             CONF_USERNAME: "username",
             CONF_PASSWORD: "password",
+            CONF_TOKEN: "mock-token",
         },
         options={
             CONF_TIMEOUT: 30,
             POLLING_TIME_STR: DEFAULT_POLLING_INTERVAL_SEC,
         },
+        version=VERSION_MAJOR,
+        minor_version=VERSION_MINOR,
     )
     entry.add_to_hass(hass)
     mocker.patch(

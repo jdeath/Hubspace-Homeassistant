@@ -29,7 +29,7 @@ DEFAULT_TIMEOUT: Final[int] = 10000
 DEFAULT_POLLING_INTERVAL_SEC: Final[int] = 30
 POLLING_TIME_STR: Final[str] = "polling_time"
 
-VERSION_MAJOR: Final[int] = 3
+VERSION_MAJOR: Final[int] = 4
 VERSION_MINOR: Final[int] = 0
 
 
