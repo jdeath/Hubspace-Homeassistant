@@ -56,7 +56,7 @@ are as follows:
 
  * 4.4.2
 
-   * Fixed an issue where hubspace would perform a login during startup
+   * Fixed an issue where the integration would create a new login to Hubspace each time it started
 
  * 4.4.1
 
