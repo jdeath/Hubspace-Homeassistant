@@ -3,7 +3,7 @@ import sys
 import pytest
 from aiohubspace import InvalidAuth
 from homeassistant import config_entries, setup
-from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_USERNAME
+from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
 from homeassistant.data_entry_flow import FlowResultType
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
@@ -48,7 +48,11 @@ def mocked_config_flow(mocked_bridge, mocker):
             },
             None,
             None,
-            {CONF_USERNAME: "cool", CONF_PASSWORD: "beans"},
+            {
+                CONF_USERNAME: "cool",
+                CONF_PASSWORD: "beans",
+                CONF_TOKEN: "mock-refresh-token",
+            },
             {
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
@@ -64,7 +68,11 @@ def mocked_config_flow(mocked_bridge, mocker):
             },
             None,
             None,
-            {CONF_USERNAME: "cool", CONF_PASSWORD: "beans"},
+            {
+                CONF_USERNAME: "cool",
+                CONF_PASSWORD: "beans",
+                CONF_TOKEN: "mock-refresh-token",
+            },
             {
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
@@ -153,7 +161,7 @@ async def test_HubspaceConfigFlow_async_step_user(
     )
 
     if not side_effect and not expected_code:
-        assert result["type"] is FlowResultType.CREATE_ENTRY
+        assert result["type"] == FlowResultType.CREATE_ENTRY
         assert result["title"] == expected_data[CONF_USERNAME]
         assert result["data"] == expected_data
         assert result["options"] == expected_options
@@ -168,7 +176,10 @@ async def test_HubspaceConfigFlow_async_step_user(
         # Reauth happy path
         pytest.param(
             {
-                "data": {CONF_USERNAME: "cool", CONF_PASSWORD: "beans"},
+                "data": {
+                    CONF_USERNAME: "cool",
+                    CONF_PASSWORD: "beans",
+                },
                 "options": {
                     POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                     CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
@@ -184,6 +195,7 @@ async def test_HubspaceConfigFlow_async_step_user(
             {
                 CONF_USERNAME: "cool",
                 CONF_PASSWORD: "beans2",
+                CONF_TOKEN: "mock-refresh-token",
             },
             {
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,

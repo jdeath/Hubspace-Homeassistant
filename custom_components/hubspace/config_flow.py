@@ -5,13 +5,14 @@ from __future__ import annotations
 import contextlib
 import logging
 from asyncio import timeout
+from collections import namedtuple
 from typing import Any, Optional
 
 import voluptuous as vol
 from aiohubspace import InvalidAuth
 from aiohubspace.v1 import HubspaceBridgeV1
 from homeassistant import config_entries
-from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_USERNAME
+from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
 from homeassistant.core import callback
 
 from .const import (
@@ -42,6 +43,9 @@ LOGIN_SCHEMA = vol.Schema(LOGIN_REQS | OPTIONAL)
 RECONFIG_SCHEMA = vol.Schema(OPTIONAL)
 
 
+auth_result = namedtuple("auth_result", ["token", "err_type"])
+
+
 class HubspaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Hubspace"""
 
@@ -53,7 +57,7 @@ class HubspaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def validate_auth(
         self, user_input: dict[str, Any] | None = None
-    ) -> Optional[str]:
+    ) -> Optional[auth_result]:
         """Validate and save auth"""
         err_type = None
         self.bridge = HubspaceBridgeV1(
@@ -72,7 +76,7 @@ class HubspaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             err_type = "unknown"
         finally:
             await self.bridge.close()
-        return err_type
+        return auth_result(self.bridge.refresh_token, err_type)
 
     @staticmethod
     def extract_user_data(user_input: dict[str, Any] | None) -> tuple[dict, dict]:
@@ -107,7 +111,9 @@ class HubspaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     data_schema=LOGIN_SCHEMA,
                     errors=errors,
                 )
-            if not (err_type := await self.validate_auth(user_input)):
+            auth_data = await self.validate_auth(user_input)
+            if not auth_data.err_type:
+                data[CONF_TOKEN] = auth_data.token
                 if user_input[POLLING_TIME_STR] < 2:
                     errors["base"] = "polling_too_short"
                 else:
@@ -123,7 +129,7 @@ class HubspaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                             title=unique_id, data=data, options=options
                         )
             else:
-                errors["base"] = err_type
+                errors["base"] = auth_data.err_type
         with contextlib.suppress(Exception):
             await self.bridge.close()
         return self.async_show_form(

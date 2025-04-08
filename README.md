@@ -54,6 +54,10 @@ are as follows:
 
 ## Changelog
 
+ * 4.4.2
+
+   * Fixed an issue where hubspace would perform a login during startup
+
  * 4.4.1
 
    * Fixed an issue where valves were labeled as fans

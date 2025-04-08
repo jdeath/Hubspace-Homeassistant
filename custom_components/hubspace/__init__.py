@@ -2,9 +2,12 @@
 
 import logging
 
+from aiohubspace import InvalidAuth
+from aiohubspace.v1 import HubspaceBridgeV1
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_TIMEOUT, CONF_USERNAME
+from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import aiohttp_client
 from homeassistant.helpers import device_registry as dr
 
 from .bridge import HubspaceBridge
@@ -46,16 +49,19 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
         config_entry.version,
         config_entry.minor_version,
     )
+    res = True
     if config_entry.version == 1:
         await perform_v2_migration(hass, config_entry)
     if config_entry.version == 2 and config_entry.minor_version == 0:
         await perform_v3_migration(hass, config_entry)
+    if config_entry.version == 3 and config_entry.minor_version == 0:
+        res = await perform_v4_migration(hass, config_entry)
     _LOGGER.debug(
         "Migration to configuration version %s.%s successful",
         config_entry.version,
         config_entry.minor_version,
     )
-    return True
+    return res
 
 
 async def perform_v2_migration(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
@@ -99,6 +105,40 @@ async def perform_v3_migration(hass: HomeAssistant, config_entry: ConfigEntry) -
         unique_id=unique_id,
         title=unique_id,
     )
+
+
+async def perform_v4_migration(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
+    """Fixes for v4 migration
+
+    * Ensure CONF_TOKEN is set
+    """
+    options = {**config_entry.options}
+    data = {**config_entry.data}
+    # Generate the new token
+    api = HubspaceBridgeV1(
+        config_entry.data[CONF_USERNAME],
+        config_entry.data[CONF_PASSWORD],
+        session=aiohttp_client.async_get_clientsession(hass),
+        polling_interval=config_entry.options[POLLING_TIME_STR],
+    )
+    try:
+        await api.get_account_id()
+    except InvalidAuth:
+        config_entry.async_start_reauth(hass)
+        return False
+    data[CONF_TOKEN] = api.refresh_token
+    # Previous versions may have used None for the unique ID
+    unique_id = config_entry.data[CONF_USERNAME].lower()
+    hass.config_entries.async_update_entry(
+        config_entry,
+        data=data,
+        options=options,
+        version=4,
+        minor_version=0,
+        unique_id=unique_id,
+        title=unique_id,
+    )
+    return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
