@@ -16,16 +16,17 @@ from .const import DOMAIN
 
 if TYPE_CHECKING:
     from aioafero.v1.models import (
+        AferoSensor,
         Device,
         Fan,
-        AferoSensor,
         Light,
         Lock,
         Switch,
+        Thermostat,
         Valve,
     )
 
-    type HubspaceResource = Device | Fan | Light | Lock | AferoSensor | Switch | Valve
+    type HubspaceResource = Device | Fan | Light | Lock | AferoSensor | Switch | Valve | Thermostat
 
 
 class HubspaceBaseEntity(Entity):  # pylint: disable=hass-enforce-class-module
