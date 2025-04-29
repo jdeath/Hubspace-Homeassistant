@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aioafero import EventType
-from aioafero.v1 import DeviceController, AferoBridgeV1
+from aioafero.v1 import AferoBridgeV1, DeviceController
 from aioafero.v1.models import Device
 from homeassistant.const import CONF_USERNAME
 from homeassistant.core import callback

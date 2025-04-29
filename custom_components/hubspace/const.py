@@ -36,6 +36,7 @@ VERSION_MINOR: Final[int] = 0
 PLATFORMS: Final[list[Platform]] = [
     Platform.BINARY_SENSOR,
     Platform.BUTTON,
+    Platform.CLIMATE,
     Platform.FAN,
     Platform.LIGHT,
     Platform.LOCK,
@@ -115,7 +116,7 @@ SENSORS_GENERAL = {
 BINARY_SENSORS = {
     "error|mcu-communication-failure": BinarySensorEntityDescription(
         key="error|mcu-communication-failure",
-        name="MCU",
+        name="MCU Communication Failure",
         device_class=BinarySensorDeviceClass.PROBLEM,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
@@ -134,6 +135,24 @@ BINARY_SENSORS = {
     "error|temperature-sensor-failure": BinarySensorEntityDescription(
         key="error|temperature-sensor-failure",
         name="Sensor Failure",
+        device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "filter-replacement|None": BinarySensorEntityDescription(
+        key="filter-replacement|None",
+        name="Filter Replacement",
+        device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "min-temp-exceeded|None": BinarySensorEntityDescription(
+        key="min-temp-exceeded|None",
+        name="Minimum Temperature Exceeded",
+        device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "max-temp-exceeded|None": BinarySensorEntityDescription(
+        key="max-temp-exceeded|None",
+        name="Maximum Temperature Exceeded",
         device_class=BinarySensorDeviceClass.PROBLEM,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),

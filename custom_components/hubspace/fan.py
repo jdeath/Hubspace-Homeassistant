@@ -2,7 +2,7 @@ from functools import partial
 from typing import Any, Optional
 
 from aioafero import EventType
-from aioafero.v1 import FanController, AferoBridgeV1
+from aioafero.v1 import AferoBridgeV1, FanController
 from aioafero.v1.models import Fan
 from homeassistant.components.fan import FanEntity, FanEntityFeature
 from homeassistant.config_entries import ConfigEntry
