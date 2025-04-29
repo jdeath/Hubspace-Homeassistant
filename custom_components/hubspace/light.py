@@ -172,7 +172,7 @@ def get_color_mode(resource: Light, supported_modes: set[ColorMode]) -> ColorMod
         elif ColorMode.BRIGHTNESS in supported_modes:
             return ColorMode.BRIGHTNESS
         else:
-            return ColorMode.ONOFF
+            return ColorMode.WHITE
     else:
         return list(supported_modes)[-1] if len(supported_modes) else ColorMode.ONOFF
 

@@ -76,7 +76,7 @@ async def mocked_dimmer(mocked_entry):
             ColorMode.BRIGHTNESS,
         ),
         # White - fallback
-        ("white", set(), ColorMode.ONOFF),
+        ("white", set(), ColorMode.WHITE),
         # Just fallback
         (None, set(), ColorMode.ONOFF),
     ],
