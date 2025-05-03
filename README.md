@@ -54,6 +54,11 @@ are as follows:
 
 ## Changelog
 
+ * dev-fix-white-light
+
+   * Add white color mode to lights
+   * Update aioafero==2.0.1
+
  * 4.5.0
 
    * Convert to aioafero==2.0.0
