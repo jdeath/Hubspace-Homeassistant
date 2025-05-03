@@ -54,6 +54,11 @@ are as follows:
 
 ## Changelog
 
+ * 4.5.0
+
+   * Convert to aioafero==2.0.0
+   * Update minimum version of HA to 2024.8 (#149)
+
  * 4.4.2
 
    * Fixed an issue where the integration would create a new login to Hubspace each time it started
