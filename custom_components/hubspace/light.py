@@ -39,6 +39,8 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
             supported_color_modes.add(ColorMode.COLOR_TEMP)
         if self.resource.supports_dimming:
             supported_color_modes.add(ColorMode.BRIGHTNESS)
+        if self.resource.supports_color_white:
+            supported_color_modes.add(ColorMode.WHITE)
         self._attr_supported_color_modes = filter_supported_color_modes(
             supported_color_modes
         )

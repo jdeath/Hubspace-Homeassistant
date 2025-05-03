@@ -25,6 +25,7 @@ rgb_temp_light = create_devices_from_data("light-rgb_temp.json")[0]
 light_a21 = create_devices_from_data("light-a21.json")[0]
 light_a21_id = "light.friendly_device_53_light"
 rgbw_led_strip = create_devices_from_data("rgbw-led-strip.json")[0]
+rgbw_led_strip_id = "light.friendly_device_6_light"
 
 
 @pytest.fixture
@@ -95,6 +96,7 @@ def test_get_color_mode(color_mode, supported, expected, mocked_entity):
     "dev,expected_entities",
     [
         (light_a21, [light_a21_id]),
+        (rgbw_led_strip, [rgbw_led_strip_id]),
     ],
 )
 async def test_async_setup_entry(dev, expected_entities, mocked_entry):
