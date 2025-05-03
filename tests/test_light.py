@@ -54,7 +54,6 @@ async def mocked_dimmer(mocked_entry):
     await bridge.close()
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "color_mode, supported, expected",
     [
