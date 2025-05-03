@@ -1,10 +1,10 @@
 from functools import partial
 from typing import Any
 
-from aiohubspace.v1 import HubspaceBridgeV1
-from aiohubspace.v1.controllers.event import EventType
-from aiohubspace.v1.controllers.switch import SwitchController
-from aiohubspace.v1.models.switch import Switch
+from aioafero.v1 import AferoBridgeV1
+from aioafero.v1.controllers.event import EventType
+from aioafero.v1.controllers.switch import SwitchController
+from aioafero.v1.models.switch import Switch
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
@@ -68,7 +68,7 @@ async def async_setup_entry(
 ) -> None:
     """Set up entities."""
     bridge: HubspaceBridge = hass.data[DOMAIN][config_entry.entry_id]
-    api: HubspaceBridgeV1 = bridge.api
+    api: AferoBridgeV1 = bridge.api
     controller: SwitchController = api.switches
     make_entity = partial(HubspaceSwitch, bridge, controller)
 

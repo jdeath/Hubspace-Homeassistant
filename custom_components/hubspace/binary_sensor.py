@@ -1,8 +1,8 @@
 from functools import partial
 
-from aiohubspace import EventType
-from aiohubspace.v1 import DeviceController, HubspaceBridgeV1
-from aiohubspace.v1.models import Device, HubspaceSensor
+from aioafero import EventType
+from aioafero.v1 import DeviceController, AferoBridgeV1
+from aioafero.v1.models import Device, AferoSensor
 from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
     BinarySensorEntityDescription,
@@ -48,12 +48,12 @@ async def async_setup_entry(
 ) -> None:
     """Set up entities."""
     bridge: HubspaceBridge = hass.data[DOMAIN][config_entry.entry_id]
-    api: HubspaceBridgeV1 = bridge.api
+    api: AferoBridgeV1 = bridge.api
     controller: DeviceController = api.devices
     make_entity = partial(HubspaceBinarySensorEntity, bridge, controller)
 
     @callback
-    def async_add_entity(event_type: EventType, resource: HubspaceSensor) -> None:
+    def async_add_entity(event_type: EventType, resource: AferoSensor) -> None:
         """Add an entity."""
         for sensor in resource.binary_sensors.keys():
             async_add_entities([make_entity(resource, sensor)])

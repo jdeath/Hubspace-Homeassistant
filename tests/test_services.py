@@ -1,6 +1,6 @@
 import pytest
 import voluptuous
-from aiohubspace import HubspaceState
+from aioafero import AferoState
 
 from custom_components.hubspace import const, services
 
@@ -79,7 +79,7 @@ async def test_service_valid_no_username(
         light_update = create_devices_from_data("fan-ZandraFan.json")[1]
         modify_state(
             light_update,
-            HubspaceState(
+            AferoState(
                 functionClass="power",
                 functionInstance="light-power",
                 value="off",

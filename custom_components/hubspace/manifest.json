@@ -7,7 +7,7 @@
   "documentation": "https://github.com/jdeath/Hubspace-Homeassistant/blob/main/README.md",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/jdeath/Hubspace-Homeassistant/issues",
-  "loggers": ["aiohubspace"],
-  "requirements": ["aiohubspace==1.2.0", "aiofiles"],
+  "loggers": ["aioafero"],
+  "requirements": ["aioafero==2.0.0", "aiofiles"],
   "version": "4.4.2"
 }

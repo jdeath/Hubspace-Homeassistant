@@ -1,7 +1,7 @@
 import sys
 
 import pytest
-from aiohubspace import InvalidAuth
+from aioafero import InvalidAuth
 from homeassistant import config_entries, setup
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
 from homeassistant.data_entry_flow import FlowResultType
@@ -28,7 +28,7 @@ def config_entry(hass):
 @pytest.fixture
 def mocked_config_flow(mocked_bridge, mocker):
     mocker.patch(
-        "custom_components.hubspace.config_flow.HubspaceBridgeV1",
+        "custom_components.hubspace.config_flow.AferoBridgeV1",
         return_value=mocked_bridge,
     )
     yield mocked_bridge

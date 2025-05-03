@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from aiohubspace import EventType
-from aiohubspace.v1 import DeviceController, HubspaceBridgeV1
-from aiohubspace.v1.models import Device
+from aioafero import EventType
+from aioafero.v1 import DeviceController, AferoBridgeV1
+from aioafero.v1.models import Device
 from homeassistant.const import CONF_USERNAME
 from homeassistant.core import callback
 from homeassistant.helpers import device_registry as dr
@@ -21,7 +21,7 @@ async def async_setup_devices(bridge: HubspaceBridge):
     """Manage setup of devices"""
     entry = bridge.config_entry
     hass = bridge.hass
-    api: HubspaceBridgeV1 = bridge.api  # to satisfy typing
+    api: AferoBridgeV1 = bridge.api  # to satisfy typing
     dev_reg = dr.async_get(hass)
     dev_controller: DeviceController = api.devices
 

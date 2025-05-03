@@ -3,8 +3,8 @@ import os
 from enum import Enum
 
 import aiofiles
-from aiohubspace import EventType, anonymize_devices, get_hs_device
-from aiohubspace.v1 import HubspaceBridgeV1
+from aioafero import EventType, anonymize_devices, get_afero_device
+from aioafero.v1 import AferoBridgeV1
 from homeassistant.components.button import ButtonEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_USERNAME
@@ -31,7 +31,7 @@ class DebugButton(ButtonEntity):
 
     def __init__(self, bridge: HubspaceBridge, instance: DebugButtonEnum):
         self.bridge = bridge
-        self.api: HubspaceBridgeV1 = bridge.api
+        self.api: AferoBridgeV1 = bridge.api
         self.logger = bridge.logger.getChild("debug-button")
         self._attr_has_entity_name = True
         self._attr_device_info = DeviceInfo(
@@ -50,7 +50,7 @@ class DebugButton(ButtonEntity):
         if self.instance == DebugButtonEnum.ANON:
             dev_dump = os.path.join(curr_directory, "_dump_hs_devices.json")
             self.logger.debug("Writing out anonymized device data to %s", dev_dump)
-            devs = [get_hs_device(dev) for dev in data]
+            devs = [get_afero_device(dev) for dev in data]
             async with aiofiles.open(dev_dump, "w") as fh:
                 await fh.write(json.dumps(anonymize_devices(devs), indent=4))
         elif self.instance == DebugButtonEnum.RAW:

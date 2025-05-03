@@ -1,5 +1,5 @@
 import pytest
-from aiohubspace import HubspaceState
+from aioafero import AferoState
 from homeassistant.components.valve import ATTR_CURRENT_POSITION
 from homeassistant.helpers import entity_registry as er
 
@@ -71,7 +71,7 @@ async def test_open_valve(mocked_entity):
     hs_device = create_devices_from_data("water-timer.json")[0]
     modify_state(
         hs_device,
-        HubspaceState(
+        AferoState(
             functionClass="toggle",
             functionInstance="spigot-1",
             value="on",
@@ -110,7 +110,7 @@ async def test_close_valve(mocked_entity):
     hs_device = create_devices_from_data("water-timer.json")[0]
     modify_state(
         hs_device,
-        HubspaceState(
+        AferoState(
             functionClass="toggle",
             functionInstance="spigot-2",
             value="off",

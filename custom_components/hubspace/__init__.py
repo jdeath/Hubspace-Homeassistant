@@ -2,8 +2,8 @@
 
 import logging
 
-from aiohubspace import InvalidAuth
-from aiohubspace.v1 import HubspaceBridgeV1
+from aioafero import InvalidAuth
+from aioafero.v1 import AferoBridgeV1
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
 from homeassistant.core import HomeAssistant
@@ -115,7 +115,7 @@ async def perform_v4_migration(hass: HomeAssistant, config_entry: ConfigEntry) -
     options = {**config_entry.options}
     data = {**config_entry.data}
     # Generate the new token
-    api = HubspaceBridgeV1(
+    api = AferoBridgeV1(
         config_entry.data[CONF_USERNAME],
         config_entry.data[CONF_PASSWORD],
         session=aiohttp_client.async_get_clientsession(hass),

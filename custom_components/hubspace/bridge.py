@@ -4,8 +4,8 @@ from typing import Any, Callable
 
 import aiohttp
 from aiohttp import client_exceptions
-from aiohubspace import EventType, InvalidAuth, InvalidResponse
-from aiohubspace.v1 import HubspaceBridgeV1
+from aioafero import EventType, InvalidAuth, InvalidResponse
+from aioafero.v1 import AferoBridgeV1
 from homeassistant import core
 from homeassistant.config_entries import SOURCE_REAUTH, ConfigEntry
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
@@ -43,7 +43,7 @@ class HubspaceBridge:
         self.logger = logging.getLogger(__name__)
         polling_interval = int(self.config_entry.options[POLLING_TIME_STR])
         # store actual api connection to bridge as api
-        self.api = HubspaceBridgeV1(
+        self.api = AferoBridgeV1(
             self.config_entry.data[CONF_USERNAME],
             self.config_entry.data[CONF_PASSWORD],
             refresh_token=self.config_entry.data[CONF_TOKEN],
