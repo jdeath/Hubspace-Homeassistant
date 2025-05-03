@@ -1,6 +1,6 @@
 import pytest
-from aiohubspace import HubspaceState
-from aiohubspace.v1.controllers.lock import features
+from aioafero import AferoState
+from aioafero.v1.controllers.lock import features
 from homeassistant.helpers import entity_registry as er
 
 from .utils import create_devices_from_data, modify_state
@@ -70,7 +70,7 @@ async def test_unlock(mocked_entity):
     lock_update = create_devices_from_data("door-lock-TBD.json")[0]
     modify_state(
         lock_update,
-        HubspaceState(
+        AferoState(
             functionClass="lock-control",
             functionInstance=None,
             value="unlocking",
@@ -111,7 +111,7 @@ async def test_lock(mocked_entity):
     lock_update = create_devices_from_data("door-lock-TBD.json")[0]
     modify_state(
         lock_update,
-        HubspaceState(
+        AferoState(
             functionClass="lock-control",
             functionInstance=None,
             value="locking",
@@ -133,7 +133,7 @@ async def test_lock(mocked_entity):
     lock_update = create_devices_from_data("door-lock-TBD.json")[0]
     modify_state(
         lock_update,
-        HubspaceState(
+        AferoState(
             functionClass="lock-control",
             functionInstance=None,
             value="locked",

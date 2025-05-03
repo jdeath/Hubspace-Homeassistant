@@ -2,7 +2,7 @@ import json
 import os
 from typing import Any
 
-from aiohubspace import HubspaceDevice, HubspaceState
+from aioafero import AferoDevice, AferoState
 
 current_path: str = os.path.dirname(os.path.realpath(__file__))
 
@@ -16,21 +16,21 @@ def get_device_dump(file_name: str) -> Any:
         return json.load(fh)
 
 
-def create_devices_from_data(file_name: str) -> list[HubspaceDevice]:
+def create_devices_from_data(file_name: str) -> list[AferoDevice]:
     """Generate devices from a data dump
 
     :param file_name: Name of the file to load
     """
     devices = get_device_dump(file_name)
-    processed: list[HubspaceDevice] = []
+    processed: list[AferoDevice] = []
     for device in devices:
         processed_states = []
         for state in device["states"]:
-            processed_states.append(HubspaceState(**state))
+            processed_states.append(AferoState(**state))
         device["states"] = processed_states
         if "children" not in device:
             device["children"] = []
-        processed.append(HubspaceDevice(**device))
+        processed.append(AferoDevice(**device))
     return processed
 
 
@@ -84,10 +84,10 @@ def create_hs_raw_from_dump(file_name: str) -> list[dict]:
     return hs_raw
 
 
-def convert_states(states: list[HubspaceState]) -> list[dict]:
-    """Converts states from HubspaceState to raw
+def convert_states(states: list[AferoState]) -> list[dict]:
+    """Converts states from AferoState to raw
 
-    :param states: List of HubspaceState objects
+    :param states: List of AferoState objects
     """
     raw_states = []
     for state in states:
@@ -102,7 +102,7 @@ def convert_states(states: list[HubspaceState]) -> list[dict]:
     return raw_states
 
 
-def modify_state(device: HubspaceDevice, new_state):
+def modify_state(device: AferoDevice, new_state):
     for ind, state in enumerate(device.states):
         if state.functionClass != new_state.functionClass:
             continue

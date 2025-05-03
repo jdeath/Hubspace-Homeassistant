@@ -1,5 +1,5 @@
 import pytest
-from aiohubspace import HubspaceState
+from aioafero import AferoState
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
     ATTR_COLOR_MODE,
@@ -138,7 +138,7 @@ async def test_turn_on(mocked_entity):
     hs_device_update = create_devices_from_data("light-a21.json")[0]
     modify_state(
         hs_device_update,
-        HubspaceState(
+        AferoState(
             functionClass="power",
             functionInstance=None,
             value="on",
@@ -146,7 +146,7 @@ async def test_turn_on(mocked_entity):
     )
     modify_state(
         hs_device_update,
-        HubspaceState(
+        AferoState(
             functionClass="brightness",
             functionInstance=None,
             value=25,
@@ -192,7 +192,7 @@ async def test_turn_on_temp(mocked_entity):
     hs_device_update = create_devices_from_data("light-a21.json")[0]
     modify_state(
         hs_device_update,
-        HubspaceState(
+        AferoState(
             functionClass="power",
             functionInstance=None,
             value="on",
@@ -200,7 +200,7 @@ async def test_turn_on_temp(mocked_entity):
     )
     modify_state(
         hs_device_update,
-        HubspaceState(
+        AferoState(
             functionClass="color-temperature",
             functionInstance=None,
             value=3000,
@@ -208,7 +208,7 @@ async def test_turn_on_temp(mocked_entity):
     )
     modify_state(
         hs_device_update,
-        HubspaceState(
+        AferoState(
             functionClass="color-mode",
             functionInstance=None,
             value="white",
@@ -255,7 +255,7 @@ async def test_turn_on_color(mocked_entity):
     hs_device_update = create_devices_from_data("light-a21.json")[0]
     modify_state(
         hs_device_update,
-        HubspaceState(
+        AferoState(
             functionClass="power",
             functionInstance=None,
             value="on",
@@ -263,7 +263,7 @@ async def test_turn_on_color(mocked_entity):
     )
     modify_state(
         hs_device_update,
-        HubspaceState(
+        AferoState(
             functionClass="color-rgb",
             functionInstance=None,
             value={
@@ -277,7 +277,7 @@ async def test_turn_on_color(mocked_entity):
     )
     modify_state(
         hs_device_update,
-        HubspaceState(
+        AferoState(
             functionClass="color-mode",
             functionInstance=None,
             value="color",
@@ -326,7 +326,7 @@ async def test_turn_on_effect(mocked_entity):
     hs_device_update = create_devices_from_data("light-a21.json")[0]
     modify_state(
         hs_device_update,
-        HubspaceState(
+        AferoState(
             functionClass="power",
             functionInstance=None,
             value="on",
@@ -334,7 +334,7 @@ async def test_turn_on_effect(mocked_entity):
     )
     modify_state(
         hs_device_update,
-        HubspaceState(
+        AferoState(
             functionClass="color-mode",
             functionInstance=None,
             value="sequence",
@@ -342,7 +342,7 @@ async def test_turn_on_effect(mocked_entity):
     )
     modify_state(
         hs_device_update,
-        HubspaceState(
+        AferoState(
             functionClass="color-sequence",
             functionInstance="preset",
             value="custom",
@@ -350,7 +350,7 @@ async def test_turn_on_effect(mocked_entity):
     )
     modify_state(
         hs_device_update,
-        HubspaceState(
+        AferoState(
             functionClass="color-sequence",
             functionInstance="custom",
             value="rainbow",
@@ -394,7 +394,7 @@ async def test_turn_on_dimmer(mocked_dimmer):
     switch_dimmer_update = create_devices_from_data("dimmer-HPDA1110NWBP.json")[0]
     modify_state(
         switch_dimmer_update,
-        HubspaceState(
+        AferoState(
             functionClass="power",
             functionInstance="gang-1",
             value="on",
@@ -455,7 +455,7 @@ async def test_turn_off_dimmer(mocked_dimmer):
     switch_dimmer_update = create_devices_from_data("dimmer-HPDA1110NWBP.json")[0]
     modify_state(
         switch_dimmer_update,
-        HubspaceState(
+        AferoState(
             functionClass="power",
             functionInstance="gang-1",
             value="off",

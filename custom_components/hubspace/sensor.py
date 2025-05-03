@@ -1,11 +1,11 @@
 from functools import partial
 from typing import Any
 
-from aiohubspace.v1 import HubspaceBridgeV1
-from aiohubspace.v1.controllers.device import DeviceController
-from aiohubspace.v1.controllers.event import EventType
-from aiohubspace.v1.models.device import Device
-from aiohubspace.v1.models.sensor import HubspaceSensor
+from aioafero.v1 import AferoBridgeV1
+from aioafero.v1.controllers.device import DeviceController
+from aioafero.v1.controllers.event import EventType
+from aioafero.v1.models.device import Device
+from aioafero.v1.models.sensor import AferoSensor
 from homeassistant.components.sensor import SensorEntity, SensorEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
@@ -16,7 +16,7 @@ from .const import DOMAIN, SENSORS_GENERAL
 from .entity import HubspaceBaseEntity
 
 
-class HubspaceSensorEntity(HubspaceBaseEntity, SensorEntity):
+class AferoSensorEntity(HubspaceBaseEntity, SensorEntity):
     def __init__(
         self,
         bridge: HubspaceBridge,
@@ -41,12 +41,12 @@ async def async_setup_entry(
 ) -> None:
     """Set up entities."""
     bridge: HubspaceBridge = hass.data[DOMAIN][config_entry.entry_id]
-    api: HubspaceBridgeV1 = bridge.api
+    api: AferoBridgeV1 = bridge.api
     controller: DeviceController = api.devices
-    make_entity = partial(HubspaceSensorEntity, bridge, controller)
+    make_entity = partial(AferoSensorEntity, bridge, controller)
 
     @callback
-    def async_add_entity(event_type: EventType, resource: HubspaceSensor) -> None:
+    def async_add_entity(event_type: EventType, resource: AferoSensor) -> None:
         """Add an entity."""
         for sensor in resource.sensors.keys():
             async_add_entities([make_entity(resource, sensor)])

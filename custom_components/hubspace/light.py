@@ -1,8 +1,8 @@
 from functools import partial
 
-from aiohubspace import EventType
-from aiohubspace.v1 import HubspaceBridgeV1, LightController
-from aiohubspace.v1.models import Light
+from aioafero import EventType
+from aioafero.v1 import AferoBridgeV1, LightController
+from aioafero.v1.models import Light
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
     ATTR_COLOR_TEMP_KELVIN,
@@ -159,7 +159,7 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
 def get_color_mode(resource: Light, supported_modes: set[ColorMode]) -> ColorMode:
     """Determine the correct mode
 
-    :param resource: Light from aiohubspace
+    :param resource: Light from aioafero
     :param supported_modes: Supported color modes
     """
     if not resource.color_mode:
@@ -184,7 +184,7 @@ async def async_setup_entry(
 ) -> None:
     """Set up entities."""
     bridge: HubspaceBridge = hass.data[DOMAIN][config_entry.entry_id]
-    api: HubspaceBridgeV1 = bridge.api
+    api: AferoBridgeV1 = bridge.api
     controller: LightController = api.lights
     make_entity = partial(HubspaceLight, bridge, controller)
 

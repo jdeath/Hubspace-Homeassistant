@@ -9,8 +9,8 @@ from collections import namedtuple
 from typing import Any, Optional
 
 import voluptuous as vol
-from aiohubspace import InvalidAuth
-from aiohubspace.v1 import HubspaceBridgeV1
+from aioafero import InvalidAuth
+from aioafero.v1 import AferoBridgeV1
 from homeassistant import config_entries
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
 from homeassistant.core import callback
@@ -53,14 +53,14 @@ class HubspaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     MINOR_VERSION = const_min
     username: str
     password: str
-    conn: HubspaceBridgeV1
+    conn: AferoBridgeV1
 
     async def validate_auth(
         self, user_input: dict[str, Any] | None = None
     ) -> Optional[auth_result]:
         """Validate and save auth"""
         err_type = None
-        self.bridge = HubspaceBridgeV1(
+        self.bridge = AferoBridgeV1(
             user_input[CONF_USERNAME],
             user_input[CONF_PASSWORD],
         )

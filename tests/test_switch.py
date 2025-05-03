@@ -1,5 +1,5 @@
 import pytest
-from aiohubspace import HubspaceState
+from aioafero import AferoState
 from homeassistant.helpers import entity_registry as er
 
 from .utils import create_devices_from_data, modify_state
@@ -91,7 +91,7 @@ async def test_turn_on_toggle(mocked_entity_toggled):
     transformer_update = create_devices_from_data("transformer.json")[0]
     modify_state(
         transformer_update,
-        HubspaceState(
+        AferoState(
             functionClass="toggle",
             functionInstance="zone-3",
             value="on",
@@ -132,7 +132,7 @@ async def test_turn_on(mocked_entity):
     hs_switch_update = create_devices_from_data("switch-HPSA11CWB.json")[0]
     modify_state(
         hs_switch_update,
-        HubspaceState(
+        AferoState(
             functionClass="toggle",
             functionInstance=None,
             value="on",
@@ -167,7 +167,7 @@ async def test_turn_off_toggle(mocked_entity_toggled):
     transformer_update = create_devices_from_data("transformer.json")[0]
     modify_state(
         transformer_update,
-        HubspaceState(
+        AferoState(
             functionClass="toggle",
             functionInstance="zone-2",
             value="off",
@@ -208,7 +208,7 @@ async def test_turn_off(mocked_entity):
     hs_switch_update = create_devices_from_data("switch-HPSA11CWB.json")[0]
     modify_state(
         hs_switch_update,
-        HubspaceState(
+        AferoState(
             functionClass="toggle",
             functionInstance=None,
             value="off",

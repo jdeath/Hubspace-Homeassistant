@@ -1,5 +1,5 @@
 import pytest
-from aiohubspace.errors import InvalidAuth
+from aioafero.errors import InvalidAuth
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
@@ -10,7 +10,7 @@ from custom_components.hubspace import const
 @pytest.fixture(autouse=True)
 def hubspace_migration(mocked_bridge, mocker):
     mocker.patch(
-        "custom_components.hubspace.HubspaceBridgeV1", return_value=mocked_bridge
+        "custom_components.hubspace.AferoBridgeV1", return_value=mocked_bridge
     )
     yield mocked_bridge
 

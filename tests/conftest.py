@@ -2,9 +2,9 @@ import datetime
 import logging
 
 import pytest
-from aiohubspace import v1
-from aiohubspace.v1.auth import token_data
-from aiohubspace.v1.controllers.event import EventType
+from aioafero import v1
+from aioafero.v1.auth import token_data
+from aioafero.v1.controllers.event import EventType
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
@@ -23,8 +23,8 @@ def auto_enable_custom_integrations(enable_custom_integrations):
 
 
 @pytest.fixture(scope="function")
-async def mocked_bridge(mocker) -> v1.HubspaceBridgeV1:
-    hs_bridge: v1.HubspaceBridgeV1 = v1.HubspaceBridgeV1("username2", "password2")
+async def mocked_bridge(mocker) -> v1.AferoBridgeV1:
+    hs_bridge: v1.AferoBridgeV1 = v1.AferoBridgeV1("username2", "password2")
     mocker.patch.object(
         hs_bridge,
         "get_account_id",
@@ -85,7 +85,7 @@ async def mocked_entry(hass, mocker, mocked_bridge) -> MockConfigEntry:
     )
     entry.add_to_hass(hass)
     mocker.patch(
-        "custom_components.hubspace.bridge.HubspaceBridgeV1", return_value=mocked_bridge
+        "custom_components.hubspace.bridge.AferoBridgeV1", return_value=mocked_bridge
     )
     return hass, entry, mocked_bridge
 

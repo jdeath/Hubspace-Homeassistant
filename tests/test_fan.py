@@ -1,5 +1,5 @@
 import pytest
-from aiohubspace import HubspaceState
+from aioafero import AferoState
 from homeassistant.components.fan import (
     ATTR_DIRECTION,
     ATTR_PERCENTAGE,
@@ -132,7 +132,7 @@ async def test_turn_on_limited(mocked_entry):
     exhaust_fan_update = create_devices_from_data("fan-exhaust-fan.json")[3]
     modify_state(
         exhaust_fan_update,
-        HubspaceState(
+        AferoState(
             functionClass="power",
             functionInstance="fan-power",
             value="on",

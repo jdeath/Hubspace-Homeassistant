@@ -5,8 +5,8 @@ from __future__ import annotations
 from functools import wraps
 from typing import TYPE_CHECKING
 
-from aiohubspace.v1.controllers.base import BaseResourcesController
-from aiohubspace.v1.controllers.event import EventType
+from aioafero.v1.controllers.base import BaseResourcesController
+from aioafero.v1.controllers.event import EventType
 from homeassistant.core import callback
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import Entity
@@ -15,17 +15,17 @@ from .bridge import HubspaceBridge
 from .const import DOMAIN
 
 if TYPE_CHECKING:
-    from aiohubspace.v1.models import (
+    from aioafero.v1.models import (
         Device,
         Fan,
-        HubspaceSensor,
+        AferoSensor,
         Light,
         Lock,
         Switch,
         Valve,
     )
 
-    type HubspaceResource = Device | Fan | Light | Lock | HubspaceSensor | Switch | Valve
+    type HubspaceResource = Device | Fan | Light | Lock | AferoSensor | Switch | Valve
 
 
 class HubspaceBaseEntity(Entity):  # pylint: disable=hass-enforce-class-module

@@ -1,9 +1,9 @@
 from functools import partial
 from typing import Any, Optional
 
-from aiohubspace import EventType
-from aiohubspace.v1 import FanController, HubspaceBridgeV1
-from aiohubspace.v1.models import Fan
+from aioafero import EventType
+from aioafero.v1 import FanController, AferoBridgeV1
+from aioafero.v1.models import Fan
 from homeassistant.components.fan import FanEntity, FanEntityFeature
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
@@ -153,7 +153,7 @@ async def async_setup_entry(
 ) -> None:
     """Set up entities."""
     bridge: HubspaceBridge = hass.data[DOMAIN][config_entry.entry_id]
-    api: HubspaceBridgeV1 = bridge.api
+    api: AferoBridgeV1 = bridge.api
     controller: FanController = api.fans
     make_entity = partial(HubspaceFan, bridge, controller)
 
