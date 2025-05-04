@@ -6,6 +6,7 @@ from homeassistant.components.light import (
     ATTR_COLOR_TEMP_KELVIN,
     ATTR_EFFECT,
     ATTR_RGB_COLOR,
+    ATTR_WHITE,
     ColorMode,
 )
 from homeassistant.helpers import entity_registry as er
@@ -65,7 +66,7 @@ async def mocked_dimmer(mocked_entry):
         ("color", {}, ColorMode.RGB),
         # White - Temp
         (
-            "white",
+            "temperature",
             {ColorMode.COLOR_TEMP, ColorMode.ONOFF},
             ColorMode.COLOR_TEMP,
         ),
@@ -165,6 +166,8 @@ async def test_turn_on(mocked_entity):
     assert entity.state == "on"
     assert entity.attributes["brightness"] == 64
     assert bridge.lights._items[light_a21.id].brightness == 25
+    # Both color-mode and color-temp have an update time of 0 which is why this is temp
+    assert entity.attributes["color_mode"] == ColorMode.COLOR_TEMP
 
 
 @pytest.mark.asyncio
@@ -212,7 +215,7 @@ async def test_turn_on_temp(mocked_entity):
         AferoState(
             functionClass="color-mode",
             functionInstance=None,
-            value="white",
+            value="temperature",
         ),
     )
     event = {
@@ -298,6 +301,73 @@ async def test_turn_on_color(mocked_entity):
     assert entity.attributes[ATTR_COLOR_TEMP_KELVIN] is None
     assert entity.attributes[ATTR_COLOR_MODE] == ColorMode.RGB
     assert entity.attributes[ATTR_RGB_COLOR] == (50, 100, 150)
+
+
+@pytest.mark.asyncio
+async def test_turn_on_white(mocked_entity):
+    hass, _, bridge = mocked_entity
+    bridge.lights._items[light_a21.id].on.on = False
+    bridge.lights._items[light_a21.id].color_mode.mode = "no"
+    await hass.services.async_call(
+        "light",
+        "turn_on",
+        {
+            "entity_id": light_a21_id,
+            ATTR_WHITE: 255,
+        },
+        blocking=True,
+    )
+    update_call = bridge.request.call_args_list[-1]
+    assert update_call.args[0] == "put"
+    payload = update_call.kwargs["json"]
+    assert payload["metadeviceId"] == light_a21.id
+    assert len(payload["values"]) == 3
+    power_payload = payload["values"][0]
+    assert power_payload["functionClass"] == "power"
+    assert power_payload["functionInstance"] is None
+    assert power_payload["value"] == "on"
+    print(payload)
+    assert payload["values"][1]["value"] == "white"
+    assert payload["values"][2]["value"] == 100
+    # Now generate update event by emitting the json we've sent as incoming event
+    hs_device_update = create_devices_from_data("light-a21.json")[0]
+    modify_state(
+        hs_device_update,
+        AferoState(
+            functionClass="power",
+            functionInstance=None,
+            value="on",
+        ),
+    )
+    modify_state(
+        hs_device_update,
+        AferoState(
+            functionClass="color-mode",
+            functionInstance=None,
+            value="white",
+        ),
+    )
+    modify_state(
+        hs_device_update,
+        AferoState(
+            functionClass="brightness",
+            functionInstance=None,
+            value=100,
+        ),
+    )
+    event = {
+        "type": "update",
+        "device_id": light_a21.id,
+        "device": hs_device_update,
+    }
+    bridge.emit_event("update", event)
+    await hass.async_block_till_done()
+    entity = hass.states.get(light_a21_id)
+    assert entity is not None
+    assert entity.state == "on"
+    assert entity.attributes[ATTR_EFFECT] is None
+    assert entity.attributes[ATTR_COLOR_TEMP_KELVIN] is None
+    assert entity.attributes[ATTR_COLOR_MODE] == ColorMode.WHITE
 
 
 @pytest.mark.asyncio

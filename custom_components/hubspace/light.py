@@ -8,6 +8,7 @@ from homeassistant.components.light import (
     ATTR_COLOR_TEMP_KELVIN,
     ATTR_EFFECT,
     ATTR_RGB_COLOR,
+    ATTR_WHITE,
     ColorMode,
     LightEntity,
     LightEntityFeature,
@@ -131,13 +132,17 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
         temperature: int | None = kwargs.get(ATTR_COLOR_TEMP_KELVIN, None)
         color: tuple[int, int, int] | None = kwargs.get(ATTR_RGB_COLOR, None)
         effect: str | None = kwargs.get(ATTR_EFFECT, None)
+        white_brightness: int | None = kwargs.get(ATTR_WHITE, None)
         color_mode: str | None = None
         if temperature:
-            color_mode = "white"
+            color_mode = "temperature"
         elif color:
             color_mode = "color"
         elif effect:
             color_mode = "sequence"
+        elif white_brightness:
+            color_mode = "white"
+            brightness = int(brightness_to_value((1, 100), white_brightness))
         await self.bridge.async_request_call(
             self.controller.set_state,
             device_id=self.resource.id,
@@ -169,12 +174,12 @@ def get_color_mode(resource: Light, supported_modes: set[ColorMode]) -> ColorMod
     elif resource.color_mode.mode == "color":
         return ColorMode.RGB
     elif resource.color_mode.mode == "white":
-        if ColorMode.COLOR_TEMP in supported_modes:
-            return ColorMode.COLOR_TEMP
-        elif ColorMode.BRIGHTNESS in supported_modes:
+        if ColorMode.BRIGHTNESS in supported_modes:
             return ColorMode.BRIGHTNESS
         else:
             return ColorMode.WHITE
+    elif resource.color_mode.mode == "temperature":
+        return ColorMode.COLOR_TEMP
     else:
         return list(supported_modes)[-1] if len(supported_modes) else ColorMode.ONOFF
 
