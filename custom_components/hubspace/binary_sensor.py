@@ -1,8 +1,8 @@
 from functools import partial
 
 from aioafero import EventType
-from aioafero.v1 import DeviceController, AferoBridgeV1
-from aioafero.v1.models import Device, AferoSensor
+from aioafero.v1 import AferoBridgeV1, DeviceController
+from aioafero.v1.models import AferoSensor, Device
 from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
     BinarySensorEntityDescription,
@@ -33,12 +33,12 @@ class HubspaceBinarySensorEntity(HubspaceBaseEntity, BinarySensorEntity):
         self.entity_description: BinarySensorEntityDescription = BINARY_SENSORS.get(
             sensor
         )
-        self._attr_name = sensor
+        self._attr_name = self.entity_description.name
 
     @property
     def is_on(self) -> bool:
         """Return the current value"""
-        return self.resource.binary_sensors[self._attr_name].value
+        return self.resource.binary_sensors[self.entity_description.key].value
 
 
 async def async_setup_entry(

@@ -1,0 +1,2455 @@
+[
+    {
+        "id": "cc770a99-25da-4888-8a09-2a569da5be08",
+        "device_id": "bfdc5e8f-f457-4491-86dd-63ee07a6ecf9",
+        "model": "Smart Thermostat",
+        "device_class": "thermostat",
+        "default_name": "Smart Thermostat",
+        "default_image": "leedarson-thermostat-icon",
+        "friendly_name": "Home heat",
+        "functions": [
+            {
+                "id": "e9c713f7-093d-414b-9078-795e002599c3",
+                "createdTimestampMs": 1729277034486,
+                "updatedTimestampMs": 1729277034486,
+                "functionClass": "temperature",
+                "functionInstance": "safety-mode-min-temp",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "c847af23-53ba-43c3-a506-ff784d83ba9d",
+                        "createdTimestampMs": 1729277034493,
+                        "updatedTimestampMs": 1729277034493,
+                        "name": "safety-mode-min-temp",
+                        "deviceValues": [
+                            {
+                                "id": "634a00bd-cac8-43ad-996f-ac87b0b368ac",
+                                "createdTimestampMs": 1729277034499,
+                                "updatedTimestampMs": 1729277034499,
+                                "type": "attribute",
+                                "key": "200"
+                            }
+                        ],
+                        "range": {
+                            "min": 4,
+                            "max": 13,
+                            "step": 0.5
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "469463d8-bb33-4fde-9f77-b20a69cd14c9",
+                "createdTimestampMs": 1729277034521,
+                "updatedTimestampMs": 1729277034521,
+                "functionClass": "temperature-units",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "bb35c260-4368-4b38-b815-b3b895911493",
+                        "createdTimestampMs": 1729277034527,
+                        "updatedTimestampMs": 1729277034527,
+                        "name": "fahrenheit",
+                        "deviceValues": [
+                            {
+                                "id": "9fe8d63d-9635-4774-adad-d32c14435206",
+                                "createdTimestampMs": 1729277034534,
+                                "updatedTimestampMs": 1729277034534,
+                                "type": "attribute",
+                                "key": "202",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "dcc21d80-910e-4938-a9ab-8544b72691d9",
+                        "createdTimestampMs": 1729277034539,
+                        "updatedTimestampMs": 1729277034539,
+                        "name": "celsius",
+                        "deviceValues": [
+                            {
+                                "id": "b5ec92d7-ecbc-4ffb-bc6c-cace0a69d120",
+                                "createdTimestampMs": 1729277034546,
+                                "updatedTimestampMs": 1729277034546,
+                                "type": "attribute",
+                                "key": "202",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "26193d1d-f6f3-4745-bef9-72f73086dc4d",
+                "createdTimestampMs": 1729277034398,
+                "updatedTimestampMs": 1729277034398,
+                "functionClass": "mcu-version",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "1b7df6ab-65a1-4af7-9f8e-6898f78afa0e",
+                        "createdTimestampMs": 1729277034405,
+                        "updatedTimestampMs": 1729277034405,
+                        "name": "mcu-version",
+                        "deviceValues": [
+                            {
+                                "id": "f1e60b07-7381-4379-9965-7d351d36deaa",
+                                "createdTimestampMs": 1729277034412,
+                                "updatedTimestampMs": 1729277034412,
+                                "type": "attribute",
+                                "key": "25"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "36e388b7-ba51-4ea0-9776-136b99177ff4",
+                "createdTimestampMs": 1729277034504,
+                "updatedTimestampMs": 1729277034504,
+                "functionClass": "temperature",
+                "functionInstance": "safety-mode-max-temp",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "7c4078d6-6a2e-429d-87d6-5fda2a2f3994",
+                        "createdTimestampMs": 1729277034510,
+                        "updatedTimestampMs": 1729277034510,
+                        "name": "safety-mode-max-temp",
+                        "deviceValues": [
+                            {
+                                "id": "790264e2-311f-41e8-a345-008c15e9b83f",
+                                "createdTimestampMs": 1729277034516,
+                                "updatedTimestampMs": 1729277034516,
+                                "type": "attribute",
+                                "key": "201"
+                            }
+                        ],
+                        "range": {
+                            "min": 29.5,
+                            "max": 37,
+                            "step": 0.5
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "4ac27695-c1a1-4f43-8bf0-5ac914c7f933",
+                "createdTimestampMs": 1729277033915,
+                "updatedTimestampMs": 1729277033915,
+                "functionClass": "mode",
+                "type": "category",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "23c18637-f2de-4121-a1ff-0469ca7963be",
+                        "createdTimestampMs": 1729277033962,
+                        "updatedTimestampMs": 1729277033962,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "317e9b15-405a-4c9b-aa24-a1d282cf78bf",
+                                "createdTimestampMs": 1729277033973,
+                                "updatedTimestampMs": 1729277033973,
+                                "type": "attribute",
+                                "key": "1",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "064be7f3-78f7-4ad7-b0da-f437772f237a",
+                        "createdTimestampMs": 1729277033997,
+                        "updatedTimestampMs": 1729277033997,
+                        "name": "heat",
+                        "deviceValues": [
+                            {
+                                "id": "68ff0a19-63f4-416f-9a50-9345e3ad5d93",
+                                "createdTimestampMs": 1729277034004,
+                                "updatedTimestampMs": 1729277034004,
+                                "type": "attribute",
+                                "key": "1",
+                                "value": "2"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "187115d4-e849-4265-b911-3c5b7ca4f429",
+                        "createdTimestampMs": 1729277034008,
+                        "updatedTimestampMs": 1729277034008,
+                        "name": "auto",
+                        "deviceValues": [
+                            {
+                                "id": "99bac5c5-0e17-4886-b37e-d8971b77ee5f",
+                                "createdTimestampMs": 1729277034015,
+                                "updatedTimestampMs": 1729277034015,
+                                "type": "attribute",
+                                "key": "1",
+                                "value": "3"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "f755caf7-703f-467d-8f0e-7016ad1d60ff",
+                        "createdTimestampMs": 1729277034024,
+                        "updatedTimestampMs": 1729277034024,
+                        "name": "fan",
+                        "deviceValues": [
+                            {
+                                "id": "aeae919d-f85c-44cc-bd16-7140f1dcfc77",
+                                "createdTimestampMs": 1729277034030,
+                                "updatedTimestampMs": 1729277034030,
+                                "type": "attribute",
+                                "key": "1",
+                                "value": "4"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "2c174ade-6c29-47b0-958b-40d4b5e74265",
+                        "createdTimestampMs": 1729277033984,
+                        "updatedTimestampMs": 1729277033984,
+                        "name": "cool",
+                        "deviceValues": [
+                            {
+                                "id": "6fa1bf88-a82a-427c-a323-c536fd0a3f6e",
+                                "createdTimestampMs": 1729277033992,
+                                "updatedTimestampMs": 1729277033992,
+                                "type": "attribute",
+                                "key": "1",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "044b43c5-53d5-49fb-92ac-635c66a31cb2",
+                "createdTimestampMs": 1729277034086,
+                "updatedTimestampMs": 1729277034086,
+                "functionClass": "fan-mode",
+                "type": "category",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "22eaf0be-303c-4b11-a192-5ef39ca78ffd",
+                        "createdTimestampMs": 1729277034104,
+                        "updatedTimestampMs": 1729277034104,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "22292bf5-90a0-4b4d-b378-f6f111ec04c3",
+                                "createdTimestampMs": 1729277034113,
+                                "updatedTimestampMs": 1729277034113,
+                                "type": "attribute",
+                                "key": "3",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "a3b01531-785a-43b5-a16c-035191b92d3c",
+                        "createdTimestampMs": 1729277034092,
+                        "updatedTimestampMs": 1729277034092,
+                        "name": "auto",
+                        "deviceValues": [
+                            {
+                                "id": "67921f07-c438-44e1-92bb-85b213f40dc7",
+                                "createdTimestampMs": 1729277034099,
+                                "updatedTimestampMs": 1729277034099,
+                                "type": "attribute",
+                                "key": "3",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "3681144f-94dd-4ae5-af19-9bf2bd155a84",
+                        "createdTimestampMs": 1729277034121,
+                        "updatedTimestampMs": 1729277034121,
+                        "name": "intermittent",
+                        "deviceValues": [
+                            {
+                                "id": "fe114674-02e4-4164-8911-c5b1539eabb9",
+                                "createdTimestampMs": 1729277034128,
+                                "updatedTimestampMs": 1729277034128,
+                                "type": "attribute",
+                                "key": "3",
+                                "value": "2"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "f69c4b14-b124-47b3-9241-88c3a637c492",
+                "createdTimestampMs": 1729277034281,
+                "updatedTimestampMs": 1729277034281,
+                "functionClass": "temperature",
+                "functionInstance": "auto-heating-target",
+                "type": "numeric",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "4edc2b9d-4310-4c06-b2e2-6ea83c27c81c",
+                        "createdTimestampMs": 1729277034288,
+                        "updatedTimestampMs": 1729277034288,
+                        "name": "auto-heating-target",
+                        "deviceValues": [
+                            {
+                                "id": "a8054dba-249e-4b00-a259-18ecca6ed92d",
+                                "createdTimestampMs": 1729277034295,
+                                "updatedTimestampMs": 1729277034295,
+                                "type": "attribute",
+                                "key": "13"
+                            }
+                        ],
+                        "range": {
+                            "min": 4,
+                            "max": 32,
+                            "step": 0.5
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "dbf8e882-186d-4723-8ae8-ce17a9ea38b5",
+                "createdTimestampMs": 1729277034264,
+                "updatedTimestampMs": 1729277034264,
+                "functionClass": "temperature",
+                "functionInstance": "auto-cooling-target",
+                "type": "numeric",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "e471d893-a0a8-48de-b84b-9f712b4db68a",
+                        "createdTimestampMs": 1729277034270,
+                        "updatedTimestampMs": 1729277034270,
+                        "name": "auto-cooling-target",
+                        "deviceValues": [
+                            {
+                                "id": "f4247e8c-a77d-49e9-8e66-8b68f90fecc5",
+                                "createdTimestampMs": 1729277034276,
+                                "updatedTimestampMs": 1729277034276,
+                                "type": "attribute",
+                                "key": "12"
+                            }
+                        ],
+                        "range": {
+                            "min": 10,
+                            "max": 37,
+                            "step": 0.5
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "be29223d-3fcd-4fc4-ad00-dd8f7bc531e2",
+                "createdTimestampMs": 1729277035123,
+                "updatedTimestampMs": 1729277035123,
+                "functionClass": "preset",
+                "functionInstance": "preset-1",
+                "type": "object",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "e7ddb47f-180a-486d-91ba-578e0b288e0d",
+                        "createdTimestampMs": 1729277035130,
+                        "updatedTimestampMs": 1729277035130,
+                        "name": "preset",
+                        "deviceValues": [
+                            {
+                                "id": "864cb88d-d9ea-4839-8bcf-2818d7b763cc",
+                                "createdTimestampMs": 1729277035137,
+                                "updatedTimestampMs": 1729277035137,
+                                "type": "attribute",
+                                "key": "301",
+                                "format": "thermostat-presets"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "23d31675-bbaf-4df4-b34c-18c50443e344",
+                "createdTimestampMs": 1729277034416,
+                "updatedTimestampMs": 1729277034416,
+                "functionClass": "mcu-date-code",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "9d9ffeca-3972-47a0-b0dc-69455d3dcada",
+                        "createdTimestampMs": 1729277034423,
+                        "updatedTimestampMs": 1729277034423,
+                        "name": "mcu-date-code",
+                        "deviceValues": [
+                            {
+                                "id": "9b01b60f-509a-4b5d-b25c-d9ca609cc87e",
+                                "createdTimestampMs": 1729277034429,
+                                "updatedTimestampMs": 1729277034429,
+                                "type": "attribute",
+                                "key": "26"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "1a87a9b5-c131-47cc-a006-3cfe23cd9847",
+                "createdTimestampMs": 1729277034318,
+                "updatedTimestampMs": 1729277034318,
+                "functionClass": "current-system-state",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "2fbbf416-15ca-4982-8863-fd14a52d6c47",
+                        "createdTimestampMs": 1729277034357,
+                        "updatedTimestampMs": 1729277034357,
+                        "name": "heating",
+                        "deviceValues": [
+                            {
+                                "id": "2b663cdc-51a9-49ba-ae90-caf328f7a358",
+                                "createdTimestampMs": 1729277034364,
+                                "updatedTimestampMs": 1729277034364,
+                                "type": "attribute",
+                                "key": "21",
+                                "value": "2"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "c9d9d482-e866-4c34-b028-bdb2fc516096",
+                        "createdTimestampMs": 1729277034335,
+                        "updatedTimestampMs": 1729277034335,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "b9eedf61-d96d-47f0-ac1c-cd39bfd9e5db",
+                                "createdTimestampMs": 1729277034342,
+                                "updatedTimestampMs": 1729277034342,
+                                "type": "attribute",
+                                "key": "21",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "39f4d751-9240-4db0-aa72-ff7b389670c2",
+                        "createdTimestampMs": 1729277034347,
+                        "updatedTimestampMs": 1729277034347,
+                        "name": "cooling",
+                        "deviceValues": [
+                            {
+                                "id": "4885f0c2-6e05-4408-98e2-bcc09292f840",
+                                "createdTimestampMs": 1729277034353,
+                                "updatedTimestampMs": 1729277034353,
+                                "type": "attribute",
+                                "key": "21",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "38ff5305-633a-4e15-97d6-9f4627615c35",
+                "createdTimestampMs": 1729277034451,
+                "updatedTimestampMs": 1729277034451,
+                "functionClass": "calendar-limit",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "39721c91-eea4-49d0-9b5a-de72d4e7288c",
+                        "createdTimestampMs": 1729277034457,
+                        "updatedTimestampMs": 1729277034457,
+                        "name": "calendar-limit",
+                        "deviceValues": [
+                            {
+                                "id": "94706b49-7075-4bc9-af52-aea44dfcda8f",
+                                "createdTimestampMs": 1729277034464,
+                                "updatedTimestampMs": 1729277034464,
+                                "type": "attribute",
+                                "key": "51"
+                            }
+                        ],
+                        "range": {
+                            "min": 1,
+                            "max": 12,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "d39def3d-b97a-4af4-bbe7-e7eb4493a085",
+                "createdTimestampMs": 1729277035176,
+                "updatedTimestampMs": 1729277035176,
+                "functionClass": "preset",
+                "functionInstance": "preset-4",
+                "type": "object",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "35c7a80a-4ae6-41d6-86af-66c8b0f24a02",
+                        "createdTimestampMs": 1729277035184,
+                        "updatedTimestampMs": 1729277035184,
+                        "name": "preset",
+                        "deviceValues": [
+                            {
+                                "id": "0996c588-8830-4515-8c9d-641c64550463",
+                                "createdTimestampMs": 1729277035191,
+                                "updatedTimestampMs": 1729277035191,
+                                "type": "attribute",
+                                "key": "304",
+                                "format": "thermostat-presets"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "8244fe06-fa99-40b7-85f8-aabfb44fdd86",
+                "createdTimestampMs": 1729277034607,
+                "updatedTimestampMs": 1729277034607,
+                "functionClass": "safety-cool-mode",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "dc6abc68-cc74-4cf3-9a48-a3f42b47e512",
+                        "createdTimestampMs": 1729277034614,
+                        "updatedTimestampMs": 1729277034614,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "3eeb6445-0f40-46fb-83eb-a951afb262c0",
+                                "createdTimestampMs": 1729277034620,
+                                "updatedTimestampMs": 1729277034620,
+                                "type": "attribute",
+                                "key": "206",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "d8fcbd6c-46f2-4aa3-93b7-ecb624a7c381",
+                        "createdTimestampMs": 1729277034625,
+                        "updatedTimestampMs": 1729277034625,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "0b74c446-2975-45da-bb3d-f1becccdeaf1",
+                                "createdTimestampMs": 1729277034631,
+                                "updatedTimestampMs": 1729277034631,
+                                "type": "attribute",
+                                "key": "206",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "88364c93-1010-416a-a3df-d128f8f54081",
+                "createdTimestampMs": 1729277034635,
+                "updatedTimestampMs": 1729277034635,
+                "functionClass": "safety-heat-mode",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "654b6f99-3f38-4c34-ae30-49bbac75b1d8",
+                        "createdTimestampMs": 1729277034642,
+                        "updatedTimestampMs": 1729277034642,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "bed36f11-5766-4933-bfe1-b1581ffe2734",
+                                "createdTimestampMs": 1729277034648,
+                                "updatedTimestampMs": 1729277034648,
+                                "type": "attribute",
+                                "key": "207",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "ccc05572-503c-4136-b2cd-ab0ade4d16e4",
+                        "createdTimestampMs": 1729277034653,
+                        "updatedTimestampMs": 1729277034653,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "28ae9816-abe1-4ac5-9f9c-ed5e4c19a6e3",
+                                "createdTimestampMs": 1729277034661,
+                                "updatedTimestampMs": 1729277034661,
+                                "type": "attribute",
+                                "key": "207",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "6bf3c8b4-6c8d-499c-bdb8-670f829fa7e3",
+                "createdTimestampMs": 1729277034666,
+                "updatedTimestampMs": 1729277034666,
+                "functionClass": "system-type",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "394606a8-cac0-4f07-a051-796747c3f87f",
+                        "createdTimestampMs": 1729277034729,
+                        "updatedTimestampMs": 1729277034729,
+                        "name": "2-stage-heating-conventional-electric",
+                        "deviceValues": [
+                            {
+                                "id": "20dc6bab-07cb-46d2-8f36-bb12a9ee2d80",
+                                "createdTimestampMs": 1729277034735,
+                                "updatedTimestampMs": 1729277034735,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "6"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "0cf26b7e-7dfb-4eba-adb4-6f8d68879d8c",
+                        "createdTimestampMs": 1729277034844,
+                        "updatedTimestampMs": 1729277034844,
+                        "name": "1-compressor-heat-pump-1-aux-on-heat-gas-aux",
+                        "deviceValues": [
+                            {
+                                "id": "48f849d4-3824-4c68-bac0-c8814cab1dbb",
+                                "createdTimestampMs": 1729277034849,
+                                "updatedTimestampMs": 1729277034849,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "16"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "c3110322-4111-4618-9535-f718d6a00bc5",
+                        "createdTimestampMs": 1729277035065,
+                        "updatedTimestampMs": 1729277035065,
+                        "name": "2-compressors-or-2-speed-compressor-heat-pump-on-cool-no-aux",
+                        "deviceValues": [
+                            {
+                                "id": "cf350543-0dae-4ceb-b933-22fae452fcb1",
+                                "createdTimestampMs": 1729277035072,
+                                "updatedTimestampMs": 1729277035072,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "36"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "b1f9378d-9aa4-4066-8a8a-ce8e69c9b261",
+                        "createdTimestampMs": 1729277034833,
+                        "updatedTimestampMs": 1729277034833,
+                        "name": "1-compressor-heat-pump-1-aux-on-heat-boiler-aux",
+                        "deviceValues": [
+                            {
+                                "id": "43dde2b8-1e09-4958-957a-daf8c9c80544",
+                                "createdTimestampMs": 1729277034839,
+                                "updatedTimestampMs": 1729277034839,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "15"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "2f6aa87b-16dc-49b7-b179-dbd649f4ae8c",
+                        "createdTimestampMs": 1729277034999,
+                        "updatedTimestampMs": 1729277034999,
+                        "name": "2-stage-heating-conventional-boiler",
+                        "deviceValues": [
+                            {
+                                "id": "d430b23c-9125-4afc-939f-a875ae6029b9",
+                                "createdTimestampMs": 1729277035005,
+                                "updatedTimestampMs": 1729277035005,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "30"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "a76acf36-7356-4db8-bb76-0d6498713e5e",
+                        "createdTimestampMs": 1729277034695,
+                        "updatedTimestampMs": 1729277034695,
+                        "name": "1-stage-heating-conventional-gas",
+                        "deviceValues": [
+                            {
+                                "id": "5764004d-0242-4c6a-9aac-b47d8b64358a",
+                                "createdTimestampMs": 1729277034701,
+                                "updatedTimestampMs": 1729277034701,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "3"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "42f156f9-0842-46da-9401-30eb78a60753",
+                        "createdTimestampMs": 1729277034785,
+                        "updatedTimestampMs": 1729277034785,
+                        "name": "1-compressor-heat-pump-1-aux-on-cool-electric-aux",
+                        "deviceValues": [
+                            {
+                                "id": "ab61effd-09de-46fe-902d-0789a0335002",
+                                "createdTimestampMs": 1729277034793,
+                                "updatedTimestampMs": 1729277034793,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "11"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "56ccf2a4-5b50-4700-b20c-cde1974dda05",
+                        "createdTimestampMs": 1729277034875,
+                        "updatedTimestampMs": 1729277034875,
+                        "name": "2-compressors-or-2-speed-compressor-heat-pump-1-aux-on-cool-gas-aux",
+                        "deviceValues": [
+                            {
+                                "id": "b962c811-019c-475d-af57-02344e141181",
+                                "createdTimestampMs": 1729277034882,
+                                "updatedTimestampMs": 1729277034882,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "19"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "94a31851-01d3-48c0-90ad-5847faafae9e",
+                        "createdTimestampMs": 1729277034810,
+                        "updatedTimestampMs": 1729277034810,
+                        "name": "1-compressor-heat-pump-1-aux-on-cool-gas-aux",
+                        "deviceValues": [
+                            {
+                                "id": "7fca9b7a-48d9-4f65-81ad-c80a62498a22",
+                                "createdTimestampMs": 1729277034817,
+                                "updatedTimestampMs": 1729277034817,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "13"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "abe955fb-07f5-46b9-a614-662a2b38f442",
+                        "createdTimestampMs": 1729277035032,
+                        "updatedTimestampMs": 1729277035032,
+                        "name": "1-compressor-heat-pump-on-heat-no-aux",
+                        "deviceValues": [
+                            {
+                                "id": "39f49915-27da-49f8-a6c1-a577594f5900",
+                                "createdTimestampMs": 1729277035038,
+                                "updatedTimestampMs": 1729277035038,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "33"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "ea74e1bc-1369-42b7-9709-cf12a68366ae",
+                        "createdTimestampMs": 1729277034717,
+                        "updatedTimestampMs": 1729277034717,
+                        "name": "2-stage-heating-conventional-gas",
+                        "deviceValues": [
+                            {
+                                "id": "c9b17296-cbe2-4e63-bfa6-05b835d9ccf9",
+                                "createdTimestampMs": 1729277034724,
+                                "updatedTimestampMs": 1729277034724,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "5"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "9918e34f-fcaf-4930-9374-69a80768c82b",
+                        "createdTimestampMs": 1729277034975,
+                        "updatedTimestampMs": 1729277034975,
+                        "name": "2-compressors-or-2-speed-compressor-heat-pump-2-aux-on-heat-gas-aux",
+                        "deviceValues": [
+                            {
+                                "id": "b829344b-9d32-4f3f-8a15-42f33f416927",
+                                "createdTimestampMs": 1729277034982,
+                                "updatedTimestampMs": 1729277034982,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "28"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "c570a73b-e899-4f52-9e92-aca5b71b78a7",
+                        "createdTimestampMs": 1729277034963,
+                        "updatedTimestampMs": 1729277034963,
+                        "name": "2-compressors-or-2-speed-compressor-heat-pump-2-aux-on-heat-boiler-aux",
+                        "deviceValues": [
+                            {
+                                "id": "66e8f6f1-6fe3-4357-9351-c5f6334bb64c",
+                                "createdTimestampMs": 1729277034970,
+                                "updatedTimestampMs": 1729277034970,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "27"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "d66b8719-efed-448a-83c0-aa68b141d0e4",
+                        "createdTimestampMs": 1729277034952,
+                        "updatedTimestampMs": 1729277034952,
+                        "name": "2-compressors-or-2-speed-compressor-heat-pump-2-aux-on-heat-electric-aux",
+                        "deviceValues": [
+                            {
+                                "id": "885d5e3b-519e-43a5-a3e1-cca3e91f7266",
+                                "createdTimestampMs": 1729277034958,
+                                "updatedTimestampMs": 1729277034958,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "26"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "2361ac24-6849-4a56-b798-23b8bd52c7f0",
+                        "createdTimestampMs": 1729277034673,
+                        "updatedTimestampMs": 1729277034673,
+                        "name": "1-stage-cooling-conventional",
+                        "deviceValues": [
+                            {
+                                "id": "b162f30b-4861-48da-9c40-cd9279a0ff28",
+                                "createdTimestampMs": 1729277034679,
+                                "updatedTimestampMs": 1729277034679,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "0bd7451c-0b3c-4dd6-88ff-4fc743d67b84",
+                        "createdTimestampMs": 1729277034775,
+                        "updatedTimestampMs": 1729277034775,
+                        "name": "2-stage-heating-cooling-conventional-electric",
+                        "deviceValues": [
+                            {
+                                "id": "c993a948-8892-42ab-82a6-9529e7bd3a75",
+                                "createdTimestampMs": 1729277034781,
+                                "updatedTimestampMs": 1729277034781,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "10"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "7cbe7955-873c-44cf-b0c8-68de0a0f5b27",
+                        "createdTimestampMs": 1729277034899,
+                        "updatedTimestampMs": 1729277034899,
+                        "name": "2-compressors-or-2-speed-compressor-heat-pump-1-aux-on-heat-boiler-aux",
+                        "deviceValues": [
+                            {
+                                "id": "aafeb894-28c4-4a87-afea-ef1f37544f27",
+                                "createdTimestampMs": 1729277034906,
+                                "updatedTimestampMs": 1729277034906,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "21"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "5627715f-e927-44ac-8c79-2ed0e92c82e0",
+                        "createdTimestampMs": 1729277034931,
+                        "updatedTimestampMs": 1729277034931,
+                        "name": "2-compressors-or-2-speed-compressor-heat-pump-2-aux-on-cool-boiler-aux",
+                        "deviceValues": [
+                            {
+                                "id": "801c395b-9cc1-43ee-9714-ba724f2ddd9b",
+                                "createdTimestampMs": 1729277034938,
+                                "updatedTimestampMs": 1729277034938,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "24"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "4546ceae-bd8c-4fea-bba2-3731157bb8f6",
+                        "createdTimestampMs": 1729277035021,
+                        "updatedTimestampMs": 1729277035021,
+                        "name": "2-stage-heating-cooling-conventional-boiler",
+                        "deviceValues": [
+                            {
+                                "id": "b53a3976-d299-4263-ab8c-086f9f7e6a05",
+                                "createdTimestampMs": 1729277035027,
+                                "updatedTimestampMs": 1729277035027,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "32"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "a2c6f4ab-6f4d-46ce-8c6f-6a77765d6f7e",
+                        "createdTimestampMs": 1729277035010,
+                        "updatedTimestampMs": 1729277035010,
+                        "name": "1-stage-heating-cooling-conventional-boiler",
+                        "deviceValues": [
+                            {
+                                "id": "864022b3-5933-4b1b-b9ab-5b31735d8553",
+                                "createdTimestampMs": 1729277035016,
+                                "updatedTimestampMs": 1729277035016,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "31"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "a9b22bcb-1412-4d0f-89d7-535cf9fd4c19",
+                        "createdTimestampMs": 1729277034854,
+                        "updatedTimestampMs": 1729277034854,
+                        "name": "2-compressors-or-2-speed-compressor-heat-pump-1-aux-on-cool-electric-aux",
+                        "deviceValues": [
+                            {
+                                "id": "2c4d6919-c589-4fbd-b8c3-de180b404277",
+                                "createdTimestampMs": 1729277034860,
+                                "updatedTimestampMs": 1729277034860,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "17"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "ab32dcd9-0da5-44ef-a768-3dfaa2f4b773",
+                        "createdTimestampMs": 1729277034942,
+                        "updatedTimestampMs": 1729277034942,
+                        "name": "2-compressors-or-2-speed-compressor-heat-pump-2-aux-on-cool-gas-aux",
+                        "deviceValues": [
+                            {
+                                "id": "c2823e5a-9c4b-433d-8a42-9d012e5c2268",
+                                "createdTimestampMs": 1729277034948,
+                                "updatedTimestampMs": 1729277034948,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "25"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "b59de3c9-4813-4c33-ad42-2f1b1cfef890",
+                        "createdTimestampMs": 1729277035043,
+                        "updatedTimestampMs": 1729277035043,
+                        "name": "1-compressor-heat-pump-on-cool-no-aux",
+                        "deviceValues": [
+                            {
+                                "id": "dcbaed4f-d92f-44e0-9bab-2bb2c0382edf",
+                                "createdTimestampMs": 1729277035049,
+                                "updatedTimestampMs": 1729277035049,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "34"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "5545b96c-2750-4ff2-8aa7-2cfc0575bddc",
+                        "createdTimestampMs": 1729277034684,
+                        "updatedTimestampMs": 1729277034684,
+                        "name": "2-stage-cooling-conventional",
+                        "deviceValues": [
+                            {
+                                "id": "4366dac0-d725-4f20-96b6-d434466d33b7",
+                                "createdTimestampMs": 1729277034690,
+                                "updatedTimestampMs": 1729277034690,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "2"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "fe59e96a-d9b9-4a4f-b357-a3899658ed0c",
+                        "createdTimestampMs": 1729277034864,
+                        "updatedTimestampMs": 1729277034864,
+                        "name": "2-compressors-or-2-speed-compressor-heat-pump-1-aux-on-cool-boiler-aux",
+                        "deviceValues": [
+                            {
+                                "id": "064cc211-fa87-4463-a4f7-41308d7a4975",
+                                "createdTimestampMs": 1729277034871,
+                                "updatedTimestampMs": 1729277034871,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "18"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "cd734bb1-b5d1-409e-ab5b-cb3a22c720a6",
+                        "createdTimestampMs": 1729277034752,
+                        "updatedTimestampMs": 1729277034752,
+                        "name": "1-stage-heating-cooling-conventional-electric",
+                        "deviceValues": [
+                            {
+                                "id": "3eecd834-0f15-4dea-9bd8-b2910101367a",
+                                "createdTimestampMs": 1729277034758,
+                                "updatedTimestampMs": 1729277034758,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "8"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "843f2ca8-4837-4292-bf14-5d39e89b9dca",
+                        "createdTimestampMs": 1729277034886,
+                        "updatedTimestampMs": 1729277034886,
+                        "name": "2-compressors-or-2-speed-compressor-heat-pump-1-aux-on-heat-electric-aux",
+                        "deviceValues": [
+                            {
+                                "id": "fc6ded08-a923-48e2-b60b-3f87693c82f0",
+                                "createdTimestampMs": 1729277034894,
+                                "updatedTimestampMs": 1729277034894,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "20"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "35ffa163-4ac3-4669-88ff-3d746e993d1e",
+                        "createdTimestampMs": 1729277034706,
+                        "updatedTimestampMs": 1729277034706,
+                        "name": "1-stage-heating-conventional-electric",
+                        "deviceValues": [
+                            {
+                                "id": "050f7652-e790-4214-b5fc-328d11ad4a7c",
+                                "createdTimestampMs": 1729277034713,
+                                "updatedTimestampMs": 1729277034713,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "4"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "4a51fecd-b19a-45de-9769-72a168f29dc8",
+                        "createdTimestampMs": 1729277034987,
+                        "updatedTimestampMs": 1729277034987,
+                        "name": "1-stage-heating-conventional-boiler",
+                        "deviceValues": [
+                            {
+                                "id": "26cd5e9e-3843-472a-93af-e6de6e03cb15",
+                                "createdTimestampMs": 1729277034994,
+                                "updatedTimestampMs": 1729277034994,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "29"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "7d5dec76-e8cf-437e-88c4-6fa375b3feb5",
+                        "createdTimestampMs": 1729277034921,
+                        "updatedTimestampMs": 1729277034921,
+                        "name": "2-compressors-or-2-speed-compressor-heat-pump-2-aux-on-cool-electric-aux",
+                        "deviceValues": [
+                            {
+                                "id": "98df430f-ad1b-44ae-b016-44bbfcee9f96",
+                                "createdTimestampMs": 1729277034927,
+                                "updatedTimestampMs": 1729277034927,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "23"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "f63610d8-6654-4ee5-ac73-5b2222f04604",
+                        "createdTimestampMs": 1729277034910,
+                        "updatedTimestampMs": 1729277034910,
+                        "name": "2-compressors-or-2-speed-compressor-heat-pump-1-aux-on-heat-gas-aux",
+                        "deviceValues": [
+                            {
+                                "id": "51386bb0-ebe7-42a3-9944-c00fd7104314",
+                                "createdTimestampMs": 1729277034917,
+                                "updatedTimestampMs": 1729277034917,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "22"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "64bb3a13-7a6e-4cd7-808d-6424faa32016",
+                        "createdTimestampMs": 1729277035054,
+                        "updatedTimestampMs": 1729277035054,
+                        "name": "2-compressors-or-2-speed-compressor-heat-pump-on-heat-no-aux",
+                        "deviceValues": [
+                            {
+                                "id": "0ef343b7-2ea2-48bf-bdba-c52724d4249f",
+                                "createdTimestampMs": 1729277035060,
+                                "updatedTimestampMs": 1729277035060,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "35"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "acb85466-ece5-4950-a961-efee04257743",
+                        "createdTimestampMs": 1729277034740,
+                        "updatedTimestampMs": 1729277034740,
+                        "name": "1-stage-heating-cooling-conventional-gas",
+                        "deviceValues": [
+                            {
+                                "id": "cf10a1b3-5d56-4493-ab23-dc248964b333",
+                                "createdTimestampMs": 1729277034747,
+                                "updatedTimestampMs": 1729277034747,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "7"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "c94e042e-0058-49d8-a846-31a92ad384c1",
+                        "createdTimestampMs": 1729277034798,
+                        "updatedTimestampMs": 1729277034798,
+                        "name": "1-compressor-heat-pump-1-aux-on-cool-boiler-aux",
+                        "deviceValues": [
+                            {
+                                "id": "3e20aa11-7985-4635-8e05-63db3e2021c7",
+                                "createdTimestampMs": 1729277034804,
+                                "updatedTimestampMs": 1729277034804,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "12"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "e9b0e596-39ef-45e2-95a1-b9359708133e",
+                        "createdTimestampMs": 1729277034763,
+                        "updatedTimestampMs": 1729277034763,
+                        "name": "2-stage-heating-cooling-conventional-gas",
+                        "deviceValues": [
+                            {
+                                "id": "f78eb849-add0-4b1a-9049-08eccd022261",
+                                "createdTimestampMs": 1729277034769,
+                                "updatedTimestampMs": 1729277034769,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "9"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "745624d1-acf8-4e00-8551-f13b42f484cf",
+                        "createdTimestampMs": 1729277034821,
+                        "updatedTimestampMs": 1729277034821,
+                        "name": "1-compressor-heat-pump-1-aux-on-heat-electric-aux",
+                        "deviceValues": [
+                            {
+                                "id": "b00c7f60-bd0d-433d-9a0b-0ae166fcbc78",
+                                "createdTimestampMs": 1729277034828,
+                                "updatedTimestampMs": 1729277034828,
+                                "type": "attribute",
+                                "key": "250",
+                                "value": "14"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "c61e383e-32b1-4e97-9d28-669f77cb63c3",
+                "createdTimestampMs": 1729277034570,
+                "updatedTimestampMs": 1729277034570,
+                "functionClass": "temperature",
+                "functionInstance": "temperature-calibration",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "1dd7dab6-728b-4ff6-a058-f1cfc243f0ad",
+                        "createdTimestampMs": 1729277034577,
+                        "updatedTimestampMs": 1729277034577,
+                        "name": "temperature-calibration",
+                        "deviceValues": [
+                            {
+                                "id": "d28bd3cc-0fa0-4dc6-a5fd-ee3bbff012f2",
+                                "createdTimestampMs": 1729277034583,
+                                "updatedTimestampMs": 1729277034583,
+                                "type": "attribute",
+                                "key": "204"
+                            }
+                        ],
+                        "range": {
+                            "min": -3,
+                            "max": 3,
+                            "step": 0.1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "f188034e-bdb0-496b-9544-3b7676434f21",
+                "createdTimestampMs": 1729277035224,
+                "updatedTimestampMs": 1729277035224,
+                "functionClass": "preset",
+                "functionInstance": "preset-6",
+                "type": "object",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "0e3ded38-0307-4309-9218-d35b9c63e531",
+                        "createdTimestampMs": 1729277035231,
+                        "updatedTimestampMs": 1729277035231,
+                        "name": "preset",
+                        "deviceValues": [
+                            {
+                                "id": "dc5ae7e6-b61d-4bb9-99f3-fedc5e73dd3c",
+                                "createdTimestampMs": 1729277035237,
+                                "updatedTimestampMs": 1729277035237,
+                                "type": "attribute",
+                                "key": "306",
+                                "format": "thermostat-presets"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "6f3b0780-48d5-4bc1-a4c5-cc78d8f617c0",
+                "createdTimestampMs": 1729277034133,
+                "updatedTimestampMs": 1729277034133,
+                "functionClass": "move-to-preset",
+                "type": "category",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "68330622-524e-4ca4-ad7a-1bafbb789516",
+                        "createdTimestampMs": 1729277034161,
+                        "updatedTimestampMs": 1729277034161,
+                        "name": "preset-3",
+                        "deviceValues": [
+                            {
+                                "id": "24e83cac-9f39-4896-9fb3-420ee6b1e479",
+                                "createdTimestampMs": 1729277034168,
+                                "updatedTimestampMs": 1729277034168,
+                                "type": "attribute",
+                                "key": "4",
+                                "value": "303"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "b60855ce-f340-42b4-9afa-b30c14ea44ee",
+                        "createdTimestampMs": 1729277034194,
+                        "updatedTimestampMs": 1729277034194,
+                        "name": "preset-6",
+                        "deviceValues": [
+                            {
+                                "id": "39998c0b-8b26-40d2-9592-986eee0bbd9e",
+                                "createdTimestampMs": 1729277034201,
+                                "updatedTimestampMs": 1729277034201,
+                                "type": "attribute",
+                                "key": "4",
+                                "value": "306"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "a9e47f86-228d-4de8-b5d1-33f30e1a137c",
+                        "createdTimestampMs": 1729277034184,
+                        "updatedTimestampMs": 1729277034184,
+                        "name": "preset-5",
+                        "deviceValues": [
+                            {
+                                "id": "c484d34b-0d59-4ba0-9875-cd1b93928c4e",
+                                "createdTimestampMs": 1729277034190,
+                                "updatedTimestampMs": 1729277034190,
+                                "type": "attribute",
+                                "key": "4",
+                                "value": "305"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "52fd9200-205b-4190-b804-d8aceef8363f",
+                        "createdTimestampMs": 1729277034139,
+                        "updatedTimestampMs": 1729277034139,
+                        "name": "preset-1",
+                        "deviceValues": [
+                            {
+                                "id": "5f181645-fa74-45dd-abe7-ae92da4e864a",
+                                "createdTimestampMs": 1729277034146,
+                                "updatedTimestampMs": 1729277034146,
+                                "type": "attribute",
+                                "key": "4",
+                                "value": "301"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "a86de9d1-2015-43d1-b8a1-1b8a89d3eb5f",
+                        "createdTimestampMs": 1729277034150,
+                        "updatedTimestampMs": 1729277034150,
+                        "name": "preset-2",
+                        "deviceValues": [
+                            {
+                                "id": "5a0659f0-2fe1-49fb-897a-fb635a5f9cdf",
+                                "createdTimestampMs": 1729277034157,
+                                "updatedTimestampMs": 1729277034157,
+                                "type": "attribute",
+                                "key": "4",
+                                "value": "302"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "b3e8e779-6222-49c5-8d22-ac1c6f5fc623",
+                        "createdTimestampMs": 1729277034173,
+                        "updatedTimestampMs": 1729277034173,
+                        "name": "preset-4",
+                        "deviceValues": [
+                            {
+                                "id": "9471b023-0bd9-4606-bac7-5050bd728d25",
+                                "createdTimestampMs": 1729277034179,
+                                "updatedTimestampMs": 1729277034179,
+                                "type": "attribute",
+                                "key": "4",
+                                "value": "304"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "11624464-fbac-4c82-acc5-eb19b5b75605",
+                "createdTimestampMs": 1729277035105,
+                "updatedTimestampMs": 1729277035105,
+                "functionClass": "preset",
+                "functionInstance": "vacation",
+                "type": "object",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "3bfa3e52-e2d2-4743-b97e-05191aa4a4d2",
+                        "createdTimestampMs": 1729277035112,
+                        "updatedTimestampMs": 1729277035112,
+                        "name": "preset",
+                        "deviceValues": [
+                            {
+                                "id": "fcc13121-8765-4ca2-a631-085fb5aed7be",
+                                "createdTimestampMs": 1729277035118,
+                                "updatedTimestampMs": 1729277035118,
+                                "type": "attribute",
+                                "key": "300",
+                                "format": "thermostat-presets"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "d16ce86b-d154-4015-b46d-c889c0e122eb",
+                "createdTimestampMs": 1729277035076,
+                "updatedTimestampMs": 1729277035076,
+                "functionClass": "power-type",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "c802a966-56de-4a41-b7ee-57f09170f8ac",
+                        "createdTimestampMs": 1729277035094,
+                        "updatedTimestampMs": 1729277035094,
+                        "name": "two-power-supply",
+                        "deviceValues": [
+                            {
+                                "id": "edfd4933-0c4d-4ccc-bd1c-2834a78b93e7",
+                                "createdTimestampMs": 1729277035101,
+                                "updatedTimestampMs": 1729277035101,
+                                "type": "attribute",
+                                "key": "251",
+                                "value": "2"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "e12ab46f-a85d-4334-8d8d-d7077bac1aa5",
+                        "createdTimestampMs": 1729277035083,
+                        "updatedTimestampMs": 1729277035083,
+                        "name": "single-power-supply",
+                        "deviceValues": [
+                            {
+                                "id": "2025aba9-30f8-4f9b-bd06-d62d97fcfafb",
+                                "createdTimestampMs": 1729277035090,
+                                "updatedTimestampMs": 1729277035090,
+                                "type": "attribute",
+                                "key": "251",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "6e54b210-2eca-4e11-a166-0f9917fb2d57",
+                "createdTimestampMs": 1729277035297,
+                "updatedTimestampMs": 1729277035297,
+                "functionClass": "filter-replacement",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "8b5b0593-421a-4623-ba29-9f0de696b3af",
+                        "createdTimestampMs": 1729277035313,
+                        "updatedTimestampMs": 1729277035313,
+                        "name": "replacement-needed",
+                        "deviceValues": [
+                            {
+                                "id": "99956dab-4dab-4ba2-9f08-ef6dc71a3d27",
+                                "createdTimestampMs": 1729277035319,
+                                "updatedTimestampMs": 1729277035319,
+                                "type": "attribute",
+                                "key": "402",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "79326832-49d4-45ac-a4ae-760dd3fbb696",
+                        "createdTimestampMs": 1729277035303,
+                        "updatedTimestampMs": 1729277035303,
+                        "name": "not-needed",
+                        "deviceValues": [
+                            {
+                                "id": "a521a79b-1d05-4319-a18c-44edf4578b44",
+                                "createdTimestampMs": 1729277035308,
+                                "updatedTimestampMs": 1729277035308,
+                                "type": "attribute",
+                                "key": "402",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "8ab85171-4c38-4845-ad51-98f876f2d9d6",
+                "createdTimestampMs": 1729277034240,
+                "updatedTimestampMs": 1729277034240,
+                "functionClass": "temperature",
+                "functionInstance": "heating-target",
+                "type": "numeric",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "605e77c8-06db-423f-b265-ee38f92bfedc",
+                        "createdTimestampMs": 1729277034252,
+                        "updatedTimestampMs": 1729277034252,
+                        "name": "heating-target",
+                        "deviceValues": [
+                            {
+                                "id": "f57413e0-fe29-4e2d-8bb6-694fe6f52c6d",
+                                "createdTimestampMs": 1729277034259,
+                                "updatedTimestampMs": 1729277034259,
+                                "type": "attribute",
+                                "key": "11"
+                            }
+                        ],
+                        "range": {
+                            "min": 4,
+                            "max": 32,
+                            "step": 0.5
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "8dc5391c-067d-4e24-a013-2eb8b1ab3c49",
+                "createdTimestampMs": 1729277034551,
+                "updatedTimestampMs": 1729277034551,
+                "functionClass": "display-brightness",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "ebe58807-613d-4c43-b834-b2765aedd07c",
+                        "createdTimestampMs": 1729277034558,
+                        "updatedTimestampMs": 1729277034558,
+                        "name": "display-brightness",
+                        "deviceValues": [
+                            {
+                                "id": "d66ebe50-5995-4938-872b-8e10e7f5e4ca",
+                                "createdTimestampMs": 1729277034565,
+                                "updatedTimestampMs": 1729277034565,
+                                "type": "attribute",
+                                "key": "203"
+                            }
+                        ],
+                        "range": {
+                            "min": 0,
+                            "max": 10,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "67eb2c4b-7212-4ea7-a5a0-0e5738fe97d2",
+                "createdTimestampMs": 1729277035241,
+                "updatedTimestampMs": 1729277035241,
+                "functionClass": "min-temp-exceeded",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "68e5a269-7541-4445-8843-83c3e172ee15",
+                        "createdTimestampMs": 1729277035258,
+                        "updatedTimestampMs": 1729277035258,
+                        "name": "alerting",
+                        "deviceValues": [
+                            {
+                                "id": "837f2d16-74ba-471f-8154-f4ad6f5c627c",
+                                "createdTimestampMs": 1729277035265,
+                                "updatedTimestampMs": 1729277035265,
+                                "type": "attribute",
+                                "key": "400",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "0e241ee9-5672-45fc-aa3d-beb0287fafd9",
+                        "createdTimestampMs": 1729277035248,
+                        "updatedTimestampMs": 1729277035248,
+                        "name": "normal",
+                        "deviceValues": [
+                            {
+                                "id": "5ed8185f-97ef-4929-822e-db6ff21be6af",
+                                "createdTimestampMs": 1729277035254,
+                                "updatedTimestampMs": 1729277035254,
+                                "type": "attribute",
+                                "key": "400",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "3867be3e-808a-4f07-be7c-edcb6d2c9b3c",
+                "createdTimestampMs": 1729277034433,
+                "updatedTimestampMs": 1729277034433,
+                "functionClass": "filter-usage-tracking-type",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "556026a6-292c-4396-b2cd-981a110c2e89",
+                        "createdTimestampMs": 1729277034440,
+                        "updatedTimestampMs": 1729277034440,
+                        "name": "calendar",
+                        "deviceValues": [
+                            {
+                                "id": "68cbf7e3-47d4-40b0-814c-df91bcf67a87",
+                                "createdTimestampMs": 1729277034446,
+                                "updatedTimestampMs": 1729277034446,
+                                "type": "attribute",
+                                "key": "50",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "1acb2d9b-1a32-4f22-a61e-1f3c7922d5b5",
+                "createdTimestampMs": 1729277035195,
+                "updatedTimestampMs": 1729277035195,
+                "functionClass": "preset",
+                "functionInstance": "preset-5",
+                "type": "object",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "e2b3882b-4a10-43f1-b70c-9d6cf2fab614",
+                        "createdTimestampMs": 1729277035201,
+                        "updatedTimestampMs": 1729277035201,
+                        "name": "preset",
+                        "deviceValues": [
+                            {
+                                "id": "00e4c50c-a191-42c8-a372-29b35ce8321d",
+                                "createdTimestampMs": 1729277035207,
+                                "updatedTimestampMs": 1729277035207,
+                                "type": "attribute",
+                                "key": "305",
+                                "format": "thermostat-presets"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "e60c5b94-908b-4ba4-9463-c14495c920b7",
+                "createdTimestampMs": 1729277034300,
+                "updatedTimestampMs": 1729277034300,
+                "functionClass": "temperature",
+                "functionInstance": "current-temp",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "5e3fc819-61b0-48ad-b9f9-31e98e7baf9d",
+                        "createdTimestampMs": 1729277034307,
+                        "updatedTimestampMs": 1729277034307,
+                        "name": "current-temp",
+                        "deviceValues": [
+                            {
+                                "id": "c6f75662-89b5-4c0b-9fc1-e6492ebaf836",
+                                "createdTimestampMs": 1729277034313,
+                                "updatedTimestampMs": 1729277034313,
+                                "type": "attribute",
+                                "key": "20"
+                            }
+                        ],
+                        "range": {
+                            "min": 0,
+                            "max": 37,
+                            "step": 0.1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "89c57670-0791-4a15-9f60-939aad0d7a42",
+                "createdTimestampMs": 1729277035141,
+                "updatedTimestampMs": 1729277035141,
+                "functionClass": "preset",
+                "functionInstance": "preset-2",
+                "type": "object",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "152cb5a4-9f45-44c8-a516-fd541e22d9ef",
+                        "createdTimestampMs": 1729277035148,
+                        "updatedTimestampMs": 1729277035148,
+                        "name": "preset",
+                        "deviceValues": [
+                            {
+                                "id": "600b24ba-0d3f-4fef-8de4-2879f71793e0",
+                                "createdTimestampMs": 1729277035154,
+                                "updatedTimestampMs": 1729277035154,
+                                "type": "attribute",
+                                "key": "302",
+                                "format": "thermostat-presets"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "accf6a5d-e939-4415-ac63-b7ee1d3f35e3",
+                "createdTimestampMs": 1729277035159,
+                "updatedTimestampMs": 1729277035159,
+                "functionClass": "preset",
+                "functionInstance": "preset-3",
+                "type": "object",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "58a9ef86-67bc-429e-a7e3-a22bb2a73523",
+                        "createdTimestampMs": 1729277035166,
+                        "updatedTimestampMs": 1729277035166,
+                        "name": "preset",
+                        "deviceValues": [
+                            {
+                                "id": "4394daae-ed1b-4c5b-b814-51e5cd442929",
+                                "createdTimestampMs": 1729277035172,
+                                "updatedTimestampMs": 1729277035172,
+                                "type": "attribute",
+                                "key": "303",
+                                "format": "thermostat-presets"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "d87eff05-7f00-4e8b-9477-8dab071c22d2",
+                "createdTimestampMs": 1729277034588,
+                "updatedTimestampMs": 1729277034588,
+                "functionClass": "fan-runtime-in-intermittent-mode",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "33f468e1-ed9a-4543-b91d-0897ee9852d9",
+                        "createdTimestampMs": 1729277034595,
+                        "updatedTimestampMs": 1729277034595,
+                        "name": "fan-runtime-in-intermittent-mode",
+                        "deviceValues": [
+                            {
+                                "id": "49f04bf7-3a42-462f-84cb-7ae6f7c13966",
+                                "createdTimestampMs": 1729277034602,
+                                "updatedTimestampMs": 1729277034602,
+                                "type": "attribute",
+                                "key": "205"
+                            }
+                        ],
+                        "range": {
+                            "min": 1,
+                            "max": 60,
+                            "step": 5
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "540cda44-bc19-4db0-8abc-9911a2593ce6",
+                "createdTimestampMs": 1729277034222,
+                "updatedTimestampMs": 1729277034222,
+                "functionClass": "temperature",
+                "functionInstance": "cooling-target",
+                "type": "numeric",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "b55f01db-0b99-42e0-9d66-ee9649abc670",
+                        "createdTimestampMs": 1729277034229,
+                        "updatedTimestampMs": 1729277034229,
+                        "name": "cooling-target",
+                        "deviceValues": [
+                            {
+                                "id": "3ea0bcd1-b6ff-40e6-af27-39ce183b597e",
+                                "createdTimestampMs": 1729277034235,
+                                "updatedTimestampMs": 1729277034235,
+                                "type": "attribute",
+                                "key": "10"
+                            }
+                        ],
+                        "range": {
+                            "min": 10,
+                            "max": 37,
+                            "step": 0.5
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "1e8e22ee-be84-4680-97d0-cfb3d47176e7",
+                "createdTimestampMs": 1729277034035,
+                "updatedTimestampMs": 1729277034035,
+                "functionClass": "run-mode",
+                "type": "category",
+                "schedulable": true,
+                "values": [
+                    {
+                        "id": "fb5e96f7-8da3-4e38-95f1-0d14e3827e9a",
+                        "createdTimestampMs": 1729277034042,
+                        "updatedTimestampMs": 1729277034042,
+                        "name": "hold",
+                        "deviceValues": [
+                            {
+                                "id": "c638d47b-2b81-4426-9d06-526c40c06cd3",
+                                "createdTimestampMs": 1729277034048,
+                                "updatedTimestampMs": 1729277034048,
+                                "type": "attribute",
+                                "key": "2",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "b945467c-47a5-4350-9d87-5a3a0f760008",
+                        "createdTimestampMs": 1729277034076,
+                        "updatedTimestampMs": 1729277034076,
+                        "name": "vacation",
+                        "deviceValues": [
+                            {
+                                "id": "eac2ec15-5da9-49b4-a4f9-0c58bbb9ea6c",
+                                "createdTimestampMs": 1729277034082,
+                                "updatedTimestampMs": 1729277034082,
+                                "type": "attribute",
+                                "key": "2",
+                                "value": "3"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "020dfcab-4b99-4907-9fd6-c3e9be289312",
+                        "createdTimestampMs": 1729277034065,
+                        "updatedTimestampMs": 1729277034065,
+                        "name": "scheduled",
+                        "deviceValues": [
+                            {
+                                "id": "c3dbef6a-558c-45a3-bf26-82a1d91eda9a",
+                                "createdTimestampMs": 1729277034071,
+                                "updatedTimestampMs": 1729277034071,
+                                "type": "attribute",
+                                "key": "2",
+                                "value": "2"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "cd598795-826c-4d47-abb9-b073e7b7dec4",
+                        "createdTimestampMs": 1729277034053,
+                        "updatedTimestampMs": 1729277034053,
+                        "name": "permanent-hold",
+                        "deviceValues": [
+                            {
+                                "id": "46211327-aa59-41cc-843a-7db601bea8c7",
+                                "createdTimestampMs": 1729277034060,
+                                "updatedTimestampMs": 1729277034060,
+                                "type": "attribute",
+                                "key": "2",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "09dba0c1-cc20-4267-9967-d0c99dd6b31a",
+                "createdTimestampMs": 1729277034368,
+                "updatedTimestampMs": 1729277034368,
+                "functionClass": "current-fan-state",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "41e64173-a3ad-4de2-a053-3f614c517e30",
+                        "createdTimestampMs": 1729277034375,
+                        "updatedTimestampMs": 1729277034375,
+                        "name": "off",
+                        "deviceValues": [
+                            {
+                                "id": "fe6f0a3a-15f5-49b2-9f04-216f9f7b8dbb",
+                                "createdTimestampMs": 1729277034382,
+                                "updatedTimestampMs": 1729277034382,
+                                "type": "attribute",
+                                "key": "22",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "804a505b-b220-43f0-b763-6555fde128ee",
+                        "createdTimestampMs": 1729277034386,
+                        "updatedTimestampMs": 1729277034386,
+                        "name": "on",
+                        "deviceValues": [
+                            {
+                                "id": "978ee9a7-63d4-4996-9def-979c0ce1b2ac",
+                                "createdTimestampMs": 1729277034393,
+                                "updatedTimestampMs": 1729277034393,
+                                "type": "attribute",
+                                "key": "22",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "7d1d2bcf-99c1-49e8-8078-6e2023ab57fe",
+                "createdTimestampMs": 1729277034205,
+                "updatedTimestampMs": 1729277034205,
+                "functionClass": "timer",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "d78df85b-503f-445a-878e-af8828ad8527",
+                        "createdTimestampMs": 1729277034211,
+                        "updatedTimestampMs": 1729277034211,
+                        "name": "timer",
+                        "deviceValues": [
+                            {
+                                "id": "93e29328-eb37-4c9b-a4c4-a2adda6897f0",
+                                "createdTimestampMs": 1729277034218,
+                                "updatedTimestampMs": 1729277034218,
+                                "type": "attribute",
+                                "key": "5"
+                            }
+                        ],
+                        "range": {
+                            "min": 0,
+                            "max": 1440,
+                            "step": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "0225b6f1-f58b-42ed-ae4f-64850f8c0fbb",
+                "createdTimestampMs": 1729277034469,
+                "updatedTimestampMs": 1729277034469,
+                "functionClass": "last-replacement-time",
+                "type": "numeric",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "6c8ed0a2-74eb-4c84-a318-e71d5f027898",
+                        "createdTimestampMs": 1729277034476,
+                        "updatedTimestampMs": 1729277034476,
+                        "name": "last-replacement-time",
+                        "deviceValues": [
+                            {
+                                "id": "09a252cc-e074-4228-bddc-210f47df7f11",
+                                "createdTimestampMs": 1729277034482,
+                                "updatedTimestampMs": 1729277034482,
+                                "type": "attribute",
+                                "key": "53"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "36e38bc7-d628-42ef-97c1-5b2e1719e1c3",
+                "createdTimestampMs": 1729277035324,
+                "updatedTimestampMs": 1729277035324,
+                "functionClass": "last-event",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "e8d4b217-f3b1-461d-8aee-7b169a0a23c9",
+                        "createdTimestampMs": 1729277035330,
+                        "updatedTimestampMs": 1729277035330,
+                        "name": "no-event",
+                        "deviceValues": [
+                            {
+                                "id": "877aed0e-b6ec-46f6-b8f2-a665293e87ad",
+                                "createdTimestampMs": 1729277035336,
+                                "updatedTimestampMs": 1729277035336,
+                                "type": "attribute",
+                                "key": "403",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "6278bc1c-07a7-4c32-a2b4-07c1a581c7b0",
+                        "createdTimestampMs": 1729277035341,
+                        "updatedTimestampMs": 1729277035341,
+                        "name": "vacation-mode-exited",
+                        "deviceValues": [
+                            {
+                                "id": "055e6445-5974-42d2-9ada-68629ce106dc",
+                                "createdTimestampMs": 1729277035347,
+                                "updatedTimestampMs": 1729277035347,
+                                "type": "attribute",
+                                "key": "403",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            },
+            {
+                "id": "b7fe1aa6-9ec1-44f1-afa3-6429e3aff1f2",
+                "createdTimestampMs": 1729277035269,
+                "updatedTimestampMs": 1729277035269,
+                "functionClass": "max-temp-exceeded",
+                "type": "category",
+                "schedulable": false,
+                "values": [
+                    {
+                        "id": "5c507053-6a4b-40c7-b3e8-f840197957ac",
+                        "createdTimestampMs": 1729277035286,
+                        "updatedTimestampMs": 1729277035286,
+                        "name": "alerting",
+                        "deviceValues": [
+                            {
+                                "id": "7b3c60af-61c6-4ea8-897f-0f3ff0605e6b",
+                                "createdTimestampMs": 1729277035292,
+                                "updatedTimestampMs": 1729277035292,
+                                "type": "attribute",
+                                "key": "401",
+                                "value": "1"
+                            }
+                        ],
+                        "range": {}
+                    },
+                    {
+                        "id": "103bae14-2f69-4d17-bc05-eb915f3ab553",
+                        "createdTimestampMs": 1729277035275,
+                        "updatedTimestampMs": 1729277035275,
+                        "name": "normal",
+                        "deviceValues": [
+                            {
+                                "id": "90519c80-856e-4f46-9bdf-e96430fe9fc9",
+                                "createdTimestampMs": 1729277035281,
+                                "updatedTimestampMs": 1729277035281,
+                                "type": "attribute",
+                                "key": "401",
+                                "value": "0"
+                            }
+                        ],
+                        "range": {}
+                    }
+                ]
+            }
+        ],
+        "states": [
+            {
+                "functionClass": "temperature",
+                "value": 4,
+                "lastUpdateTime": 0,
+                "functionInstance": "safety-mode-min-temp"
+            },
+            {
+                "functionClass": "temperature-units",
+                "value": "fahrenheit",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "mcu-version",
+                "value": 822149159,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "temperature",
+                "value": 36,
+                "lastUpdateTime": 0,
+                "functionInstance": "safety-mode-max-temp"
+            },
+            {
+                "functionClass": "mode",
+                "value": "heat",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "fan-mode",
+                "value": "auto",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "temperature",
+                "value": 18.5,
+                "lastUpdateTime": 0,
+                "functionInstance": "auto-heating-target"
+            },
+            {
+                "functionClass": "temperature",
+                "value": 26.5,
+                "lastUpdateTime": 0,
+                "functionInstance": "auto-cooling-target"
+            },
+            {
+                "functionClass": "preset",
+                "value": {
+                    "thermostat-presets": {
+                        "mode": 2,
+                        "autoTargetHeat": 18.5,
+                        "fanMode": 0,
+                        "targetCool": 26.5,
+                        "autoTargetCool": 26.5,
+                        "targetHeat": 20
+                    }
+                },
+                "lastUpdateTime": 0,
+                "functionInstance": "preset-1"
+            },
+            {
+                "functionClass": "mcu-date-code",
+                "value": 539231268,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "current-system-state",
+                "value": "off",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "calendar-limit",
+                "value": 3,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "preset",
+                "value": {
+                    "thermostat-presets": {
+                        "mode": 2,
+                        "autoTargetHeat": 18.5,
+                        "fanMode": 0,
+                        "targetCool": 26.5,
+                        "autoTargetCool": 26.5,
+                        "targetHeat": 18
+                    }
+                },
+                "lastUpdateTime": 0,
+                "functionInstance": "preset-4"
+            },
+            {
+                "functionClass": "safety-cool-mode",
+                "value": "off",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "safety-heat-mode",
+                "value": "on",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "system-type",
+                "value": "1-stage-heating-conventional-gas",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "temperature",
+                "value": 0,
+                "lastUpdateTime": 0,
+                "functionInstance": "temperature-calibration"
+            },
+            {
+                "functionClass": "preset",
+                "value": null,
+                "lastUpdateTime": 0,
+                "functionInstance": "preset-6"
+            },
+            {
+                "functionClass": "move-to-preset",
+                "value": "preset-4",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "preset",
+                "value": null,
+                "lastUpdateTime": 0,
+                "functionInstance": "vacation"
+            },
+            {
+                "functionClass": "power-type",
+                "value": "single-power-supply",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "filter-replacement",
+                "value": "not-needed",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "temperature",
+                "value": 18,
+                "lastUpdateTime": 0,
+                "functionInstance": "heating-target"
+            },
+            {
+                "functionClass": "display-brightness",
+                "value": 1,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "min-temp-exceeded",
+                "value": "normal",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "filter-usage-tracking-type",
+                "value": "calendar",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "preset",
+                "value": {
+                    "thermostat-presets": {
+                        "mode": 2,
+                        "autoTargetHeat": 18.5,
+                        "fanMode": 0,
+                        "targetCool": 26.5,
+                        "autoTargetCool": 26.5,
+                        "targetHeat": 4.5
+                    }
+                },
+                "lastUpdateTime": 0,
+                "functionInstance": "preset-5"
+            },
+            {
+                "functionClass": "temperature",
+                "value": 18.30000305175781,
+                "lastUpdateTime": 0,
+                "functionInstance": "current-temp"
+            },
+            {
+                "functionClass": "preset",
+                "value": {
+                    "thermostat-presets": {
+                        "mode": 2,
+                        "autoTargetHeat": 18.5,
+                        "fanMode": 0,
+                        "targetCool": 26.5,
+                        "autoTargetCool": 26.5,
+                        "targetHeat": 16.5
+                    }
+                },
+                "lastUpdateTime": 0,
+                "functionInstance": "preset-2"
+            },
+            {
+                "functionClass": "preset",
+                "value": {
+                    "thermostat-presets": {
+                        "mode": 2,
+                        "autoTargetHeat": 18.5,
+                        "fanMode": 0,
+                        "targetCool": 26.5,
+                        "autoTargetCool": 26.5,
+                        "targetHeat": 20
+                    }
+                },
+                "lastUpdateTime": 0,
+                "functionInstance": "preset-3"
+            },
+            {
+                "functionClass": "fan-runtime-in-intermittent-mode",
+                "value": 0,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "temperature",
+                "value": 26.5,
+                "lastUpdateTime": 0,
+                "functionInstance": "cooling-target"
+            },
+            {
+                "functionClass": "run-mode",
+                "value": "scheduled",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "current-fan-state",
+                "value": "off",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "timer",
+                "value": 0,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "last-replacement-time",
+                "value": 1742760901,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "last-event",
+                "value": "no-event",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "max-temp-exceeded",
+                "value": "normal",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-ssid",
+                "value": "a45516ff-8395-47dd-ad64-a4bce84b80fb",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-rssi",
+                "value": -32,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-steady-state",
+                "value": "connected",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-setup-state",
+                "value": "connected",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "wifi-mac-address",
+                "value": "9834e9e6-b8e8-459b-8c85-cd6fd8eca9cb",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "geo-coordinates",
+                "value": {
+                    "geo-coordinates": {
+                        "latitude": "0",
+                        "longitude": "0"
+                    }
+                },
+                "lastUpdateTime": 0,
+                "functionInstance": "system-device-location"
+            },
+            {
+                "functionClass": "scheduler-flags",
+                "value": 1,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "available",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "visible",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "direct",
+                "value": true,
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            },
+            {
+                "functionClass": "ble-mac-address",
+                "value": "94e548e2-77d7-4770-b282-a8282b1ec442",
+                "lastUpdateTime": 0,
+                "functionInstance": null
+            }
+        ],
+        "children": [],
+        "manufacturerName": "Commercial Electric"
+    }
+]

@@ -9,9 +9,7 @@ from custom_components.hubspace import const
 
 @pytest.fixture(autouse=True)
 def hubspace_migration(mocked_bridge, mocker):
-    mocker.patch(
-        "custom_components.hubspace.AferoBridgeV1", return_value=mocked_bridge
-    )
+    mocker.patch("custom_components.hubspace.AferoBridgeV1", return_value=mocked_bridge)
     yield mocked_bridge
 
 
