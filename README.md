@@ -54,6 +54,10 @@ are as follows:
 
 ## Changelog
 
+ * 4.6.0
+
+   * Binary Sensor / Sensor is now identified on a per-resource basis, rather than root-device
+
  * 4.5.0
 
    * Convert to aioafero==2.0.0

@@ -3,9 +3,8 @@
 from __future__ import annotations
 
 from functools import wraps
-from typing import TYPE_CHECKING
 
-from aioafero.v1.controllers.base import BaseResourcesController
+from aioafero.v1 import AferoController, AferoModelResource
 from aioafero.v1.controllers.event import EventType
 from homeassistant.core import callback
 from homeassistant.helpers.device_registry import DeviceInfo
@@ -13,19 +12,6 @@ from homeassistant.helpers.entity import Entity
 
 from .bridge import HubspaceBridge
 from .const import DOMAIN
-
-if TYPE_CHECKING:
-    from aioafero.v1.models import (
-        Device,
-        Fan,
-        AferoSensor,
-        Light,
-        Lock,
-        Switch,
-        Valve,
-    )
-
-    type HubspaceResource = Device | Fan | Light | Lock | AferoSensor | Switch | Valve
 
 
 class HubspaceBaseEntity(Entity):  # pylint: disable=hass-enforce-class-module
@@ -36,8 +22,8 @@ class HubspaceBaseEntity(Entity):  # pylint: disable=hass-enforce-class-module
     def __init__(
         self,
         bridge: HubspaceBridge,
-        controller: BaseResourcesController,
-        resource: HubspaceResource,
+        controller: AferoController,
+        resource: AferoModelResource,
         instance: str | None | bool = False,
     ) -> None:
         """Initialize a generic Hubspace resource entity."""
@@ -67,8 +53,8 @@ class HubspaceBaseEntity(Entity):  # pylint: disable=hass-enforce-class-module
         self.async_on_remove(
             self.controller.subscribe(
                 self._handle_event,
-                self.resource.id,
-                EventType.RESOURCE_UPDATED,
+                id_filter=self.resource.id,
+                event_filter=EventType.RESOURCE_UPDATED,
             )
         )
 
