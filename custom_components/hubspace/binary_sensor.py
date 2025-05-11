@@ -1,8 +1,6 @@
-from functools import partial
-
 from aioafero import EventType
-from aioafero.v1 import DeviceController, AferoBridgeV1
-from aioafero.v1.models import Device, AferoSensor
+from aioafero.v1.models import AferoBinarySensor
+from aioafero.v1 import AferoController, AferoModelResource
 from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
     BinarySensorEntityDescription,
@@ -16,12 +14,12 @@ from .const import BINARY_SENSORS, DOMAIN
 from .entity import HubspaceBaseEntity
 
 
-class HubspaceBinarySensorEntity(HubspaceBaseEntity, BinarySensorEntity):
+class AferoBinarySensorEntity(HubspaceBaseEntity, BinarySensorEntity):
     def __init__(
         self,
         bridge: HubspaceBridge,
-        controller: DeviceController,
-        resource: Device,
+        controller: AferoController,
+        resource: AferoModelResource,
         sensor: str,
     ) -> None:
         super().__init__(
@@ -48,30 +46,39 @@ async def async_setup_entry(
 ) -> None:
     """Set up entities."""
     bridge: HubspaceBridge = hass.data[DOMAIN][config_entry.entry_id]
-    api: AferoBridgeV1 = bridge.api
-    controller: DeviceController = api.devices
-    make_entity = partial(HubspaceBinarySensorEntity, bridge, controller)
-
-    @callback
-    def async_add_entity(event_type: EventType, resource: AferoSensor) -> None:
-        """Add an entity."""
-        for sensor in resource.binary_sensors.keys():
-            async_add_entities([make_entity(resource, sensor)])
 
     # add all current items in controller
     sensor_entities = []
-    for entity in controller:
-        for sensor in entity.binary_sensors.keys():
-            if sensor not in BINARY_SENSORS:
-                controller._logger.warning(
-                    "Unknown sensor %s found in %s. Please open a bug report",
-                    sensor,
-                    entity.id,
-                )
+    for controller in bridge.api.controllers:
+        # Listen for new devices
+        config_entry.async_on_unload(
+            controller.subscribe(await generate_callback(bridge, controller, async_add_entities), event_filter=EventType.RESOURCE_ADDED)
+        )
+        # Add any currently-tracked entities
+        for resource in controller:
+            if not hasattr(resource, "binary_sensors"):
                 continue
-            sensor_entities.append(make_entity(entity, sensor))
+            for sensor in resource.binary_sensors.keys():
+                if sensor not in BINARY_SENSORS:
+                    controller._logger.warning(
+                        "Unknown sensor %s found in %s. Please open a bug report",
+                        sensor,
+                        resource.id,
+                    )
+                    continue
+                if sensor in BINARY_SENSORS:
+                    sensor_entities.append(AferoBinarySensorEntity(bridge, controller, resource, sensor))
+
     async_add_entities(sensor_entities)
-    # register listener for new entities
-    config_entry.async_on_unload(
-        controller.subscribe(async_add_entity, event_filter=EventType.RESOURCE_ADDED)
-    )
+
+
+async def generate_callback(bridge, controller, async_add_entities: callback):
+
+    async def add_entity_controller(event_type: EventType, resource: AferoBinarySensor) -> None:
+        """Add an entity."""
+        for sensor in resource.binary_sensors.keys():
+            if sensor in BINARY_SENSORS:
+                async_add_entities([AferoBinarySensorEntity(bridge, controller, resource, sensor)])
+
+
+    return add_entity_controller
