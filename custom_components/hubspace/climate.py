@@ -107,7 +107,7 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
             "auto": HVACMode.HEAT_COOL,
         }
         return [
-            val for key, val in mapping.items() if key in self.resource.hvac_mode.modes
+            val for key, val in mapping.items() if key in self.resource.hvac_mode.supported_modes
         ]
 
     @property

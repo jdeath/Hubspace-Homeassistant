@@ -59,8 +59,6 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry):
         assert set(entity.attributes["hvac_modes"]) == {
             HVACMode.FAN_ONLY,
             HVACMode.HEAT,
-            HVACMode.HEAT_COOL,
-            HVACMode.COOL,
             HVACMode.OFF,
         }
         assert entity.attributes["target_temp_step"] == 0.5
