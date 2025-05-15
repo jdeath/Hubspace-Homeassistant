@@ -135,6 +135,7 @@ async def test_set_hvac_mode(
     starting_mode, new_mode, expected_call_val, mocked_entity
 ):
     hass, _, bridge = mocked_entity
+    bridge.thermostats._items[thermostat.id].hvac_mode.supported_modes = {"off", "heat", "auto", "fan", "cool"}
     bridge.thermostats._items[thermostat.id].hvac_mode.mode = starting_mode
     await hass.services.async_call(
         "climate",
@@ -423,7 +424,7 @@ async def test_set_temperature(mocked_entity):
         AferoState(
             functionClass="temperature",
             functionInstance="auto-heating-target",
-            value=12,
+            value=14,
         ),
     )
     event = {
@@ -436,5 +437,6 @@ async def test_set_temperature(mocked_entity):
     entity = hass.states.get(thermostat_id)
     assert entity is not None
     assert entity.state == HVACMode.COOL
-    assert entity.attributes[ATTR_TARGET_TEMP_HIGH] == 27
-    assert entity.attributes[ATTR_TARGET_TEMP_LOW] == 12
+    assert entity.attributes[ATTR_TARGET_TEMP_HIGH] == 27.0
+    assert entity.attributes[ATTR_TARGET_TEMP_LOW] == 14.0
+    assert entity.attributes[ATTR_TEMPERATURE] == 12.0
