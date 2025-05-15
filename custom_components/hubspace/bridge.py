@@ -3,9 +3,9 @@ import logging
 from typing import Any, Callable
 
 import aiohttp
-from aiohttp import client_exceptions
 from aioafero import EventType, InvalidAuth, InvalidResponse
 from aioafero.v1 import AferoBridgeV1
+from aiohttp import client_exceptions
 from homeassistant import core
 from homeassistant.config_entries import SOURCE_REAUTH, ConfigEntry
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
@@ -62,7 +62,7 @@ class HubspaceBridge:
         setup_ok = False
 
         # Dev mocking
-        # self.api.fetch_data = mock_get_data("water-timer-raw.json")
+        # self.api.fetch_data = mock_get_data("thermostat-raw.json")
 
         try:
             async with asyncio.timeout(self.config_entry.options[CONF_TIMEOUT]):

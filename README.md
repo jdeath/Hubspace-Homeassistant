@@ -43,6 +43,13 @@ are as follows:
 
    * On/Off
 
+ * Thermostat
+
+   * HVAC Mode
+   * FAN Mode
+   * Temperature
+   * Target Temperature
+
  * Transformer
 
    * On/Off
@@ -53,6 +60,11 @@ are as follows:
 
 
 ## Changelog
+
+ * 5.0.0
+
+   * BREAK: Binary Sensor names are more accurate but have new entity IDs
+   * Implement climate / thermostats (#143)
 
  * 4.6.0
 

@@ -24,10 +24,10 @@ async def mocked_entity(mocked_entry):
         (
             freezer,
             {
-                "binary_sensor.friendly_device_0_error_mcu_communication_failure": "off",
-                "binary_sensor.friendly_device_0_error_fridge_high_temperature_alert": "on",
-                "binary_sensor.friendly_device_0_error_freezer_high_temperature_alert": "off",
-                "binary_sensor.friendly_device_0_error_temperature_sensor_failure": "off",
+                "binary_sensor.friendly_device_0_mcu_communication_failure": "off",
+                "binary_sensor.friendly_device_0_fridge_high_temp_alert": "on",
+                "binary_sensor.friendly_device_0_freezer_high_temp_alert": "off",
+                "binary_sensor.friendly_device_0_sensor_failure": "off",
             },
         ),
     ],
@@ -43,7 +43,7 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry, caplog):
         await hass.async_block_till_done()
         for entity, exp_value in expected_entities.items():
             ent = hass.states.get(entity)
-            assert ent is not None
+            assert ent is not None, f"Unable to find entity {entity}"
             assert ent.state == exp_value, f"Unexpected value on {entity}"
         assert (
             f"Unknown sensor bad_sensor found in {freezer.id}. Please open a bug report"
@@ -73,11 +73,13 @@ async def test_add_new_device(mocked_entry):
     bridge.emit_event("add", event)
     await hass.async_block_till_done()
     expected_binary_sensors = [
-        "binary_sensor.friendly_device_0_error_mcu_communication_failure",
-        "binary_sensor.friendly_device_0_error_fridge_high_temperature_alert",
-        "binary_sensor.friendly_device_0_error_freezer_high_temperature_alert",
-        "binary_sensor.friendly_device_0_error_temperature_sensor_failure",
+        "binary_sensor.friendly_device_0_mcu_communication_failure",
+        "binary_sensor.friendly_device_0_fridge_high_temp_alert",
+        "binary_sensor.friendly_device_0_freezer_high_temp_alert",
+        "binary_sensor.friendly_device_0_sensor_failure",
     ]
     entity_reg = er.async_get(hass)
     for binary_sensor in expected_binary_sensors:
-        assert entity_reg.async_get(binary_sensor) is not None
+        assert (
+            entity_reg.async_get(binary_sensor) is not None
+        ), f"Unable to find entity {binary_sensor}"

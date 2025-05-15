@@ -8,6 +8,6 @@
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/jdeath/Hubspace-Homeassistant/issues",
   "loggers": ["aioafero"],
-  "requirements": ["aioafero==3.0.0", "aiofiles"],
-  "version": "4.5.0"
+  "requirements": ["aioafero==3.0.2", "aiofiles"],
+  "version": "5.0.0"
 }
