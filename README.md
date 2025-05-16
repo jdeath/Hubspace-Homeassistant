@@ -61,6 +61,10 @@ are as follows:
 
 ## Changelog
 
+ * 5.1.0
+
+   * Permanently hide secrets within HA logs
+
  * 5.0.0
 
    * BREAK: Binary Sensor names are more accurate but have new entity IDs
