@@ -126,7 +126,7 @@ async def perform_v4_migration(hass: HomeAssistant, config_entry: ConfigEntry) -
     except InvalidAuth:
         config_entry.async_start_reauth(hass)
         return False
-    data[CONF_TOKEN] = api.refresh_token
+    data[CONF_TOKEN] = api._auth._token_data.refresh_token
     # Previous versions may have used None for the unique ID
     unique_id = config_entry.data[CONF_USERNAME].lower()
     hass.config_entries.async_update_entry(

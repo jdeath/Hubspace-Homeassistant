@@ -76,7 +76,7 @@ class HubspaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             err_type = "unknown"
         finally:
             await self.bridge.close()
-        return auth_result(self.bridge.refresh_token, err_type)
+        return auth_result(self.bridge._auth._token_data.refresh_token, err_type)
 
     @staticmethod
     def extract_user_data(user_input: dict[str, Any] | None) -> tuple[dict, dict]:
