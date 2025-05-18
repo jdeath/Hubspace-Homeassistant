@@ -61,6 +61,10 @@ are as follows:
 
 ## Changelog
 
+ * 5.2.0
+
+   * Fully implement exhaust fans
+
  * 5.1.0
 
    * Permanently hide secrets within HA logs

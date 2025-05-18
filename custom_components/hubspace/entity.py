@@ -13,6 +13,7 @@ from homeassistant.helpers.entity import Entity
 from .bridge import HubspaceBridge
 from .const import DOMAIN
 
+
 class HubspaceBaseEntity(Entity):  # pylint: disable=hass-enforce-class-module
     """Generic Entity Class for a Hubspace resource."""
 
