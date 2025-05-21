@@ -43,6 +43,8 @@ PLATFORMS: Final[list[Platform]] = [
     Platform.SENSOR,
     Platform.SWITCH,
     Platform.VALVE,
+    Platform.NUMBER,
+    Platform.SELECT,
 ]
 
 
@@ -154,6 +156,19 @@ BINARY_SENSORS = {
         key="max-temp-exceeded|None",
         name="Maximum Temperature Exceeded",
         device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    # exhaust fan
+    "motion-detection|motion-detection": BinarySensorEntityDescription(
+        key="motion-detection|motion-detection",
+        name="Motion Detection",
+        device_class=BinarySensorDeviceClass.OCCUPANCY,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "humidity-threshold-met|humidity-threshold-met": BinarySensorEntityDescription(
+        key="humidity-threshold-met|humidity-threshold-met",
+        name="Humidity Threshold Met",
+        device_class=BinarySensorDeviceClass.MOISTURE,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
 }

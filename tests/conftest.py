@@ -35,7 +35,10 @@ async def mocked_bridge(mocker) -> v1.AferoBridgeV1:
     mocker.patch.object(hs_bridge, "initialize", side_effect=mocker.AsyncMock())
     mocker.patch.object(hs_bridge, "close", side_effect=mocker.AsyncMock())
     hs_bridge._auth._token_data = token_data(
-        "mock-token", "mock-access", "mock-refresh-token", expiration=datetime.datetime.now().timestamp() + 200
+        "mock-token",
+        "mock-access",
+        "mock-refresh-token",
+        expiration=datetime.datetime.now().timestamp() + 200,
     )
     # Force initialization so test elements are not overwritten
     for controller in hs_bridge._controllers:
