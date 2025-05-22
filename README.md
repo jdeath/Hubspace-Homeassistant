@@ -61,6 +61,10 @@ are as follows:
 
 ## Changelog
 
+ * 5.2.1
+
+   * Fix Action calls from the UI
+
  * 5.2.0
 
    * Fully implement exhaust fans
