@@ -5,9 +5,10 @@
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/jdeath/Hubspace-Homeassistant/blob/main/README.md",
+  "integration_type": "hub",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/jdeath/Hubspace-Homeassistant/issues",
   "loggers": ["aioafero"],
   "requirements": ["aioafero==3.2.0", "aiofiles"],
-  "version": "5.2.0"
+  "version": "5.2.1"
 }

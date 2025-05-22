@@ -4,6 +4,8 @@ send_command:
     entity:
       integration: hubspace
       domain:
+        - button
+        - climate
         - fan
         - light
         - lock
@@ -20,13 +22,13 @@ send_command:
       description: value you want to send
       required: true
       example: "on"
-    functionClass:
-      name: functionClass
+    function_class:
+      name: function_class
       description: functionClass you want to send
       required: true
       example: "power"
-    functionInstance:
-      name: functionInstance
+    function_instance:
+      name: function_instance
       description: functionInstance you want to send
       required: false
       example: "primary"
