@@ -8,6 +8,8 @@ transformer = create_devices_from_data("transformer.json")[0]
 transformer_voltage = "sensor.friendly_device_6_output_voltage_switch"
 transformer_watts = "sensor.friendly_device_6_watts"
 transformer_rssi = "sensor.friendly_device_6_wifi_rssi"
+lock = create_devices_from_data("door-lock-TBD.json")[0]
+lock_battery = "sensor.friendly_device_0_battery_level"
 
 
 @pytest.fixture
@@ -35,6 +37,7 @@ async def mocked_entity(mocked_entry):
                 transformer_rssi: ("-51", "dB"),
             },
         ),
+        (lock, {lock_battery: ("80", "%")}),
     ],
 )
 async def test_async_setup_entry(dev, expected_entities, mocked_entry):
