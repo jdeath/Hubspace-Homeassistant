@@ -1,10 +1,12 @@
+"""Test config flow use cases."""
+
 import sys
 
-import pytest
 from aioafero import InvalidAuth
 from homeassistant import config_entries, setup
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
 from homeassistant.data_entry_flow import FlowResultType
+import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.hubspace import POLLING_TIME_STR, const
@@ -12,6 +14,7 @@ from custom_components.hubspace import POLLING_TIME_STR, const
 
 @pytest.fixture
 def config_entry(hass):
+    """Fixture that registered a default config entry."""
     v1_config_entry = MockConfigEntry(
         domain=const.DOMAIN,
         data={CONF_USERNAME: "cool", CONF_PASSWORD: "beans"},
@@ -22,21 +25,28 @@ def config_entry(hass):
         unique_id="cool",
     )
     v1_config_entry.add_to_hass(hass)
-    yield hass, v1_config_entry
+    return hass, v1_config_entry
 
 
 @pytest.fixture
 def mocked_config_flow(mocked_bridge, mocker):
+    """Fixture for getting the mocked bridge."""
     mocker.patch(
         "custom_components.hubspace.config_flow.AferoBridgeV1",
         return_value=mocked_bridge,
     )
-    yield mocked_bridge
+    return mocked_bridge
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "data,side_effect,expected_code,expected_data,expected_options",
+    (
+        "data",
+        "side_effect",
+        "expected_code",
+        "expected_data",
+        "expected_options",
+    ),
     [
         # Happy path
         (
@@ -142,6 +152,7 @@ async def test_HubspaceConfigFlow_async_step_user(
     mocker,
     hass,
 ):
+    """Ensure config flow properly handles user setup."""
     if side_effect:
         mocker.patch.object(
             mocked_config_flow,
@@ -171,7 +182,14 @@ async def test_HubspaceConfigFlow_async_step_user(
 
 
 @pytest.mark.parametrize(
-    "config_dict,user_data,expected_data,expected_options,expected_code,error_code",
+    (
+        "config_dict",
+        "user_data",
+        "expected_data",
+        "expected_options",
+        "expected_code",
+        "error_code",
+    ),
     [
         # Reauth happy path
         pytest.param(
@@ -247,6 +265,7 @@ async def test_HubspaceConfigFlow_async_step_user_reauth(
     mocker,
     hass,
 ):
+    """Ensure config flow properly handles re-auth requests."""
     await setup.async_setup_component(hass, const.DOMAIN, {})
     config_dict["domain"] = const.DOMAIN
     config_dict["source"] = config_entries.SOURCE_REAUTH
@@ -279,7 +298,12 @@ async def test_HubspaceConfigFlow_async_step_user_reauth(
 
 
 @pytest.mark.parametrize(
-    "config_dict,user_data,expected_options,error_code",
+    (
+        "config_dict",
+        "user_data",
+        "expected_options",
+        "error_code",
+    ),
     [
         # Not set
         (
@@ -332,6 +356,7 @@ async def test_HubspaceConfigFlow_async_step_options(
     mocker,
     hass,
 ):
+    """Ensure config flow properly handles all use-cases."""
     await setup.async_setup_component(hass, const.DOMAIN, {})
     config_dict["domain"] = const.DOMAIN
     entry = MockConfigEntry(**config_dict)

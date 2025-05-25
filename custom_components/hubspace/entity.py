@@ -35,9 +35,7 @@ class HubspaceBaseEntity(Entity):  # pylint: disable=hass-enforce-class-module
         # Entity class attributes
         unique_id = f"{resource.id}.{instance}" if instance else resource.id
         self._attr_unique_id = unique_id or resource.id
-        self._attr_has_entity_name = (
-            True if self.resource.device_information.name else False
-        )
+        self._attr_has_entity_name = bool(self.resource.device_information.name)
 
         if instance is not False:
             self._attr_name = instance if instance else type(self.resource).__name__
@@ -49,10 +47,10 @@ class HubspaceBaseEntity(Entity):  # pylint: disable=hass-enforce-class-module
         )
 
     async def async_added_to_hass(self) -> None:
-        """Call when entity is added."""
+        """Call when an entity is added."""
         self.async_on_remove(
             self.controller.subscribe(
-                self._handle_event,
+                self.handle_event,
                 id_filter=self.resource.id,
                 event_filter=EventType.RESOURCE_UPDATED,
             )
@@ -73,7 +71,7 @@ class HubspaceBaseEntity(Entity):  # pylint: disable=hass-enforce-class-module
         # not needed
 
     @callback
-    def _handle_event(self, event_type: EventType, resource) -> None:
+    def handle_event(self, event_type: EventType, resource) -> None:
         """Handle status event for this resource (or it's parent)."""
         self.logger.debug("Received status update for %s", self.entity_id)
         self.on_update()
@@ -81,9 +79,9 @@ class HubspaceBaseEntity(Entity):  # pylint: disable=hass-enforce-class-module
 
 
 def update_decorator(method):
-    """Force HA to automatically update
+    """Force HA to automatically update.
 
-    Hubspace can be slow to update which causes a delay between HA UI
+    Hubspace can be slow to update, which causes a delay between HA UI
     and what the user just did. Force it to take the new states right
     away.
     """
@@ -91,7 +89,8 @@ def update_decorator(method):
     @wraps(method)
     async def _impl(*args, **kwargs):
         res = await method(*args, **kwargs)
-        args[0]._handle_event(EventType.RESOURCE_UPDATED, None)
+        ha_entity: HubspaceBaseEntity = args[0]
+        ha_entity.handle_event(EventType.RESOURCE_UPDATED, None)
         return res
 
     return _impl

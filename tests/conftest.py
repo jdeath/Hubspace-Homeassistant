@@ -1,11 +1,13 @@
+"""Helper functions when executing pytest."""
+
 import datetime
 import logging
 
-import pytest
 from aioafero import v1
 from aioafero.v1.auth import token_data
 from aioafero.v1.controllers.event import EventType
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
+import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.hubspace.const import (
@@ -19,11 +21,13 @@ from custom_components.hubspace.const import (
 
 @pytest.fixture(autouse=True)
 def auto_enable_custom_integrations(enable_custom_integrations):
-    yield
+    """Ensure custom integrations are enabled for testing."""
+    return
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 async def mocked_bridge(mocker) -> v1.AferoBridgeV1:
+    """Create a mocked afero bridge to be used in tests."""
     hs_bridge: v1.AferoBridgeV1 = v1.AferoBridgeV1("username2", "password2")
     mocker.patch.object(
         hs_bridge,
@@ -32,17 +36,20 @@ async def mocked_bridge(mocker) -> v1.AferoBridgeV1:
     )
     mocker.patch.object(hs_bridge, "_account_id", "mocked-account-id")
     mocker.patch.object(hs_bridge, "request", side_effect=mocker.AsyncMock())
-    mocker.patch.object(hs_bridge, "initialize", side_effect=mocker.AsyncMock())
     mocker.patch.object(hs_bridge, "close", side_effect=mocker.AsyncMock())
-    hs_bridge._auth._token_data = token_data(
-        "mock-token",
-        "mock-access",
-        "mock-refresh-token",
-        expiration=datetime.datetime.now().timestamp() + 200,
+    hs_bridge.set_token_data(
+        token_data(
+            "mock-token",
+            "mock-access",
+            "mock-refresh-token",
+            expiration=datetime.datetime.now().timestamp() + 200,
+        )
     )
-    # Force initialization so test elements are not overwritten
-    for controller in hs_bridge._controllers:
-        controller._initialized = True
+    mocker.patch.object(
+        hs_bridge, "fetch_data", side_effect=mocker.AsyncMock(return_value=[])
+    )
+    mocker.patch("aioafero.v1.controllers.event.EventStream.initialize")
+    await hs_bridge.initialize()
 
     # Enable ad-hoc event updates
     def emit_event(event_type, data):
@@ -52,24 +59,12 @@ async def mocked_bridge(mocker) -> v1.AferoBridgeV1:
     # Override context manager
     hs_bridge.__aenter__ = mocker.AsyncMock(return_value=hs_bridge)
     hs_bridge.__aexit__ = mocker.AsyncMock()
-    # Ensure its "fake" initialized
-    for controller in hs_bridge.controllers:
-        res_filter = tuple(x.value for x in controller.ITEM_TYPES)
-        if res_filter:
-            hs_bridge.events.subscribe(
-                controller._handle_event,
-                resource_filter=res_filter,
-            )
-        else:
-            # Subscribe to all events
-            hs_bridge.events.subscribe(
-                controller._handle_event,
-            )
-    yield hs_bridge
+    return hs_bridge
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 async def mocked_entry(hass, mocker, mocked_bridge) -> MockConfigEntry:
+    """Register plugin with a config entry."""
     # Prepare the entry
     entry = MockConfigEntry(
         domain=DOMAIN,
@@ -94,6 +89,7 @@ async def mocked_entry(hass, mocker, mocked_bridge) -> MockConfigEntry:
 
 @pytest.fixture(autouse=True)
 def set_debug_mode(caplog):
+    """Ensure all tests run in debug."""
     # Force capture of all debug logging. This is useful if you want to verify
     # log messages with `<message> in caplog.text`. If you run
     # pytest -rP it will display all log messages, including passing tests.

@@ -1,10 +1,13 @@
+"""Home Assistant entity for interacting with Afero buttons."""
+
+from enum import Enum
 import json
 import os
-from enum import Enum
+from pathlib import Path
 
-import aiofiles
 from aioafero import EventType, anonymize_devices, get_afero_device
 from aioafero.v1 import AferoBridgeV1
+import aiofiles
 from homeassistant.components.button import ButtonEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_USERNAME
@@ -17,6 +20,12 @@ from .const import DOMAIN
 
 
 class DebugButtonEnum(Enum):
+    """Enumeration for debug button types in the Hubspace integration.
+
+    ANON: Generate anonymized data for debugging
+    RAW: Generate raw data for debugging
+    """
+
     ANON = "anon"
     RAW = "raw"
 
@@ -28,8 +37,11 @@ DEVICE_NAMES = {
 
 
 class DebugButton(ButtonEntity):
+    """Representation of an Afero Button."""
 
     def __init__(self, bridge: HubspaceBridge, instance: DebugButtonEnum):
+        """Initialize an Afero Button.."""
+
         self.bridge = bridge
         self.api: AferoBridgeV1 = bridge.api
         self.logger = bridge.logger.getChild("debug-button")
@@ -46,15 +58,15 @@ class DebugButton(ButtonEntity):
     async def async_press(self) -> None:
         """Handle the button press."""
         data = await self.bridge.api.fetch_data()
-        curr_directory = os.path.dirname(os.path.realpath(__file__))
+        current_path: Path = Path(__file__.rsplit(os.sep, 1)[0])
         if self.instance == DebugButtonEnum.ANON:
-            dev_dump = os.path.join(curr_directory, "_dump_hs_devices.json")
+            dev_dump = current_path / "_dump_hs_devices.json"
             self.logger.debug("Writing out anonymized device data to %s", dev_dump)
             devs = [get_afero_device(dev) for dev in data]
             async with aiofiles.open(dev_dump, "w") as fh:
                 await fh.write(json.dumps(anonymize_devices(devs), indent=4))
         elif self.instance == DebugButtonEnum.RAW:
-            data_dump = os.path.join(curr_directory, "_dump_raw.json")
+            data_dump = current_path / "_dump_raw.json"
             self.logger.debug("Writing out raw data to %s", data_dump)
             async with aiofiles.open(data_dump, "w") as fh:
                 await fh.write(json.dumps(data, indent=4))

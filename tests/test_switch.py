@@ -1,6 +1,8 @@
-import pytest
+"""Test the integration between Home Assistant Switches and Afero devices."""
+
 from aioafero import AferoState
 from homeassistant.helpers import entity_registry as er
+import pytest
 
 from .utils import create_devices_from_data, modify_state
 
@@ -14,11 +16,10 @@ hs_switch_id = "switch.basement_furnace_switch"
 
 @pytest.fixture
 async def mocked_entity(mocked_entry):
+    """Initialize a mocked Switch and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
     await bridge.switches.initialize_elem(hs_switch)
     await bridge.devices.initialize_elem(hs_switch)
-    bridge.switches._initialize = True
-    bridge.devices._initialize = True
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -27,11 +28,10 @@ async def mocked_entity(mocked_entry):
 
 @pytest.fixture
 async def mocked_entity_toggled(mocked_entry):
+    """Initialize a mocked instanced Switch and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
     await bridge.switches.initialize_elem(transformer)
     await bridge.devices.initialize_elem(transformer)
-    bridge.switches._initialize = True
-    bridge.devices._initialize = True
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -40,7 +40,10 @@ async def mocked_entity_toggled(mocked_entry):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "dev,expected_entities",
+    (
+        "dev",
+        "expected_entities",
+    ),
     [
         (hs_switch, [hs_switch_id]),
         (
@@ -54,12 +57,11 @@ async def mocked_entity_toggled(mocked_entry):
     ],
 )
 async def test_async_setup_entry(dev, expected_entities, mocked_entry):
+    """Ensure switches are properly discovered and registered with Home Assistant."""
     try:
         hass, entry, bridge = mocked_entry
         await bridge.switches.initialize_elem(dev)
         await bridge.devices.initialize_elem(dev)
-        bridge.switches._initialize = True
-        bridge.devices._initialize = True
         await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
         entity_reg = er.async_get(hass)
@@ -71,8 +73,9 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry):
 
 @pytest.mark.asyncio
 async def test_turn_on_toggle(mocked_entity_toggled):
+    """Ensure the service call turn_on works as expected."""
     hass, _, bridge = mocked_entity_toggled
-    assert not bridge.switches._items[transformer.id].on["zone-3"].on
+    assert not bridge.switches[transformer.id].on["zone-3"].on
     await hass.services.async_call(
         "switch",
         "turn_on",
@@ -111,8 +114,9 @@ async def test_turn_on_toggle(mocked_entity_toggled):
 
 @pytest.mark.asyncio
 async def test_turn_on(mocked_entity):
+    """Ensure the service call turn_on works as expected."""
     hass, _, bridge = mocked_entity
-    assert not bridge.switches._items[hs_switch.id].on[None].on
+    assert not bridge.switches[hs_switch.id].on[None].on
     assert hass.states.get(hs_switch_id).state == "off"
     await hass.services.async_call(
         "switch",
@@ -152,6 +156,7 @@ async def test_turn_on(mocked_entity):
 
 @pytest.mark.asyncio
 async def test_turn_off_toggle(mocked_entity_toggled):
+    """Ensure the service call turn_off works as expected."""
     hass, _, bridge = mocked_entity_toggled
     await hass.services.async_call(
         "switch",
@@ -187,9 +192,10 @@ async def test_turn_off_toggle(mocked_entity_toggled):
 
 @pytest.mark.asyncio
 async def test_turn_off(mocked_entity):
+    """Ensure the service call turn_off works as expected."""
     hass, _, bridge = mocked_entity
-    bridge.switches._items[hs_switch.id].on[None].on = True
-    assert bridge.switches._items[hs_switch.id].on[None].on
+    bridge.switches[hs_switch.id].on[None].on = True
+    assert bridge.switches[hs_switch.id].on[None].on
     await hass.services.async_call(
         "switch",
         "turn_off",
@@ -228,13 +234,14 @@ async def test_turn_off(mocked_entity):
 
 @pytest.mark.asyncio
 async def test_add_new_device(mocked_entry):
+    """Ensure newly added devices are properly discovered and registered with Home Assistant."""
     hass, entry, bridge = mocked_entry
     assert len(bridge.devices.items) == 0
     # Register callbacks
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
-    assert len(bridge.devices._subscribers) > 0
-    assert len(bridge.devices._subscribers["*"]) > 0
+    assert len(bridge.devices.subscribers) > 0
+    assert len(bridge.devices.subscribers["*"]) > 0
     # Now generate update event by emitting the json we've sent as incoming event
     hs_new_dev = create_devices_from_data("transformer.json")[0]
     event = {

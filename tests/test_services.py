@@ -1,6 +1,8 @@
-import pytest
-import voluptuous
+"""Test the integration between Home Assistant Services and Afero devices."""
+
 from aioafero import AferoState
+import pytest
+import voluptuous as vol
 
 from custom_components.hubspace import const, services
 
@@ -13,13 +15,12 @@ fan_zandra_light_id = "light.friendly_device_2_light"
 
 @pytest.fixture
 async def mocked_entity(mocked_entry):
+    """Initialize a mocked Fan and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
     await bridge.lights.initialize_elem(fan_zandra_light)
     await bridge.devices.initialize_elem(fan_zandra[2])
     bridge.add_device(fan_zandra_light.id, bridge.lights)
     bridge.add_device(fan_zandra[2].id, bridge.devices)
-    bridge.lights._initialized = True
-    bridge.devices._initialized = True
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -28,7 +29,12 @@ async def mocked_entity(mocked_entry):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "account, entity_id, error_entity, error_bridge",
+    (
+        "account",
+        "entity_id",
+        "error_entity",
+        "error_bridge",
+    ),
     [
         # Use any bridge
         (
@@ -48,6 +54,7 @@ async def mocked_entity(mocked_entry):
 async def test_service_valid_no_username(
     account, entity_id, error_entity, error_bridge, mocked_entity, caplog
 ):
+    """Ensure the correct states are sent and the entity is properly updated."""
     hass, _, bridge = mocked_entity
     assert hass.states.get(fan_zandra_light_id).state == "on"
     if not error_entity and not error_bridge:
@@ -97,7 +104,7 @@ async def test_service_valid_no_username(
     else:
         bridge.request.assert_not_called()
         if error_entity:
-            with pytest.raises(voluptuous.error.MultipleInvalid):
+            with pytest.raises(vol.error.MultipleInvalid):
                 await hass.services.async_call(
                     const.DOMAIN,
                     services.SERVICE_SEND_COMMAND,

@@ -1,6 +1,8 @@
-import pytest
+"""Test the integration between Home Assistant Selects and Afero devices."""
+
 from aioafero import AferoState
 from homeassistant.helpers import entity_registry as er
+import pytest
 
 from .utils import create_devices_from_data, modify_state
 
@@ -10,11 +12,10 @@ exhaust_fan_id = "select.r3_closet_humidity_sensitivity"
 
 @pytest.fixture
 async def mocked_entity(mocked_entry):
+    """Initialize a mocked Exhaust Fan and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
     await bridge.exhaust_fans.initialize_elem(exhaust_fan)
     await bridge.devices.initialize_elem(exhaust_fan)
-    bridge.switches._initialize = True
-    bridge.devices._initialize = True
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -23,18 +24,20 @@ async def mocked_entity(mocked_entry):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "dev,expected_entities",
+    (
+        "dev",
+        "expected_entities",
+    ),
     [
         (exhaust_fan, [exhaust_fan_id]),
     ],
 )
 async def test_async_setup_entry(dev, expected_entities, mocked_entry):
+    """Ensure selects are properly discovered and registered with Home Assistant."""
     try:
         hass, entry, bridge = mocked_entry
         await bridge.devices.initialize_elem(dev)
-        bridge.devices._initialize = True
         await bridge.exhaust_fans.initialize_elem(dev)
-        bridge.exhaust_fans._initialize = True
         await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
         entity_reg = er.async_get(hass)
@@ -47,11 +50,10 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry):
 
 @pytest.mark.asyncio
 async def test_update(mocked_entry):
+    """Ensure updates in aioafero set the correct states within Home Assistant."""
     hass, entry, bridge = mocked_entry
     await bridge.devices.initialize_elem(exhaust_fan)
-    bridge.devices._initialize = True
     await bridge.exhaust_fans.initialize_elem(exhaust_fan)
-    bridge.exhaust_fans._initialize = True
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     # Now generate update event by emitting the json we've sent as incoming event
@@ -85,8 +87,9 @@ async def test_update(mocked_entry):
 @pytest.mark.xfail(reason="Entity does not update in test but does in HA platform")
 @pytest.mark.asyncio
 async def test_set_value(mocked_entity):
+    """Ensure the service call select_option works as expected."""
     hass, _, bridge = mocked_entity
-    bridge.exhaust_fans._items[exhaust_fan.id].selects[
+    bridge.exhaust_fans[exhaust_fan.id].selects[
         ("sensitivity", "humidity-sensitivity")
     ].selected = "3-medium"
     await hass.services.async_call(
@@ -134,13 +137,14 @@ async def test_set_value(mocked_entity):
 )
 @pytest.mark.asyncio
 async def test_add_new_device(mocked_entry):
+    """Ensure newly added devices are properly discovered and registered with Home Assistant."""
     hass, entry, bridge = mocked_entry
     assert len(bridge.devices.items) == 0
     # Register callbacks
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
-    assert len(bridge.devices._subscribers) > 0
-    assert len(bridge.devices._subscribers["*"]) > 0
+    assert len(bridge.devices.subscribers) > 0
+    assert len(bridge.devices.subscribers["*"]) > 0
     # Now generate update event by emitting the json we've sent as incoming event
     hs_new_dev = create_devices_from_data("fan-exhaust-fan.json")[2]
     event = {

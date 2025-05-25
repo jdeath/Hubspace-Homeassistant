@@ -1,67 +1,67 @@
 {
-    "title": "Hubspace",
-    "config": {
-        "step": {
-            "user": {
-                "data": {
-                    "username": "[%key:common::config_flow::data::username%]",
-                    "password": "[%key:common::config_flow::data::password%]",
-                    "timeout": "[%key:common::config_flow::data::timeout%]",
-                    "polling_time": "[%key:component::hubspace::step::step::init::polling_time%]"
-                }
-            },
-            "reauth_confirm": {
-                "title": "[%key:common::config_flow::title::reauth%]",
-                "description": "[%key:component::hubspace::step::step::reauth_confirm::description%]"
-            }
-        },
-        "error": {
-            "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
-            "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
-            "unknown": "[%key:common::config_flow::error::unknown%]",
-            "polling_too_short": "[%key:component::hubspace::step::error::polling_too_short%]",
-            "unique_id_mismatch": "[%key:component::hubspace::step::error::unique_id_mismatch%]"
-        },
-        "abort": {
-            "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
-            "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]",
-            "reconfigure_successful": "[%key:common::config_flow::abort::reconfigure_successful%]"
+  "title": "Hubspace",
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "username": "[%key:common::config_flow::data::username%]",
+          "password": "[%key:common::config_flow::data::password%]",
+          "timeout": "[%key:common::config_flow::data::timeout%]",
+          "polling_time": "[%key:component::hubspace::step::step::init::polling_time%]"
         }
+      },
+      "reauth_confirm": {
+        "title": "[%key:common::config_flow::title::reauth%]",
+        "description": "[%key:component::hubspace::step::step::reauth_confirm::description%]"
+      }
     },
-    "options": {
-        "step": {
-            "init": {
-                "data": {
-                    "polling_time": "[%key:component::hubspace::options::step::init::polling_time%]"
-                }
-            }
-        },
-        "error": {
-            "polling_too_short": "[%key:component::hubspace::options::error::polling_too_short%]"
-        }
+    "error": {
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
+      "unknown": "[%key:common::config_flow::error::unknown%]",
+      "polling_too_short": "[%key:component::hubspace::step::error::polling_too_short%]",
+      "unique_id_mismatch": "[%key:component::hubspace::step::error::unique_id_mismatch%]"
     },
-    "services": {
-        "send_command": {
-            "name": "[%key:component::hubspace::services::send_command::name%]",
-            "description": "[%key:component::hubspace::services::send_command::description%]",
-            "fields": {
-                "value": {
-                    "name": "[%key:component::hubspace::services::send_command::fields::value::name%]",
-                    "description": "[%key:component::hubspace::services::send_command::fields::value::description%]"
-                },
-                "function_class": {
-                    "name": "[%key:component::hubspace::services::send_command::fields::function_class::name%]",
-                    "description": "[%key:component::hubspace::services::send_command::fields::function_class::description%]"
-                },
-                "function_instance": {
-                    "name": "[%key:component::hubspace::services::send_command::fields::function_instance::name%]",
-                    "description": "[%key:component::hubspace::services::send_command::fields::function_instance::description%]"
-                },
-                "account": {
-                    "name": "[%key:component::hubspace::services::send_command::fields::account::name%]",
-                    "description": "[%key:component::hubspace::services::send_command::fields::account::description%]"
-                }
-            }
-        }
+    "abort": {
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
+      "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]",
+      "reconfigure_successful": "[%key:common::config_flow::abort::reconfigure_successful%]"
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "polling_time": "[%key:component::hubspace::options::step::init::polling_time%]"
+        }
+      }
+    },
+    "error": {
+      "polling_too_short": "[%key:component::hubspace::options::error::polling_too_short%]"
+    }
+  },
+  "services": {
+    "send_command": {
+      "name": "[%key:component::hubspace::services::send_command::name%]",
+      "description": "[%key:component::hubspace::services::send_command::description%]",
+      "fields": {
+        "value": {
+          "name": "[%key:component::hubspace::services::send_command::fields::value::name%]",
+          "description": "[%key:component::hubspace::services::send_command::fields::value::description%]"
+        },
+        "function_class": {
+          "name": "[%key:component::hubspace::services::send_command::fields::function_class::name%]",
+          "description": "[%key:component::hubspace::services::send_command::fields::function_class::description%]"
+        },
+        "function_instance": {
+          "name": "[%key:component::hubspace::services::send_command::fields::function_instance::name%]",
+          "description": "[%key:component::hubspace::services::send_command::fields::function_instance::description%]"
+        },
+        "account": {
+          "name": "[%key:component::hubspace::services::send_command::fields::account::name%]",
+          "description": "[%key:component::hubspace::services::send_command::fields::account::description%]"
+        }
+      }
+    }
+  }
 }

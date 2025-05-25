@@ -1,3 +1,5 @@
+"""Constants used through the Hubspace <-> Home Assistant integration."""
+
 from datetime import timedelta
 from typing import Final
 

@@ -1,4 +1,5 @@
-import pytest
+"""Test the integration between Home Assistant Climate and Afero devices."""
+
 from aioafero import AferoState
 from homeassistant.components.climate import (
     ATTR_HVAC_MODE,
@@ -12,6 +13,7 @@ from homeassistant.components.climate import (
     HVACMode,
 )
 from homeassistant.helpers import entity_registry as er
+import pytest
 
 from .utils import create_devices_from_data, modify_state
 
@@ -21,11 +23,10 @@ thermostat_id = "climate.home_heat_thermostat"
 
 @pytest.fixture
 async def mocked_entity(mocked_entry):
+    """Initialize a mocked thermostat and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
     await bridge.thermostats.initialize_elem(thermostat)
     await bridge.devices.initialize_elem(thermostat)
-    bridge.thermostats._initialize = True
-    bridge.devices._initialize = True
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -34,18 +35,20 @@ async def mocked_entity(mocked_entry):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "dev,expected_entities",
+    (
+        "dev",
+        "expected_entities",
+    ),
     [
         (thermostat, [thermostat_id]),
     ],
 )
 async def test_async_setup_entry(dev, expected_entities, mocked_entry):
+    """Ensure climates are properly discovered and registered with Home Assistant."""
     try:
         hass, entry, bridge = mocked_entry
         await bridge.thermostats.initialize_elem(dev)
         await bridge.devices.initialize_elem(dev)
-        bridge.thermostats._initialize = True
-        bridge.devices._initialize = True
         await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
         entity_reg = er.async_get(hass)
@@ -77,13 +80,14 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry):
 
 @pytest.mark.asyncio
 async def test_add_new_device(mocked_entry):
+    """Ensure newly added devices are properly discovered and registered with Home Assistant."""
     hass, entry, bridge = mocked_entry
     assert len(bridge.devices.items) == 0
     # Register callbacks
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
-    assert len(bridge.devices._subscribers) > 0
-    assert len(bridge.devices._subscribers["*"]) > 0
+    assert len(bridge.devices.subscribers) > 0
+    assert len(bridge.devices.subscribers["*"]) > 0
     # Now generate update event by emitting the json we've sent as incoming event
     hs_new_dev = create_devices_from_data("thermostat.json")[0]
     event = {
@@ -102,7 +106,11 @@ async def test_add_new_device(mocked_entry):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "starting_mode,new_mode,expected_call_val",
+    (
+        "starting_mode",
+        "new_mode",
+        "expected_call_val",
+    ),
     [
         (
             "heat",
@@ -131,12 +139,17 @@ async def test_add_new_device(mocked_entry):
         ),
     ],
 )
-async def test_set_hvac_mode(
-    starting_mode, new_mode, expected_call_val, mocked_entity
-):
+async def test_set_hvac_mode(starting_mode, new_mode, expected_call_val, mocked_entity):
+    """Ensure the service call set_hvac_mode works as expected."""
     hass, _, bridge = mocked_entity
-    bridge.thermostats._items[thermostat.id].hvac_mode.supported_modes = {"off", "heat", "auto", "fan", "cool"}
-    bridge.thermostats._items[thermostat.id].hvac_mode.mode = starting_mode
+    bridge.thermostats[thermostat.id].hvac_mode.supported_modes = {
+        "off",
+        "heat",
+        "auto",
+        "fan",
+        "cool",
+    }
+    bridge.thermostats[thermostat.id].hvac_mode.mode = starting_mode
     await hass.services.async_call(
         "climate",
         "set_hvac_mode",
@@ -173,7 +186,10 @@ async def test_set_hvac_mode(
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "afero_mode,expected",
+    (
+        "afero_mode",
+        "expected",
+    ),
     [
         (
             "on",
@@ -190,6 +206,7 @@ async def test_set_hvac_mode(
     ],
 )
 async def test_fan_mode(afero_mode, expected, mocked_entity):
+    """Ensure the correct states are sent and the entity is properly updated."""
     hass, _, bridge = mocked_entity
     thermostat_update = create_devices_from_data("thermostat.json")[0]
     modify_state(
@@ -213,7 +230,11 @@ async def test_fan_mode(afero_mode, expected, mocked_entity):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "afero_mode,afero_mode_hvac,expected",
+    (
+        "afero_mode",
+        "afero_mode_hvac",
+        "expected",
+    ),
     [
         (
             "cooling",
@@ -243,6 +264,7 @@ async def test_fan_mode(afero_mode, expected, mocked_entity):
     ],
 )
 async def test_hvac_action(afero_mode, afero_mode_hvac, expected, mocked_entity):
+    """Ensure the correct states are sent and the entity is properly updated."""
     hass, _, bridge = mocked_entity
     thermostat_update = create_devices_from_data("thermostat.json")[0]
     modify_state(
@@ -274,7 +296,11 @@ async def test_hvac_action(afero_mode, afero_mode_hvac, expected, mocked_entity)
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "afero_mode,expected,err_msg",
+    (
+        "afero_mode",
+        "expected",
+        "err_msg",
+    ),
     [
         ("cool", HVACMode.COOL, None),
         (
@@ -305,6 +331,7 @@ async def test_hvac_action(afero_mode, afero_mode_hvac, expected, mocked_entity)
     ],
 )
 async def test_hvac_mode(afero_mode, expected, err_msg, mocked_entity, caplog):
+    """Ensure the correct states are sent and the entity is properly updated."""
     hass, _, bridge = mocked_entity
     thermostat_update = create_devices_from_data("thermostat.json")[0]
     modify_state(
@@ -331,15 +358,19 @@ async def test_hvac_mode(afero_mode, expected, err_msg, mocked_entity, caplog):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "starting_mode, new_mode",
+    (
+        "starting_mode",
+        "new_mode",
+    ),
     [
         (FAN_ON, "on"),
         ("off", "intermittent"),
     ],
 )
 async def test_set_fan_mode(starting_mode, new_mode, mocked_entity):
+    """Ensure the service call set_fan_mode works as expected."""
     hass, _, bridge = mocked_entity
-    bridge.thermostats._items[thermostat.id].hvac_mode.mode = starting_mode
+    bridge.thermostats[thermostat.id].hvac_mode.mode = starting_mode
     await hass.services.async_call(
         "climate",
         "set_fan_mode",
@@ -376,6 +407,7 @@ async def test_set_fan_mode(starting_mode, new_mode, mocked_entity):
 
 @pytest.mark.asyncio
 async def test_set_temperature(mocked_entity):
+    """Ensure the service call set_temperature works as expected."""
     hass, _, bridge = mocked_entity
     await hass.services.async_call(
         "climate",

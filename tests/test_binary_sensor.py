@@ -1,5 +1,7 @@
-import pytest
+"""Test the integration between Home Assistant Binary Sensors and Afero devices."""
+
 from homeassistant.helpers import entity_registry as er
+import pytest
 
 from .utils import create_devices_from_data
 
@@ -8,9 +10,9 @@ freezer = create_devices_from_data("freezer.json")[0]
 
 @pytest.fixture
 async def mocked_entity(mocked_entry):
+    """Initialize a mocked freezer and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
     await bridge.devices.initialize_elem(freezer)
-    bridge.devices._initialize = True
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -19,7 +21,10 @@ async def mocked_entity(mocked_entry):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "dev,expected_entities",
+    (
+        "dev",
+        "expected_entities",
+    ),
     [
         (
             freezer,
@@ -33,12 +38,12 @@ async def mocked_entity(mocked_entry):
     ],
 )
 async def test_async_setup_entry(dev, expected_entities, mocked_entry, caplog):
+    """Ensure Binary Sensors are properly discovered and registered with Home Assistant."""
     try:
         hass, entry, bridge = mocked_entry
         await bridge.devices.initialize_elem(dev)
-        bridge.devices._initialize = True
         # Add in a bad sensor
-        bridge.devices._items[freezer.id].binary_sensors["bad_sensor"] = {}
+        bridge.devices[freezer.id].binary_sensors["bad_sensor"] = {}
         await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
         for entity, exp_value in expected_entities.items():
@@ -53,16 +58,19 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry, caplog):
         await bridge.close()
 
 
-@pytest.mark.xfail(reason="Sensors show in logs but then disappear. They are persistent within HA")
+@pytest.mark.xfail(
+    reason="Sensors show in logs but then disappear. They are persistent within HA"
+)
 @pytest.mark.asyncio
 async def test_add_new_device(mocked_entry):
+    """Ensure newly added devices are properly discovered and registered with Home Assistant."""
     hass, entry, bridge = mocked_entry
     assert len(bridge.devices.items) == 0
     # Register callbacks
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
-    assert len(bridge.devices._subscribers) > 0
-    assert len(bridge.devices._subscribers["*"]) > 0
+    assert len(bridge.devices.subscribers) > 0
+    assert len(bridge.devices.subscribers["*"]) > 0
     # Now generate update event by emitting the json we've sent as incoming event
     hs_new_dev = create_devices_from_data("freezer.json")[0]
     event = {
@@ -80,6 +88,6 @@ async def test_add_new_device(mocked_entry):
     ]
     entity_reg = er.async_get(hass)
     for binary_sensor in expected_binary_sensors:
-        assert (
-            entity_reg.async_get(binary_sensor) is not None
-        ), f"Unable to find entity {binary_sensor}"
+        assert entity_reg.async_get(binary_sensor) is not None, (
+            f"Unable to find entity {binary_sensor}"
+        )

@@ -1,3 +1,5 @@
+"""Home Assistant entity for interacting with Afero Switch."""
+
 from functools import partial
 from typing import Any
 
@@ -16,6 +18,8 @@ from .entity import HubspaceBaseEntity, update_decorator
 
 
 class HubspaceSwitch(HubspaceBaseEntity, SwitchEntity):
+    """Representation of an Afero switch."""
+
     def __init__(
         self,
         bridge: HubspaceBridge,
@@ -23,14 +27,17 @@ class HubspaceSwitch(HubspaceBaseEntity, SwitchEntity):
         resource: Switch,
         instance: str | None,
     ) -> None:
+        """Initialize an Afero switch."""
         super().__init__(bridge, controller, resource, instance=instance)
         self.instance = instance
 
     @property
     def is_on(self) -> bool | None:
+        """Determines if the switch is on."""
         feature = self.resource.on.get(self.instance, None)
         if feature:
             return feature.on
+        return None
 
     @update_decorator
     async def async_turn_on(
@@ -73,12 +80,12 @@ async def async_setup_entry(
     make_entity = partial(HubspaceSwitch, bridge, controller)
 
     def get_unique_entities(hs_resource: Switch) -> list[HubspaceSwitch]:
-        hs_resource_entities: list[HubspaceSwitch] = []
         instances = hs_resource.on.keys()
-        for instance in instances:
-            if len(instances) == 1 or instance is not None:
-                hs_resource_entities.append(make_entity(hs_resource, instance))
-        return hs_resource_entities
+        return [
+            make_entity(hs_resource, instance)
+            for instance in instances
+            if len(instances) == 1 or instance is not None
+        ]
 
     @callback
     def async_add_entity(event_type: EventType, hs_resource: Switch) -> None:

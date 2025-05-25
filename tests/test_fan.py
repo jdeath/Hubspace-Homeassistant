@@ -1,4 +1,5 @@
-import pytest
+"""Test the integration between Home Assistant Fans and Afero devices."""
+
 from aioafero import AferoState
 from homeassistant.components.fan import (
     ATTR_DIRECTION,
@@ -6,6 +7,7 @@ from homeassistant.components.fan import (
     ATTR_PRESET_MODE,
 )
 from homeassistant.helpers import entity_registry as er
+import pytest
 
 from .utils import create_devices_from_data, modify_state
 
@@ -21,11 +23,10 @@ exhaust_fan_instance_entity_id = "fan.r3_closet_fan"
 
 @pytest.fixture
 async def mocked_entity(mocked_entry):
+    """Initialize a mocked fan and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
     await bridge.fans.initialize_elem(fan_zandra_instance)
     await bridge.devices.initialize_elem(fan_zandra[2])
-    bridge.fans._initialize = True
-    bridge.devices._initialize = True
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -34,19 +35,22 @@ async def mocked_entity(mocked_entry):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "dev,root_dev,expected_entities",
+    (
+        "dev",
+        "root_dev",
+        "expected_entities",
+    ),
     [
         (fan_zandra_instance, fan_zandra[2], [fan_zandra_entity_id]),
         (exhaust_fan_instance, exhaust_fan[2], [exhaust_fan_instance_entity_id]),
     ],
 )
 async def test_async_setup_entry(dev, root_dev, expected_entities, mocked_entry):
+    """Ensure fanss are properly discovered and registered with Home Assistant."""
     try:
         hass, entry, bridge = mocked_entry
         await bridge.fans.initialize_elem(dev)
         await bridge.devices.initialize_elem(root_dev)
-        bridge.fans._initialize = True
-        bridge.devices._initialize = True
         await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
         entity_reg = er.async_get(hass)
@@ -58,8 +62,9 @@ async def test_async_setup_entry(dev, root_dev, expected_entities, mocked_entry)
 
 @pytest.mark.asyncio
 async def test_turn_on(mocked_entity):
+    """Ensure the service call turn_on works as expected."""
     hass, _, bridge = mocked_entity
-    bridge.fans._items[fan_zandra_instance.id].on.on = False
+    bridge.fans[fan_zandra_instance.id].on.on = False
     await hass.services.async_call(
         "fan",
         "turn_on",
@@ -80,8 +85,9 @@ async def test_turn_on(mocked_entity):
 
 @pytest.mark.asyncio
 async def test_turn_on_preset(mocked_entity):
+    """Ensure the service call turn_on works as expected."""
     hass, _, bridge = mocked_entity
-    bridge.fans._items[fan_zandra_instance.id].on.on = False
+    bridge.fans[fan_zandra_instance.id].on.on = False
     await hass.services.async_call(
         "fan",
         "turn_on",
@@ -106,12 +112,11 @@ async def test_turn_on_preset(mocked_entity):
 
 @pytest.mark.asyncio
 async def test_turn_on_limited(mocked_entry):
+    """Ensure the service call turn_on works as expected."""
     hass, entry, bridge = mocked_entry
     await bridge.fans.initialize_elem(exhaust_fan_instance)
     await bridge.devices.initialize_elem(exhaust_fan[2])
-    bridge.fans._initialize = True
-    bridge.devices._initialize = True
-    bridge.fans._items[exhaust_fan_instance.id].on.on = False
+    bridge.fans[exhaust_fan_instance.id].on.on = False
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     await hass.services.async_call(
@@ -145,7 +150,7 @@ async def test_turn_on_limited(mocked_entry):
     }
     bridge.emit_event("update", event)
     await hass.async_block_till_done()
-    assert bridge.fans._items[exhaust_fan_update.id].on.on
+    assert bridge.fans[exhaust_fan_update.id].on.on
     test_entity = hass.states.get(exhaust_fan_instance_entity_id)
     assert test_entity is not None
     assert test_entity.state == "on"
@@ -153,8 +158,9 @@ async def test_turn_on_limited(mocked_entry):
 
 @pytest.mark.asyncio
 async def test_turn_off(mocked_entity):
+    """Ensure the service call turn_off works as expected."""
     hass, _, bridge = mocked_entity
-    bridge.fans._items[fan_zandra_instance.id].on.on = True
+    bridge.fans[fan_zandra_instance.id].on.on = True
     await hass.services.async_call(
         "fan",
         "turn_off",
@@ -173,8 +179,9 @@ async def test_turn_off(mocked_entity):
 
 @pytest.mark.asyncio
 async def test_set_percentage(mocked_entity):
+    """Ensure the service call set_percentage works as expected."""
     hass, _, bridge = mocked_entity
-    bridge.fans._items[fan_zandra_instance.id].on.on = False
+    bridge.fans[fan_zandra_instance.id].on.on = False
     await hass.services.async_call(
         "fan",
         "set_percentage",
@@ -195,9 +202,10 @@ async def test_set_percentage(mocked_entity):
 
 @pytest.mark.asyncio
 async def test_set_preset_mode(mocked_entity):
+    """Ensure the service call set_preset_mode works as expected."""
     hass, _, bridge = mocked_entity
-    bridge.fans._items[fan_zandra_instance.id].on.on = False
-    bridge.fans._items[fan_zandra_instance.id].preset.enabled = False
+    bridge.fans[fan_zandra_instance.id].on.on = False
+    bridge.fans[fan_zandra_instance.id].preset.enabled = False
     await hass.services.async_call(
         "fan",
         "set_preset_mode",
@@ -219,9 +227,10 @@ async def test_set_preset_mode(mocked_entity):
 
 @pytest.mark.asyncio
 async def test_set_direction(mocked_entity):
+    """Ensure the service call set_direction works as expected."""
     hass, _, bridge = mocked_entity
-    bridge.fans._items[fan_zandra_instance.id].on.on = False
-    bridge.fans._items[fan_zandra_instance.id].direction.forward = False
+    bridge.fans[fan_zandra_instance.id].on.on = False
+    bridge.fans[fan_zandra_instance.id].direction.forward = False
     await hass.services.async_call(
         "fan",
         "set_direction",
@@ -237,7 +246,7 @@ async def test_set_direction(mocked_entity):
     entity = hass.states.get(fan_zandra_entity_id)
     assert entity is not None
     assert entity.state == "on"
-    assert entity.attributes[ATTR_DIRECTION] is True
+    assert entity.attributes[ATTR_DIRECTION] == "forward"
     # Reverse the fan
     await hass.services.async_call(
         "fan",
@@ -254,18 +263,19 @@ async def test_set_direction(mocked_entity):
     entity = hass.states.get(fan_zandra_entity_id)
     assert entity is not None
     assert entity.state == "on"
-    assert entity.attributes[ATTR_DIRECTION] is False
+    assert entity.attributes[ATTR_DIRECTION] == "reverse"
 
 
 @pytest.mark.asyncio
 async def test_add_new_device(mocked_entry):
+    """Ensure newly added devices are properly discovered and registered with Home Assistant."""
     hass, entry, bridge = mocked_entry
     assert len(bridge.devices.items) == 0
     # Register callbacks
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
-    assert len(bridge.devices._subscribers) > 0
-    assert len(bridge.devices._subscribers["*"]) > 0
+    assert len(bridge.devices.subscribers) > 0
+    assert len(bridge.devices.subscribers["*"]) > 0
     # Now generate update event by emitting the json we've sent as incoming event
     fan_zandra = create_devices_from_data("fan-ZandraFan.json")
     event = {

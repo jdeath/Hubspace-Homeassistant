@@ -1,3 +1,4 @@
+---
 send_command:
   description: Send a Command To Hubspace Cloud
   target:
@@ -14,7 +15,9 @@ send_command:
   fields:
     account:
       name: account
-      description: Username associated with the device. If not present, it will use the first Hubspace instance
+      description: |
+        Username associated with the device. If not present, it will
+        use the first Hubspace instance
       required: false
       example: your.email@gmail.com
     value:

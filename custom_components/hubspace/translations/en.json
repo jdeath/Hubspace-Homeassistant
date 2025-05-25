@@ -1,72 +1,72 @@
 {
-    "title": "Hubspace",
-    "config": {
-        "step": {
-            "user": {
-                "data": {
-                    "username": "Username",
-                    "password": "Password",
-                    "timeout": "Connection Timeout",
-                    "polling_time": "Polling time"
-                },
-                "data_description": {
-                    "username": "Hubspace Username",
-                    "password": "Hubspace Password",
-                    "timeout": "Connection Timeout (Default: 10000)",
-                    "polling_time": "Time in seconds between polling intervals (Default: 30)"
-                }
-            },
-            "reauth_confirm": {
-                "description": "The Hubspace integration needs to re-authenticate your account"
-            }
+  "title": "Hubspace",
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "username": "Username",
+          "password": "Password",
+          "timeout": "Connection Timeout",
+          "polling_time": "Polling time"
         },
-        "error": {
-            "cannot_connect": "Connection timed out when reaching the server.",
-            "invalid_auth": "Unable to authenticate with the provided credentials",
-            "unknown": "Unknown error occurred. Please review to the logs",
-            "polling_too_short": "Interval must be at least 2 seconds",
-            "unique_id_mismatch": "Account name cannot be changed during reauth"
+        "data_description": {
+          "username": "Hubspace Username",
+          "password": "Hubspace Password",
+          "timeout": "Connection Timeout (Default: 10000)",
+          "polling_time": "Time in seconds between polling intervals (Default: 30)"
         }
+      },
+      "reauth_confirm": {
+        "description": "The Hubspace integration needs to re-authenticate your account"
+      }
     },
-    "options": {
-        "step": {
-            "init": {
-                "data": {
-                    "timeout": "Connection Timeout",
-                    "polling_time": "Polling time"
-                },
-                "data_description": {
-                    "timeout": "Time in ms for a connection failure (Default: 10000)",
-                    "polling_time": "Time in seconds between polling intervals (Default: 30)"
-                }
-            }
-        },
-        "error": {
-            "polling_too_short": "Interval must be at least 2 seconds"
-        }
-    },
-    "services": {
-        "send_command": {
-            "name": "Send Command",
-            "description": "Sends a custom hubspace API command.",
-            "fields": {
-                "value": {
-                    "name": "Value",
-                    "description": "The value you want to send"
-                },
-                "function_class": {
-                    "name": "Function Class",
-                    "description": "functionClass you want to send"
-                },
-                "function_instance": {
-                    "name": "Function Instance",
-                    "description": "functionInstance you want to send"
-                },
-                "account": {
-                    "name": "Account",
-                    "description": "Hubspace account that contains the device. Optional"
-                }
-            }
-        }
+    "error": {
+      "cannot_connect": "Connection timed out when reaching the server.",
+      "invalid_auth": "Unable to authenticate with the provided credentials",
+      "unknown": "Unknown error occurred. Please review to the logs",
+      "polling_too_short": "Interval must be at least 2 seconds",
+      "unique_id_mismatch": "Account name cannot be changed during reauth"
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "timeout": "Connection Timeout",
+          "polling_time": "Polling time"
+        },
+        "data_description": {
+          "timeout": "Time in ms for a connection failure (Default: 10000)",
+          "polling_time": "Time in seconds between polling intervals (Default: 30)"
+        }
+      }
+    },
+    "error": {
+      "polling_too_short": "Interval must be at least 2 seconds"
+    }
+  },
+  "services": {
+    "send_command": {
+      "name": "Send Command",
+      "description": "Sends a custom hubspace API command.",
+      "fields": {
+        "value": {
+          "name": "Value",
+          "description": "The value you want to send"
+        },
+        "function_class": {
+          "name": "Function Class",
+          "description": "functionClass you want to send"
+        },
+        "function_instance": {
+          "name": "Function Instance",
+          "description": "functionInstance you want to send"
+        },
+        "account": {
+          "name": "Account",
+          "description": "Hubspace account that contains the device. Optional"
+        }
+      }
+    }
+  }
 }
