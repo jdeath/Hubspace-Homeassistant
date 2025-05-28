@@ -61,6 +61,10 @@ are as follows:
 
 ## Changelog
 
+ * 5.2.2
+
+   * Fix battery percentage not showing
+
  * 5.2.1
 
    * Fix Action calls from the UI
