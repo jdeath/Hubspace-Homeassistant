@@ -62,7 +62,7 @@ are as follows:
 
 ## Changelog
 
-- 5.2.3-dev
+- 5.2.3
 
   - Update linter to ruff
 
