@@ -1,4 +1,5 @@
-import pytest
+"""Test the integration between Home Assistant Lights and Afero devices."""
+
 from aioafero import AferoState
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
@@ -9,6 +10,7 @@ from homeassistant.components.light import (
     ColorMode,
 )
 from homeassistant.helpers import entity_registry as er
+import pytest
 
 from custom_components.hubspace import light
 
@@ -29,11 +31,10 @@ rgbw_led_strip = create_devices_from_data("rgbw-led-strip.json")[0]
 
 @pytest.fixture
 async def mocked_entity(mocked_entry):
+    """Initialize a mocked Light and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
     await bridge.lights.initialize_elem(light_a21)
     await bridge.devices.initialize_elem(light_a21)
-    bridge.lights._initialize = True
-    bridge.devices._initialize = True
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -42,11 +43,10 @@ async def mocked_entity(mocked_entry):
 
 @pytest.fixture
 async def mocked_dimmer(mocked_entry):
+    """Initialize a mocked dimmer switch and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
     await bridge.lights.initialize_elem(switch_dimmer_light)
     await bridge.devices.initialize_elem(switch_dimmer_light)
-    bridge.lights._initialize = True
-    bridge.devices._initialize = True
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -54,7 +54,11 @@ async def mocked_dimmer(mocked_entry):
 
 
 @pytest.mark.parametrize(
-    "color_mode, supported, expected",
+    (
+        "color_mode",
+        "supported",
+        "expected",
+    ),
     [
         # No current mode and none supported
         (None, {}, ColorMode.ONOFF),
@@ -81,7 +85,8 @@ async def mocked_dimmer(mocked_entry):
     ],
 )
 def test_get_color_mode(color_mode, supported, expected, mocked_entity):
-    tmp_light = mocked_entity[2].lights._items[light_a21.id]
+    """Ensure the correct color mode is selected."""
+    tmp_light = mocked_entity[2].lights[light_a21.id]
     if color_mode:
         tmp_light.color_mode.mode = color_mode
     else:
@@ -91,18 +96,20 @@ def test_get_color_mode(color_mode, supported, expected, mocked_entity):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "dev,expected_entities",
+    (
+        "dev",
+        "expected_entities",
+    ),
     [
         (light_a21, [light_a21_id]),
     ],
 )
 async def test_async_setup_entry(dev, expected_entities, mocked_entry):
+    """Ensure lights are properly discovered and registered with Home Assistant."""
     try:
         hass, entry, bridge = mocked_entry
         await bridge.lights.initialize_elem(dev)
         await bridge.devices.initialize_elem(dev)
-        bridge.lights._initialize = True
-        bridge.devices._initialize = True
         await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
         entity_reg = er.async_get(hass)
@@ -114,8 +121,9 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry):
 
 @pytest.mark.asyncio
 async def test_turn_on(mocked_entity):
+    """Ensure the service call turn_on works as expected."""
     hass, _, bridge = mocked_entity
-    bridge.lights._items[light_a21.id].on.on = False
+    bridge.lights[light_a21.id].on.on = False
     await hass.services.async_call(
         "light",
         "turn_on",
@@ -162,14 +170,15 @@ async def test_turn_on(mocked_entity):
     assert entity is not None
     assert entity.state == "on"
     assert entity.attributes["brightness"] == 64
-    assert bridge.lights._items[light_a21.id].brightness == 25
+    assert bridge.lights[light_a21.id].brightness == 25
 
 
 @pytest.mark.asyncio
 async def test_turn_on_temp(mocked_entity):
+    """Ensure the service call turn_on works as expected."""
     hass, _, bridge = mocked_entity
-    bridge.lights._items[light_a21.id].on.on = False
-    bridge.lights._items[light_a21.id].color_mode.mode = "no"
+    bridge.lights[light_a21.id].on.on = False
+    bridge.lights[light_a21.id].color_mode.mode = "no"
     await hass.services.async_call(
         "light",
         "turn_on",
@@ -230,9 +239,10 @@ async def test_turn_on_temp(mocked_entity):
 
 @pytest.mark.asyncio
 async def test_turn_on_color(mocked_entity):
+    """Ensure the service call turn_on works as expected."""
     hass, _, bridge = mocked_entity
-    bridge.lights._items[light_a21.id].on.on = False
-    bridge.lights._items[light_a21.id].color_mode.mode = "no"
+    bridge.lights[light_a21.id].on.on = False
+    bridge.lights[light_a21.id].color_mode.mode = "no"
     await hass.services.async_call(
         "light",
         "turn_on",
@@ -300,9 +310,10 @@ async def test_turn_on_color(mocked_entity):
 
 @pytest.mark.asyncio
 async def test_turn_on_effect(mocked_entity):
+    """Ensure the service call turn_on works as expected."""
     hass, _, bridge = mocked_entity
-    bridge.lights._items[light_a21.id].on.on = False
-    bridge.lights._items[light_a21.id].color_mode.mode = "no"
+    bridge.lights[light_a21.id].on.on = False
+    bridge.lights[light_a21.id].color_mode.mode = "no"
     await hass.services.async_call(
         "light",
         "turn_on",
@@ -362,8 +373,8 @@ async def test_turn_on_effect(mocked_entity):
     }
     bridge.emit_event("update", event)
     await hass.async_block_till_done()
-    assert bridge.lights._items[light_a21.id].effect.effect == "rainbow"
-    assert bridge.lights._items[light_a21.id].color_mode.mode == "sequence"
+    assert bridge.lights[light_a21.id].effect.effect == "rainbow"
+    assert bridge.lights[light_a21.id].color_mode.mode == "sequence"
     entity = hass.states.get(light_a21_id)
     assert entity is not None
     assert entity.state == "on"
@@ -372,9 +383,10 @@ async def test_turn_on_effect(mocked_entity):
 
 @pytest.mark.asyncio
 async def test_turn_on_dimmer(mocked_dimmer):
+    """Ensure the service call turn_on works as expected."""
     hass, _, bridge = mocked_dimmer
-    bridge.lights._items[switch_dimmer_light.id].on.on = False
-    assert not bridge.lights._items[switch_dimmer_light.id].is_on
+    bridge.lights[switch_dimmer_light.id].on.on = False
+    assert not bridge.lights[switch_dimmer_light.id].is_on
     await hass.services.async_call(
         "light",
         "turn_on",
@@ -413,8 +425,9 @@ async def test_turn_on_dimmer(mocked_dimmer):
 
 @pytest.mark.asyncio
 async def test_turn_off(mocked_entity):
+    """Ensure the service call turn_off works as expected."""
     hass, _, bridge = mocked_entity
-    bridge.lights._items[light_a21.id].on.on = True
+    bridge.lights[light_a21.id].on.on = True
     await hass.services.async_call(
         "light",
         "turn_off",
@@ -432,9 +445,10 @@ async def test_turn_off(mocked_entity):
 
 @pytest.mark.asyncio
 async def test_turn_off_dimmer(mocked_dimmer):
+    """Ensure the service call turn_off works as expected."""
     hass, _, bridge = mocked_dimmer
-    bridge.lights._items[switch_dimmer_light.id].on.on = True
-    assert bridge.lights._items[switch_dimmer_light.id].is_on
+    bridge.lights[switch_dimmer_light.id].on.on = True
+    assert bridge.lights[switch_dimmer_light.id].is_on
     await hass.services.async_call(
         "light",
         "turn_off",
@@ -449,7 +463,7 @@ async def test_turn_off_dimmer(mocked_dimmer):
     assert update["functionClass"] == "power"
     assert update["functionInstance"] == "gang-1"
     assert update["value"] == "off"
-    assert not bridge.lights._items[switch_dimmer_light.id].is_on
+    assert not bridge.lights[switch_dimmer_light.id].is_on
     # Now generate update event by emitting the json we've sent as incoming event
     switch_dimmer_update = create_devices_from_data("dimmer-HPDA1110NWBP.json")[0]
     modify_state(
@@ -474,13 +488,14 @@ async def test_turn_off_dimmer(mocked_dimmer):
 
 @pytest.mark.asyncio
 async def test_add_new_device(mocked_entry):
+    """Ensure newly added devices are properly discovered and registered with Home Assistant."""
     hass, entry, bridge = mocked_entry
     assert len(bridge.devices.items) == 0
     # Register callbacks
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
-    assert len(bridge.devices._subscribers) > 0
-    assert len(bridge.devices._subscribers["*"]) > 0
+    assert len(bridge.devices.subscribers) > 0
+    assert len(bridge.devices.subscribers["*"]) > 0
     # Now generate update event by emitting the json we've sent as incoming event
     hs_new_dev = create_devices_from_data("dimmer-HPDA1110NWBP.json")[0]
     event = {

@@ -2,27 +2,26 @@
 
 from __future__ import annotations
 
+from asyncio import timeout
 import contextlib
 import logging
-from asyncio import timeout
-from collections import namedtuple
-from typing import Any, Optional
+from typing import Any, NamedTuple
 
-import voluptuous as vol
 from aioafero import InvalidAuth
 from aioafero.v1 import AferoBridgeV1
 from homeassistant import config_entries
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
 from homeassistant.core import callback
+import voluptuous as vol
 
 from .const import (
     DEFAULT_POLLING_INTERVAL_SEC,
     DEFAULT_TIMEOUT,
     DOMAIN,
     POLLING_TIME_STR,
+    VERSION_MAJOR as const_maj,
+    VERSION_MINOR as const_min,
 )
-from .const import VERSION_MAJOR as const_maj
-from .const import VERSION_MINOR as const_min
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -43,11 +42,21 @@ LOGIN_SCHEMA = vol.Schema(LOGIN_REQS | OPTIONAL)
 RECONFIG_SCHEMA = vol.Schema(OPTIONAL)
 
 
-auth_result = namedtuple("auth_result", ["token", "err_type"])
+class AuthResult(NamedTuple):
+    """Class to store authentication result data.
+
+    Attributes:
+        token: Authentication token string obtained after successful login
+        err_type: Error type string if authentication failed, None if successful
+
+    """
+
+    token: str
+    err_type: str
 
 
 class HubspaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Handle a config flow for Hubspace"""
+    """Handle a config flow for Hubspace."""
 
     VERSION = const_maj
     MINOR_VERSION = const_min
@@ -57,8 +66,8 @@ class HubspaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def validate_auth(
         self, user_input: dict[str, Any] | None = None
-    ) -> Optional[auth_result]:
-        """Validate and save auth"""
+    ) -> AuthResult | None:
+        """Validate and save auth."""
         err_type = None
         self.bridge = AferoBridgeV1(
             user_input[CONF_USERNAME],
@@ -76,10 +85,21 @@ class HubspaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             err_type = "unknown"
         finally:
             await self.bridge.close()
-        return auth_result(self.bridge._auth._token_data.refresh_token, err_type)
+        return AuthResult(self.bridge.refresh_token, err_type)
 
     @staticmethod
     def extract_user_data(user_input: dict[str, Any] | None) -> tuple[dict, dict]:
+        """Extract user data and options from input dictionary.
+
+        Args:
+            user_input: Dictionary containing user input data and options.
+
+        Returns:
+            A tuple containing:
+                - data: Dictionary with non-option user input values
+                - options: Dictionary with option values
+
+        """
         options = {}
         data = {}
         importable_options = [CONF_TIMEOUT, POLLING_TIME_STR]
@@ -116,18 +136,17 @@ class HubspaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 data[CONF_TOKEN] = auth_data.token
                 if user_input[POLLING_TIME_STR] < 2:
                     errors["base"] = "polling_too_short"
+                elif self.source == config_entries.SOURCE_REAUTH:
+                    return self.async_update_reload_and_abort(
+                        self._get_reauth_entry(),
+                        data_updates=data,
+                        options=options,
+                    )
                 else:
-                    if self.source == config_entries.SOURCE_REAUTH:
-                        return self.async_update_reload_and_abort(
-                            self._get_reauth_entry(),
-                            data_updates=data,
-                            options=options,
-                        )
-                    else:
-                        self._abort_if_unique_id_configured(reload_on_update=True)
-                        return self.async_create_entry(
-                            title=unique_id, data=data, options=options
-                        )
+                    self._abort_if_unique_id_configured(reload_on_update=True)
+                    return self.async_create_entry(
+                        title=unique_id, data=data, options=options
+                    )
             else:
                 errors["base"] = auth_data.err_type
         with contextlib.suppress(Exception):
@@ -141,7 +160,7 @@ class HubspaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_reauth(
         self, user_input: dict[str, Any] | None = None
     ) -> config_entries.ConfigFlowResult:
-        """Handle a reauth flow"""
+        """Handle a reauth flow."""
         return await self.async_step_reauth_confirm()
 
     async def async_step_reauth_confirm(
@@ -165,9 +184,12 @@ class HubspaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
 
 class HubspaceOptionsFlowHandler(config_entries.OptionsFlow):
+    """Handle options config flow for Hubspace."""
+
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
     ) -> config_entries.ConfigFlowResult:
+        """Handle UI Options workflow."""
         errors: dict[str, str] = {}
         if user_input is not None:
             if user_input[POLLING_TIME_STR] == 0:

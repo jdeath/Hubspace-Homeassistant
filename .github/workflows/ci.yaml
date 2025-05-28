@@ -1,19 +1,19 @@
+---
 name: Execute tests and linting
-
 on:
   workflow_dispatch:
   push:
     branches:
-    - main
+      - main
   pull_request:
-
 jobs:
   run_tests:
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.12", "3.13"]
-
+        python-version:
+          - "3.12"
+          - "3.13"
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}

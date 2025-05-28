@@ -1,3 +1,5 @@
+"""Home Assistant entity for interacting with Afero Number."""
+
 from dataclasses import fields
 
 from aioafero.v1 import AferoController, AferoModelResource
@@ -13,6 +15,8 @@ from .entity import HubspaceBaseEntity
 
 
 class AferoNumberEntity(HubspaceBaseEntity, NumberEntity):
+    """Representation of an Afero Number."""
+
     def __init__(
         self,
         bridge: HubspaceBridge,
@@ -20,29 +24,34 @@ class AferoNumberEntity(HubspaceBaseEntity, NumberEntity):
         resource: AferoModelResource,
         identifier: tuple[str, str],
     ) -> None:
+        """Initialize an Afero Number."""
         super().__init__(bridge, controller, resource, instance=str(identifier))
         self._identifier: tuple[str, str] = identifier
         self._attr_name = resource.numbers[identifier].name
 
     @property
     def native_max_value(self) -> float:
+        """The maximum accepted value in the number's native_unit_of_measurement (inclusive)."""
         return self.resource.numbers[self._identifier].max
 
     @property
     def native_min_value(self) -> float:
+        """The minimum accepted value in the number's native_unit_of_measurement (inclusive)."""
         return self.resource.numbers[self._identifier].min
 
     @property
     def native_step(self) -> float:
+        """Defines the resolution of the values, i.e. the smallest increment or decrement in the number's."""
         return self.resource.numbers[self._identifier].step
 
     @property
     def native_value(self) -> float:
-        """Return the current value"""
+        """The value of the number in the number's native_unit_of_measurement."""
         return self.resource.numbers[self._identifier].value
 
     @property
     def native_unit_of_measurement(self) -> str:
+        """The unit of measurement that the sensor's value is expressed in."""
         return self.resource.numbers[self._identifier].unit
 
     async def async_set_native_value(self, value: float) -> None:
@@ -76,23 +85,39 @@ async def async_setup_entry(
                 event_filter=EventType.RESOURCE_ADDED,
             )
         )
-        # Add any currently-tracked entities
-        for resource in controller:
-            for number in resource.numbers.keys():
+        # Add any currently tracked entities
+        entities.extend(
+            [
                 entities.append(AferoNumberEntity(bridge, controller, resource, number))
-
+                for resource in controller
+                for number in resource.numbers
+            ]
+        )
     async_add_entities(entities)
 
 
 async def generate_callback(bridge, controller, async_add_entities: callback):
+    """Generate a callback function for handling new number entities.
+
+    Args:
+        bridge: HubspaceBridge instance for managing device communication
+        controller: AferoController instance managing the device
+        async_add_entities: Callback function to register new entities
+
+    Returns:
+        Callback function that adds new number entities when resources are added
+
+    """
 
     async def add_entity_controller(
         event_type: EventType, resource: AferoModelResource
     ) -> None:
         """Add an entity."""
-        for number in resource.numbers.keys():
-            async_add_entities(
-                [AferoNumberEntity(bridge, controller, resource, number)]
-            )
+        async_add_entities(
+            [
+                AferoNumberEntity(bridge, controller, resource, number)
+                for number in resource.numbers
+            ]
+        )
 
     return add_entity_controller

@@ -1,13 +1,15 @@
+"""Register Afero services within Home Assistant."""
+
 import asyncio
 import logging
 from typing import Final
 
-import homeassistant.helpers.config_validation as cv
-import voluptuous as vol
 from homeassistant.const import CONF_USERNAME
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers import entity_registry as er
+import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.service import verify_domain_control
+import voluptuous as vol
 
 from .bridge import HubspaceBridge
 from .const import DOMAIN
@@ -23,9 +25,27 @@ LOGGER = logging.getLogger(__name__)
 
 
 def async_register_services(hass: HomeAssistant) -> None:
-    """Register services for Hubspace integration."""
+    """Register services for Hubspace integration.
+
+    Registers the send_command service that allows sending commands to Hubspace devices.
+    The service accepts function class, instance, value and optional account parameters.
+
+    Args:
+        hass: HomeAssistant instance to register services with
+
+    """
 
     async def send_command(call: ServiceCall, skip_reload=True) -> None:
+        """Send command to Hubspace device(s).
+
+        Sends a specified command with parameters to one or more Hubspace devices.
+        Commands are sent through the appropriate bridge based on account.
+
+        Args:
+            call: Service call containing command parameters
+            skip_reload: Whether to skip reloading devices after command (default: True)
+
+        """
         states: list[dict] = []
         states.append(
             {
@@ -48,6 +68,15 @@ def async_register_services(hass: HomeAssistant) -> None:
         await asyncio.gather(*tasks)
 
     def optional(value):
+        """Validate optional string values.
+
+        Args:
+            value: Value to validate
+
+        Returns:
+            The validated string value or None if value is None
+
+        """
         if value is None:
             return value
         return cv.string(value)
@@ -70,7 +99,16 @@ def async_register_services(hass: HomeAssistant) -> None:
 
 
 async def find_bridge(hass: HomeAssistant, username: str) -> HubspaceBridge | None:
-    """Find the bridge for the given username"""
+    """Find the bridge for the given username.
+
+    Args:
+        hass: HomeAssistant instance containing bridges
+        username: Username to find bridge for
+
+    Returns:
+        HubspaceBridge if found, None otherwise
+
+    """
     for bridge in hass.data[DOMAIN].values():
         if username is None:
             return bridge

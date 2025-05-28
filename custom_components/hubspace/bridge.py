@@ -1,10 +1,13 @@
+"""Bridge knows how to interact with aioafero to update data."""
+
 import asyncio
 import logging
+from pathlib import Path
 from typing import Any, Callable
 
-import aiohttp
 from aioafero import EventType, InvalidAuth, InvalidResponse
 from aioafero.v1 import AferoBridgeV1
+import aiohttp
 from aiohttp import client_exceptions
 from homeassistant import core
 from homeassistant.config_entries import SOURCE_REAUTH, ConfigEntry
@@ -16,21 +19,29 @@ from .const import DOMAIN, PLATFORMS, POLLING_TIME_STR
 from .device import async_setup_devices
 
 
-def mock_get_data(filename):
-    import json
-    import os
+def mock_get_data(filename: str) -> dict:
+    """Create a mock data fetching function for testing.
 
-    current_file_path = os.path.abspath(__file__)
-    file_path = os.path.join(os.path.dirname(current_file_path), filename)
+    Args:
+        filename: Name of the JSON file containing mock data
+
+    Returns:
+        An async function that returns the JSON data from the specified file when called
+
+    """
+    import json
+
+    current_file_path = Path(__file__)
+    file_path = current_file_path / filename
 
     async def get_data():
-        return json.load(open(file_path))
+        return json.load(file_path.open())
 
     return get_data
 
 
 class HubspaceBridge:
-    """Manages a single Hubspace account"""
+    """Manages a single Hubspace account."""
 
     def __init__(self, hass: core.HomeAssistant, config_entry: ConfigEntry) -> None:
         """Initialize the system."""

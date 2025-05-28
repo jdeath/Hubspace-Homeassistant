@@ -1,1549 +1,1540 @@
 [
-    {
-        "children": [
-            "69307f26-1fd6-4aa9-a2a1-ae0180c8972a",
-            "8a15708d-6ed4-4e31-a1f7-5d2204d07013",
-            "dc0e8f1f-0273-4140-89f6-52f471f7cd05",
-            "9bb11e33-2e37-4101-9b66-a18ddc98fc2c"
-        ],
-        "createdTimestampMs": 0,
-        "friendlyDescription": "",
-        "friendlyName": "Friendly Name 0",
-        "id": "56f1b61e-93d1-4220-80ea-1dc5d459780f",
-        "image": "",
-        "locale": "en_US",
-        "tag": "",
-        "typeId": "metadevice.home",
-        "updatedTimestampMs": 0,
-        "version": 1
-    },
-    {
-        "children": [
-            "8a15708d-6ed4-4e31-a1f7-5d2204d07013",
-            "dc0e8f1f-0273-4140-89f6-52f471f7cd05",
-            "9bb11e33-2e37-4101-9b66-a18ddc98fc2c"
-        ],
-        "createdTimestampMs": 0,
-        "friendlyDescription": "",
-        "friendlyName": "Friendly Name 1",
-        "id": "69307f26-1fd6-4aa9-a2a1-ae0180c8972a",
-        "image": "wallpaper01.jpg",
-        "locale": "en_US",
-        "tag": "",
-        "typeId": "metadevice.room",
-        "updatedTimestampMs": 0,
-        "version": 1
-    },
-    {
-        "children": [
-            "8a15708d-6ed4-4e31-a1f7-5d2204d07013",
-            "dc0e8f1f-0273-4140-89f6-52f471f7cd05"
-        ],
-        "createdTimestampMs": 0,
-        "description": {
-            "createdTimestampMs": 0,
-            "defaultImage": "ceiling-fan-chandra-icon",
-            "descriptions": [
+  {
+    "children": [
+      "69307f26-1fd6-4aa9-a2a1-ae0180c8972a",
+      "8a15708d-6ed4-4e31-a1f7-5d2204d07013",
+      "dc0e8f1f-0273-4140-89f6-52f471f7cd05",
+      "9bb11e33-2e37-4101-9b66-a18ddc98fc2c"
+    ],
+    "createdTimestampMs": 0,
+    "friendlyDescription": "",
+    "friendlyName": "Friendly Name 0",
+    "id": "56f1b61e-93d1-4220-80ea-1dc5d459780f",
+    "image": "",
+    "locale": "en_US",
+    "tag": "",
+    "typeId": "metadevice.home",
+    "updatedTimestampMs": 0,
+    "version": 1
+  },
+  {
+    "children": [
+      "8a15708d-6ed4-4e31-a1f7-5d2204d07013",
+      "dc0e8f1f-0273-4140-89f6-52f471f7cd05",
+      "9bb11e33-2e37-4101-9b66-a18ddc98fc2c"
+    ],
+    "createdTimestampMs": 0,
+    "friendlyDescription": "",
+    "friendlyName": "Friendly Name 1",
+    "id": "69307f26-1fd6-4aa9-a2a1-ae0180c8972a",
+    "image": "wallpaper01.jpg",
+    "locale": "en_US",
+    "tag": "",
+    "typeId": "metadevice.room",
+    "updatedTimestampMs": 0,
+    "version": 1
+  },
+  {
+    "children": [
+      "8a15708d-6ed4-4e31-a1f7-5d2204d07013",
+      "dc0e8f1f-0273-4140-89f6-52f471f7cd05"
+    ],
+    "createdTimestampMs": 0,
+    "description": {
+      "createdTimestampMs": 0,
+      "defaultImage": "ceiling-fan-chandra-icon",
+      "descriptions": [
+        {
+          "createdTimestampMs": 0,
+          "defaultImage": "ceiling-fan-chandra-icon",
+          "descriptions": [],
+          "device": {
+            "defaultName": "Ceiling Light",
+            "deviceClass": "light",
+            "manufacturerName": "Hampton Bay",
+            "model": "TBD",
+            "type": "device"
+          },
+          "functions": [
+            {
+              "createdTimestampMs": 0,
+              "functionClass": "power",
+              "functionInstance": "light-power",
+              "id": "3f157542-600b-4665-b9f9-3b59daf0ec02",
+              "schedulable": true,
+              "type": "category",
+              "updatedTimestampMs": 0,
+              "values": [
                 {
-                    "createdTimestampMs": 0,
-                    "defaultImage": "ceiling-fan-chandra-icon",
-                    "descriptions": [],
-                    "device": {
-                        "defaultName": "Ceiling Light",
-                        "deviceClass": "light",
-                        "manufacturerName": "Hampton Bay",
-                        "model": "TBD",
-                        "type": "device"
-                    },
-                    "functions": [
-                        {
-                            "createdTimestampMs": 0,
-                            "functionClass": "power",
-                            "functionInstance": "light-power",
-                            "id": "3f157542-600b-4665-b9f9-3b59daf0ec02",
-                            "schedulable": true,
-                            "type": "category",
-                            "updatedTimestampMs": 0,
-                            "values": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "0782f00d-591a-42d3-92ad-a56623754559",
-                                            "key": "2",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "0"
-                                        }
-                                    ],
-                                    "id": "514dea34-2604-48fb-a652-6b9395e2c41b",
-                                    "name": "off",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                },
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "567340d1-9eca-4d7f-9173-9a775c9273e0",
-                                            "key": "2",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "1"
-                                        }
-                                    ],
-                                    "id": "b4d38100-0232-42b2-be70-9bd00227ea89",
-                                    "name": "on",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                }
-                            ]
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "functionClass": "color-temperature",
-                            "id": "b716a6d0-62b7-484b-8505-490d88d41f0b",
-                            "schedulable": false,
-                            "type": "category",
-                            "updatedTimestampMs": 0,
-                            "values": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "d5724741-ff72-49da-a86f-6362fc63fd9d",
-                                            "key": "5",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "6500"
-                                        }
-                                    ],
-                                    "id": "781af822-4c7f-4495-9bb1-c6ed12980f46",
-                                    "name": "6500K",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                },
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "12efe51d-a789-441b-8e94-2ed5f73aa963",
-                                            "key": "5",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "3000"
-                                        }
-                                    ],
-                                    "id": "697be7b6-df17-4de4-9959-1b2dfdf07dfd",
-                                    "name": "3000K",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                },
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "0a877412-0c85-4f94-b909-4408aa8769d0",
-                                            "key": "5",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "2700"
-                                        }
-                                    ],
-                                    "id": "dfd15436-743f-4f91-ba8d-f607876d2a84",
-                                    "name": "2700K",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                },
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "c656ddbf-cc4b-43bf-a1c0-583e430d5c7b",
-                                            "key": "5",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "5000"
-                                        }
-                                    ],
-                                    "id": "1a047372-414b-41f8-aaca-5dfdafc1e132",
-                                    "name": "5000K",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                },
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "ae7ccb54-7e39-4a11-9fc6-bc5ff526da6d",
-                                            "key": "5",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "4000"
-                                        }
-                                    ],
-                                    "id": "4ea5f444-48e4-4bfc-adcd-ac21882dbc99",
-                                    "name": "4000K",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                },
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "e202d189-be39-4b31-940a-b46be621e1b7",
-                                            "key": "5",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "3500"
-                                        }
-                                    ],
-                                    "id": "6b9fc297-1e69-457b-8f2f-852a1c6b0c68",
-                                    "name": "3500K",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                }
-                            ]
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "functionClass": "brightness",
-                            "id": "4df3b251-12c4-490e-a7cc-f784d3066cb7",
-                            "schedulable": true,
-                            "type": "numeric",
-                            "updatedTimestampMs": 0,
-                            "values": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "1ebf1e41-2069-4841-831e-bf431df5a94b",
-                                            "key": "4",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0
-                                        }
-                                    ],
-                                    "id": "2837094b-5c2a-4069-a58f-486f69da994a",
-                                    "name": "brightness",
-                                    "range": {
-                                        "max": 100,
-                                        "min": 1,
-                                        "step": 1
-                                    },
-                                    "updatedTimestampMs": 0
-                                }
-                            ]
-                        }
-                    ],
-                    "id": "977121c6-b15d-4252-bc60-fa496ca13116",
-                    "key": "light",
-                    "updatedTimestampMs": 0,
-                    "version": 1
-                },
-                {
-                    "createdTimestampMs": 0,
-                    "defaultImage": "ceiling-fan-chandra-icon",
-                    "descriptions": [],
-                    "device": {
-                        "defaultName": "Ceiling Fan",
-                        "deviceClass": "fan",
-                        "manufacturerName": "Hampton Bay",
-                        "model": "TBD",
-                        "type": "device"
-                    },
-                    "functions": [
-                        {
-                            "createdTimestampMs": 0,
-                            "functionClass": "toggle",
-                            "functionInstance": "comfort-breeze",
-                            "id": "f7f19e14-17db-4267-bf17-6139ba71b384",
-                            "schedulable": true,
-                            "type": "category",
-                            "updatedTimestampMs": 0,
-                            "values": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "135a1a53-7f8f-4aca-a3d2-e75ea5a85922",
-                                            "key": "8",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "1"
-                                        }
-                                    ],
-                                    "id": "21c45a7d-e558-4a13-85f7-e95652c36463",
-                                    "name": "enabled",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                },
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "3b588108-48d1-433f-9b4c-d073a0415f8e",
-                                            "key": "8",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "0"
-                                        }
-                                    ],
-                                    "id": "663f9cc3-147f-4882-9782-c4733beb69df",
-                                    "name": "disabled",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                }
-                            ]
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "functionClass": "timer",
-                            "functionInstance": "fan-power",
-                            "id": "41c88a2c-3584-4d2a-9548-a17efe0c8ce8",
-                            "schedulable": false,
-                            "type": "numeric",
-                            "updatedTimestampMs": 0,
-                            "values": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "f0b94652-31a5-4655-b4b9-021bb1d29985",
-                                            "key": "50",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0
-                                        }
-                                    ],
-                                    "id": "f8454b64-19c4-4e98-bf9b-c66086607bff",
-                                    "name": "timer-1",
-                                    "range": {
-                                        "max": 1440,
-                                        "min": 0,
-                                        "step": 1
-                                    },
-                                    "updatedTimestampMs": 0
-                                }
-                            ]
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "functionClass": "fan-speed",
-                            "functionInstance": "fan-speed",
-                            "id": "3a3a242a-c81f-496d-a9c9-61795afa97c1",
-                            "schedulable": true,
-                            "type": "category",
-                            "updatedTimestampMs": 0,
-                            "values": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "de6b6c8a-88fd-4a16-8684-08d8028a1b6d",
-                                            "key": "6",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "33"
-                                        }
-                                    ],
-                                    "id": "64b71b95-5a15-495c-9e58-4f50c31a0ad6",
-                                    "name": "fan-speed-6-033",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                },
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "47b058ba-0ef4-4e07-9b1e-18a43d53f998",
-                                            "key": "6",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "100"
-                                        }
-                                    ],
-                                    "id": "7da131e3-e691-41bd-b1f3-8a67ea9f4e6e",
-                                    "name": "fan-speed-6-100",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                },
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "1eb16713-a122-4a59-b09d-bbe013873bcd",
-                                            "key": "6",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "16"
-                                        }
-                                    ],
-                                    "id": "41659a3a-1944-4291-be64-e577229c1049",
-                                    "name": "fan-speed-6-016",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                },
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "de76a626-c127-4177-a28a-1b101474dc92",
-                                            "key": "6",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "50"
-                                        }
-                                    ],
-                                    "id": "a5b9f90d-d38d-4211-b0c8-00b5492717c2",
-                                    "name": "fan-speed-6-050",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                },
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "446ef574-544f-40c4-b9f5-bcceffa82dec",
-                                            "key": "6",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "0"
-                                        }
-                                    ],
-                                    "hints": [
-                                        "hidden"
-                                    ],
-                                    "id": "1d2387f4-fbd3-416c-acd2-0aa279a9d5e2",
-                                    "name": "fan-speed-6-000",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                },
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "d115edfa-87a6-40ac-8b0c-32c203149de0",
-                                            "key": "6",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "83"
-                                        }
-                                    ],
-                                    "id": "c08ae1dd-915a-4ae0-bd8d-f1db724dafdf",
-                                    "name": "fan-speed-6-083",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                },
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "7c59925e-66f3-4fac-bed8-ee6fe0bff224",
-                                            "key": "6",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "66"
-                                        }
-                                    ],
-                                    "id": "5c4c346c-642b-4020-9f47-0112e1223b8d",
-                                    "name": "fan-speed-6-066",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                }
-                            ]
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "functionClass": "fan-reverse",
-                            "functionInstance": "fan-reverse",
-                            "id": "0057ea64-ff73-421d-8667-75a0d9ec485d",
-                            "schedulable": false,
-                            "type": "category",
-                            "updatedTimestampMs": 0,
-                            "values": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "40f5dfe9-3172-4ad7-b5ee-967ee4d66782",
-                                            "key": "7",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "1"
-                                        }
-                                    ],
-                                    "id": "fb395963-e603-41fc-9252-dfd73015c395",
-                                    "name": "reverse",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                },
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "dfdffb80-aa5b-4abc-a48e-1f67aa400030",
-                                            "key": "7",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "0"
-                                        }
-                                    ],
-                                    "id": "910a2f15-9c35-49bd-89a8-4fa778ede0d7",
-                                    "name": "forward",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                },
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "251755e9-4c99-4cdb-9ef1-6d3311fe0b81",
-                                            "key": "7",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "2"
-                                        }
-                                    ],
-                                    "hints": [
-                                        "voice-hidden"
-                                    ],
-                                    "id": "1ca9d18e-0634-4d01-acc1-07b08528650e",
-                                    "name": "in-progress",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                }
-                            ]
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "functionClass": "power",
-                            "functionInstance": "fan-power",
-                            "id": "fdff291c-73bb-40cb-9c12-88d4f9bc4207",
-                            "schedulable": true,
-                            "type": "category",
-                            "updatedTimestampMs": 0,
-                            "values": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "827ea2dd-6d65-4e69-9ae6-8d6fd99573ad",
-                                            "key": "3",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "0"
-                                        }
-                                    ],
-                                    "id": "43183a83-fd3f-4a06-aad1-2ec3c9eab5c0",
-                                    "name": "off",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                },
-                                {
-                                    "createdTimestampMs": 0,
-                                    "deviceValues": [
-                                        {
-                                            "createdTimestampMs": 0,
-                                            "id": "cb99e734-d78a-4c10-a93c-7323a822bc2c",
-                                            "key": "3",
-                                            "type": "attribute",
-                                            "updatedTimestampMs": 0,
-                                            "value": "1"
-                                        }
-                                    ],
-                                    "id": "87b0070e-921e-489b-a0af-6fd06c503fe4",
-                                    "name": "on",
-                                    "range": {},
-                                    "updatedTimestampMs": 0
-                                }
-                            ]
-                        }
-                    ],
-                    "id": "bc0468c9-25db-4bd7-b021-79e5e7c50fcb",
-                    "key": "fan",
-                    "updatedTimestampMs": 0,
-                    "version": 1
-                }
-            ],
-            "device": {
-                "defaultName": "Ceiling Fan",
-                "deviceClass": "ceiling-fan",
-                "manufacturerName": "Hampton Bay",
-                "model": "TBD",
-                "profileId": "3bdea56b-f657-4cff-95b9-b4f2c6d45cf3",
-                "type": "device"
-            },
-            "functions": [
-                {
-                    "createdTimestampMs": 0,
-                    "functionClass": "error-flag",
-                    "functionInstance": "acz-error",
-                    "id": "7e2af5aa-549c-4c46-8df6-54e382b7a45b",
-                    "schedulable": false,
-                    "type": "boolean",
-                    "updatedTimestampMs": 0,
-                    "values": [
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "0cebf796-496f-44ed-95de-4c0993d6e1a4",
-                                    "key": "406",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0
-                                }
-                            ],
-                            "id": "0f0a79dc-67ea-4cc1-843f-cca82059cc53",
-                            "name": "no-error",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        }
-                    ]
-                },
-                {
-                    "createdTimestampMs": 0,
-                    "functionClass": "power",
-                    "functionInstance": "primary",
-                    "id": "4ca27ccf-9357-42c1-a6fb-75428c53fdac",
-                    "schedulable": true,
-                    "type": "category",
-                    "updatedTimestampMs": 0,
-                    "values": [
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "c42bf66c-c34c-476c-b889-ef606ad6eb30",
-                                    "key": "1",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "1"
-                                }
-                            ],
-                            "id": "3980ce1c-f00e-41fd-a681-0113429cedcd",
-                            "name": "on",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "e8d7e936-323b-4251-9e56-3d7fd82f3999",
-                                    "key": "1",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "0"
-                                }
-                            ],
-                            "id": "fdcf9672-4033-406a-9c7b-3bb3d73f2023",
-                            "name": "off",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        }
-                    ]
-                },
-                {
-                    "createdTimestampMs": 0,
-                    "functionClass": "error-flag",
-                    "functionInstance": "storage-error",
-                    "id": "91201d0d-1f0c-4650-89d4-1388842cc523",
-                    "schedulable": false,
-                    "type": "boolean",
-                    "updatedTimestampMs": 0,
-                    "values": [
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "4b848625-d01e-4a6f-ba00-dcd3ded256a9",
-                                    "key": "405",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0
-                                }
-                            ],
-                            "id": "17966b62-8fdd-402f-aeb3-f1580e0e0ade",
-                            "name": "storage-error",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        }
-                    ]
-                }
-            ],
-            "id": "e6a2838c-60a0-468d-8877-acb1a4c6f1c1",
-            "updatedTimestampMs": 0,
-            "version": 1
-        },
-        "deviceId": "86db488cf6135e8e",
-        "friendlyDescription": "",
-        "friendlyName": "Friendly Name 4",
-        "id": "9bb11e33-2e37-4101-9b66-a18ddc98fc2c",
-        "image": "",
-        "locale": "en_US",
-        "state": {
-            "metadeviceId": "9bb11e33-2e37-4101-9b66-a18ddc98fc2c",
-            "values": [
-                {
-                    "functionClass": "error-flag",
-                    "functionInstance": "acz-error",
-                    "lastUpdateTime": 1689286828489,
-                    "value": false
-                },
-                {
-                    "functionClass": "power",
-                    "functionInstance": "primary",
-                    "lastUpdateTime": 1689389247940,
-                    "value": "on"
-                },
-                {
-                    "functionClass": "error-flag",
-                    "functionInstance": "storage-error",
-                    "lastUpdateTime": 1689286229775,
-                    "value": false
-                },
-                {
-                    "functionClass": "wifi-ssid",
-                    "lastUpdateTime": 1689287761616,
-                    "value": "SSID0"
-                },
-                {
-                    "functionClass": "wifi-rssi",
-                    "lastUpdateTime": 1689520420119,
-                    "value": -76
-                },
-                {
-                    "functionClass": "wifi-steady-state",
-                    "lastUpdateTime": 1689517393618,
-                    "value": "handshake-failed"
-                },
-                {
-                    "functionClass": "wifi-setup-state",
-                    "lastUpdateTime": 1689517986492,
-                    "value": "handshake-failed"
-                },
-                {
-                    "functionClass": "wifi-mac-address",
-                    "lastUpdateTime": 0,
-                    "value": "a134096af852"
-                },
-                {
-                    "functionClass": "geo-coordinates",
-                    "functionInstance": "system-device-location",
-                    "lastUpdateTime": 1689288421151,
-                    "value": {
-                        "geo-coordinates": {
-                            "latitude": "0.80459798124898",
-                            "longitude": "0.5852044067836105"
-                        }
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "0782f00d-591a-42d3-92ad-a56623754559",
+                      "key": "2",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "0"
                     }
+                  ],
+                  "id": "514dea34-2604-48fb-a652-6b9395e2c41b",
+                  "name": "off",
+                  "range": {},
+                  "updatedTimestampMs": 0
                 },
                 {
-                    "functionClass": "scheduler-flags",
-                    "lastUpdateTime": 1689519958610,
-                    "value": 0
-                },
-                {
-                    "functionClass": "available",
-                    "lastUpdateTime": 1689518989919,
-                    "value": true
-                },
-                {
-                    "functionClass": "visible",
-                    "lastUpdateTime": 1689518989919,
-                    "value": true
-                },
-                {
-                    "functionClass": "direct",
-                    "lastUpdateTime": 1689518989919,
-                    "value": true
-                },
-                {
-                    "functionClass": "ble-mac-address",
-                    "lastUpdateTime": 0,
-                    "value": "488cf6135e8e"
-                }
-            ]
-        },
-        "tag": "",
-        "typeId": "metadevice.device",
-        "updatedTimestampMs": 0,
-        "version": 1
-    },
-    {
-        "children": [],
-        "createdTimestampMs": 0,
-        "description": {
-            "createdTimestampMs": 0,
-            "defaultImage": "ceiling-fan-chandra-icon",
-            "descriptions": [],
-            "device": {
-                "defaultName": "Ceiling Light",
-                "deviceClass": "light",
-                "manufacturerName": "Hampton Bay",
-                "model": "TBD",
-                "type": "device"
-            },
-            "functions": [
-                {
-                    "createdTimestampMs": 0,
-                    "functionClass": "power",
-                    "functionInstance": "light-power",
-                    "id": "3f157542-600b-4665-b9f9-3b59daf0ec02",
-                    "schedulable": true,
-                    "type": "category",
-                    "updatedTimestampMs": 0,
-                    "values": [
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "0782f00d-591a-42d3-92ad-a56623754559",
-                                    "key": "2",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "0"
-                                }
-                            ],
-                            "id": "514dea34-2604-48fb-a652-6b9395e2c41b",
-                            "name": "off",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "567340d1-9eca-4d7f-9173-9a775c9273e0",
-                                    "key": "2",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "1"
-                                }
-                            ],
-                            "id": "b4d38100-0232-42b2-be70-9bd00227ea89",
-                            "name": "on",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        }
-                    ]
-                },
-                {
-                    "createdTimestampMs": 0,
-                    "functionClass": "color-temperature",
-                    "id": "b716a6d0-62b7-484b-8505-490d88d41f0b",
-                    "schedulable": false,
-                    "type": "category",
-                    "updatedTimestampMs": 0,
-                    "values": [
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "d5724741-ff72-49da-a86f-6362fc63fd9d",
-                                    "key": "5",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "6500"
-                                }
-                            ],
-                            "id": "781af822-4c7f-4495-9bb1-c6ed12980f46",
-                            "name": "6500K",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "12efe51d-a789-441b-8e94-2ed5f73aa963",
-                                    "key": "5",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "3000"
-                                }
-                            ],
-                            "id": "697be7b6-df17-4de4-9959-1b2dfdf07dfd",
-                            "name": "3000K",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "0a877412-0c85-4f94-b909-4408aa8769d0",
-                                    "key": "5",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "2700"
-                                }
-                            ],
-                            "id": "dfd15436-743f-4f91-ba8d-f607876d2a84",
-                            "name": "2700K",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "c656ddbf-cc4b-43bf-a1c0-583e430d5c7b",
-                                    "key": "5",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "5000"
-                                }
-                            ],
-                            "id": "1a047372-414b-41f8-aaca-5dfdafc1e132",
-                            "name": "5000K",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "ae7ccb54-7e39-4a11-9fc6-bc5ff526da6d",
-                                    "key": "5",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "4000"
-                                }
-                            ],
-                            "id": "4ea5f444-48e4-4bfc-adcd-ac21882dbc99",
-                            "name": "4000K",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "e202d189-be39-4b31-940a-b46be621e1b7",
-                                    "key": "5",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "3500"
-                                }
-                            ],
-                            "id": "6b9fc297-1e69-457b-8f2f-852a1c6b0c68",
-                            "name": "3500K",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        }
-                    ]
-                },
-                {
-                    "createdTimestampMs": 0,
-                    "functionClass": "brightness",
-                    "id": "4df3b251-12c4-490e-a7cc-f784d3066cb7",
-                    "schedulable": true,
-                    "type": "numeric",
-                    "updatedTimestampMs": 0,
-                    "values": [
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "1ebf1e41-2069-4841-831e-bf431df5a94b",
-                                    "key": "4",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0
-                                }
-                            ],
-                            "id": "2837094b-5c2a-4069-a58f-486f69da994a",
-                            "name": "brightness",
-                            "range": {
-                                "max": 100,
-                                "min": 1,
-                                "step": 1
-                            },
-                            "updatedTimestampMs": 0
-                        }
-                    ]
-                }
-            ],
-            "id": "977121c6-b15d-4252-bc60-fa496ca13116",
-            "key": "light",
-            "updatedTimestampMs": 0,
-            "version": 1
-        },
-        "deviceId": "86db488cf6135e8e",
-        "friendlyDescription": "",
-        "friendlyName": "Friendly Name 3",
-        "id": "8a15708d-6ed4-4e31-a1f7-5d2204d07013",
-        "image": "",
-        "locale": "en_US",
-        "semanticDescriptionKey": "light",
-        "state": {
-            "metadeviceId": "8a15708d-6ed4-4e31-a1f7-5d2204d07013",
-            "values": [
-                {
-                    "functionClass": "power",
-                    "functionInstance": "light-power",
-                    "lastUpdateTime": 1689536456346,
-                    "value": "off"
-                },
-                {
-                    "functionClass": "color-temperature",
-                    "lastUpdateTime": 1689521243649,
-                    "value": "3500K"
-                },
-                {
-                    "functionClass": "brightness",
-                    "lastUpdateTime": 1689284669167,
-                    "value": 1
-                },
-                {
-                    "functionClass": "wifi-ssid",
-                    "lastUpdateTime": 1689287761616,
-                    "value": "SSID0"
-                },
-                {
-                    "functionClass": "wifi-rssi",
-                    "lastUpdateTime": 1689520420119,
-                    "value": -76
-                },
-                {
-                    "functionClass": "wifi-steady-state",
-                    "lastUpdateTime": 1689517393618,
-                    "value": "handshake-failed"
-                },
-                {
-                    "functionClass": "wifi-setup-state",
-                    "lastUpdateTime": 1689517986492,
-                    "value": "handshake-failed"
-                },
-                {
-                    "functionClass": "wifi-mac-address",
-                    "lastUpdateTime": 0,
-                    "value": "a134096af852"
-                },
-                {
-                    "functionClass": "geo-coordinates",
-                    "functionInstance": "system-device-location",
-                    "lastUpdateTime": 1689288421151,
-                    "value": {
-                        "geo-coordinates": {
-                            "latitude": "0.80459798124898",
-                            "longitude": "0.5852044067836105"
-                        }
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "567340d1-9eca-4d7f-9173-9a775c9273e0",
+                      "key": "2",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "1"
                     }
-                },
-                {
-                    "functionClass": "scheduler-flags",
-                    "lastUpdateTime": 1689519958610,
-                    "value": 0
-                },
-                {
-                    "functionClass": "available",
-                    "lastUpdateTime": 1689518989919,
-                    "value": true
-                },
-                {
-                    "functionClass": "visible",
-                    "lastUpdateTime": 1689518989919,
-                    "value": true
-                },
-                {
-                    "functionClass": "direct",
-                    "lastUpdateTime": 1689518989919,
-                    "value": true
-                },
-                {
-                    "functionClass": "ble-mac-address",
-                    "lastUpdateTime": 0,
-                    "value": "488cf6135e8e"
+                  ],
+                  "id": "b4d38100-0232-42b2-be70-9bd00227ea89",
+                  "name": "on",
+                  "range": {},
+                  "updatedTimestampMs": 0
                 }
-            ]
-        },
-        "tag": "",
-        "typeId": "metadevice.device",
-        "updatedTimestampMs": 0,
-        "version": 1
-    },
-    {
-        "children": [],
-        "createdTimestampMs": 0,
-        "description": {
-            "createdTimestampMs": 0,
-            "defaultImage": "ceiling-fan-chandra-icon",
-            "descriptions": [],
-            "device": {
-                "defaultName": "Ceiling Fan",
-                "deviceClass": "fan",
-                "manufacturerName": "Hampton Bay",
-                "model": "TBD",
-                "type": "device"
+              ]
             },
-            "functions": [
+            {
+              "createdTimestampMs": 0,
+              "functionClass": "color-temperature",
+              "id": "b716a6d0-62b7-484b-8505-490d88d41f0b",
+              "schedulable": false,
+              "type": "category",
+              "updatedTimestampMs": 0,
+              "values": [
                 {
-                    "createdTimestampMs": 0,
-                    "functionClass": "toggle",
-                    "functionInstance": "comfort-breeze",
-                    "id": "f7f19e14-17db-4267-bf17-6139ba71b384",
-                    "schedulable": true,
-                    "type": "category",
-                    "updatedTimestampMs": 0,
-                    "values": [
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "135a1a53-7f8f-4aca-a3d2-e75ea5a85922",
-                                    "key": "8",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "1"
-                                }
-                            ],
-                            "id": "21c45a7d-e558-4a13-85f7-e95652c36463",
-                            "name": "enabled",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "3b588108-48d1-433f-9b4c-d073a0415f8e",
-                                    "key": "8",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "0"
-                                }
-                            ],
-                            "id": "663f9cc3-147f-4882-9782-c4733beb69df",
-                            "name": "disabled",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        }
-                    ]
-                },
-                {
-                    "createdTimestampMs": 0,
-                    "functionClass": "timer",
-                    "functionInstance": "fan-power",
-                    "id": "41c88a2c-3584-4d2a-9548-a17efe0c8ce8",
-                    "schedulable": false,
-                    "type": "numeric",
-                    "updatedTimestampMs": 0,
-                    "values": [
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "f0b94652-31a5-4655-b4b9-021bb1d29985",
-                                    "key": "50",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0
-                                }
-                            ],
-                            "id": "f8454b64-19c4-4e98-bf9b-c66086607bff",
-                            "name": "timer-1",
-                            "range": {
-                                "max": 1440,
-                                "min": 0,
-                                "step": 1
-                            },
-                            "updatedTimestampMs": 0
-                        }
-                    ]
-                },
-                {
-                    "createdTimestampMs": 0,
-                    "functionClass": "fan-speed",
-                    "functionInstance": "fan-speed",
-                    "id": "3a3a242a-c81f-496d-a9c9-61795afa97c1",
-                    "schedulable": true,
-                    "type": "category",
-                    "updatedTimestampMs": 0,
-                    "values": [
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "de6b6c8a-88fd-4a16-8684-08d8028a1b6d",
-                                    "key": "6",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "33"
-                                }
-                            ],
-                            "id": "64b71b95-5a15-495c-9e58-4f50c31a0ad6",
-                            "name": "fan-speed-6-033",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "47b058ba-0ef4-4e07-9b1e-18a43d53f998",
-                                    "key": "6",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "100"
-                                }
-                            ],
-                            "id": "7da131e3-e691-41bd-b1f3-8a67ea9f4e6e",
-                            "name": "fan-speed-6-100",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "1eb16713-a122-4a59-b09d-bbe013873bcd",
-                                    "key": "6",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "16"
-                                }
-                            ],
-                            "id": "41659a3a-1944-4291-be64-e577229c1049",
-                            "name": "fan-speed-6-016",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "de76a626-c127-4177-a28a-1b101474dc92",
-                                    "key": "6",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "50"
-                                }
-                            ],
-                            "id": "a5b9f90d-d38d-4211-b0c8-00b5492717c2",
-                            "name": "fan-speed-6-050",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "446ef574-544f-40c4-b9f5-bcceffa82dec",
-                                    "key": "6",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "0"
-                                }
-                            ],
-                            "hints": [
-                                "hidden"
-                            ],
-                            "id": "1d2387f4-fbd3-416c-acd2-0aa279a9d5e2",
-                            "name": "fan-speed-6-000",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "d115edfa-87a6-40ac-8b0c-32c203149de0",
-                                    "key": "6",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "83"
-                                }
-                            ],
-                            "id": "c08ae1dd-915a-4ae0-bd8d-f1db724dafdf",
-                            "name": "fan-speed-6-083",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "7c59925e-66f3-4fac-bed8-ee6fe0bff224",
-                                    "key": "6",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "66"
-                                }
-                            ],
-                            "id": "5c4c346c-642b-4020-9f47-0112e1223b8d",
-                            "name": "fan-speed-6-066",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        }
-                    ]
-                },
-                {
-                    "createdTimestampMs": 0,
-                    "functionClass": "fan-reverse",
-                    "functionInstance": "fan-reverse",
-                    "id": "0057ea64-ff73-421d-8667-75a0d9ec485d",
-                    "schedulable": false,
-                    "type": "category",
-                    "updatedTimestampMs": 0,
-                    "values": [
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "40f5dfe9-3172-4ad7-b5ee-967ee4d66782",
-                                    "key": "7",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "1"
-                                }
-                            ],
-                            "id": "fb395963-e603-41fc-9252-dfd73015c395",
-                            "name": "reverse",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "dfdffb80-aa5b-4abc-a48e-1f67aa400030",
-                                    "key": "7",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "0"
-                                }
-                            ],
-                            "id": "910a2f15-9c35-49bd-89a8-4fa778ede0d7",
-                            "name": "forward",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "251755e9-4c99-4cdb-9ef1-6d3311fe0b81",
-                                    "key": "7",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "2"
-                                }
-                            ],
-                            "hints": [
-                                "voice-hidden"
-                            ],
-                            "id": "1ca9d18e-0634-4d01-acc1-07b08528650e",
-                            "name": "in-progress",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        }
-                    ]
-                },
-                {
-                    "createdTimestampMs": 0,
-                    "functionClass": "power",
-                    "functionInstance": "fan-power",
-                    "id": "fdff291c-73bb-40cb-9c12-88d4f9bc4207",
-                    "schedulable": true,
-                    "type": "category",
-                    "updatedTimestampMs": 0,
-                    "values": [
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "827ea2dd-6d65-4e69-9ae6-8d6fd99573ad",
-                                    "key": "3",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "0"
-                                }
-                            ],
-                            "id": "43183a83-fd3f-4a06-aad1-2ec3c9eab5c0",
-                            "name": "off",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        },
-                        {
-                            "createdTimestampMs": 0,
-                            "deviceValues": [
-                                {
-                                    "createdTimestampMs": 0,
-                                    "id": "cb99e734-d78a-4c10-a93c-7323a822bc2c",
-                                    "key": "3",
-                                    "type": "attribute",
-                                    "updatedTimestampMs": 0,
-                                    "value": "1"
-                                }
-                            ],
-                            "id": "87b0070e-921e-489b-a0af-6fd06c503fe4",
-                            "name": "on",
-                            "range": {},
-                            "updatedTimestampMs": 0
-                        }
-                    ]
-                }
-            ],
-            "id": "bc0468c9-25db-4bd7-b021-79e5e7c50fcb",
-            "key": "fan",
-            "updatedTimestampMs": 0,
-            "version": 1
-        },
-        "deviceId": "86db488cf6135e8e",
-        "friendlyDescription": "",
-        "friendlyName": "Friendly Name 2",
-        "id": "dc0e8f1f-0273-4140-89f6-52f471f7cd05",
-        "image": "",
-        "locale": "en_US",
-        "semanticDescriptionKey": "fan",
-        "state": {
-            "metadeviceId": "dc0e8f1f-0273-4140-89f6-52f471f7cd05",
-            "values": [
-                {
-                    "functionClass": "toggle",
-                    "functionInstance": "comfort-breeze",
-                    "lastUpdateTime": 1689288642090,
-                    "value": "disabled"
-                },
-                {
-                    "functionClass": "timer",
-                    "functionInstance": "fan-power",
-                    "lastUpdateTime": 1689285712833,
-                    "value": 0
-                },
-                {
-                    "functionClass": "fan-speed",
-                    "functionInstance": "fan-speed",
-                    "lastUpdateTime": 1689425360144,
-                    "value": "fan-speed-6-100"
-                },
-                {
-                    "functionClass": "fan-reverse",
-                    "functionInstance": "fan-reverse",
-                    "lastUpdateTime": 1689285041031,
-                    "value": "forward"
-                },
-                {
-                    "functionClass": "power",
-                    "functionInstance": "fan-power",
-                    "lastUpdateTime": 1689389050379,
-                    "value": "on"
-                },
-                {
-                    "functionClass": "wifi-ssid",
-                    "lastUpdateTime": 1689287761616,
-                    "value": "SSID0"
-                },
-                {
-                    "functionClass": "wifi-rssi",
-                    "lastUpdateTime": 1689520420119,
-                    "value": -76
-                },
-                {
-                    "functionClass": "wifi-steady-state",
-                    "lastUpdateTime": 1689517393618,
-                    "value": "handshake-failed"
-                },
-                {
-                    "functionClass": "wifi-setup-state",
-                    "lastUpdateTime": 1689517986492,
-                    "value": "handshake-failed"
-                },
-                {
-                    "functionClass": "wifi-mac-address",
-                    "lastUpdateTime": 0,
-                    "value": "a134096af852"
-                },
-                {
-                    "functionClass": "geo-coordinates",
-                    "functionInstance": "system-device-location",
-                    "lastUpdateTime": 1689288421151,
-                    "value": {
-                        "geo-coordinates": {
-                            "latitude": "0.80459798124898",
-                            "longitude": "0.5852044067836105"
-                        }
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "d5724741-ff72-49da-a86f-6362fc63fd9d",
+                      "key": "5",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "6500"
                     }
+                  ],
+                  "id": "781af822-4c7f-4495-9bb1-c6ed12980f46",
+                  "name": "6500K",
+                  "range": {},
+                  "updatedTimestampMs": 0
                 },
                 {
-                    "functionClass": "scheduler-flags",
-                    "lastUpdateTime": 1689519958610,
-                    "value": 0
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "12efe51d-a789-441b-8e94-2ed5f73aa963",
+                      "key": "5",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "3000"
+                    }
+                  ],
+                  "id": "697be7b6-df17-4de4-9959-1b2dfdf07dfd",
+                  "name": "3000K",
+                  "range": {},
+                  "updatedTimestampMs": 0
                 },
                 {
-                    "functionClass": "available",
-                    "lastUpdateTime": 1689518989919,
-                    "value": true
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "0a877412-0c85-4f94-b909-4408aa8769d0",
+                      "key": "5",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "2700"
+                    }
+                  ],
+                  "id": "dfd15436-743f-4f91-ba8d-f607876d2a84",
+                  "name": "2700K",
+                  "range": {},
+                  "updatedTimestampMs": 0
                 },
                 {
-                    "functionClass": "visible",
-                    "lastUpdateTime": 1689518989919,
-                    "value": true
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "c656ddbf-cc4b-43bf-a1c0-583e430d5c7b",
+                      "key": "5",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "5000"
+                    }
+                  ],
+                  "id": "1a047372-414b-41f8-aaca-5dfdafc1e132",
+                  "name": "5000K",
+                  "range": {},
+                  "updatedTimestampMs": 0
                 },
                 {
-                    "functionClass": "direct",
-                    "lastUpdateTime": 1689518989919,
-                    "value": true
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "ae7ccb54-7e39-4a11-9fc6-bc5ff526da6d",
+                      "key": "5",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "4000"
+                    }
+                  ],
+                  "id": "4ea5f444-48e4-4bfc-adcd-ac21882dbc99",
+                  "name": "4000K",
+                  "range": {},
+                  "updatedTimestampMs": 0
                 },
                 {
-                    "functionClass": "ble-mac-address",
-                    "lastUpdateTime": 0,
-                    "value": "488cf6135e8e"
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "e202d189-be39-4b31-940a-b46be621e1b7",
+                      "key": "5",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "3500"
+                    }
+                  ],
+                  "id": "6b9fc297-1e69-457b-8f2f-852a1c6b0c68",
+                  "name": "3500K",
+                  "range": {},
+                  "updatedTimestampMs": 0
                 }
-            ]
+              ]
+            },
+            {
+              "createdTimestampMs": 0,
+              "functionClass": "brightness",
+              "id": "4df3b251-12c4-490e-a7cc-f784d3066cb7",
+              "schedulable": true,
+              "type": "numeric",
+              "updatedTimestampMs": 0,
+              "values": [
+                {
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "1ebf1e41-2069-4841-831e-bf431df5a94b",
+                      "key": "4",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0
+                    }
+                  ],
+                  "id": "2837094b-5c2a-4069-a58f-486f69da994a",
+                  "name": "brightness",
+                  "range": {
+                    "max": 100,
+                    "min": 1,
+                    "step": 1
+                  },
+                  "updatedTimestampMs": 0
+                }
+              ]
+            }
+          ],
+          "id": "977121c6-b15d-4252-bc60-fa496ca13116",
+          "key": "light",
+          "updatedTimestampMs": 0,
+          "version": 1
         },
-        "tag": "",
-        "typeId": "metadevice.device",
-        "updatedTimestampMs": 0,
-        "version": 1
-    }
+        {
+          "createdTimestampMs": 0,
+          "defaultImage": "ceiling-fan-chandra-icon",
+          "descriptions": [],
+          "device": {
+            "defaultName": "Ceiling Fan",
+            "deviceClass": "fan",
+            "manufacturerName": "Hampton Bay",
+            "model": "TBD",
+            "type": "device"
+          },
+          "functions": [
+            {
+              "createdTimestampMs": 0,
+              "functionClass": "toggle",
+              "functionInstance": "comfort-breeze",
+              "id": "f7f19e14-17db-4267-bf17-6139ba71b384",
+              "schedulable": true,
+              "type": "category",
+              "updatedTimestampMs": 0,
+              "values": [
+                {
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "135a1a53-7f8f-4aca-a3d2-e75ea5a85922",
+                      "key": "8",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "1"
+                    }
+                  ],
+                  "id": "21c45a7d-e558-4a13-85f7-e95652c36463",
+                  "name": "enabled",
+                  "range": {},
+                  "updatedTimestampMs": 0
+                },
+                {
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "3b588108-48d1-433f-9b4c-d073a0415f8e",
+                      "key": "8",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "0"
+                    }
+                  ],
+                  "id": "663f9cc3-147f-4882-9782-c4733beb69df",
+                  "name": "disabled",
+                  "range": {},
+                  "updatedTimestampMs": 0
+                }
+              ]
+            },
+            {
+              "createdTimestampMs": 0,
+              "functionClass": "timer",
+              "functionInstance": "fan-power",
+              "id": "41c88a2c-3584-4d2a-9548-a17efe0c8ce8",
+              "schedulable": false,
+              "type": "numeric",
+              "updatedTimestampMs": 0,
+              "values": [
+                {
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "f0b94652-31a5-4655-b4b9-021bb1d29985",
+                      "key": "50",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0
+                    }
+                  ],
+                  "id": "f8454b64-19c4-4e98-bf9b-c66086607bff",
+                  "name": "timer-1",
+                  "range": {
+                    "max": 1440,
+                    "min": 0,
+                    "step": 1
+                  },
+                  "updatedTimestampMs": 0
+                }
+              ]
+            },
+            {
+              "createdTimestampMs": 0,
+              "functionClass": "fan-speed",
+              "functionInstance": "fan-speed",
+              "id": "3a3a242a-c81f-496d-a9c9-61795afa97c1",
+              "schedulable": true,
+              "type": "category",
+              "updatedTimestampMs": 0,
+              "values": [
+                {
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "de6b6c8a-88fd-4a16-8684-08d8028a1b6d",
+                      "key": "6",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "33"
+                    }
+                  ],
+                  "id": "64b71b95-5a15-495c-9e58-4f50c31a0ad6",
+                  "name": "fan-speed-6-033",
+                  "range": {},
+                  "updatedTimestampMs": 0
+                },
+                {
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "47b058ba-0ef4-4e07-9b1e-18a43d53f998",
+                      "key": "6",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "100"
+                    }
+                  ],
+                  "id": "7da131e3-e691-41bd-b1f3-8a67ea9f4e6e",
+                  "name": "fan-speed-6-100",
+                  "range": {},
+                  "updatedTimestampMs": 0
+                },
+                {
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "1eb16713-a122-4a59-b09d-bbe013873bcd",
+                      "key": "6",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "16"
+                    }
+                  ],
+                  "id": "41659a3a-1944-4291-be64-e577229c1049",
+                  "name": "fan-speed-6-016",
+                  "range": {},
+                  "updatedTimestampMs": 0
+                },
+                {
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "de76a626-c127-4177-a28a-1b101474dc92",
+                      "key": "6",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "50"
+                    }
+                  ],
+                  "id": "a5b9f90d-d38d-4211-b0c8-00b5492717c2",
+                  "name": "fan-speed-6-050",
+                  "range": {},
+                  "updatedTimestampMs": 0
+                },
+                {
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "446ef574-544f-40c4-b9f5-bcceffa82dec",
+                      "key": "6",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "0"
+                    }
+                  ],
+                  "hints": ["hidden"],
+                  "id": "1d2387f4-fbd3-416c-acd2-0aa279a9d5e2",
+                  "name": "fan-speed-6-000",
+                  "range": {},
+                  "updatedTimestampMs": 0
+                },
+                {
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "d115edfa-87a6-40ac-8b0c-32c203149de0",
+                      "key": "6",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "83"
+                    }
+                  ],
+                  "id": "c08ae1dd-915a-4ae0-bd8d-f1db724dafdf",
+                  "name": "fan-speed-6-083",
+                  "range": {},
+                  "updatedTimestampMs": 0
+                },
+                {
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "7c59925e-66f3-4fac-bed8-ee6fe0bff224",
+                      "key": "6",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "66"
+                    }
+                  ],
+                  "id": "5c4c346c-642b-4020-9f47-0112e1223b8d",
+                  "name": "fan-speed-6-066",
+                  "range": {},
+                  "updatedTimestampMs": 0
+                }
+              ]
+            },
+            {
+              "createdTimestampMs": 0,
+              "functionClass": "fan-reverse",
+              "functionInstance": "fan-reverse",
+              "id": "0057ea64-ff73-421d-8667-75a0d9ec485d",
+              "schedulable": false,
+              "type": "category",
+              "updatedTimestampMs": 0,
+              "values": [
+                {
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "40f5dfe9-3172-4ad7-b5ee-967ee4d66782",
+                      "key": "7",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "1"
+                    }
+                  ],
+                  "id": "fb395963-e603-41fc-9252-dfd73015c395",
+                  "name": "reverse",
+                  "range": {},
+                  "updatedTimestampMs": 0
+                },
+                {
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "dfdffb80-aa5b-4abc-a48e-1f67aa400030",
+                      "key": "7",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "0"
+                    }
+                  ],
+                  "id": "910a2f15-9c35-49bd-89a8-4fa778ede0d7",
+                  "name": "forward",
+                  "range": {},
+                  "updatedTimestampMs": 0
+                },
+                {
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "251755e9-4c99-4cdb-9ef1-6d3311fe0b81",
+                      "key": "7",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "2"
+                    }
+                  ],
+                  "hints": ["voice-hidden"],
+                  "id": "1ca9d18e-0634-4d01-acc1-07b08528650e",
+                  "name": "in-progress",
+                  "range": {},
+                  "updatedTimestampMs": 0
+                }
+              ]
+            },
+            {
+              "createdTimestampMs": 0,
+              "functionClass": "power",
+              "functionInstance": "fan-power",
+              "id": "fdff291c-73bb-40cb-9c12-88d4f9bc4207",
+              "schedulable": true,
+              "type": "category",
+              "updatedTimestampMs": 0,
+              "values": [
+                {
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "827ea2dd-6d65-4e69-9ae6-8d6fd99573ad",
+                      "key": "3",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "0"
+                    }
+                  ],
+                  "id": "43183a83-fd3f-4a06-aad1-2ec3c9eab5c0",
+                  "name": "off",
+                  "range": {},
+                  "updatedTimestampMs": 0
+                },
+                {
+                  "createdTimestampMs": 0,
+                  "deviceValues": [
+                    {
+                      "createdTimestampMs": 0,
+                      "id": "cb99e734-d78a-4c10-a93c-7323a822bc2c",
+                      "key": "3",
+                      "type": "attribute",
+                      "updatedTimestampMs": 0,
+                      "value": "1"
+                    }
+                  ],
+                  "id": "87b0070e-921e-489b-a0af-6fd06c503fe4",
+                  "name": "on",
+                  "range": {},
+                  "updatedTimestampMs": 0
+                }
+              ]
+            }
+          ],
+          "id": "bc0468c9-25db-4bd7-b021-79e5e7c50fcb",
+          "key": "fan",
+          "updatedTimestampMs": 0,
+          "version": 1
+        }
+      ],
+      "device": {
+        "defaultName": "Ceiling Fan",
+        "deviceClass": "ceiling-fan",
+        "manufacturerName": "Hampton Bay",
+        "model": "TBD",
+        "profileId": "3bdea56b-f657-4cff-95b9-b4f2c6d45cf3",
+        "type": "device"
+      },
+      "functions": [
+        {
+          "createdTimestampMs": 0,
+          "functionClass": "error-flag",
+          "functionInstance": "acz-error",
+          "id": "7e2af5aa-549c-4c46-8df6-54e382b7a45b",
+          "schedulable": false,
+          "type": "boolean",
+          "updatedTimestampMs": 0,
+          "values": [
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "0cebf796-496f-44ed-95de-4c0993d6e1a4",
+                  "key": "406",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0
+                }
+              ],
+              "id": "0f0a79dc-67ea-4cc1-843f-cca82059cc53",
+              "name": "no-error",
+              "range": {},
+              "updatedTimestampMs": 0
+            }
+          ]
+        },
+        {
+          "createdTimestampMs": 0,
+          "functionClass": "power",
+          "functionInstance": "primary",
+          "id": "4ca27ccf-9357-42c1-a6fb-75428c53fdac",
+          "schedulable": true,
+          "type": "category",
+          "updatedTimestampMs": 0,
+          "values": [
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "c42bf66c-c34c-476c-b889-ef606ad6eb30",
+                  "key": "1",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "1"
+                }
+              ],
+              "id": "3980ce1c-f00e-41fd-a681-0113429cedcd",
+              "name": "on",
+              "range": {},
+              "updatedTimestampMs": 0
+            },
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "e8d7e936-323b-4251-9e56-3d7fd82f3999",
+                  "key": "1",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "0"
+                }
+              ],
+              "id": "fdcf9672-4033-406a-9c7b-3bb3d73f2023",
+              "name": "off",
+              "range": {},
+              "updatedTimestampMs": 0
+            }
+          ]
+        },
+        {
+          "createdTimestampMs": 0,
+          "functionClass": "error-flag",
+          "functionInstance": "storage-error",
+          "id": "91201d0d-1f0c-4650-89d4-1388842cc523",
+          "schedulable": false,
+          "type": "boolean",
+          "updatedTimestampMs": 0,
+          "values": [
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "4b848625-d01e-4a6f-ba00-dcd3ded256a9",
+                  "key": "405",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0
+                }
+              ],
+              "id": "17966b62-8fdd-402f-aeb3-f1580e0e0ade",
+              "name": "storage-error",
+              "range": {},
+              "updatedTimestampMs": 0
+            }
+          ]
+        }
+      ],
+      "id": "e6a2838c-60a0-468d-8877-acb1a4c6f1c1",
+      "updatedTimestampMs": 0,
+      "version": 1
+    },
+    "deviceId": "86db488cf6135e8e",
+    "friendlyDescription": "",
+    "friendlyName": "Friendly Name 4",
+    "id": "9bb11e33-2e37-4101-9b66-a18ddc98fc2c",
+    "image": "",
+    "locale": "en_US",
+    "state": {
+      "metadeviceId": "9bb11e33-2e37-4101-9b66-a18ddc98fc2c",
+      "values": [
+        {
+          "functionClass": "error-flag",
+          "functionInstance": "acz-error",
+          "lastUpdateTime": 1689286828489,
+          "value": false
+        },
+        {
+          "functionClass": "power",
+          "functionInstance": "primary",
+          "lastUpdateTime": 1689389247940,
+          "value": "on"
+        },
+        {
+          "functionClass": "error-flag",
+          "functionInstance": "storage-error",
+          "lastUpdateTime": 1689286229775,
+          "value": false
+        },
+        {
+          "functionClass": "wifi-ssid",
+          "lastUpdateTime": 1689287761616,
+          "value": "SSID0"
+        },
+        {
+          "functionClass": "wifi-rssi",
+          "lastUpdateTime": 1689520420119,
+          "value": -76
+        },
+        {
+          "functionClass": "wifi-steady-state",
+          "lastUpdateTime": 1689517393618,
+          "value": "handshake-failed"
+        },
+        {
+          "functionClass": "wifi-setup-state",
+          "lastUpdateTime": 1689517986492,
+          "value": "handshake-failed"
+        },
+        {
+          "functionClass": "wifi-mac-address",
+          "lastUpdateTime": 0,
+          "value": "a134096af852"
+        },
+        {
+          "functionClass": "geo-coordinates",
+          "functionInstance": "system-device-location",
+          "lastUpdateTime": 1689288421151,
+          "value": {
+            "geo-coordinates": {
+              "latitude": "0.80459798124898",
+              "longitude": "0.5852044067836105"
+            }
+          }
+        },
+        {
+          "functionClass": "scheduler-flags",
+          "lastUpdateTime": 1689519958610,
+          "value": 0
+        },
+        {
+          "functionClass": "available",
+          "lastUpdateTime": 1689518989919,
+          "value": true
+        },
+        {
+          "functionClass": "visible",
+          "lastUpdateTime": 1689518989919,
+          "value": true
+        },
+        {
+          "functionClass": "direct",
+          "lastUpdateTime": 1689518989919,
+          "value": true
+        },
+        {
+          "functionClass": "ble-mac-address",
+          "lastUpdateTime": 0,
+          "value": "488cf6135e8e"
+        }
+      ]
+    },
+    "tag": "",
+    "typeId": "metadevice.device",
+    "updatedTimestampMs": 0,
+    "version": 1
+  },
+  {
+    "children": [],
+    "createdTimestampMs": 0,
+    "description": {
+      "createdTimestampMs": 0,
+      "defaultImage": "ceiling-fan-chandra-icon",
+      "descriptions": [],
+      "device": {
+        "defaultName": "Ceiling Light",
+        "deviceClass": "light",
+        "manufacturerName": "Hampton Bay",
+        "model": "TBD",
+        "type": "device"
+      },
+      "functions": [
+        {
+          "createdTimestampMs": 0,
+          "functionClass": "power",
+          "functionInstance": "light-power",
+          "id": "3f157542-600b-4665-b9f9-3b59daf0ec02",
+          "schedulable": true,
+          "type": "category",
+          "updatedTimestampMs": 0,
+          "values": [
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "0782f00d-591a-42d3-92ad-a56623754559",
+                  "key": "2",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "0"
+                }
+              ],
+              "id": "514dea34-2604-48fb-a652-6b9395e2c41b",
+              "name": "off",
+              "range": {},
+              "updatedTimestampMs": 0
+            },
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "567340d1-9eca-4d7f-9173-9a775c9273e0",
+                  "key": "2",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "1"
+                }
+              ],
+              "id": "b4d38100-0232-42b2-be70-9bd00227ea89",
+              "name": "on",
+              "range": {},
+              "updatedTimestampMs": 0
+            }
+          ]
+        },
+        {
+          "createdTimestampMs": 0,
+          "functionClass": "color-temperature",
+          "id": "b716a6d0-62b7-484b-8505-490d88d41f0b",
+          "schedulable": false,
+          "type": "category",
+          "updatedTimestampMs": 0,
+          "values": [
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "d5724741-ff72-49da-a86f-6362fc63fd9d",
+                  "key": "5",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "6500"
+                }
+              ],
+              "id": "781af822-4c7f-4495-9bb1-c6ed12980f46",
+              "name": "6500K",
+              "range": {},
+              "updatedTimestampMs": 0
+            },
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "12efe51d-a789-441b-8e94-2ed5f73aa963",
+                  "key": "5",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "3000"
+                }
+              ],
+              "id": "697be7b6-df17-4de4-9959-1b2dfdf07dfd",
+              "name": "3000K",
+              "range": {},
+              "updatedTimestampMs": 0
+            },
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "0a877412-0c85-4f94-b909-4408aa8769d0",
+                  "key": "5",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "2700"
+                }
+              ],
+              "id": "dfd15436-743f-4f91-ba8d-f607876d2a84",
+              "name": "2700K",
+              "range": {},
+              "updatedTimestampMs": 0
+            },
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "c656ddbf-cc4b-43bf-a1c0-583e430d5c7b",
+                  "key": "5",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "5000"
+                }
+              ],
+              "id": "1a047372-414b-41f8-aaca-5dfdafc1e132",
+              "name": "5000K",
+              "range": {},
+              "updatedTimestampMs": 0
+            },
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "ae7ccb54-7e39-4a11-9fc6-bc5ff526da6d",
+                  "key": "5",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "4000"
+                }
+              ],
+              "id": "4ea5f444-48e4-4bfc-adcd-ac21882dbc99",
+              "name": "4000K",
+              "range": {},
+              "updatedTimestampMs": 0
+            },
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "e202d189-be39-4b31-940a-b46be621e1b7",
+                  "key": "5",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "3500"
+                }
+              ],
+              "id": "6b9fc297-1e69-457b-8f2f-852a1c6b0c68",
+              "name": "3500K",
+              "range": {},
+              "updatedTimestampMs": 0
+            }
+          ]
+        },
+        {
+          "createdTimestampMs": 0,
+          "functionClass": "brightness",
+          "id": "4df3b251-12c4-490e-a7cc-f784d3066cb7",
+          "schedulable": true,
+          "type": "numeric",
+          "updatedTimestampMs": 0,
+          "values": [
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "1ebf1e41-2069-4841-831e-bf431df5a94b",
+                  "key": "4",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0
+                }
+              ],
+              "id": "2837094b-5c2a-4069-a58f-486f69da994a",
+              "name": "brightness",
+              "range": {
+                "max": 100,
+                "min": 1,
+                "step": 1
+              },
+              "updatedTimestampMs": 0
+            }
+          ]
+        }
+      ],
+      "id": "977121c6-b15d-4252-bc60-fa496ca13116",
+      "key": "light",
+      "updatedTimestampMs": 0,
+      "version": 1
+    },
+    "deviceId": "86db488cf6135e8e",
+    "friendlyDescription": "",
+    "friendlyName": "Friendly Name 3",
+    "id": "8a15708d-6ed4-4e31-a1f7-5d2204d07013",
+    "image": "",
+    "locale": "en_US",
+    "semanticDescriptionKey": "light",
+    "state": {
+      "metadeviceId": "8a15708d-6ed4-4e31-a1f7-5d2204d07013",
+      "values": [
+        {
+          "functionClass": "power",
+          "functionInstance": "light-power",
+          "lastUpdateTime": 1689536456346,
+          "value": "off"
+        },
+        {
+          "functionClass": "color-temperature",
+          "lastUpdateTime": 1689521243649,
+          "value": "3500K"
+        },
+        {
+          "functionClass": "brightness",
+          "lastUpdateTime": 1689284669167,
+          "value": 1
+        },
+        {
+          "functionClass": "wifi-ssid",
+          "lastUpdateTime": 1689287761616,
+          "value": "SSID0"
+        },
+        {
+          "functionClass": "wifi-rssi",
+          "lastUpdateTime": 1689520420119,
+          "value": -76
+        },
+        {
+          "functionClass": "wifi-steady-state",
+          "lastUpdateTime": 1689517393618,
+          "value": "handshake-failed"
+        },
+        {
+          "functionClass": "wifi-setup-state",
+          "lastUpdateTime": 1689517986492,
+          "value": "handshake-failed"
+        },
+        {
+          "functionClass": "wifi-mac-address",
+          "lastUpdateTime": 0,
+          "value": "a134096af852"
+        },
+        {
+          "functionClass": "geo-coordinates",
+          "functionInstance": "system-device-location",
+          "lastUpdateTime": 1689288421151,
+          "value": {
+            "geo-coordinates": {
+              "latitude": "0.80459798124898",
+              "longitude": "0.5852044067836105"
+            }
+          }
+        },
+        {
+          "functionClass": "scheduler-flags",
+          "lastUpdateTime": 1689519958610,
+          "value": 0
+        },
+        {
+          "functionClass": "available",
+          "lastUpdateTime": 1689518989919,
+          "value": true
+        },
+        {
+          "functionClass": "visible",
+          "lastUpdateTime": 1689518989919,
+          "value": true
+        },
+        {
+          "functionClass": "direct",
+          "lastUpdateTime": 1689518989919,
+          "value": true
+        },
+        {
+          "functionClass": "ble-mac-address",
+          "lastUpdateTime": 0,
+          "value": "488cf6135e8e"
+        }
+      ]
+    },
+    "tag": "",
+    "typeId": "metadevice.device",
+    "updatedTimestampMs": 0,
+    "version": 1
+  },
+  {
+    "children": [],
+    "createdTimestampMs": 0,
+    "description": {
+      "createdTimestampMs": 0,
+      "defaultImage": "ceiling-fan-chandra-icon",
+      "descriptions": [],
+      "device": {
+        "defaultName": "Ceiling Fan",
+        "deviceClass": "fan",
+        "manufacturerName": "Hampton Bay",
+        "model": "TBD",
+        "type": "device"
+      },
+      "functions": [
+        {
+          "createdTimestampMs": 0,
+          "functionClass": "toggle",
+          "functionInstance": "comfort-breeze",
+          "id": "f7f19e14-17db-4267-bf17-6139ba71b384",
+          "schedulable": true,
+          "type": "category",
+          "updatedTimestampMs": 0,
+          "values": [
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "135a1a53-7f8f-4aca-a3d2-e75ea5a85922",
+                  "key": "8",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "1"
+                }
+              ],
+              "id": "21c45a7d-e558-4a13-85f7-e95652c36463",
+              "name": "enabled",
+              "range": {},
+              "updatedTimestampMs": 0
+            },
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "3b588108-48d1-433f-9b4c-d073a0415f8e",
+                  "key": "8",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "0"
+                }
+              ],
+              "id": "663f9cc3-147f-4882-9782-c4733beb69df",
+              "name": "disabled",
+              "range": {},
+              "updatedTimestampMs": 0
+            }
+          ]
+        },
+        {
+          "createdTimestampMs": 0,
+          "functionClass": "timer",
+          "functionInstance": "fan-power",
+          "id": "41c88a2c-3584-4d2a-9548-a17efe0c8ce8",
+          "schedulable": false,
+          "type": "numeric",
+          "updatedTimestampMs": 0,
+          "values": [
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "f0b94652-31a5-4655-b4b9-021bb1d29985",
+                  "key": "50",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0
+                }
+              ],
+              "id": "f8454b64-19c4-4e98-bf9b-c66086607bff",
+              "name": "timer-1",
+              "range": {
+                "max": 1440,
+                "min": 0,
+                "step": 1
+              },
+              "updatedTimestampMs": 0
+            }
+          ]
+        },
+        {
+          "createdTimestampMs": 0,
+          "functionClass": "fan-speed",
+          "functionInstance": "fan-speed",
+          "id": "3a3a242a-c81f-496d-a9c9-61795afa97c1",
+          "schedulable": true,
+          "type": "category",
+          "updatedTimestampMs": 0,
+          "values": [
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "de6b6c8a-88fd-4a16-8684-08d8028a1b6d",
+                  "key": "6",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "33"
+                }
+              ],
+              "id": "64b71b95-5a15-495c-9e58-4f50c31a0ad6",
+              "name": "fan-speed-6-033",
+              "range": {},
+              "updatedTimestampMs": 0
+            },
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "47b058ba-0ef4-4e07-9b1e-18a43d53f998",
+                  "key": "6",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "100"
+                }
+              ],
+              "id": "7da131e3-e691-41bd-b1f3-8a67ea9f4e6e",
+              "name": "fan-speed-6-100",
+              "range": {},
+              "updatedTimestampMs": 0
+            },
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "1eb16713-a122-4a59-b09d-bbe013873bcd",
+                  "key": "6",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "16"
+                }
+              ],
+              "id": "41659a3a-1944-4291-be64-e577229c1049",
+              "name": "fan-speed-6-016",
+              "range": {},
+              "updatedTimestampMs": 0
+            },
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "de76a626-c127-4177-a28a-1b101474dc92",
+                  "key": "6",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "50"
+                }
+              ],
+              "id": "a5b9f90d-d38d-4211-b0c8-00b5492717c2",
+              "name": "fan-speed-6-050",
+              "range": {},
+              "updatedTimestampMs": 0
+            },
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "446ef574-544f-40c4-b9f5-bcceffa82dec",
+                  "key": "6",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "0"
+                }
+              ],
+              "hints": ["hidden"],
+              "id": "1d2387f4-fbd3-416c-acd2-0aa279a9d5e2",
+              "name": "fan-speed-6-000",
+              "range": {},
+              "updatedTimestampMs": 0
+            },
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "d115edfa-87a6-40ac-8b0c-32c203149de0",
+                  "key": "6",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "83"
+                }
+              ],
+              "id": "c08ae1dd-915a-4ae0-bd8d-f1db724dafdf",
+              "name": "fan-speed-6-083",
+              "range": {},
+              "updatedTimestampMs": 0
+            },
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "7c59925e-66f3-4fac-bed8-ee6fe0bff224",
+                  "key": "6",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "66"
+                }
+              ],
+              "id": "5c4c346c-642b-4020-9f47-0112e1223b8d",
+              "name": "fan-speed-6-066",
+              "range": {},
+              "updatedTimestampMs": 0
+            }
+          ]
+        },
+        {
+          "createdTimestampMs": 0,
+          "functionClass": "fan-reverse",
+          "functionInstance": "fan-reverse",
+          "id": "0057ea64-ff73-421d-8667-75a0d9ec485d",
+          "schedulable": false,
+          "type": "category",
+          "updatedTimestampMs": 0,
+          "values": [
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "40f5dfe9-3172-4ad7-b5ee-967ee4d66782",
+                  "key": "7",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "1"
+                }
+              ],
+              "id": "fb395963-e603-41fc-9252-dfd73015c395",
+              "name": "reverse",
+              "range": {},
+              "updatedTimestampMs": 0
+            },
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "dfdffb80-aa5b-4abc-a48e-1f67aa400030",
+                  "key": "7",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "0"
+                }
+              ],
+              "id": "910a2f15-9c35-49bd-89a8-4fa778ede0d7",
+              "name": "forward",
+              "range": {},
+              "updatedTimestampMs": 0
+            },
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "251755e9-4c99-4cdb-9ef1-6d3311fe0b81",
+                  "key": "7",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "2"
+                }
+              ],
+              "hints": ["voice-hidden"],
+              "id": "1ca9d18e-0634-4d01-acc1-07b08528650e",
+              "name": "in-progress",
+              "range": {},
+              "updatedTimestampMs": 0
+            }
+          ]
+        },
+        {
+          "createdTimestampMs": 0,
+          "functionClass": "power",
+          "functionInstance": "fan-power",
+          "id": "fdff291c-73bb-40cb-9c12-88d4f9bc4207",
+          "schedulable": true,
+          "type": "category",
+          "updatedTimestampMs": 0,
+          "values": [
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "827ea2dd-6d65-4e69-9ae6-8d6fd99573ad",
+                  "key": "3",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "0"
+                }
+              ],
+              "id": "43183a83-fd3f-4a06-aad1-2ec3c9eab5c0",
+              "name": "off",
+              "range": {},
+              "updatedTimestampMs": 0
+            },
+            {
+              "createdTimestampMs": 0,
+              "deviceValues": [
+                {
+                  "createdTimestampMs": 0,
+                  "id": "cb99e734-d78a-4c10-a93c-7323a822bc2c",
+                  "key": "3",
+                  "type": "attribute",
+                  "updatedTimestampMs": 0,
+                  "value": "1"
+                }
+              ],
+              "id": "87b0070e-921e-489b-a0af-6fd06c503fe4",
+              "name": "on",
+              "range": {},
+              "updatedTimestampMs": 0
+            }
+          ]
+        }
+      ],
+      "id": "bc0468c9-25db-4bd7-b021-79e5e7c50fcb",
+      "key": "fan",
+      "updatedTimestampMs": 0,
+      "version": 1
+    },
+    "deviceId": "86db488cf6135e8e",
+    "friendlyDescription": "",
+    "friendlyName": "Friendly Name 2",
+    "id": "dc0e8f1f-0273-4140-89f6-52f471f7cd05",
+    "image": "",
+    "locale": "en_US",
+    "semanticDescriptionKey": "fan",
+    "state": {
+      "metadeviceId": "dc0e8f1f-0273-4140-89f6-52f471f7cd05",
+      "values": [
+        {
+          "functionClass": "toggle",
+          "functionInstance": "comfort-breeze",
+          "lastUpdateTime": 1689288642090,
+          "value": "disabled"
+        },
+        {
+          "functionClass": "timer",
+          "functionInstance": "fan-power",
+          "lastUpdateTime": 1689285712833,
+          "value": 0
+        },
+        {
+          "functionClass": "fan-speed",
+          "functionInstance": "fan-speed",
+          "lastUpdateTime": 1689425360144,
+          "value": "fan-speed-6-100"
+        },
+        {
+          "functionClass": "fan-reverse",
+          "functionInstance": "fan-reverse",
+          "lastUpdateTime": 1689285041031,
+          "value": "forward"
+        },
+        {
+          "functionClass": "power",
+          "functionInstance": "fan-power",
+          "lastUpdateTime": 1689389050379,
+          "value": "on"
+        },
+        {
+          "functionClass": "wifi-ssid",
+          "lastUpdateTime": 1689287761616,
+          "value": "SSID0"
+        },
+        {
+          "functionClass": "wifi-rssi",
+          "lastUpdateTime": 1689520420119,
+          "value": -76
+        },
+        {
+          "functionClass": "wifi-steady-state",
+          "lastUpdateTime": 1689517393618,
+          "value": "handshake-failed"
+        },
+        {
+          "functionClass": "wifi-setup-state",
+          "lastUpdateTime": 1689517986492,
+          "value": "handshake-failed"
+        },
+        {
+          "functionClass": "wifi-mac-address",
+          "lastUpdateTime": 0,
+          "value": "a134096af852"
+        },
+        {
+          "functionClass": "geo-coordinates",
+          "functionInstance": "system-device-location",
+          "lastUpdateTime": 1689288421151,
+          "value": {
+            "geo-coordinates": {
+              "latitude": "0.80459798124898",
+              "longitude": "0.5852044067836105"
+            }
+          }
+        },
+        {
+          "functionClass": "scheduler-flags",
+          "lastUpdateTime": 1689519958610,
+          "value": 0
+        },
+        {
+          "functionClass": "available",
+          "lastUpdateTime": 1689518989919,
+          "value": true
+        },
+        {
+          "functionClass": "visible",
+          "lastUpdateTime": 1689518989919,
+          "value": true
+        },
+        {
+          "functionClass": "direct",
+          "lastUpdateTime": 1689518989919,
+          "value": true
+        },
+        {
+          "functionClass": "ble-mac-address",
+          "lastUpdateTime": 0,
+          "value": "488cf6135e8e"
+        }
+      ]
+    },
+    "tag": "",
+    "typeId": "metadevice.device",
+    "updatedTimestampMs": 0,
+    "version": 1
+  }
 ]
-

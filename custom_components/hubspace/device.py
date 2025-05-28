@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 
 async def async_setup_devices(bridge: HubspaceBridge):
-    """Manage setup of devices"""
+    """Manage setup of devices."""
     entry = bridge.config_entry
     hass = bridge.hass
     api: AferoBridgeV1 = bridge.api  # to satisfy typing

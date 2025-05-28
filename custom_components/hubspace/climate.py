@@ -1,3 +1,5 @@
+"""Home Assistant entity for interacting with Afero climate."""
+
 from functools import partial
 
 from aioafero.v1 import AferoBridgeV1
@@ -27,12 +29,16 @@ from .entity import HubspaceBaseEntity, update_decorator
 
 
 class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
+    """Representation of an Afero climate."""
+
     def __init__(
         self,
         bridge: HubspaceBridge,
-        controller: ClimateEntity,
+        controller: ThermostatController,
         resource: Thermostat,
     ) -> None:
+        """Initialize an Afero Climate."""
+
         super().__init__(bridge, controller, resource)
         self._supported_fan: list[str] = []
         self._supported_hvac_modes: list[HVACMode]
@@ -51,23 +57,26 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
 
     @property
     def current_temperature(self) -> float | None:
+        """Returns the current temperature."""
         return self.resource.current_temperature
 
     @property
     def fan_mode(self) -> str | None:
+        """Returns the currently selected fan mode."""
         if self.resource.fan_mode.mode == "on":
             return FAN_ON
-        elif self.resource.fan_mode.mode == "off":
+        if self.resource.fan_mode.mode == "off":
             return FAN_OFF
-        else:
-            return self.resource.fan_mode.mode
+        return self.resource.fan_mode.mode
 
     @property
     def fan_modes(self) -> list[str] | None:
+        """Returns all available fan modes."""
         return list(self.resource.fan_mode.modes)
 
     @property
     def hvac_action(self) -> HVACAction | None:
+        """Returns the current state of hvac operation."""
         mapping = {
             "cooling": HVACAction.COOLING,
             "heating": HVACAction.HEATING,
@@ -76,13 +85,13 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
         mapped = mapping.get(self.resource.hvac_action)
         if mapped:
             return mapped
-        elif self.resource.hvac_mode.mode == "fan":
+        if self.resource.hvac_mode.mode == "fan":
             return HVACAction.FAN
-        else:
-            return self.resource.hvac_action
+        return self.resource.hvac_action
 
     @property
     def hvac_mode(self) -> HVACMode | None:
+        """Returns the current hvac mode."""
         mapping = {
             "cool": HVACMode.COOL,
             "heat": HVACMode.HEAT,
@@ -94,11 +103,11 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
         if not mapped:
             self.logger.warning("Unknown hvac mode: %s", self.resource.hvac_mode.mode)
             return None
-        else:
-            return mapped
+        return mapped
 
     @property
     def hvac_modes(self) -> list[HVACMode]:
+        """Returns all available hvac modes."""
         mapping = {
             "cool": HVACMode.COOL,
             "heat": HVACMode.HEAT,
@@ -107,45 +116,55 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
             "auto": HVACMode.HEAT_COOL,
         }
         return [
-            val for key, val in mapping.items() if key in self.resource.hvac_mode.supported_modes
+            val
+            for key, val in mapping.items()
+            if key in self.resource.hvac_mode.supported_modes
         ]
 
     @property
     def max_temp(self) -> float | None:
+        """Returns the maximum allowed temperature for the current mode."""
         return self.resource.target_temperature_max
 
     @property
     def min_temp(self) -> float | None:
+        """Returns the minimum allowed temperature for the current mode."""
         return self.resource.target_temperature_min
 
     @property
-    def supported_features(self):
+    def supported_features(self) -> ClimateEntityFeature:
+        """Returns all supported features for the climate entity."""
         return self._supported_features
 
     @property
     def target_temperature(self) -> float | None:
+        """Returns the temperature that we are trying to reach."""
         return self.resource.target_temperature
 
     @property
     def target_temperature_high(self) -> float | None:
+        """Returns the upper bound (cool) temperature when set to auto."""
         return self.resource.target_temperature_range[1]
 
     @property
     def target_temperature_low(self) -> float | None:
+        """Returns the lower bound (heat) temperature when set to auto."""
         return self.resource.target_temperature_range[0]
 
     @property
     def target_temperature_step(self) -> float | None:
+        """Returns the amount the thermostat can increment."""
         return self.resource.target_temperature_step
 
     @property
     def temperature_unit(self) -> str:
+        """Unit for backend data."""
         # Hubspace always returns in C
         return UnitOfTemperature.CELSIUS
 
     @update_decorator
     async def translate_hvac_mode_to_hubspace(self, hvac_mode) -> str | None:
-        """Convert HomeAssistant -> Hubspace"""
+        """Convert HomeAssistant -> Hubspace."""
         tracked_modes = {
             HVACMode.OFF: "off",
             HVACMode.HEAT: "heat",

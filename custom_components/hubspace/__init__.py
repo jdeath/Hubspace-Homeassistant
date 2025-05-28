@@ -7,8 +7,7 @@ from aioafero.v1 import AferoBridgeV1
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import aiohttp_client
-from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import aiohttp_client, device_registry as dr
 
 from .bridge import HubspaceBridge
 from .const import (
@@ -44,6 +43,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
+    """Migrate to the latest version."""
     _LOGGER.debug(
         "Migrating configuration from version %s.%s",
         config_entry.version,
@@ -65,7 +65,7 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
 
 
 async def perform_v2_migration(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
-    """Fixes for v2 migration
+    """Perform version 2 migration of the configuration entry.
 
     * Ensure CONF_TIMEOUT is present in the data
     """
@@ -77,7 +77,7 @@ async def perform_v2_migration(hass: HomeAssistant, config_entry: ConfigEntry) -
 
 
 async def perform_v3_migration(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
-    """Fixes for v3 migration
+    """Perform version 3 migration of the configuration entry.
 
     * Ensure CONF_TIMEOUT is present in options and removed from data
     * Ensure POLLING_TIME_STR is set in options and removed from data (dev build)
@@ -107,8 +107,8 @@ async def perform_v3_migration(hass: HomeAssistant, config_entry: ConfigEntry) -
     )
 
 
-async def perform_v4_migration(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
-    """Fixes for v4 migration
+async def perform_v4_migration(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
+    """Perform version 4 migration of the configuration entry.
 
     * Ensure CONF_TOKEN is set
     """
@@ -126,7 +126,7 @@ async def perform_v4_migration(hass: HomeAssistant, config_entry: ConfigEntry) -
     except InvalidAuth:
         config_entry.async_start_reauth(hass)
         return False
-    data[CONF_TOKEN] = api._auth._token_data.refresh_token
+    data[CONF_TOKEN] = api.refresh_token
     # Previous versions may have used None for the unique ID
     unique_id = config_entry.data[CONF_USERNAME].lower()
     hass.config_entries.async_update_entry(

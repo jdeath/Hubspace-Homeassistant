@@ -1,12 +1,15 @@
-import pytest
+"""Test the bridge between Home Assistant and Afero."""
+
 from aiohttp import ClientError
 from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
+import pytest
 
 from custom_components.hubspace.bridge import HubspaceBridge, InvalidAuth
 
 
 @pytest.mark.asyncio
 async def test_initialize_bridge_invalid_auth(mocked_entry, mocker):
+    """Ensure the bridge is not initialized when auth fails."""
     hass, entry, mocked_bridge = mocked_entry
     mocker.patch.object(
         mocked_bridge,
@@ -21,6 +24,7 @@ async def test_initialize_bridge_invalid_auth(mocked_entry, mocker):
 
 @pytest.mark.asyncio
 async def test_initialize_bridge_timeout(mocked_entry, mocker):
+    """Ensure a timeout during initialization marks the entry as failed."""
     hass, entry, mocked_bridge = mocked_entry
     mocker.patch.object(
         mocked_bridge,
@@ -36,7 +40,11 @@ async def test_initialize_bridge_timeout(mocked_entry, mocker):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "result, side_effect, msg",
+    (
+        "result",
+        "side_effect",
+        "msg",
+    ),
     [
         # All good
         ("cool beans", None, None),
@@ -47,6 +55,7 @@ async def test_initialize_bridge_timeout(mocked_entry, mocker):
     ],
 )
 async def test_request_call(result, side_effect, msg, caplog, mocker, mocked_entry):
+    """Ensure the bridge correctly creates the request task."""
     hass, entry, mocked_bridge = mocked_entry
     bridge = HubspaceBridge(hass, entry)
     if result:

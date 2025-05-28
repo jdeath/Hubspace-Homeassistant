@@ -1,6 +1,8 @@
-import pytest
+"""Test the plugins initialization tasks."""
+
 from aioafero.errors import InvalidAuth
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
+import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components import hubspace
@@ -9,12 +11,14 @@ from custom_components.hubspace import const
 
 @pytest.fixture(autouse=True)
 def hubspace_migration(mocked_bridge, mocker):
+    """Mock the Bridge."""
     mocker.patch("custom_components.hubspace.AferoBridgeV1", return_value=mocked_bridge)
-    yield mocked_bridge
+    return mocked_bridge
 
 
 @pytest.fixture
 def v1_config_entry(hass):
+    """Register a v1 config entry."""
     v1_config_entry = MockConfigEntry(
         domain=const.DOMAIN,
         data={CONF_USERNAME: "cool", CONF_PASSWORD: "beans"},
@@ -24,11 +28,12 @@ def v1_config_entry(hass):
         minor_version=0,
     )
     v1_config_entry.add_to_hass(hass)
-    yield hass, v1_config_entry
+    return hass, v1_config_entry
 
 
 @pytest.fixture
 def v2_config_entry(hass):
+    """Register a v2 config entry."""
     v1_config_entry = MockConfigEntry(
         domain=const.DOMAIN,
         data={
@@ -41,11 +46,12 @@ def v2_config_entry(hass):
         minor_version=0,
     )
     v1_config_entry.add_to_hass(hass)
-    yield hass, v1_config_entry
+    return hass, v1_config_entry
 
 
 @pytest.fixture
 def v2_config_entry_custom(hass):
+    """Register a v2 config entry with a custom timeout."""
     v1_config_entry = MockConfigEntry(
         domain=const.DOMAIN,
         data={CONF_USERNAME: "cool", CONF_PASSWORD: "beans", CONF_TIMEOUT: 42},
@@ -54,11 +60,12 @@ def v2_config_entry_custom(hass):
         minor_version=0,
     )
     v1_config_entry.add_to_hass(hass)
-    yield hass, v1_config_entry
+    return hass, v1_config_entry
 
 
 @pytest.fixture
 def v3_config_entry(hass):
+    """Register a v3 config entry."""
     v1_config_entry = MockConfigEntry(
         domain=const.DOMAIN,
         data={
@@ -73,11 +80,12 @@ def v3_config_entry(hass):
         minor_version=0,
     )
     v1_config_entry.add_to_hass(hass)
-    yield hass, v1_config_entry
+    return hass, v1_config_entry
 
 
 @pytest.mark.asyncio
 async def test_async_migrate_entry(v1_config_entry):
+    """Test configuration migration."""
     assert await hubspace.async_migrate_entry(v1_config_entry[0], v1_config_entry[1])
     assert v1_config_entry[1].data == {
         CONF_USERNAME: "cool",
@@ -92,7 +100,7 @@ async def test_async_migrate_entry(v1_config_entry):
 
 @pytest.mark.asyncio
 async def test_perform_v2_migration(v1_config_entry):
-
+    """Test configuration migration from v1 to v2."""
     await hubspace.perform_v2_migration(v1_config_entry[0], v1_config_entry[1])
     assert v1_config_entry[1].data == {
         CONF_USERNAME: "cool",
@@ -106,6 +114,7 @@ async def test_perform_v2_migration(v1_config_entry):
 
 @pytest.mark.asyncio
 async def test_perform_v3_migration_from_v1(v1_config_entry):
+    """Test configuration migration from v1 to v3."""
     await hubspace.perform_v3_migration(v1_config_entry[0], v1_config_entry[1])
     assert v1_config_entry[1].data == {
         CONF_USERNAME: "cool",
@@ -122,6 +131,7 @@ async def test_perform_v3_migration_from_v1(v1_config_entry):
 
 @pytest.mark.asyncio
 async def test_perform_v3_migration_from_v2(v2_config_entry):
+    """Test configuration migration from v2 to v3."""
     await hubspace.perform_v3_migration(v2_config_entry[0], v2_config_entry[1])
     assert v2_config_entry[1].data == {
         CONF_USERNAME: "cool",
@@ -138,6 +148,7 @@ async def test_perform_v3_migration_from_v2(v2_config_entry):
 
 @pytest.mark.asyncio
 async def test_perform_v3_migration_from_v2_custom(v2_config_entry_custom):
+    """Test configuration migration from v2 to v3 with custom timeout."""
     await hubspace.perform_v3_migration(
         v2_config_entry_custom[0], v2_config_entry_custom[1]
     )
@@ -157,6 +168,7 @@ async def test_perform_v3_migration_from_v2_custom(v2_config_entry_custom):
 
 @pytest.mark.asyncio
 async def test_perform_v4_migration_from_v3(v3_config_entry):
+    """Test configuration migration from v3 to v4."""
     await hubspace.perform_v4_migration(v3_config_entry[0], v3_config_entry[1])
     assert v3_config_entry[1].data == {
         CONF_USERNAME: "cool",
@@ -176,6 +188,7 @@ async def test_perform_v4_migration_from_v3(v3_config_entry):
 async def test_perform_v4_migration_from_v3_with_err(
     v3_config_entry, hubspace_migration, mocker
 ):
+    """Test configuration migration from v3 to v4 but contains an error."""
     mocker.patch.object(hubspace_migration, "get_account_id", side_effect=InvalidAuth())
     await hubspace.perform_v4_migration(v3_config_entry[0], v3_config_entry[1])
     assert v3_config_entry[1].data == {

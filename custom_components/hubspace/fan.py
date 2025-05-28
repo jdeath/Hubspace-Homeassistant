@@ -1,3 +1,5 @@
+"""Home Assistant entity for interacting with Afero Fan."""
+
 from functools import partial
 from typing import Any, Optional
 
@@ -17,12 +19,16 @@ PRESET_HS_TO_HA = {"comfort-breeze": "breeze"}
 
 
 class HubspaceFan(HubspaceBaseEntity, FanEntity):
+    """Representation of an Afero fan."""
+
     def __init__(
         self,
         bridge: HubspaceBridge,
         controller: FanController,
         resource: Fan,
     ) -> None:
+        """Initialize an Afero fan."""
+
         super().__init__(bridge, controller, resource)
         self._supported_features: FanEntityFeature = FanEntityFeature(0)
         if self.resource.supports_on:
@@ -36,12 +42,13 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
             self._supported_features |= FanEntityFeature.PRESET_MODE
 
     @property
-    def supported_features(self):
+    def supported_features(self) -> FanEntityFeature:
+        """Get all supported fan features."""
         return self._supported_features
 
     @property
     def is_on(self) -> bool | None:
-        """Return true if fan is spinning"""
+        """Return true if fan is spinning."""
         return (
             self.resource.is_on
             if self._supported_features & FanEntityFeature.TURN_ON
@@ -49,11 +56,13 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
         )
 
     @property
-    def current_direction(self):
-        return self.resource.current_direction
+    def current_direction(self) -> str:
+        """Returns the current direction of the fan."""
+        return "forward" if self.resource.current_direction else "reverse"
 
     @property
-    def percentage(self):
+    def percentage(self) -> int | None:
+        """Current percentage of spinning."""
         return (
             self.resource.speed.speed
             if self.supported_features & FanEntityFeature.SET_SPEED
@@ -61,7 +70,8 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
         )
 
     @property
-    def preset_mode(self):
+    def preset_mode(self) -> str | None:
+        """Current preset for the fan."""
         return (
             "breeze"
             if (
@@ -72,7 +82,8 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
         )
 
     @property
-    def preset_modes(self):
+    def preset_modes(self) -> list[str] | None:
+        """List of available preset mods for the fan."""
         return (
             list(PRESET_HS_TO_HA.values())
             if self.supported_features & FanEntityFeature.PRESET_MODE
@@ -80,7 +91,8 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
         )
 
     @property
-    def speed_count(self):
+    def speed_count(self) -> int:
+        """The number of speeds the fan supports."""
         return (
             len(self.resource.speed.speeds)
             if self.supported_features & FanEntityFeature.SET_SPEED
@@ -100,7 +112,7 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
             device_id=self.resource.id,
             on=True,
             speed=percentage,
-            preset=True if preset_mode else False,
+            preset=bool(preset_mode),
         )
 
     @update_decorator
@@ -132,7 +144,7 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
             self.controller.set_state,
             device_id=self.resource.id,
             on=True,
-            preset=True if preset_mode else False,
+            preset=bool(preset_mode),
         )
 
     @update_decorator
@@ -142,7 +154,7 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
             self.controller.set_state,
             device_id=self.resource.id,
             on=True,
-            forward=True if direction == "forward" else False,
+            forward=direction == "forward",
         )
 
 
