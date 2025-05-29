@@ -91,7 +91,7 @@ def create_hs_raw_from_dump(file_name: str) -> list[dict]:
                 "typeId": "metadevice.device",
             }
         )
-    filename = Path(file_name.name).rsplit(".", 1)[0]
+    filename = Path(file_name).name.rsplit(".", 1)[0]
     new_filename = f"{filename}-raw.json"
     with Path(new_filename).open("w") as fh:
         fh.write(json.dumps(hs_raw, indent=4))
