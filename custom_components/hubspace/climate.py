@@ -2,9 +2,13 @@
 
 from functools import partial
 
-from aioafero.v1 import AferoBridgeV1
+from aioafero.v1 import (
+    AferoBridgeV1,
+    AferoModelResource,
+    PortableACController,
+    ThermostatController,
+)
 from aioafero.v1.controllers.event import EventType
-from aioafero.v1.controllers.thermostat import ThermostatController
 from aioafero.v1.models import Thermostat
 from homeassistant.components.climate import (
     ATTR_HVAC_MODE,
@@ -34,7 +38,7 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
     def __init__(
         self,
         bridge: HubspaceBridge,
-        controller: ThermostatController,
+        controller: ThermostatController | PortableACController,
         resource: Thermostat,
     ) -> None:
         """Initialize an Afero Climate."""
@@ -77,6 +81,8 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
     @property
     def hvac_action(self) -> HVACAction | None:
         """Returns the current state of hvac operation."""
+        if not hasattr(self.resource, "hvac_action"):
+            return None
         mapping = {
             "cooling": HVACAction.COOLING,
             "heating": HVACAction.HEATING,
@@ -98,6 +104,8 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
             "fan": HVACMode.FAN_ONLY,
             "off": HVACMode.OFF,
             "auto": HVACMode.HEAT_COOL,
+            "dehumidify": HVACMode.DRY,
+            "auto-cool": HVACMode.AUTO,
         }
         mapped = mapping.get(self.resource.hvac_mode.mode)
         if not mapped:
@@ -114,6 +122,8 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
             "fan": HVACMode.FAN_ONLY,
             "off": HVACMode.OFF,
             "auto": HVACMode.HEAT_COOL,
+            "dehumidify": HVACMode.DRY,
+            "auto-cool": HVACMode.AUTO,
         }
         return [
             val
@@ -171,6 +181,8 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
             HVACMode.COOL: "cool",
             HVACMode.FAN_ONLY: "fan",
             HVACMode.HEAT_COOL: "auto",
+            HVACMode.AUTO: "auto-cool",
+            HVACMode.DRY: "dehumidify",
         }
         return tracked_modes.get(hvac_mode)
 
@@ -187,6 +199,7 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
         """Set new fan mode."""
         tracked_modes = {
             FAN_ON: "on",
+            FAN_OFF: "off",
         }
         await self.bridge.async_request_call(
             self.controller.set_state,
@@ -217,17 +230,41 @@ async def async_setup_entry(
     """Set up entities."""
     bridge: HubspaceBridge = hass.data[DOMAIN][config_entry.entry_id]
     api: AferoBridgeV1 = bridge.api
-    controller: ThermostatController = api.thermostats
-    make_entity = partial(HubspaceThermostat, bridge, controller)
+    controllers: list[ThermostatController | PortableACController] = [
+        api.thermostats,
+        api.portable_acs,
+    ]
+    for controller in controllers:
+        make_entity = partial(HubspaceThermostat, bridge, controller)
 
-    @callback
-    def async_add_entity(event_type: EventType, resource: Thermostat) -> None:
+        # add all current items in controller
+        async_add_entities(make_entity(entity) for entity in controller)
+        # register listener for new entities
+        config_entry.async_on_unload(
+            controller.subscribe(
+                await generate_callback(bridge, controller, async_add_entities),
+                event_filter=EventType.RESOURCE_ADDED,
+            )
+        )
+
+
+async def generate_callback(bridge, controller, async_add_entities: callback):
+    """Generate a callback function for handling new number entities.
+
+    Args:
+        bridge: HubspaceBridge instance for managing device communication
+        controller: AferoController instance managing the device
+        async_add_entities: Callback function to register new entities
+
+    Returns:
+        Callback function that adds new thermostat entities when resources are added
+
+    """
+
+    async def add_entity_controller(
+        event_type: EventType, resource: AferoModelResource
+    ) -> None:
         """Add an entity."""
-        async_add_entities([make_entity(resource)])
+        async_add_entities([HubspaceThermostat(bridge, controller, resource)])
 
-    # add all current items in controller
-    async_add_entities(make_entity(entity) for entity in controller)
-    # register listener for new entities
-    config_entry.async_on_unload(
-        controller.subscribe(async_add_entity, event_filter=EventType.RESOURCE_ADDED)
-    )
+    return add_entity_controller

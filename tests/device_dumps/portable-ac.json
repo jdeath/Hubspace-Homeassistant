@@ -1,0 +1,703 @@
+[
+  {
+    "id": "8d0414d6-a7f7-4bdb-99d5-d866318ff559",
+    "device_id": "6c62e3d6-858f-4920-b04f-85367d325ec8",
+    "model": "Smart Mobile Air Conditioner",
+    "device_class": "portable-air-conditioner",
+    "default_name": "Smart Mobile Air Conditioner",
+    "default_image": "portable_air_conditioner_icon",
+    "friendly_name": "Garage AC",
+    "functions": [
+      {
+        "id": "cd672850-cf24-4985-85b9-ae52ee2ba45c",
+        "createdTimestampMs": 1724889131524,
+        "updatedTimestampMs": 1724889131524,
+        "functionClass": "error",
+        "functionInstance": "indoor-temperature-sensor-failed",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "1e16fdc2-9da1-4a74-af1e-7e398ccf7f26",
+            "createdTimestampMs": 1724889131541,
+            "updatedTimestampMs": 1724889131541,
+            "name": "alerting",
+            "deviceValues": [
+              {
+                "id": "7dbfe052-95ab-4b27-8ac2-524ff63c69fe",
+                "createdTimestampMs": 1724889131547,
+                "updatedTimestampMs": 1724889131547,
+                "type": "attribute",
+                "key": "400",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "42d2a003-0585-4fc2-bbba-c74c8a01cd3b",
+            "createdTimestampMs": 1724889131530,
+            "updatedTimestampMs": 1724889131530,
+            "name": "normal",
+            "deviceValues": [
+              {
+                "id": "0857adf3-916f-4a8d-8802-bba25065efa7",
+                "createdTimestampMs": 1724889131536,
+                "updatedTimestampMs": 1724889131536,
+                "type": "attribute",
+                "key": "400",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "2a57869b-521e-47e7-a72e-ecabad9f4004",
+        "createdTimestampMs": 1724889131577,
+        "updatedTimestampMs": 1724889131577,
+        "functionClass": "error",
+        "functionInstance": "water-tray-full",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "272bad38-f5df-420c-8dcd-d32fda752947",
+            "createdTimestampMs": 1724889131593,
+            "updatedTimestampMs": 1724889131593,
+            "name": "alerting",
+            "deviceValues": [
+              {
+                "id": "4cb76dd0-a46b-4950-bb51-2d6dd7311660",
+                "createdTimestampMs": 1724889131599,
+                "updatedTimestampMs": 1724889131599,
+                "type": "attribute",
+                "key": "405",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "9eda3e4b-d204-46fe-9807-01321e34b0a5",
+            "createdTimestampMs": 1724889131583,
+            "updatedTimestampMs": 1724889131583,
+            "name": "normal",
+            "deviceValues": [
+              {
+                "id": "b16c4233-28a1-489e-abb0-64867070faa9",
+                "createdTimestampMs": 1724889131589,
+                "updatedTimestampMs": 1724889131589,
+                "type": "attribute",
+                "key": "405",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "904cf12e-07a5-454d-839e-a906cb48c664",
+        "createdTimestampMs": 1724889131349,
+        "updatedTimestampMs": 1724889131349,
+        "functionClass": "fan-speed",
+        "functionInstance": "ac-fan-speed",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "6de1a2c6-a0c0-4920-88c1-a96e97db742b",
+            "createdTimestampMs": 1724889131356,
+            "updatedTimestampMs": 1724889131356,
+            "name": "fan-speed-auto",
+            "deviceValues": [
+              {
+                "id": "797eee7d-a47a-4d62-8014-db587c6b5cc1",
+                "createdTimestampMs": 1724889131362,
+                "updatedTimestampMs": 1724889131362,
+                "type": "attribute",
+                "key": "3",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "24a4ace2-c860-427c-95fc-2b71f8828511",
+            "createdTimestampMs": 1724889131377,
+            "updatedTimestampMs": 1724889131377,
+            "name": "fan-speed-2-100",
+            "deviceValues": [
+              {
+                "id": "adcee92c-3392-434d-9738-f704edf20283",
+                "createdTimestampMs": 1724889131384,
+                "updatedTimestampMs": 1724889131384,
+                "type": "attribute",
+                "key": "3",
+                "value": "3"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "932de4c5-627d-4dbc-b2e4-6314647aed19",
+            "createdTimestampMs": 1724889131367,
+            "updatedTimestampMs": 1724889131367,
+            "name": "fan-speed-2-050",
+            "deviceValues": [
+              {
+                "id": "a0fc0965-8499-431e-93c6-8f4f29046c91",
+                "createdTimestampMs": 1724889131373,
+                "updatedTimestampMs": 1724889131373,
+                "type": "attribute",
+                "key": "3",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "1a24dcc1-40df-4818-9d11-7eb8f4ed54ed",
+        "createdTimestampMs": 1724889131416,
+        "updatedTimestampMs": 1724889131416,
+        "functionClass": "timer",
+        "type": "numeric",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "f43f40e1-c05b-4505-8928-0cacf7657657",
+            "createdTimestampMs": 1724889131422,
+            "updatedTimestampMs": 1724889131422,
+            "name": "timer",
+            "deviceValues": [
+              {
+                "id": "f2848f30-659e-44c2-b45e-0c8cfb93b1f2",
+                "createdTimestampMs": 1724889131428,
+                "updatedTimestampMs": 1724889131428,
+                "type": "attribute",
+                "key": "6"
+              }
+            ],
+            "range": {
+              "min": 0,
+              "max": 1440,
+              "step": 30
+            }
+          }
+        ]
+      },
+      {
+        "id": "5c30c757-141f-43f0-b77b-05f6ea547d41",
+        "createdTimestampMs": 1724889131267,
+        "updatedTimestampMs": 1724889131267,
+        "functionClass": "power",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "79441c62-c411-464c-92b3-42def2063745",
+            "createdTimestampMs": 1724889131286,
+            "updatedTimestampMs": 1724889131286,
+            "name": "on",
+            "deviceValues": [
+              {
+                "id": "3d436f5c-8c1a-43d6-b99d-707bde726ed3",
+                "createdTimestampMs": 1724889131293,
+                "updatedTimestampMs": 1724889131293,
+                "type": "attribute",
+                "key": "1",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "d721962a-e257-405a-90a0-1d832a3175a6",
+            "createdTimestampMs": 1724889131274,
+            "updatedTimestampMs": 1724889131274,
+            "name": "off",
+            "deviceValues": [
+              {
+                "id": "b9fb6bdc-fc7d-4bc4-9c58-30637e57fe53",
+                "createdTimestampMs": 1724889131281,
+                "updatedTimestampMs": 1724889131281,
+                "type": "attribute",
+                "key": "1",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "4733d10b-6de6-4408-b633-3bf3810e3b5d",
+        "createdTimestampMs": 1724889131433,
+        "updatedTimestampMs": 1724889131433,
+        "functionClass": "continuous-fan",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "1326b778-593e-44bd-bdec-50f645d08698",
+            "createdTimestampMs": 1724889131439,
+            "updatedTimestampMs": 1724889131439,
+            "name": "off",
+            "deviceValues": [
+              {
+                "id": "7a870dde-1ef3-4e1c-8fa7-7d0dd2d9807d",
+                "createdTimestampMs": 1724889131445,
+                "updatedTimestampMs": 1724889131445,
+                "type": "attribute",
+                "key": "7",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "643bc8ac-0818-4269-ab0e-92bb3028d2cf",
+            "createdTimestampMs": 1724889131450,
+            "updatedTimestampMs": 1724889131450,
+            "name": "on",
+            "deviceValues": [
+              {
+                "id": "40453e3c-057b-4e68-b7ef-1e0bc7b5e476",
+                "createdTimestampMs": 1724889131456,
+                "updatedTimestampMs": 1724889131456,
+                "type": "attribute",
+                "key": "7",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "ffc1886d-e76a-4e0b-b86e-4ff1ed261e8f",
+        "createdTimestampMs": 1724889131551,
+        "updatedTimestampMs": 1724889131551,
+        "functionClass": "error",
+        "functionInstance": "indoor-coil-temperature-sensor-failed",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "b52856e5-db81-4d6d-8069-51af934f7478",
+            "createdTimestampMs": 1724889131567,
+            "updatedTimestampMs": 1724889131567,
+            "name": "alerting",
+            "deviceValues": [
+              {
+                "id": "e8c79302-c294-4d0a-9956-d4c78de6023b",
+                "createdTimestampMs": 1724889131573,
+                "updatedTimestampMs": 1724889131573,
+                "type": "attribute",
+                "key": "403",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "c9b2a908-c7fc-43f3-9355-7edbd99ae755",
+            "createdTimestampMs": 1724889131557,
+            "updatedTimestampMs": 1724889131557,
+            "name": "normal",
+            "deviceValues": [
+              {
+                "id": "3025624a-3a1f-43fd-a7ba-bc122c1cead9",
+                "createdTimestampMs": 1724889131562,
+                "updatedTimestampMs": 1724889131562,
+                "type": "attribute",
+                "key": "403",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "f3ac481d-1533-4f30-8ff8-b12ec95560d5",
+        "createdTimestampMs": 1724889131478,
+        "updatedTimestampMs": 1724889131478,
+        "functionClass": "temperature",
+        "functionInstance": "current-temp",
+        "type": "numeric",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "e59f4256-7e78-43c7-90fe-5710dd283cb1",
+            "createdTimestampMs": 1724889131485,
+            "updatedTimestampMs": 1724889131485,
+            "name": "current-temp",
+            "deviceValues": [
+              {
+                "id": "4c5bdadc-fd5c-4053-b8f6-a397b2b79558",
+                "createdTimestampMs": 1724889131492,
+                "updatedTimestampMs": 1724889131492,
+                "type": "attribute",
+                "key": "20"
+              }
+            ],
+            "range": {
+              "min": -18,
+              "max": 53,
+              "step": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "id": "14d7cb62-68f8-4358-b66f-b6a20e77270d",
+        "createdTimestampMs": 1724889131460,
+        "updatedTimestampMs": 1724889131460,
+        "functionClass": "temperature",
+        "functionInstance": "cooling-target",
+        "type": "numeric",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "a74d6812-03dc-43b0-866f-7866f6b216c2",
+            "createdTimestampMs": 1724889131467,
+            "updatedTimestampMs": 1724889131467,
+            "name": "cooling-target",
+            "deviceValues": [
+              {
+                "id": "3151e3ec-460f-402c-835d-718c79ff6a46",
+                "createdTimestampMs": 1724889131474,
+                "updatedTimestampMs": 1724889131474,
+                "type": "attribute",
+                "key": "10"
+              }
+            ],
+            "range": {
+              "min": 16,
+              "max": 30,
+              "step": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "id": "2ca786d4-9610-4f27-858f-40d6cd3c6884",
+        "createdTimestampMs": 1724889131389,
+        "updatedTimestampMs": 1724889131389,
+        "functionClass": "sleep",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "ae02e30d-4db6-467c-9f67-d0678b410b54",
+            "createdTimestampMs": 1724889131406,
+            "updatedTimestampMs": 1724889131406,
+            "name": "on",
+            "deviceValues": [
+              {
+                "id": "3db2dc4a-bef9-4fbc-a526-6f17460542af",
+                "createdTimestampMs": 1724889131412,
+                "updatedTimestampMs": 1724889131412,
+                "type": "attribute",
+                "key": "5",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "b075b510-a22f-4513-8e2f-dc562ba90188",
+            "createdTimestampMs": 1724889131396,
+            "updatedTimestampMs": 1724889131396,
+            "name": "off",
+            "deviceValues": [
+              {
+                "id": "cf008cc7-e0cb-400f-8ac2-bc1c363f169a",
+                "createdTimestampMs": 1724889131402,
+                "updatedTimestampMs": 1724889131402,
+                "type": "attribute",
+                "key": "5",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "c1a9de3d-0eed-45e7-9521-aebbc1bfddc8",
+        "createdTimestampMs": 1724889131297,
+        "updatedTimestampMs": 1724889131297,
+        "functionClass": "mode",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "a47cdf6f-cdbd-4be7-a19a-ab9ab4347e00",
+            "createdTimestampMs": 1724889131338,
+            "updatedTimestampMs": 1724889131338,
+            "name": "fan",
+            "deviceValues": [
+              {
+                "id": "91a45691-8039-4897-ab55-2d31001e0cce",
+                "createdTimestampMs": 1724889131344,
+                "updatedTimestampMs": 1724889131344,
+                "type": "attribute",
+                "key": "2",
+                "value": "4"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "8dd18ee6-9411-4afe-a612-3e580a80e4bc",
+            "createdTimestampMs": 1724889131304,
+            "updatedTimestampMs": 1724889131304,
+            "name": "auto-cool",
+            "deviceValues": [
+              {
+                "id": "ae1de5dd-7e0a-490c-87c1-456e27ad682d",
+                "createdTimestampMs": 1724889131311,
+                "updatedTimestampMs": 1724889131311,
+                "type": "attribute",
+                "key": "2",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "aee7e4be-5880-49f7-b3fe-7c99077e364b",
+            "createdTimestampMs": 1724889131316,
+            "updatedTimestampMs": 1724889131316,
+            "name": "dehumidify",
+            "deviceValues": [
+              {
+                "id": "ec2f3bb3-d2b1-4ac9-932c-bcb04a1a303f",
+                "createdTimestampMs": 1724889131322,
+                "updatedTimestampMs": 1724889131322,
+                "type": "attribute",
+                "key": "2",
+                "value": "2"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "735475da-b723-4d31-ae36-6ccb3f35dc9c",
+            "createdTimestampMs": 1724889131326,
+            "updatedTimestampMs": 1724889131326,
+            "name": "cool",
+            "deviceValues": [
+              {
+                "id": "e5f43b6b-9001-436c-be12-08806ec69466",
+                "createdTimestampMs": 1724889131332,
+                "updatedTimestampMs": 1724889131332,
+                "type": "attribute",
+                "key": "2",
+                "value": "3"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "496a10e7-0288-4b07-bc04-fc2d5525e28b",
+        "createdTimestampMs": 1724889131496,
+        "updatedTimestampMs": 1724889131496,
+        "functionClass": "temperature-units",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "3470372d-22c1-43a5-a6c5-3b0f95f85129",
+            "createdTimestampMs": 1724889131502,
+            "updatedTimestampMs": 1724889131502,
+            "name": "fahrenheit",
+            "deviceValues": [
+              {
+                "id": "183baf10-d367-4947-b1d5-917a7ef9d886",
+                "createdTimestampMs": 1724889131509,
+                "updatedTimestampMs": 1724889131509,
+                "type": "attribute",
+                "key": "202",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "e9e76f97-2e51-42f0-90b5-b80fde8c6ef3",
+            "createdTimestampMs": 1724889131513,
+            "updatedTimestampMs": 1724889131513,
+            "name": "celsius",
+            "deviceValues": [
+              {
+                "id": "c228033b-50f0-4731-969d-b29ba0f3a5e5",
+                "createdTimestampMs": 1724889131520,
+                "updatedTimestampMs": 1724889131520,
+                "type": "attribute",
+                "key": "202",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      }
+    ],
+    "states": [
+      {
+        "functionClass": "error",
+        "value": "normal",
+        "lastUpdateTime": 0,
+        "functionInstance": "indoor-temperature-sensor-failed"
+      },
+      {
+        "functionClass": "error",
+        "value": "normal",
+        "lastUpdateTime": 0,
+        "functionInstance": "water-tray-full"
+      },
+      {
+        "functionClass": "fan-speed",
+        "value": "fan-speed-auto",
+        "lastUpdateTime": 0,
+        "functionInstance": "ac-fan-speed"
+      },
+      {
+        "functionClass": "timer",
+        "value": 0,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "power",
+        "value": "off",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "continuous-fan",
+        "value": "off",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "error",
+        "value": "normal",
+        "lastUpdateTime": 0,
+        "functionInstance": "indoor-coil-temperature-sensor-failed"
+      },
+      {
+        "functionClass": "temperature",
+        "value": 35,
+        "lastUpdateTime": 0,
+        "functionInstance": "current-temp"
+      },
+      {
+        "functionClass": "temperature",
+        "value": 22,
+        "lastUpdateTime": 0,
+        "functionInstance": "cooling-target"
+      },
+      {
+        "functionClass": "sleep",
+        "value": "off",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "mode",
+        "value": "auto-cool",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "temperature-units",
+        "value": "fahrenheit",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-ssid",
+        "value": "4d34453d-8cf5-4dd8-959f-74befa009a4b",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-rssi",
+        "value": -68,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-steady-state",
+        "value": "connected",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-setup-state",
+        "value": "connected",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-mac-address",
+        "value": "f28e4194-b69a-4470-a603-17a89e77c62a",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "geo-coordinates",
+        "value": {
+          "geo-coordinates": {
+            "latitude": "0",
+            "longitude": "0"
+          }
+        },
+        "lastUpdateTime": 0,
+        "functionInstance": "system-device-location"
+      },
+      {
+        "functionClass": "scheduler-flags",
+        "value": 0,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "available",
+        "value": true,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "visible",
+        "value": true,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "direct",
+        "value": true,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "ble-mac-address",
+        "value": "ec356af8-0389-423e-8825-4248e3ccf043",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      }
+    ],
+    "children": [],
+    "manufacturerName": "Home Comfort"
+  }
+]

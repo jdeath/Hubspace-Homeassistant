@@ -30,9 +30,10 @@ def mock_get_data(filename: str) -> dict:
 
     """
     import json
+    import os
 
-    current_file_path = Path(__file__)
-    file_path = current_file_path / filename
+    current_path: Path = Path(__file__.rsplit(os.sep, 1)[0])
+    file_path = current_path / filename
 
     async def get_data():
         return json.load(file_path.open())
@@ -73,7 +74,7 @@ class HubspaceBridge:
         setup_ok = False
 
         # Dev mocking
-        # self.api.fetch_data = mock_get_data("thermostat-raw.json")
+        # self.api.fetch_data = mock_get_data("portable-ac-raw.json")
 
         try:
             async with asyncio.timeout(self.config_entry.options[CONF_TIMEOUT]):

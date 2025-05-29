@@ -173,4 +173,21 @@ BINARY_SENSORS = {
         device_class=BinarySensorDeviceClass.MOISTURE,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
+    # portable ac
+    "error|indoor-temperature-sensor-failed": BinarySensorEntityDescription(
+        key="error|indoor-temperature-sensor-failed",
+        name="Indoor Temperature Sensor Failed",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "error|water-tray-full": BinarySensorEntityDescription(
+        key="error|water-tray-full",
+        name="Water Tray Full",
+        device_class=BinarySensorDeviceClass.MOISTURE,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "error|indoor-coil-temperature-sensor-failed": BinarySensorEntityDescription(
+        key="error|indoor-coil-temperature-sensor-failed",
+        name="Water Tray Full",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
 }
