@@ -169,7 +169,11 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
     @property
     def temperature_unit(self) -> str:
         """Unit for backend data."""
-        return UnitOfTemperature.FAHRENHEIT if not self.resource.display_celsius else UnitOfTemperature.CELSIUS
+        return (
+            UnitOfTemperature.FAHRENHEIT
+            if not self.resource.display_celsius
+            else UnitOfTemperature.CELSIUS
+        )
 
     @update_decorator
     async def translate_hvac_mode_to_hubspace(self, hvac_mode) -> str | None:

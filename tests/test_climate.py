@@ -35,6 +35,7 @@ async def mocked_entity(mocked_entry):
     yield hass, entry, bridge
     await bridge.close()
 
+
 @pytest.fixture
 async def mocked_entity_in_f(mocked_entry):
     """Initialize a mocked thermostat and register it within Home Assistant."""
