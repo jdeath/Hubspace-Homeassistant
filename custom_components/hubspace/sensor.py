@@ -68,10 +68,9 @@ async def async_setup_entry(
                         resource.id,
                     )
                     continue
-                if sensor in SENSORS_GENERAL:
-                    sensor_entities.append(
-                        AferoSensorEntity(bridge, controller, resource, sensor)
-                    )
+                sensor_entities.append(
+                    AferoSensorEntity(bridge, controller, resource, sensor)
+                )
 
     async_add_entities(sensor_entities)
 

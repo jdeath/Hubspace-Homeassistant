@@ -28,4 +28,4 @@ jobs:
           pytest
       - name: Execute Linting
         run: |
-          pre-commit
+          pre-commit run --all-files

@@ -73,9 +73,7 @@ async def async_setup_entry(
         # Add any currently tracked entities
         entities.extend(
             [
-                entities.append(
-                    AferoSelectEntitiy(bridge, controller, resource, select)
-                )
+                AferoSelectEntitiy(bridge, controller, resource, select)
                 for resource in controller
                 for select in resource.selects
             ]

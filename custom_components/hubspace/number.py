@@ -88,7 +88,7 @@ async def async_setup_entry(
         # Add any currently tracked entities
         entities.extend(
             [
-                entities.append(AferoNumberEntity(bridge, controller, resource, number))
+                AferoNumberEntity(bridge, controller, resource, number)
                 for resource in controller
                 for number in resource.numbers
             ]

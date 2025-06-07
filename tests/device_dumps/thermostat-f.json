@@ -2112,7 +2112,7 @@
       },
       {
         "functionClass": "temperature-units",
-        "value": "celsius",
+        "value": "fahrenheit",
         "lastUpdateTime": 0,
         "functionInstance": null
       },
