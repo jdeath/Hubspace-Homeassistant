@@ -62,7 +62,7 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
     @property
     def current_temperature(self) -> float | None:
         """Returns the current temperature."""
-        return self.resource.current_temperature.temperature
+        return self.resource.temperature
 
     @property
     def fan_mode(self) -> str | None:
@@ -222,7 +222,6 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
             hvac_mode=await self.translate_hvac_mode_to_hubspace(
                 kwargs.get(ATTR_HVAC_MODE)
             ),
-            is_celsius=True,
         )
 
 

@@ -20,6 +20,10 @@ from .utils import create_devices_from_data, modify_state
 thermostat = create_devices_from_data("thermostat.json")[0]
 thermostat_id = "climate.home_heat_thermostat"
 
+
+thermostat_f = create_devices_from_data("thermostat-f.json")[0]
+thermostat_f_id = "climate.home_heat_thermostat"
+
 portable_ac = create_devices_from_data("portable-ac.json")[0]
 portable_ac_id = "climate.garage_ac_portableac"
 
@@ -92,6 +96,41 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry):
         HVACMode.OFF,
     }
     assert entity.attributes["target_temp_step"] == 0.5
+    assert entity.attributes["fan_mode"] == "auto"
+    assert set(entity.attributes["fan_modes"]) == {"auto", "intermittent", "on"}
+    assert entity.attributes["current_temperature"] == 18.3
+    assert (
+        entity.attributes["supported_features"]
+        == ClimateEntityFeature.TARGET_TEMPERATURE
+        + ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
+        + ClimateEntityFeature.FAN_MODE
+    )
+
+
+# These numbers are slightly different than above due to the handling
+# of C to F within Hubspace.
+# For example, Hubspace displays 64F as 18C, but 18C is actually 64.4. Home Assistant
+# doesn't do this funkiness so it shows slightly different here
+async def test_async_setup_entry_in_f(mocked_entry):
+    """Ensure climates are properly discovered and registered with Home Assistant."""
+    hass, entry, bridge = mocked_entry
+    await bridge.thermostats.initialize_elem(thermostat_f)
+    await bridge.devices.initialize_elem(thermostat_f)
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    entity_reg = er.async_get(hass)
+    assert entity_reg.async_get(thermostat_f_id) is not None
+    entity = hass.states.get(thermostat_id)
+    assert entity is not None
+    assert entity.state == "heat"
+    assert entity.attributes[ATTR_TEMPERATURE] == 17.8
+    assert entity.attributes["hvac_action"] == "off"
+    assert set(entity.attributes["hvac_modes"]) == {
+        HVACMode.FAN_ONLY,
+        HVACMode.HEAT,
+        HVACMode.OFF,
+    }
+    assert entity.attributes["target_temp_step"] == 1
     assert entity.attributes["fan_mode"] == "auto"
     assert set(entity.attributes["fan_modes"]) == {"auto", "intermittent", "on"}
     assert entity.attributes["current_temperature"] == 18.3
@@ -608,9 +647,9 @@ async def test_set_temperature_in_f(mocked_entity_in_f):
     entity = hass.states.get(thermostat_id)
     assert entity is not None
     assert entity.state == HVACMode.COOL
-    assert entity.attributes[ATTR_TARGET_TEMP_HIGH] == 27
-    assert entity.attributes[ATTR_TARGET_TEMP_LOW] == 14
-    assert entity.attributes[ATTR_TEMPERATURE] == 12
+    assert entity.attributes[ATTR_TARGET_TEMP_HIGH] == 27.0
+    assert entity.attributes[ATTR_TARGET_TEMP_LOW] == 14.0
+    assert entity.attributes[ATTR_TEMPERATURE] == 12.0
 
 
 @pytest.mark.asyncio
