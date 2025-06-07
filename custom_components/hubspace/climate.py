@@ -47,8 +47,7 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
         self._supported_fan: list[str] = []
         self._supported_hvac_modes: list[HVACMode]
         self._supported_features: ClimateEntityFeature = ClimateEntityFeature(0)
-        if self.resource.target_temperature:
-            self._supported_features |= ClimateEntityFeature.TARGET_TEMPERATURE
+        self._supported_features |= ClimateEntityFeature.TARGET_TEMPERATURE
         if self.resource.supports_fan_mode:
             self._supported_features |= ClimateEntityFeature.FAN_MODE
         if self.resource.supports_temperature_range:
