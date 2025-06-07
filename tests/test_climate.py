@@ -35,6 +35,18 @@ async def mocked_entity(mocked_entry):
     yield hass, entry, bridge
     await bridge.close()
 
+@pytest.fixture
+async def mocked_entity_in_f(mocked_entry):
+    """Initialize a mocked thermostat and register it within Home Assistant."""
+    hass, entry, bridge = mocked_entry
+    await bridge.thermostats.initialize_elem(thermostat)
+    await bridge.devices.initialize_elem(thermostat)
+    bridge.thermostats[thermostat.id].display_celsius = False
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    yield hass, entry, bridge
+    await bridge.close()
+
 
 @pytest.fixture
 async def mocked_portable_ac_entity(mocked_entry):
@@ -529,6 +541,75 @@ async def test_set_temperature(mocked_entity):
     assert entity.attributes[ATTR_TARGET_TEMP_HIGH] == 27.0
     assert entity.attributes[ATTR_TARGET_TEMP_LOW] == 14.0
     assert entity.attributes[ATTR_TEMPERATURE] == 12.0
+
+
+@pytest.mark.asyncio
+async def test_set_temperature_in_f(mocked_entity_in_f):
+    """Ensure the service call set_temperature works as expected."""
+    hass, _, bridge = mocked_entity_in_f
+    await hass.services.async_call(
+        "climate",
+        "set_temperature",
+        {
+            "entity_id": thermostat_id,
+            ATTR_TEMPERATURE: 12,
+            ATTR_TARGET_TEMP_HIGH: 27,
+            ATTR_TARGET_TEMP_LOW: 12,
+            ATTR_HVAC_MODE: HVACMode.COOL,
+        },
+        blocking=True,
+    )
+    update_call = bridge.request.call_args_list[-1]
+    assert update_call.args[0] == "put"
+    payload = update_call.kwargs["json"]
+    assert payload["metadeviceId"] == thermostat.id
+    # Now generate update event by emitting the json we've sent as incoming event
+    thermostat_update = create_devices_from_data("thermostat.json")[0]
+    modify_state(
+        thermostat_update,
+        AferoState(
+            functionClass="mode",
+            functionInstance=None,
+            value="cool",
+        ),
+    )
+    modify_state(
+        thermostat_update,
+        AferoState(
+            functionClass="temperature",
+            functionInstance="cooling-target",
+            value=12,
+        ),
+    )
+    modify_state(
+        thermostat_update,
+        AferoState(
+            functionClass="temperature",
+            functionInstance="auto-cooling-target",
+            value=27,
+        ),
+    )
+    modify_state(
+        thermostat_update,
+        AferoState(
+            functionClass="temperature",
+            functionInstance="auto-heating-target",
+            value=14,
+        ),
+    )
+    event = {
+        "type": "update",
+        "device_id": thermostat_update.id,
+        "device": thermostat_update,
+    }
+    bridge.emit_event("update", event)
+    await hass.async_block_till_done()
+    entity = hass.states.get(thermostat_id)
+    assert entity is not None
+    assert entity.state == HVACMode.COOL
+    assert entity.attributes[ATTR_TARGET_TEMP_HIGH] == 27
+    assert entity.attributes[ATTR_TARGET_TEMP_LOW] == 14
+    assert entity.attributes[ATTR_TEMPERATURE] == 12
 
 
 @pytest.mark.asyncio

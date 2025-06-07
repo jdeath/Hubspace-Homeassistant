@@ -62,7 +62,7 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
     @property
     def current_temperature(self) -> float | None:
         """Returns the current temperature."""
-        return self.resource.current_temperature
+        return self.resource.current_temperature.temperature
 
     @property
     def fan_mode(self) -> str | None:
@@ -169,8 +169,7 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
     @property
     def temperature_unit(self) -> str:
         """Unit for backend data."""
-        # Hubspace always returns in C
-        return UnitOfTemperature.CELSIUS
+        return UnitOfTemperature.FAHRENHEIT if not self.resource.display_celsius else UnitOfTemperature.CELSIUS
 
     @update_decorator
     async def translate_hvac_mode_to_hubspace(self, hvac_mode) -> str | None:
@@ -219,6 +218,7 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
             hvac_mode=await self.translate_hvac_mode_to_hubspace(
                 kwargs.get(ATTR_HVAC_MODE)
             ),
+            is_celsius=True,
         )
 
 
