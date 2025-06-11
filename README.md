@@ -37,6 +37,13 @@ are as follows:
 
   - On/Off
 
+- Portable AC
+
+  - HVAC Mode
+  - Fan Mode
+  - Temperature
+  - Target Temperature
+
 - Smart Glass
 
   - On/Off
@@ -48,7 +55,7 @@ are as follows:
 - Thermostat
 
   - HVAC Mode
-  - FAN Mode
+  - Fan Mode
   - Temperature
   - Target Temperature
 
@@ -61,6 +68,12 @@ are as follows:
   - Open / Close
 
 ## Changelog
+
+- 5.3.0
+
+  - Add support for Portable ACs
+  - Update climate devices to adjust more closely to Hubspace
+  - Fix an issue where Thermostats could incorrectly use Auto
 
 - 5.2.3
 
