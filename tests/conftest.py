@@ -84,7 +84,8 @@ async def mocked_entry(hass, mocker, mocked_bridge) -> MockConfigEntry:
     mocker.patch(
         "custom_components.hubspace.bridge.AferoBridgeV1", return_value=mocked_bridge
     )
-    return hass, entry, mocked_bridge
+    yield hass, entry, mocked_bridge
+    await mocked_bridge.close()
 
 
 @pytest.fixture(autouse=True)

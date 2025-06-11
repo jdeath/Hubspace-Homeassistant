@@ -78,10 +78,9 @@ async def async_setup_entry(
                         resource.id,
                     )
                     continue
-                if sensor in BINARY_SENSORS:
-                    sensor_entities.append(
-                        AferoBinarySensorEntity(bridge, controller, resource, sensor)
-                    )
+                sensor_entities.append(
+                    AferoBinarySensorEntity(bridge, controller, resource, sensor)
+                )
 
     async_add_entities(sensor_entities)
 

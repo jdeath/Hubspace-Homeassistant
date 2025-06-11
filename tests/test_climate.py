@@ -21,12 +21,49 @@ thermostat = create_devices_from_data("thermostat.json")[0]
 thermostat_id = "climate.home_heat_thermostat"
 
 
+thermostat_f = create_devices_from_data("thermostat-f.json")[0]
+thermostat_f_id = "climate.home_heat_thermostat"
+
+portable_ac = create_devices_from_data("portable-ac.json")[0]
+portable_ac_id = "climate.garage_ac_portableac"
+
+
 @pytest.fixture
 async def mocked_entity(mocked_entry):
     """Initialize a mocked thermostat and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
     await bridge.thermostats.initialize_elem(thermostat)
     await bridge.devices.initialize_elem(thermostat)
+    # Force mocked entity to support auto
+    bridge.thermostats[thermostat.id].hvac_mode.supported_modes.add("auto")
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    yield hass, entry, bridge
+    await bridge.close()
+
+
+@pytest.fixture
+async def mocked_entity_in_f(mocked_entry):
+    """Initialize a mocked thermostat and register it within Home Assistant."""
+    hass, entry, bridge = mocked_entry
+    await bridge.thermostats.initialize_elem(thermostat)
+    await bridge.devices.initialize_elem(thermostat)
+    # Force mocked entity to be in F
+    bridge.thermostats[thermostat.id].display_celsius = False
+    # Force mocked entity to support auto
+    bridge.thermostats[thermostat.id].hvac_mode.supported_modes.add("auto")
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    yield hass, entry, bridge
+    await bridge.close()
+
+
+@pytest.fixture
+async def mocked_portable_ac_entity(mocked_entry):
+    """Initialize a mocked thermostat and register it within Home Assistant."""
+    hass, entry, bridge = mocked_entry
+    await bridge.portable_acs.initialize_elem(portable_ac)
+    await bridge.devices.initialize_elem(portable_ac)
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -45,41 +82,114 @@ async def mocked_entity(mocked_entry):
 )
 async def test_async_setup_entry(dev, expected_entities, mocked_entry):
     """Ensure climates are properly discovered and registered with Home Assistant."""
+    hass, entry, bridge = mocked_entry
+    await bridge.thermostats.initialize_elem(dev)
+    await bridge.devices.initialize_elem(dev)
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    entity_reg = er.async_get(hass)
+    for entity in expected_entities:
+        assert entity_reg.async_get(entity) is not None
+    entity = hass.states.get(thermostat_id)
+    assert entity is not None
+    assert entity.state == "heat"
+    assert entity.attributes[ATTR_TEMPERATURE] == 18
+    assert entity.attributes["hvac_action"] == "off"
+    assert set(entity.attributes["hvac_modes"]) == {
+        HVACMode.FAN_ONLY,
+        HVACMode.HEAT,
+        HVACMode.OFF,
+    }
+    assert entity.attributes["target_temp_step"] == 0.5
+    assert entity.attributes["fan_mode"] == "auto"
+    assert set(entity.attributes["fan_modes"]) == {"auto", "intermittent", "on"}
+    assert entity.attributes["current_temperature"] == 18.3
+    assert (
+        entity.attributes["supported_features"]
+        == ClimateEntityFeature.TARGET_TEMPERATURE + ClimateEntityFeature.FAN_MODE
+    )
+
+
+# These numbers are slightly different from above due to the handling
+# of C to F within Hubspace.
+# For example, Hubspace displays 64F as 18C, but 18C is actually 64.4. Home Assistant
+# doesn't do this funkiness so it shows slightly different here
+async def test_async_setup_entry_in_f(mocked_entry):
+    """Ensure climates are properly discovered and registered with Home Assistant."""
+    hass, entry, bridge = mocked_entry
+    await bridge.thermostats.initialize_elem(thermostat_f)
+    await bridge.devices.initialize_elem(thermostat_f)
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    entity_reg = er.async_get(hass)
+    assert entity_reg.async_get(thermostat_f_id) is not None
+    entity = hass.states.get(thermostat_id)
+    assert entity is not None
+    assert entity.state == "heat"
+    assert entity.attributes[ATTR_TEMPERATURE] == 17.8
+    assert entity.attributes["hvac_action"] == "off"
+    assert set(entity.attributes["hvac_modes"]) == {
+        HVACMode.FAN_ONLY,
+        HVACMode.HEAT,
+        HVACMode.OFF,
+    }
+    assert entity.attributes["target_temp_step"] == 1
+    assert entity.attributes["fan_mode"] == "auto"
+    assert set(entity.attributes["fan_modes"]) == {"auto", "intermittent", "on"}
+    assert entity.attributes["current_temperature"] == 18.3
+    assert (
+        entity.attributes["supported_features"]
+        == ClimateEntityFeature.TARGET_TEMPERATURE + ClimateEntityFeature.FAN_MODE
+    )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    (
+        "dev",
+        "expected_entity",
+    ),
+    [(portable_ac, portable_ac_id)],
+)
+async def test_async_setup_entry_portable_ac(dev, expected_entity, mocked_entry):
+    """Ensure climates are properly discovered and registered with Home Assistant."""
     try:
         hass, entry, bridge = mocked_entry
-        await bridge.thermostats.initialize_elem(dev)
+        await bridge.portable_acs.initialize_elem(dev)
         await bridge.devices.initialize_elem(dev)
         await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
         entity_reg = er.async_get(hass)
-        for entity in expected_entities:
-            assert entity_reg.async_get(entity) is not None
-        entity = hass.states.get(thermostat_id)
-        assert entity is not None
-        assert entity.state == "heat"
-        assert entity.attributes[ATTR_TEMPERATURE] == 18
-        assert entity.attributes["hvac_action"] == "off"
+        assert entity_reg.async_get(expected_entity) is not None
+        entity = hass.states.get(expected_entity)
+        assert entity
+        assert entity.state == "auto"
+        assert entity.attributes[ATTR_TEMPERATURE] == 22
+        assert "hvac_action" not in entity.attributes
         assert set(entity.attributes["hvac_modes"]) == {
+            HVACMode.AUTO,
+            HVACMode.COOL,
+            HVACMode.DRY,
             HVACMode.FAN_ONLY,
-            HVACMode.HEAT,
-            HVACMode.OFF,
         }
         assert entity.attributes["target_temp_step"] == 0.5
-        assert entity.attributes["fan_mode"] == "auto"
-        assert set(entity.attributes["fan_modes"]) == {"auto", "intermittent", "on"}
-        assert entity.attributes["current_temperature"] == 18.3
+        assert "fan_mode" not in entity.attributes
+        assert "fan_modes" not in entity.attributes
+        assert entity.attributes["current_temperature"] == 35
         assert (
             entity.attributes["supported_features"]
             == ClimateEntityFeature.TARGET_TEMPERATURE
-            + ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
-            + ClimateEntityFeature.FAN_MODE
         )
     finally:
         await bridge.close()
 
 
 @pytest.mark.asyncio
-async def test_add_new_device(mocked_entry):
+@pytest.mark.parametrize(
+    ("file_name", "expected_entities"),
+    [("thermostat.json", [thermostat_id]), ("portable-ac.json", [portable_ac_id])],
+)
+async def test_add_new_device(file_name, expected_entities, mocked_entry):
     """Ensure newly added devices are properly discovered and registered with Home Assistant."""
     hass, entry, bridge = mocked_entry
     assert len(bridge.devices.items) == 0
@@ -89,7 +199,7 @@ async def test_add_new_device(mocked_entry):
     assert len(bridge.devices.subscribers) > 0
     assert len(bridge.devices.subscribers["*"]) > 0
     # Now generate update event by emitting the json we've sent as incoming event
-    hs_new_dev = create_devices_from_data("thermostat.json")[0]
+    hs_new_dev = create_devices_from_data(file_name)[0]
     event = {
         "type": "add",
         "device_id": hs_new_dev.id,
@@ -98,8 +208,8 @@ async def test_add_new_device(mocked_entry):
     bridge.emit_event("add", event)
     await hass.async_block_till_done()
     assert len(bridge.devices.items) == 1
-    expected_entities = [thermostat_id]
     entity_reg = er.async_get(hass)
+    await hass.async_block_till_done()
     for entity in expected_entities:
         assert entity_reg.async_get(entity) is not None
 
@@ -472,3 +582,121 @@ async def test_set_temperature(mocked_entity):
     assert entity.attributes[ATTR_TARGET_TEMP_HIGH] == 27.0
     assert entity.attributes[ATTR_TARGET_TEMP_LOW] == 14.0
     assert entity.attributes[ATTR_TEMPERATURE] == 12.0
+
+
+@pytest.mark.asyncio
+async def test_set_temperature_in_f(mocked_entity_in_f):
+    """Ensure the service call set_temperature works as expected."""
+    hass, _, bridge = mocked_entity_in_f
+    await hass.services.async_call(
+        "climate",
+        "set_temperature",
+        {
+            "entity_id": thermostat_id,
+            ATTR_TEMPERATURE: 12,
+            ATTR_TARGET_TEMP_HIGH: 27,
+            ATTR_TARGET_TEMP_LOW: 12,
+            ATTR_HVAC_MODE: HVACMode.COOL,
+        },
+        blocking=True,
+    )
+    update_call = bridge.request.call_args_list[-1]
+    assert update_call.args[0] == "put"
+    payload = update_call.kwargs["json"]
+    assert payload["metadeviceId"] == thermostat.id
+    # Now generate update event by emitting the json we've sent as incoming event
+    thermostat_update = create_devices_from_data("thermostat.json")[0]
+    modify_state(
+        thermostat_update,
+        AferoState(
+            functionClass="mode",
+            functionInstance=None,
+            value="cool",
+        ),
+    )
+    modify_state(
+        thermostat_update,
+        AferoState(
+            functionClass="temperature",
+            functionInstance="cooling-target",
+            value=12,
+        ),
+    )
+    modify_state(
+        thermostat_update,
+        AferoState(
+            functionClass="temperature",
+            functionInstance="auto-cooling-target",
+            value=27,
+        ),
+    )
+    modify_state(
+        thermostat_update,
+        AferoState(
+            functionClass="temperature",
+            functionInstance="auto-heating-target",
+            value=14,
+        ),
+    )
+    event = {
+        "type": "update",
+        "device_id": thermostat_update.id,
+        "device": thermostat_update,
+    }
+    bridge.emit_event("update", event)
+    await hass.async_block_till_done()
+    entity = hass.states.get(thermostat_id)
+    assert entity is not None
+    assert entity.state == HVACMode.COOL
+    assert entity.attributes[ATTR_TARGET_TEMP_HIGH] == 27.0
+    assert entity.attributes[ATTR_TARGET_TEMP_LOW] == 14.0
+    assert entity.attributes[ATTR_TEMPERATURE] == 12.0
+
+
+@pytest.mark.asyncio
+async def test_set_temperature_portable_ac(mocked_portable_ac_entity):
+    """Ensure the service call set_temperature works as expected."""
+    hass, _, bridge = mocked_portable_ac_entity
+    await hass.services.async_call(
+        "climate",
+        "set_temperature",
+        {
+            "entity_id": portable_ac_id,
+            ATTR_TEMPERATURE: 25,
+            ATTR_HVAC_MODE: HVACMode.DRY,
+        },
+        blocking=True,
+    )
+    update_call = bridge.request.call_args_list[-1]
+    assert update_call.args[0] == "put"
+    payload = update_call.kwargs["json"]
+    assert payload["metadeviceId"] == portable_ac.id
+    # Now generate update event by emitting the json we've sent as incoming event
+    entitiy_update = create_devices_from_data("portable-ac.json")[0]
+    modify_state(
+        entitiy_update,
+        AferoState(
+            functionClass="mode",
+            functionInstance=None,
+            value="dehumidify",
+        ),
+    )
+    modify_state(
+        entitiy_update,
+        AferoState(
+            functionClass="temperature",
+            functionInstance="cooling-target",
+            value=25,
+        ),
+    )
+    event = {
+        "type": "update",
+        "device_id": entitiy_update.id,
+        "device": entitiy_update,
+    }
+    bridge.emit_event("update", event)
+    await hass.async_block_till_done()
+    entity = hass.states.get(portable_ac_id)
+    assert entity is not None
+    assert entity.state == HVACMode.DRY
+    assert entity.attributes[ATTR_TEMPERATURE] == 25
