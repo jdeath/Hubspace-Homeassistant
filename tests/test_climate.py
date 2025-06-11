@@ -34,6 +34,8 @@ async def mocked_entity(mocked_entry):
     hass, entry, bridge = mocked_entry
     await bridge.thermostats.initialize_elem(thermostat)
     await bridge.devices.initialize_elem(thermostat)
+    # Force mocked entity to support auto
+    bridge.thermostats[thermostat.id].hvac_mode.supported_modes.add("auto")
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -46,7 +48,10 @@ async def mocked_entity_in_f(mocked_entry):
     hass, entry, bridge = mocked_entry
     await bridge.thermostats.initialize_elem(thermostat)
     await bridge.devices.initialize_elem(thermostat)
+    # Force mocked entity to be in F
     bridge.thermostats[thermostat.id].display_celsius = False
+    # Force mocked entity to support auto
+    bridge.thermostats[thermostat.id].hvac_mode.supported_modes.add("auto")
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -101,13 +106,11 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry):
     assert entity.attributes["current_temperature"] == 18.3
     assert (
         entity.attributes["supported_features"]
-        == ClimateEntityFeature.TARGET_TEMPERATURE
-        + ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
-        + ClimateEntityFeature.FAN_MODE
+        == ClimateEntityFeature.TARGET_TEMPERATURE + ClimateEntityFeature.FAN_MODE
     )
 
 
-# These numbers are slightly different than above due to the handling
+# These numbers are slightly different from above due to the handling
 # of C to F within Hubspace.
 # For example, Hubspace displays 64F as 18C, but 18C is actually 64.4. Home Assistant
 # doesn't do this funkiness so it shows slightly different here
@@ -136,9 +139,7 @@ async def test_async_setup_entry_in_f(mocked_entry):
     assert entity.attributes["current_temperature"] == 18.3
     assert (
         entity.attributes["supported_features"]
-        == ClimateEntityFeature.TARGET_TEMPERATURE
-        + ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
-        + ClimateEntityFeature.FAN_MODE
+        == ClimateEntityFeature.TARGET_TEMPERATURE + ClimateEntityFeature.FAN_MODE
     )
 
 
