@@ -75,7 +75,7 @@ class HubspaceBridge:
         setup_ok = False
 
         # Dev mocking
-        # self.api.fetch_data = mock_get_data("portable-ac-raw.json")
+        # self.api.fetch_data = mock_get_data("security-system-raw.json")
 
         try:
             async with asyncio.timeout(self.config_entry.options[CONF_TIMEOUT]):
