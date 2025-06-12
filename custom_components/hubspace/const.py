@@ -47,6 +47,7 @@ PLATFORMS: Final[list[Platform]] = [
     Platform.VALVE,
     Platform.NUMBER,
     Platform.SELECT,
+    Platform.ALARM_CONTROL_PANEL,
 ]
 
 
@@ -114,6 +115,15 @@ SENSORS_GENERAL = {
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=SIGNAL_STRENGTH_DECIBELS,
         state_class=SensorStateClass.MEASUREMENT,
+    ),
+    # Security System
+    "history-event": SensorEntityDescription(
+        key="history-event",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "disarmed-by": SensorEntityDescription(
+        key="disarmed-by",
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
 }
 
@@ -188,6 +198,12 @@ BINARY_SENSORS = {
     "error|indoor-coil-temperature-sensor-failed": BinarySensorEntityDescription(
         key="error|indoor-coil-temperature-sensor-failed",
         name="Water Tray Full",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    # Security System
+    "battery-powered|None": BinarySensorEntityDescription(
+        key="battery-powered|None",
+        name="On Battery",
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
 }
