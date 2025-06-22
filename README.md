@@ -69,6 +69,10 @@ are as follows:
 
 ## Changelog
 
+- 5.3.1
+
+  - Fixed an issue where a failure during auth produced an Unhandled exception
+
 - 5.3.0
 
   - Add support for Portable ACs
