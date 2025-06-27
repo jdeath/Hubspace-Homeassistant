@@ -14,7 +14,7 @@ import pytest
 
 from custom_components.hubspace import light
 
-from .utils import create_devices_from_data, modify_state
+from .utils import create_devices_from_data, hs_raw_from_dump, modify_state
 
 fan_zandra = create_devices_from_data("fan-ZandraFan.json")
 fan_zandra_light = fan_zandra[1]
@@ -497,15 +497,12 @@ async def test_add_new_device(mocked_entry):
     assert len(bridge.devices.subscribers) > 0
     assert len(bridge.devices.subscribers["*"]) > 0
     # Now generate update event by emitting the json we've sent as incoming event
-    hs_new_dev = create_devices_from_data("dimmer-HPDA1110NWBP.json")[0]
-    event = {
-        "type": "add",
-        "device_id": hs_new_dev.id,
-        "device": hs_new_dev,
-    }
-    bridge.emit_event("add", event)
+    afero_data = hs_raw_from_dump("dimmer-HPDA1110NWBP.json")
+    await bridge.generate_events_from_data(afero_data)
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
-    expected_entities = [switch_dimmer_light_id]
+    assert len(bridge.devices.items) == 1
     entity_reg = er.async_get(hass)
-    for entity in expected_entities:
+    await hass.async_block_till_done()
+    for entity in [switch_dimmer_light_id]:
         assert entity_reg.async_get(entity) is not None

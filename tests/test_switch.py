@@ -4,7 +4,7 @@ from aioafero import AferoState
 from homeassistant.helpers import entity_registry as er
 import pytest
 
-from .utils import create_devices_from_data, modify_state
+from .utils import create_devices_from_data, hs_raw_from_dump, modify_state
 
 transformer = create_devices_from_data("transformer.json")[0]
 transformer_entity_zone_1 = "switch.friendly_device_6_zone_1"
@@ -243,19 +243,16 @@ async def test_add_new_device(mocked_entry):
     assert len(bridge.devices.subscribers) > 0
     assert len(bridge.devices.subscribers["*"]) > 0
     # Now generate update event by emitting the json we've sent as incoming event
-    hs_new_dev = create_devices_from_data("transformer.json")[0]
-    event = {
-        "type": "add",
-        "device_id": hs_new_dev.id,
-        "device": hs_new_dev,
-    }
-    bridge.emit_event("add", event)
+    afero_data = hs_raw_from_dump("transformer.json")
+    await bridge.generate_events_from_data(afero_data)
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
-    expected_entities = [
+    assert len(bridge.devices.items) == 1
+    entity_reg = er.async_get(hass)
+    await hass.async_block_till_done()
+    for entity in [
         transformer_entity_zone_1,
         transformer_entity_zone_2,
         transformer_entity_zone_3,
-    ]
-    entity_reg = er.async_get(hass)
-    for entity in expected_entities:
+    ]:
         assert entity_reg.async_get(entity) is not None

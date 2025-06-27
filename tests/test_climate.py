@@ -15,7 +15,7 @@ from homeassistant.components.climate import (
 from homeassistant.helpers import entity_registry as er
 import pytest
 
-from .utils import create_devices_from_data, modify_state
+from .utils import create_devices_from_data, hs_raw_from_dump, modify_state
 
 thermostat = create_devices_from_data("thermostat.json")[0]
 thermostat_id = "climate.home_heat_thermostat"
@@ -189,7 +189,7 @@ async def test_async_setup_entry_portable_ac(dev, expected_entity, mocked_entry)
     ("file_name", "expected_entities"),
     [("thermostat.json", [thermostat_id]), ("portable-ac.json", [portable_ac_id])],
 )
-async def test_add_new_device(file_name, expected_entities, mocked_entry):
+async def test_add_new_device(file_name, expected_entities, mocked_entry, caplog):
     """Ensure newly added devices are properly discovered and registered with Home Assistant."""
     hass, entry, bridge = mocked_entry
     assert len(bridge.devices.items) == 0
@@ -199,13 +199,9 @@ async def test_add_new_device(file_name, expected_entities, mocked_entry):
     assert len(bridge.devices.subscribers) > 0
     assert len(bridge.devices.subscribers["*"]) > 0
     # Now generate update event by emitting the json we've sent as incoming event
-    hs_new_dev = create_devices_from_data(file_name)[0]
-    event = {
-        "type": "add",
-        "device_id": hs_new_dev.id,
-        "device": hs_new_dev,
-    }
-    bridge.emit_event("add", event)
+    afero_data = hs_raw_from_dump(file_name)
+    await bridge.generate_events_from_data(afero_data)
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     assert len(bridge.devices.items) == 1
     entity_reg = er.async_get(hass)

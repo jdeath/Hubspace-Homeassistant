@@ -1,5 +1,7 @@
 """Helper functions when executing pytest."""
 
+import asyncio
+import contextlib
 import datetime
 import logging
 
@@ -36,7 +38,7 @@ async def mocked_bridge(mocker) -> v1.AferoBridgeV1:
     )
     mocker.patch.object(hs_bridge, "_account_id", "mocked-account-id")
     mocker.patch.object(hs_bridge, "request", side_effect=mocker.AsyncMock())
-    mocker.patch.object(hs_bridge, "close", side_effect=mocker.AsyncMock())
+    # mocker.patch.object(hs_bridge, "close", side_effect=mocker.AsyncMock())
     hs_bridge.set_token_data(
         token_data(
             "mock-token",
@@ -48,18 +50,26 @@ async def mocked_bridge(mocker) -> v1.AferoBridgeV1:
     mocker.patch.object(
         hs_bridge, "fetch_data", side_effect=mocker.AsyncMock(return_value=[])
     )
-    mocker.patch("aioafero.v1.controllers.event.EventStream.initialize")
-    await hs_bridge.initialize()
+    mocker.patch("aioafero.v1.controllers.event.EventStream.gather_data")
 
     # Enable ad-hoc event updates
     def emit_event(event_type, data):
         hs_bridge.events.emit(EventType(event_type), data)
 
+    # Enable ad-hoc polls
+    async def generate_events_from_data(data):
+        task = asyncio.create_task(hs_bridge.events.generate_events_from_data(data))
+        await task
+        await hs_bridge.async_block_until_done()
+
     hs_bridge.emit_event = emit_event
+    hs_bridge.generate_events_from_data = generate_events_from_data
     # Override context manager
     hs_bridge.__aenter__ = mocker.AsyncMock(return_value=hs_bridge)
     hs_bridge.__aexit__ = mocker.AsyncMock()
-    return hs_bridge
+    yield hs_bridge
+    with contextlib.suppress(asyncio.CancelledError):
+        await hs_bridge.close()
 
 
 @pytest.fixture

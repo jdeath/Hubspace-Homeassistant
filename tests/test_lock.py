@@ -5,7 +5,7 @@ from aioafero.v1.controllers.lock import features
 from homeassistant.helpers import entity_registry as er
 import pytest
 
-from .utils import create_devices_from_data, modify_state
+from .utils import create_devices_from_data, hs_raw_from_dump, modify_state
 
 lock_tbd = create_devices_from_data("door-lock-TBD.json")
 lock_tbd_instance = lock_tbd[0]
@@ -169,15 +169,12 @@ async def test_add_new_device(mocked_entry):
     assert len(bridge.devices.subscribers) > 0
     assert len(bridge.devices.subscribers["*"]) > 0
     # Now generate update event by emitting the json we've sent as incoming event
-    hs_new_dev = create_devices_from_data("door-lock-TBD.json")[0]
-    event = {
-        "type": "add",
-        "device_id": hs_new_dev.id,
-        "device": hs_new_dev,
-    }
-    bridge.emit_event("add", event)
+    afero_data = hs_raw_from_dump("door-lock-TBD.json")
+    await bridge.generate_events_from_data(afero_data)
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
-    expected_entities = [lock_id]
+    assert len(bridge.devices.items) == 1
     entity_reg = er.async_get(hass)
-    for entity in expected_entities:
+    await hass.async_block_till_done()
+    for entity in [lock_id]:
         assert entity_reg.async_get(entity) is not None
