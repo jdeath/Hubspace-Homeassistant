@@ -47,9 +47,8 @@ def create_devices_from_data(file_name: str) -> list[AferoDevice]:
 def hs_raw_from_dump(file_name: str) -> list[dict]:
     """Generate a Hubspace payload from devices and save it to a file.
 
-    Takes a device dump file, processes it into Hubspace format, and saves the
-    result to a new JSON file with '-raw' suffix. The generated payload includes
-    device details, descriptions, states and other metadata formatted for Hubspace.
+    Takes a device dump file and process into a "raw" Afero format. This
+    enables one dump for testing raw and processed sides.
 
     :param file_name: Name of the file that contains the dump
     :return: List of dictionaries containing the generated Hubspace payload
