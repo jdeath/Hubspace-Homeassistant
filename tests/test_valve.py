@@ -5,7 +5,7 @@ from homeassistant.components.valve import ATTR_CURRENT_POSITION
 from homeassistant.helpers import entity_registry as er
 import pytest
 
-from .utils import create_devices_from_data, modify_state
+from .utils import create_devices_from_data, hs_raw_from_dump, modify_state
 
 spigot = create_devices_from_data("water-timer.json")[0]
 spigot_1 = "valve.friendly_device_0_spigot_1"
@@ -145,15 +145,12 @@ async def test_add_new_device(mocked_entry):
     assert len(bridge.devices.subscribers) > 0
     assert len(bridge.devices.subscribers["*"]) > 0
     # Now generate update event by emitting the json we've sent as incoming event
-    hs_new_dev = create_devices_from_data("water-timer.json")[0]
-    event = {
-        "type": "add",
-        "device_id": hs_new_dev.id,
-        "device": hs_new_dev,
-    }
-    bridge.emit_event("add", event)
+    afero_data = hs_raw_from_dump("water-timer.json")
+    await bridge.generate_events_from_data(afero_data)
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
-    expected_entities = [spigot_1, spigot_2]
+    assert len(bridge.devices.items) == 1
     entity_reg = er.async_get(hass)
-    for entity in expected_entities:
+    await hass.async_block_till_done()
+    for entity in [spigot_1, spigot_2]:
         assert entity_reg.async_get(entity) is not None

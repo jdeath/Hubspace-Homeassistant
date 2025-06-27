@@ -6,7 +6,7 @@ import voluptuous as vol
 
 from custom_components.hubspace import const, services
 
-from .utils import create_devices_from_data, modify_state
+from .utils import create_devices_from_data, hs_raw_from_dump, modify_state
 
 fan_zandra = create_devices_from_data("fan-ZandraFan.json")
 fan_zandra_light = fan_zandra[1]
@@ -17,12 +17,15 @@ fan_zandra_light_id = "light.friendly_device_2_light"
 async def mocked_entity(mocked_entry):
     """Initialize a mocked Fan and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
-    await bridge.lights.initialize_elem(fan_zandra_light)
-    await bridge.devices.initialize_elem(fan_zandra[2])
-    bridge.add_device(fan_zandra_light.id, bridge.lights)
-    bridge.add_device(fan_zandra[2].id, bridge.devices)
+    # Register callbacks
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
+    # Now generate update event by emitting the json we've sent as incoming event
+    afero_data = hs_raw_from_dump("fan-ZandraFan.json")
+    await bridge.generate_events_from_data(afero_data)
+    await bridge.async_block_until_done()
+    await hass.async_block_till_done()
+    assert len(bridge.devices.items) == 1
     yield hass, entry, bridge
     await bridge.close()
 

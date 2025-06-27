@@ -44,7 +44,7 @@ def create_devices_from_data(file_name: str) -> list[AferoDevice]:
     return processed
 
 
-def create_hs_raw_from_dump(file_name: str) -> list[dict]:
+def hs_raw_from_dump(file_name: str) -> list[dict]:
     """Generate a Hubspace payload from devices and save it to a file.
 
     Takes a device dump file, processes it into Hubspace format, and saves the
@@ -91,6 +91,20 @@ def create_hs_raw_from_dump(file_name: str) -> list[dict]:
                 "typeId": "metadevice.device",
             }
         )
+    return hs_raw
+
+
+def create_hs_raw_from_dump(file_name: str) -> list[dict]:
+    """Generate a Hubspace payload from devices and save it to a file.
+
+    Takes a device dump file, processes it into Hubspace format, and saves the
+    result to a new JSON file with '-raw' suffix. The generated payload includes
+    device details, descriptions, states and other metadata formatted for Hubspace.
+
+    :param file_name: Name of the file that contains the dump
+    :return: List of dictionaries containing the generated Hubspace payload
+    """
+    hs_raw = hs_raw_from_dump(file_name)
     filename = Path(file_name).name.rsplit(".", 1)[0]
     new_filename = f"{filename}-raw.json"
     with Path(new_filename).open("w") as fh:

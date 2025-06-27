@@ -9,7 +9,7 @@ from homeassistant.components.fan import (
 from homeassistant.helpers import entity_registry as er
 import pytest
 
-from .utils import create_devices_from_data, modify_state
+from .utils import create_devices_from_data, hs_raw_from_dump, modify_state
 
 fan_zandra = create_devices_from_data("fan-ZandraFan.json")
 fan_zandra_instance = fan_zandra[0]
@@ -277,15 +277,13 @@ async def test_add_new_device(mocked_entry):
     assert len(bridge.devices.subscribers) > 0
     assert len(bridge.devices.subscribers["*"]) > 0
     # Now generate update event by emitting the json we've sent as incoming event
-    fan_zandra = create_devices_from_data("fan-ZandraFan.json")
-    event = {
-        "type": "add",
-        "device_id": fan_zandra[0].id,
-        "device": fan_zandra[0],
-    }
-    bridge.emit_event("add", event)
+    afero_data = hs_raw_from_dump("fan-ZandraFan.json")
+    await bridge.generate_events_from_data(afero_data)
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
-    expected_entities = ["fan.friendly_device_0_fan"]
+    assert len(bridge.devices.items) == 1
+    expected_entities = ["fan.friendly_device_2_fan"]
     entity_reg = er.async_get(hass)
+    await hass.async_block_till_done()
     for entity in expected_entities:
         assert entity_reg.async_get(entity) is not None

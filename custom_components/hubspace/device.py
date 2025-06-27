@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 from typing import TYPE_CHECKING
 
 from aioafero import EventType
@@ -58,7 +59,8 @@ async def async_setup_devices(bridge: HubspaceBridge):
     def handle_device_event(evt_type: EventType, hs_device: Device) -> None:
         """Handle event from Device controller."""
         if evt_type == EventType.RESOURCE_DELETED:
-            remove_device(hs_device.device_information.parent_id)
+            with contextlib.suppress(KeyError, AttributeError):
+                remove_device(hs_device.device_information.parent_id)
         elif evt_type == EventType.RESOURCE_ADDED:
             add_device(hs_device)
 
