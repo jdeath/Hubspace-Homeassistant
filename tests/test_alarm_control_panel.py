@@ -80,6 +80,7 @@ async def test_alarm_state(panel_state, expected, mocked_entity):
         "device": alarm_panel,
     }
     bridge.emit_event("update", event)
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     entity = hass.states.get(alarm_panel_id)
     assert entity is not None
