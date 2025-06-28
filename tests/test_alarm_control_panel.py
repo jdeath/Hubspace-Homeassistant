@@ -61,9 +61,11 @@ async def test_async_setup_entry(mocked_entity):
         ("arm-started-away", AlarmControlPanelState.ARMING),
     ],
 )
-async def test_alarm_state(panel_state, expected, mocked_entity):
+async def test_alarm_state(panel_state, expected, mocked_entry):
     """Ensure a proper mapping between Hubspace and Home Assistant."""
-    hass, entry, bridge = mocked_entity
+    hass, entry, bridge = mocked_entry
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
     alarm_panel = create_devices_from_data("security-system.json")[1]
     modify_state(
         alarm_panel,
@@ -73,26 +75,34 @@ async def test_alarm_state(panel_state, expected, mocked_entity):
             value=panel_state,
         ),
     )
-
-    event = {
-        "type": "update",
-        "device_id": alarm_panel.id,
-        "device": alarm_panel,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([alarm_panel])
     await bridge.async_block_until_done()
-    await hass.async_block_till_done()
     entity = hass.states.get(alarm_panel_id)
     assert entity is not None
     assert entity.state == expected
 
 
 @pytest.mark.asyncio
-async def test_add_new_device(mocked_entity):
+async def test_add_new_device(mocked_entry):
     """Ensure newly added devices are properly discovered and registered with Home Assistant."""
-    hass, _, _ = mocked_entity
+    hass, entry, bridge = mocked_entry
+    assert len(bridge.devices.items) == 0
+    # Register callbacks
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    assert len(bridge.devices.subscribers) > 0
+    assert len(bridge.devices.subscribers["*"]) > 0
+    # Now generate update event by emitting the json we've sent as incoming event
+    afero_data = hs_raw_from_dump("security-system.json")
+    await bridge.generate_events_from_data(afero_data)
+    await bridge.async_block_until_done()
+    await hass.async_block_till_done()
+    assert len(bridge.devices.items) == 5
     entity_reg = er.async_get(hass)
-    assert entity_reg.async_get(alarm_panel_id) is not None
+    await hass.async_block_till_done()
+    expected_entities = [alarm_panel_id]
+    for entity in expected_entities:
+        assert entity_reg.async_get(entity) is not None
 
 
 @pytest.mark.asyncio
