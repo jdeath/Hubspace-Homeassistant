@@ -69,13 +69,17 @@ are as follows:
 
 ## Changelog
 
+- dev-5.4.0
+
+  - Implement Alarm Panels (#168)
+
 - 5.3.1
 
-  - Fixed an issue where a failure during auth produced an Unhandled exception
+  - Fixed an issue where a failure during auth produced an Unhandled exception (#169)
 
 - 5.3.0
 
-  - Add support for Portable ACs
+  - Add support for Portable ACs (#162)
   - Update climate devices to adjust more closely to Hubspace
   - Fix an issue where Thermostats could incorrectly use Auto
 
@@ -85,7 +89,7 @@ are as follows:
 
 - 5.2.2
 
-  - Fix battery percentage not showing
+  - Fix battery percentage not showing (#164)
 
 - 5.2.1
 
