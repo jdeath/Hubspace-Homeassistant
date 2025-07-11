@@ -53,44 +53,49 @@ def hs_raw_from_dump(file_name: str) -> list[dict]:
     :param file_name: Name of the file that contains the dump
     :return: List of dictionaries containing the generated Hubspace payload
     """
-    hs_raw: list[dict] = []
-    for device in create_devices_from_data(file_name):
-        descr_device = {
-            "defaultName": device.default_name,
-            "deviceClass": device.device_class,
-            "manufacturerName": device.manufacturerName,
-            "model": device.model,
-            "profileId": "6ea6d241-3909-4235-836d-c594ece2bb67",
-            "type": "device",
-        }
-        description = {
-            "createdTimestampMs": 0,
-            "defaultImage": device.default_image,
-            "descriptions": [],
-            "device": descr_device,
-            "functions": device.functions,
-            "hints": [],
-            "id": device.id,
-            "updatedTimestampMs": 0,
-            "version": 1,
-        }
-        hs_raw.append(
-            {
-                "children": device.children,
-                "createdTimestampMs": 0,
-                "description": description,
-                "deviceId": device.device_id,
-                "friendlyDescription": "",
-                "friendlyName": device.friendly_name,
-                "id": device.id,
-                "state": {
-                    "metadeviceId": device.id,
-                    "values": convert_states(device.states),
-                },
-                "typeId": "metadevice.device",
-            }
-        )
-    return hs_raw
+    return [
+        hs_raw_from_device(device) for device in create_devices_from_data(file_name)
+    ]
+
+
+def hs_raw_from_device(device: AferoDevice) -> dict:
+    """Generate a Hubspace payload from an AferoDevice.
+
+    :param device: Device to convert to a raw dump
+    """
+    descr_device = {
+        "defaultName": device.default_name,
+        "deviceClass": device.device_class,
+        "manufacturerName": device.manufacturerName,
+        "model": device.model,
+        "profileId": "6ea6d241-3909-4235-836d-c594ece2bb67",
+        "type": "device",
+    }
+    description = {
+        "createdTimestampMs": 0,
+        "defaultImage": device.default_image,
+        "descriptions": [],
+        "device": descr_device,
+        "functions": device.functions,
+        "hints": [],
+        "id": device.id,
+        "updatedTimestampMs": 0,
+        "version": 1,
+    }
+    return {
+        "children": device.children,
+        "createdTimestampMs": 0,
+        "description": description,
+        "deviceId": device.device_id,
+        "friendlyDescription": "",
+        "friendlyName": device.friendly_name,
+        "id": device.id,
+        "state": {
+            "metadeviceId": device.id,
+            "values": convert_states(device.states),
+        },
+        "typeId": "metadevice.device",
+    }
 
 
 def create_hs_raw_from_dump(file_name: str) -> list[dict]:
