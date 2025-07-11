@@ -39,6 +39,10 @@ class HubspaceBaseEntity(Entity):  # pylint: disable=hass-enforce-class-module
 
         if instance is not False:
             self._attr_name = instance if instance else type(self.resource).__name__
+        elif getattr(self.resource, "split_identifier", None) is not None:
+            self._attr_name = self.resource.id.rsplit(
+                f"-{self.resource.split_identifier}-", 1
+            )[1]
         else:
             self._attr_name = type(self.resource).__name__
 

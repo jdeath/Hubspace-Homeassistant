@@ -487,7 +487,27 @@ async def test_turn_off_dimmer(mocked_dimmer):
 
 
 @pytest.mark.asyncio
-async def test_add_new_device(mocked_entry):
+@pytest.mark.parametrize(
+    (
+        "file",
+        "expected_device_count",
+        "expected_entities",
+    ),
+    [
+        ("dimmer-HPDA1110NWBP.json", 1, [switch_dimmer_light_id]),
+        (
+            "light-flushmount.json",
+            1,
+            [
+                "light.ceiling_light_color",
+                "light.ceiling_light_white",
+            ],
+        ),
+    ],
+)
+async def test_add_new_device(
+    file, expected_device_count, expected_entities, mocked_entry
+):
     """Ensure newly added devices are properly discovered and registered with Home Assistant."""
     hass, entry, bridge = mocked_entry
     assert len(bridge.devices.items) == 0
@@ -497,12 +517,14 @@ async def test_add_new_device(mocked_entry):
     assert len(bridge.devices.subscribers) > 0
     assert len(bridge.devices.subscribers["*"]) > 0
     # Now generate update event by emitting the json we've sent as incoming event
-    afero_data = hs_raw_from_dump("dimmer-HPDA1110NWBP.json")
+    afero_data = hs_raw_from_dump(file)
     await bridge.generate_events_from_data(afero_data)
     await bridge.async_block_until_done()
     await hass.async_block_till_done()
-    assert len(bridge.devices.items) == 1
+    assert len(bridge.devices.items) == expected_device_count
     entity_reg = er.async_get(hass)
     await hass.async_block_till_done()
-    for entity in [switch_dimmer_light_id]:
-        assert entity_reg.async_get(entity) is not None
+    for entity in expected_entities:
+        assert entity_reg.async_get(entity) is not None, (
+            f"Unable to find entity {entity}"
+        )

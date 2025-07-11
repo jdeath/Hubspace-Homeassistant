@@ -6,7 +6,7 @@ import voluptuous as vol
 
 from custom_components.hubspace import const, services
 
-from .utils import create_devices_from_data, hs_raw_from_dump, modify_state
+from .utils import create_devices_from_data, modify_state
 
 fan_zandra = create_devices_from_data("fan-ZandraFan.json")
 fan_zandra_light = fan_zandra[1]
@@ -21,8 +21,7 @@ async def mocked_entity(mocked_entry):
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     # Now generate update event by emitting the json we've sent as incoming event
-    afero_data = hs_raw_from_dump("fan-ZandraFan.json")
-    await bridge.generate_events_from_data(afero_data)
+    await bridge.generate_devices_from_data(fan_zandra)
     await bridge.async_block_until_done()
     await hass.async_block_till_done()
     assert len(bridge.devices.items) == 1
@@ -73,6 +72,7 @@ async def test_service_valid_no_username(
             },
             blocking=True,
         )
+        await bridge.async_block_until_done()
         await hass.async_block_till_done()
         update_call = bridge.request.call_args_list[-1]
         assert update_call.args[0] == "put"
@@ -95,13 +95,8 @@ async def test_service_valid_no_username(
                 value="off",
             ),
         )
-        event = {
-            "type": "update",
-            "device_id": light_update.id,
-            "device": light_update,
-            "force_forward": True,
-        }
-        bridge.emit_event("update", event)
+        await bridge.generate_devices_from_data([light_update])
+        await bridge.async_block_until_done()
         await hass.async_block_till_done()
         assert hass.states.get(fan_zandra_light_id).state == "off"
     else:
