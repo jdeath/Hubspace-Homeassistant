@@ -32,8 +32,7 @@ portable_ac_id = "climate.garage_ac_portableac"
 async def mocked_entity(mocked_entry):
     """Initialize a mocked thermostat and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
-    await bridge.thermostats.initialize_elem(thermostat)
-    await bridge.devices.initialize_elem(thermostat)
+    await bridge.generate_devices_from_data([thermostat])
     # Force mocked entity to support auto
     bridge.thermostats[thermostat.id].hvac_mode.supported_modes.add("auto")
     await hass.config_entries.async_setup(entry.entry_id)
@@ -46,8 +45,7 @@ async def mocked_entity(mocked_entry):
 async def mocked_entity_in_f(mocked_entry):
     """Initialize a mocked thermostat and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
-    await bridge.thermostats.initialize_elem(thermostat)
-    await bridge.devices.initialize_elem(thermostat)
+    await bridge.generate_devices_from_data([thermostat])
     # Force mocked entity to be in F
     bridge.thermostats[thermostat.id].display_celsius = False
     # Force mocked entity to support auto
@@ -62,8 +60,7 @@ async def mocked_entity_in_f(mocked_entry):
 async def mocked_portable_ac_entity(mocked_entry):
     """Initialize a mocked thermostat and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
-    await bridge.portable_acs.initialize_elem(portable_ac)
-    await bridge.devices.initialize_elem(portable_ac)
+    await bridge.generate_devices_from_data([portable_ac])
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -83,8 +80,7 @@ async def mocked_portable_ac_entity(mocked_entry):
 async def test_async_setup_entry(dev, expected_entities, mocked_entry):
     """Ensure climates are properly discovered and registered with Home Assistant."""
     hass, entry, bridge = mocked_entry
-    await bridge.thermostats.initialize_elem(dev)
-    await bridge.devices.initialize_elem(dev)
+    await bridge.generate_devices_from_data([dev])
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     entity_reg = er.async_get(hass)
@@ -117,8 +113,7 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry):
 async def test_async_setup_entry_in_f(mocked_entry):
     """Ensure climates are properly discovered and registered with Home Assistant."""
     hass, entry, bridge = mocked_entry
-    await bridge.thermostats.initialize_elem(thermostat_f)
-    await bridge.devices.initialize_elem(thermostat_f)
+    await bridge.generate_devices_from_data([thermostat_f])
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     entity_reg = er.async_get(hass)
@@ -155,8 +150,7 @@ async def test_async_setup_entry_portable_ac(dev, expected_entity, mocked_entry)
     """Ensure climates are properly discovered and registered with Home Assistant."""
     try:
         hass, entry, bridge = mocked_entry
-        await bridge.portable_acs.initialize_elem(dev)
-        await bridge.devices.initialize_elem(dev)
+        await bridge.generate_devices_from_data([dev])
         await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
         entity_reg = er.async_get(hass)
@@ -278,12 +272,7 @@ async def test_set_hvac_mode(starting_mode, new_mode, expected_call_val, mocked_
             value=expected_call_val,
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": thermostat_update.id,
-        "device": thermostat_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([thermostat_update])
     await hass.async_block_till_done()
     entity = hass.states.get(thermostat_id)
     assert entity is not None
@@ -323,12 +312,7 @@ async def test_fan_mode(afero_mode, expected, mocked_entity):
             value=afero_mode,
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": thermostat_update.id,
-        "device": thermostat_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([thermostat_update])
     await hass.async_block_till_done()
     entity = hass.states.get(thermostat_id)
     assert entity.attributes["fan_mode"] == expected
@@ -389,12 +373,7 @@ async def test_hvac_action(afero_mode, afero_mode_hvac, expected, mocked_entity)
             value=afero_mode_hvac,
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": thermostat_update.id,
-        "device": thermostat_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([thermostat_update])
     await hass.async_block_till_done()
     entity = hass.states.get(thermostat_id)
     assert entity.attributes["hvac_action"] == expected
@@ -448,12 +427,7 @@ async def test_hvac_mode(afero_mode, expected, err_msg, mocked_entity, caplog):
             value=afero_mode,
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": thermostat_update.id,
-        "device": thermostat_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([thermostat_update])
     await hass.async_block_till_done()
     entity = hass.states.get(thermostat_id)
     if not err_msg:
@@ -499,12 +473,7 @@ async def test_set_fan_mode(starting_mode, new_mode, mocked_entity):
             value=new_mode,
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": thermostat_update.id,
-        "device": thermostat_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([thermostat_update])
     await hass.async_block_till_done()
     entity = hass.states.get(thermostat_id)
     assert entity is not None
@@ -565,12 +534,7 @@ async def test_set_temperature(mocked_entity):
             value=14,
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": thermostat_update.id,
-        "device": thermostat_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([thermostat_update])
     await hass.async_block_till_done()
     entity = hass.states.get(thermostat_id)
     assert entity is not None
@@ -634,12 +598,7 @@ async def test_set_temperature_in_f(mocked_entity_in_f):
             value=14,
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": thermostat_update.id,
-        "device": thermostat_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([thermostat_update])
     await hass.async_block_till_done()
     entity = hass.states.get(thermostat_id)
     assert entity is not None
@@ -668,9 +627,9 @@ async def test_set_temperature_portable_ac(mocked_portable_ac_entity):
     payload = update_call.kwargs["json"]
     assert payload["metadeviceId"] == portable_ac.id
     # Now generate update event by emitting the json we've sent as incoming event
-    entitiy_update = create_devices_from_data("portable-ac.json")[0]
+    entity_update = create_devices_from_data("portable-ac.json")[0]
     modify_state(
-        entitiy_update,
+        entity_update,
         AferoState(
             functionClass="mode",
             functionInstance=None,
@@ -678,19 +637,14 @@ async def test_set_temperature_portable_ac(mocked_portable_ac_entity):
         ),
     )
     modify_state(
-        entitiy_update,
+        entity_update,
         AferoState(
             functionClass="temperature",
             functionInstance="cooling-target",
             value=25,
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": entitiy_update.id,
-        "device": entitiy_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([entity_update])
     await hass.async_block_till_done()
     entity = hass.states.get(portable_ac_id)
     assert entity is not None

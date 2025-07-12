@@ -33,8 +33,7 @@ rgbw_led_strip = create_devices_from_data("rgbw-led-strip.json")[0]
 async def mocked_entity(mocked_entry):
     """Initialize a mocked Light and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
-    await bridge.lights.initialize_elem(light_a21)
-    await bridge.devices.initialize_elem(light_a21)
+    await bridge.generate_devices_from_data([light_a21])
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -45,8 +44,7 @@ async def mocked_entity(mocked_entry):
 async def mocked_dimmer(mocked_entry):
     """Initialize a mocked dimmer switch and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
-    await bridge.lights.initialize_elem(switch_dimmer_light)
-    await bridge.devices.initialize_elem(switch_dimmer_light)
+    await bridge.generate_devices_from_data([switch_dimmer_light])
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -108,8 +106,7 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry):
     """Ensure lights are properly discovered and registered with Home Assistant."""
     try:
         hass, entry, bridge = mocked_entry
-        await bridge.lights.initialize_elem(dev)
-        await bridge.devices.initialize_elem(dev)
+        await bridge.generate_devices_from_data([dev])
         await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
         entity_reg = er.async_get(hass)
@@ -159,12 +156,7 @@ async def test_turn_on(mocked_entity):
             value=25,
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": light_a21.id,
-        "device": hs_device_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([hs_device_update])
     await hass.async_block_till_done()
     entity = hass.states.get(light_a21_id)
     assert entity is not None
@@ -222,12 +214,7 @@ async def test_turn_on_temp(mocked_entity):
             value="white",
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": light_a21.id,
-        "device": hs_device_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([hs_device_update])
     await hass.async_block_till_done()
     entity = hass.states.get(light_a21_id)
     assert entity is not None
@@ -292,12 +279,7 @@ async def test_turn_on_color(mocked_entity):
             value="color",
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": light_a21.id,
-        "device": hs_device_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([hs_device_update])
     await hass.async_block_till_done()
     entity = hass.states.get(light_a21_id)
     assert entity is not None
@@ -366,12 +348,7 @@ async def test_turn_on_effect(mocked_entity):
             value="rainbow",
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": light_a21.id,
-        "device": hs_device_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([hs_device_update])
     await hass.async_block_till_done()
     assert bridge.lights[light_a21.id].effect.effect == "rainbow"
     assert bridge.lights[light_a21.id].color_mode.mode == "sequence"
@@ -411,12 +388,7 @@ async def test_turn_on_dimmer(mocked_dimmer):
             value="on",
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": switch_dimmer_light.id,
-        "device": switch_dimmer_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([switch_dimmer_update])
     await hass.async_block_till_done()
     entity = hass.states.get(switch_dimmer_light_id)
     assert entity is not None
@@ -474,12 +446,7 @@ async def test_turn_off_dimmer(mocked_dimmer):
             value="off",
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": switch_dimmer_light.id,
-        "device": switch_dimmer_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([switch_dimmer_update])
     await hass.async_block_till_done()
     entity = hass.states.get(switch_dimmer_light_id)
     assert entity is not None

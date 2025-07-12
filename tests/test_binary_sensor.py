@@ -12,7 +12,7 @@ freezer = create_devices_from_data("freezer.json")[0]
 async def mocked_entity(mocked_entry):
     """Initialize a mocked freezer and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
-    await bridge.devices.initialize_elem(freezer)
+    await bridge.generate_devices_from_data([freezer])
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -41,7 +41,7 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry, caplog):
     """Ensure Binary Sensors are properly discovered and registered with Home Assistant."""
     try:
         hass, entry, bridge = mocked_entry
-        await bridge.devices.initialize_elem(dev)
+        await bridge.generate_devices_from_data([dev])
         # Add in a bad sensor
         bridge.devices[freezer.id].binary_sensors["bad_sensor"] = {}
         await hass.config_entries.async_setup(entry.entry_id)
@@ -58,9 +58,6 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry, caplog):
         await bridge.close()
 
 
-@pytest.mark.xfail(
-    reason="Sensors show in logs but then disappear. They are persistent within HA"
-)
 @pytest.mark.asyncio
 async def test_add_new_device(mocked_entry):
     """Ensure newly added devices are properly discovered and registered with Home Assistant."""
@@ -71,14 +68,7 @@ async def test_add_new_device(mocked_entry):
     await hass.async_block_till_done()
     assert len(bridge.devices.subscribers) > 0
     assert len(bridge.devices.subscribers["*"]) > 0
-    # Now generate update event by emitting the json we've sent as incoming event
-    hs_new_dev = create_devices_from_data("freezer.json")[0]
-    event = {
-        "type": "add",
-        "device_id": hs_new_dev.id,
-        "device": hs_new_dev,
-    }
-    bridge.emit_event("add", event)
+    await bridge.generate_devices_from_data(create_devices_from_data("freezer.json"))
     await hass.async_block_till_done()
     expected_binary_sensors = [
         "binary_sensor.friendly_device_0_mcu_communication_failure",

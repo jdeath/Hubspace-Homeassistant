@@ -6,10 +6,13 @@ import pytest
 
 from .utils import create_devices_from_data, hs_raw_from_dump, modify_state
 
-transformer = create_devices_from_data("transformer.json")[0]
+transformer_from_file = create_devices_from_data("transformer.json")
+transformer = transformer_from_file[0]
 transformer_entity_zone_1 = "switch.friendly_device_6_zone_1"
 transformer_entity_zone_2 = "switch.friendly_device_6_zone_2"
 transformer_entity_zone_3 = "switch.friendly_device_6_zone_3"
+
+hs_switch_from_file = create_devices_from_data("switch-HPSA11CWB.json")
 hs_switch = create_devices_from_data("switch-HPSA11CWB.json")[0]
 hs_switch_id = "switch.basement_furnace_switch"
 
@@ -18,8 +21,7 @@ hs_switch_id = "switch.basement_furnace_switch"
 async def mocked_entity(mocked_entry):
     """Initialize a mocked Switch and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
-    await bridge.switches.initialize_elem(hs_switch)
-    await bridge.devices.initialize_elem(hs_switch)
+    await bridge.generate_devices_from_data(hs_switch_from_file)
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -30,8 +32,7 @@ async def mocked_entity(mocked_entry):
 async def mocked_entity_toggled(mocked_entry):
     """Initialize a mocked instanced Switch and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
-    await bridge.switches.initialize_elem(transformer)
-    await bridge.devices.initialize_elem(transformer)
+    await bridge.generate_devices_from_data(transformer_from_file)
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -60,8 +61,7 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry):
     """Ensure switches are properly discovered and registered with Home Assistant."""
     try:
         hass, entry, bridge = mocked_entry
-        await bridge.switches.initialize_elem(dev)
-        await bridge.devices.initialize_elem(dev)
+        await bridge.generate_devices_from_data([dev])
         await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
         entity_reg = er.async_get(hass)
@@ -91,21 +91,16 @@ async def test_turn_on_toggle(mocked_entity_toggled):
     assert update["functionInstance"] == "zone-3"
     assert update["value"] == "on"
     # Now generate update event by emitting the json we've sent as incoming event
-    transformer_update = create_devices_from_data("transformer.json")[0]
+    transformer_update = create_devices_from_data("transformer.json")
     modify_state(
-        transformer_update,
+        transformer_update[0],
         AferoState(
             functionClass="toggle",
             functionInstance="zone-3",
             value="on",
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": transformer.id,
-        "device": transformer_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data(transformer_update)
     await hass.async_block_till_done()
     entity = hass.states.get(transformer_entity_zone_3)
     assert entity is not None
@@ -133,21 +128,16 @@ async def test_turn_on(mocked_entity):
     assert update["functionInstance"] is None
     assert update["value"] == "on"
     # Now generate update event by emitting the json we've sent as incoming event
-    hs_switch_update = create_devices_from_data("switch-HPSA11CWB.json")[0]
+    hs_switch_update = create_devices_from_data("switch-HPSA11CWB.json")
     modify_state(
-        hs_switch_update,
+        hs_switch_update[0],
         AferoState(
-            functionClass="toggle",
+            functionClass="power",
             functionInstance=None,
             value="on",
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": transformer.id,
-        "device": hs_switch_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data(hs_switch_update)
     await hass.async_block_till_done()
     entity = hass.states.get(hs_switch_id)
     assert entity is not None
@@ -178,12 +168,7 @@ async def test_turn_off_toggle(mocked_entity_toggled):
             value="off",
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": transformer.id,
-        "device": transformer_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([transformer_update])
     await hass.async_block_till_done()
     entity = hass.states.get(transformer_entity_zone_2)
     assert entity is not None
@@ -220,12 +205,7 @@ async def test_turn_off(mocked_entity):
             value="off",
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": transformer.id,
-        "device": hs_switch_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([hs_switch_update])
     await hass.async_block_till_done()
     test_switch = hass.states.get(hs_switch_id)
     assert test_switch is not None

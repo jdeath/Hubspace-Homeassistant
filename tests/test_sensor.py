@@ -6,7 +6,8 @@ import pytest
 
 from .utils import create_devices_from_data, modify_state
 
-transformer = create_devices_from_data("transformer.json")[0]
+transformer_from_file = create_devices_from_data("transformer.json")
+transformer = transformer_from_file[0]
 transformer_voltage = "sensor.friendly_device_6_output_voltage_switch"
 transformer_watts = "sensor.friendly_device_6_watts"
 transformer_rssi = "sensor.friendly_device_6_wifi_rssi"
@@ -18,8 +19,7 @@ lock_battery = "sensor.friendly_device_0_battery_level"
 async def mocked_entity(mocked_entry):
     """Initialize a mocked Switch and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
-    await bridge.switches.initialize_elem(transformer)
-    await bridge.devices.initialize_elem(transformer)
+    await bridge.generate_devices_from_data(transformer_from_file)
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -48,8 +48,7 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry):
     """Ensure sensors are properly discovered and registered with Home Assistant."""
     try:
         hass, entry, bridge = mocked_entry
-        await bridge.devices.initialize_elem(dev)
-        await bridge.switches.initialize_elem(dev)
+        await bridge.generate_devices_from_data([dev])
         await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
         entity_reg = er.async_get(hass)
@@ -79,13 +78,9 @@ async def test_add_new_device(mocked_entry):
     assert len(bridge.devices.subscribers) > 0
     assert len(bridge.devices.subscribers["*"]) > 0
     # Now generate update event by emitting the json we've sent as incoming event
-    hs_new_dev = create_devices_from_data("transformer.json")[0]
-    event = {
-        "type": "add",
-        "device_id": hs_new_dev.id,
-        "device": hs_new_dev,
-    }
-    bridge.emit_event("add", event)
+    await bridge.generate_devices_from_data(
+        create_devices_from_data("transformer.json")
+    )
     await hass.async_block_till_done()
     expected_entities = [
         transformer_voltage,
@@ -102,8 +97,7 @@ async def test_add_new_device(mocked_entry):
 async def test_update(mocked_entry):
     """Ensure updates in aioafero set the correct states within Home Assistant."""
     hass, entry, bridge = mocked_entry
-    await bridge.devices.initialize_elem(transformer)
-    await bridge.switches.initialize_elem(transformer)
+    await bridge.generate_devices_from_data(transformer_from_file)
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     # Now generate update event by emitting the json we've sent as incoming event
@@ -116,12 +110,7 @@ async def test_update(mocked_entry):
             value=66,
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": hs_new_dev.id,
-        "device": hs_new_dev,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([hs_new_dev])
     await hass.async_block_till_done()
     sensor = hass.states.get("sensor.friendly_device_6_watts")
     assert sensor.state == "66"

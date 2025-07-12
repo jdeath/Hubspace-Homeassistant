@@ -6,6 +6,7 @@ import pytest
 
 from .utils import create_devices_from_data, modify_state
 
+exhaust_fan_from_file = create_devices_from_data("fan-exhaust-fan.json")
 exhaust_fan = create_devices_from_data("fan-exhaust-fan.json")[2]
 exhaust_fan_id = "select.r3_closet_humidity_sensitivity"
 
@@ -14,8 +15,7 @@ exhaust_fan_id = "select.r3_closet_humidity_sensitivity"
 async def mocked_entity(mocked_entry):
     """Initialize a mocked Exhaust Fan and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
-    await bridge.exhaust_fans.initialize_elem(exhaust_fan)
-    await bridge.devices.initialize_elem(exhaust_fan)
+    await bridge.generate_devices_from_data(exhaust_fan_from_file)
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -36,8 +36,7 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry):
     """Ensure selects are properly discovered and registered with Home Assistant."""
     try:
         hass, entry, bridge = mocked_entry
-        await bridge.devices.initialize_elem(dev)
-        await bridge.exhaust_fans.initialize_elem(dev)
+        await bridge.generate_devices_from_data([dev])
         await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
         entity_reg = er.async_get(hass)
@@ -52,8 +51,7 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry):
 async def test_update(mocked_entry):
     """Ensure updates in aioafero set the correct states within Home Assistant."""
     hass, entry, bridge = mocked_entry
-    await bridge.devices.initialize_elem(exhaust_fan)
-    await bridge.exhaust_fans.initialize_elem(exhaust_fan)
+    await bridge.generate_devices_from_data(exhaust_fan_from_file)
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     # Now generate update event by emitting the json we've sent as incoming event
@@ -66,12 +64,7 @@ async def test_update(mocked_entry):
             value="5-high",
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": hs_new_dev.id,
-        "device": hs_new_dev,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([hs_new_dev])
     await hass.async_block_till_done()
     entity = hass.states.get("select.r3_closet_humidity_sensitivity")
     assert entity.state == "5-high"
@@ -108,21 +101,16 @@ async def test_set_value(mocked_entity):
     assert payload["functionInstance"] == "humidity-sensitivity"
     assert payload["value"] == "5-high"
     # Now generate update event by emitting the json we've sent as incoming event
-    hs_device_update = create_devices_from_data("fan-exhaust-fan.json")[2]
+    hs_device_update = create_devices_from_data("fan-exhaust-fan.json")
     modify_state(
-        hs_device_update,
+        hs_device_update[2],
         AferoState(
             functionClass="sensitivity",
             functionInstance="humidity-sensitivity",
             value="5-high",
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": exhaust_fan.id,
-        "device": hs_device_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data(hs_device_update)
     await hass.async_block_till_done()
     entity = hass.states.get(exhaust_fan_id)
     assert entity is not None
@@ -131,10 +119,6 @@ async def test_set_value(mocked_entity):
     assert entity.state == "5-high"
 
 
-# INFO     homeassistant.helpers.entity_registry:entity_registry.py:918 Registered new number.hubspace entity: select.r3_closet_humidity_sensitivity
-@pytest.mark.xfail(
-    reason="Entity shows in logs but then disappear. They are persistent within HA"
-)
 @pytest.mark.asyncio
 async def test_add_new_device(mocked_entry):
     """Ensure newly added devices are properly discovered and registered with Home Assistant."""
@@ -146,13 +130,9 @@ async def test_add_new_device(mocked_entry):
     assert len(bridge.devices.subscribers) > 0
     assert len(bridge.devices.subscribers["*"]) > 0
     # Now generate update event by emitting the json we've sent as incoming event
-    hs_new_dev = create_devices_from_data("fan-exhaust-fan.json")[2]
-    event = {
-        "type": "add",
-        "device_id": hs_new_dev.id,
-        "device": hs_new_dev,
-    }
-    bridge.emit_event("add", event)
+    await bridge.generate_devices_from_data(
+        create_devices_from_data("fan-exhaust-fan.json")
+    )
     await hass.async_block_till_done()
     expected_entities = [exhaust_fan_id]
     entity_reg = er.async_get(hass)
