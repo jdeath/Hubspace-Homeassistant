@@ -11,7 +11,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .bridge import HubspaceBridge
 from .const import DOMAIN
-from .entity import HubspaceBaseEntity
+from .entity import HubspaceBaseEntity, update_decorator
 
 
 class AferoSelectEntitiy(HubspaceBaseEntity, SelectEntity):
@@ -40,6 +40,7 @@ class AferoSelectEntitiy(HubspaceBaseEntity, SelectEntity):
         """A list of available options as strings."""
         return sorted(self.resource.selects[self._identifier].selects)
 
+    @update_decorator
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
         await self.bridge.async_request_call(

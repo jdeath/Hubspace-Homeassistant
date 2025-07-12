@@ -64,9 +64,6 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry):
         await bridge.close()
 
 
-@pytest.mark.xfail(
-    reason="Sensors show in logs but then disappear. They are persistent within HA"
-)
 @pytest.mark.asyncio
 async def test_add_new_device(mocked_entry):
     """Ensure newly added devices are properly discovered and registered with Home Assistant."""
@@ -88,7 +85,6 @@ async def test_add_new_device(mocked_entry):
         transformer_rssi,
     ]
     entity_reg = er.async_get(hass)
-    # print(entity_reg.entities)
     for entity in expected_entities:
         assert entity_reg.async_get(entity) is not None
 
@@ -101,16 +97,16 @@ async def test_update(mocked_entry):
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     # Now generate update event by emitting the json we've sent as incoming event
-    hs_new_dev = create_devices_from_data("transformer.json")[0]
+    hs_new_dev = create_devices_from_data("transformer.json")
     modify_state(
-        hs_new_dev,
+        hs_new_dev[0],
         AferoState(
             functionClass="watts",
             functionInstance=None,
             value=66,
         ),
     )
-    await bridge.generate_devices_from_data([hs_new_dev])
+    await bridge.generate_devices_from_data(hs_new_dev)
     await hass.async_block_till_done()
     sensor = hass.states.get("sensor.friendly_device_6_watts")
     assert sensor.state == "66"

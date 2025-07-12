@@ -74,7 +74,6 @@ async def test_update(mocked_entry):
     assert number.attributes["unit_of_measurement"] == "seconds"
 
 
-@pytest.mark.xfail(reason="Entity does not update in test but does in HA platform")
 @pytest.mark.asyncio
 async def test_set_value(mocked_entity):
     """Ensure the service call set_value works as expected."""
@@ -113,7 +112,7 @@ async def test_set_value(mocked_entity):
     assert entity is not None
     # Test fails because this fails to update. Checking the device shows its been updated
     # and its updated in HA, but not in the test
-    assert entity.state == "120"
+    assert entity.state == "120.0"
 
 
 @pytest.mark.asyncio
