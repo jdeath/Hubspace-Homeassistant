@@ -69,6 +69,10 @@ are as follows:
 
 ## Changelog
 
+- 5.4.0
+
+  - Add support for the light LCN3002LM-01 WH
+
 - 5.3.1
 
   - Fixed an issue where a failure during auth produced an Unhandled exception
