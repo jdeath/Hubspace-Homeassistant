@@ -5,7 +5,7 @@ import contextlib
 import datetime
 import logging
 
-from aioafero import v1
+from aioafero import AferoDevice, v1
 from aioafero.v1.auth import token_data
 from aioafero.v1.controllers.event import EventType
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
@@ -19,6 +19,8 @@ from custom_components.hubspace.const import (
     VERSION_MAJOR,
     VERSION_MINOR,
 )
+
+from .utils import hs_raw_from_device
 
 
 @pytest.fixture(autouse=True)
@@ -60,8 +62,24 @@ async def mocked_bridge(mocker) -> v1.AferoBridgeV1:
     async def generate_events_from_data(data):
         task = asyncio.create_task(hs_bridge.events.generate_events_from_data(data))
         await task
+        raw_data = await hs_bridge.events.generate_events_from_data(data)
+        mocker.patch(
+            "aioafero.v1.controllers.event.EventStream.gather_data",
+            return_value=raw_data,
+        )
         await hs_bridge.async_block_until_done()
 
+    # Fake a poll for discovery
+    async def generate_devices_from_data(devices: list[AferoDevice]):
+        raw_data = [hs_raw_from_device(device) for device in devices]
+        mocker.patch(
+            "aioafero.v1.controllers.event.EventStream.gather_data",
+            return_value=raw_data,
+        )
+        await hs_bridge.events.generate_events_from_data(raw_data)
+        await hs_bridge.async_block_until_done()
+
+    hs_bridge.generate_devices_from_data = generate_devices_from_data
     hs_bridge.emit_event = emit_event
     hs_bridge.generate_events_from_data = generate_events_from_data
     # Override context manager
