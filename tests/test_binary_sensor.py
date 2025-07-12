@@ -51,7 +51,7 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry, caplog):
             assert ent is not None, f"Unable to find entity {entity}"
             assert ent.state == exp_value, f"Unexpected value on {entity}"
         assert (
-            f"Unknown sensor bad_sensor found in {freezer.id}. Please open a bug report"
+            "Unknown sensor bad_sensor found in DeviceController friendly-device-0. Please open a bug report"
             in caplog.text
         )
     finally:

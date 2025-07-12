@@ -110,3 +110,26 @@ async def test_update(mocked_entry):
     await hass.async_block_till_done()
     sensor = hass.states.get("sensor.friendly_device_6_watts")
     assert sensor.state == "66"
+
+
+@pytest.mark.asyncio
+async def test_get_sensors(mocked_entry, mocker, caplog):
+    """Ensure sensor errors are properly tracked."""
+    hass, entry, bridge = mocked_entry
+    device = create_devices_from_data("transformer.json")[0]
+    device.states.append(
+        AferoState(
+            functionClass="not-a-sensor",
+            functionInstance=None,
+            value=66,
+            lastUpdateTime=12345,
+        )
+    )
+    mocker.patch.dict(bridge.switches.ITEM_SENSORS, {"not-a-sensor": "W"})
+    await bridge.generate_devices_from_data([device])
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    assert (
+        "Unknown sensor not-a-sensor found in SwitchController friendly-device-6. Please open a bug report"
+        in caplog.text
+    )

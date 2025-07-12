@@ -46,9 +46,10 @@ def get_sensors(
     for sensor in resource.sensors:
         if sensor not in SENSORS_GENERAL:
             LOGGER.warning(
-                "Unknown sensor %s found in %s. Please open a bug report",
+                "Unknown sensor %s found in %s %s. Please open a bug report",
                 sensor,
-                resource.id,
+                type(controller).__name__,
+                resource.device_information.name,
             )
             continue
         sensor_entities.append(AferoSensorEntity(bridge, controller, resource, sensor))
