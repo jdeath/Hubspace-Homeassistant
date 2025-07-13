@@ -16,8 +16,7 @@ lock_id = "lock.friendly_device_0_lock"
 async def mocked_entity(mocked_entry):
     """Initialize a mocked Lock and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
-    await bridge.locks.initialize_elem(lock_tbd_instance)
-    await bridge.devices.initialize_elem(lock_tbd_instance)
+    await bridge.generate_devices_from_data(lock_tbd)
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -41,8 +40,7 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry):
     """Ensure locks are properly discovered and registered with Home Assistant."""
     try:
         hass, entry, bridge = mocked_entry
-        await bridge.locks.initialize_elem(dev)
-        await bridge.devices.initialize_elem(dev)
+        await bridge.generate_devices_from_data([dev])
         await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
         entity_reg = er.async_get(hass)
@@ -80,12 +78,7 @@ async def test_unlock(mocked_entity):
             value="unlocking",
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": lock_update.id,
-        "device": lock_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([lock_update])
     await hass.async_block_till_done()
     assert (
         bridge.locks[lock_update.id].position.position
@@ -122,12 +115,7 @@ async def test_lock(mocked_entity):
             value="locking",
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": lock_update.id,
-        "device": lock_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([lock_update])
     await hass.async_block_till_done()
     assert (
         bridge.locks[lock_update.id].position.position
@@ -144,12 +132,7 @@ async def test_lock(mocked_entity):
             value="locked",
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": lock_update.id,
-        "device": lock_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([lock_update])
     await hass.async_block_till_done()
     assert (
         bridge.locks[lock_update.id].position.position

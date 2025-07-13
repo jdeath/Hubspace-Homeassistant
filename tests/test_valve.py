@@ -7,7 +7,8 @@ import pytest
 
 from .utils import create_devices_from_data, hs_raw_from_dump, modify_state
 
-spigot = create_devices_from_data("water-timer.json")[0]
+spigot_from_file = create_devices_from_data("water-timer.json")
+spigot = spigot_from_file[0]
 spigot_1 = "valve.friendly_device_0_spigot_1"
 spigot_2 = "valve.friendly_device_0_spigot_2"
 
@@ -16,8 +17,7 @@ spigot_2 = "valve.friendly_device_0_spigot_2"
 async def mocked_entity(mocked_entry):
     """Initialize a mocked Valve and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
-    await bridge.valves.initialize_elem(spigot)
-    await bridge.devices.initialize_elem(spigot)
+    await bridge.generate_devices_from_data(spigot_from_file)
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -41,8 +41,7 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry):
     """Ensure valves are properly discovered and registered with Home Assistant."""
     try:
         hass, entry, bridge = mocked_entry
-        await bridge.valves.initialize_elem(dev)
-        await bridge.devices.initialize_elem(dev)
+        await bridge.generate_devices_from_data([dev])
         await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
         entity_reg = er.async_get(hass)
@@ -81,12 +80,7 @@ async def test_open_valve(mocked_entity):
             value="on",
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": spigot.id,
-        "device": hs_device,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([hs_device])
     await hass.async_block_till_done()
     entity = hass.states.get(spigot_1)
     assert entity is not None
@@ -121,12 +115,7 @@ async def test_close_valve(mocked_entity):
             value="off",
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": spigot.id,
-        "device": hs_device,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([hs_device])
     await hass.async_block_till_done()
     entity = hass.states.get(spigot_1)
     assert entity is not None

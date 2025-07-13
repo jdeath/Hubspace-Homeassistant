@@ -38,6 +38,24 @@ class AferoSensorEntity(HubspaceBaseEntity, SensorEntity):
         return self.resource.sensors[self._attr_name].value
 
 
+def get_sensors(
+    bridge: HubspaceBridge, controller: AferoController, resource: AferoModelResource
+) -> list[AferoSensorEntity]:
+    """Get all sensors for a given resource."""
+    sensor_entities: list[AferoSensorEntity] = []
+    for sensor in resource.sensors:
+        if sensor not in SENSORS_GENERAL:
+            LOGGER.warning(
+                "Unknown sensor %s found in %s %s. Please open a bug report",
+                sensor,
+                type(controller).__name__,
+                resource.device_information.name,
+            )
+            continue
+        sensor_entities.append(AferoSensorEntity(bridge, controller, resource, sensor))
+    return sensor_entities
+
+
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
@@ -46,8 +64,6 @@ async def async_setup_entry(
     """Set up entities."""
     bridge: HubspaceBridge = hass.data[DOMAIN][config_entry.entry_id]
 
-    # add all current items in controller
-    sensor_entities = []
     for controller in bridge.api.controllers:
         # Listen for new devices
         config_entry.async_on_unload(
@@ -60,19 +76,8 @@ async def async_setup_entry(
         for resource in controller:
             if not hasattr(resource, "sensors"):
                 continue
-            for sensor in resource.sensors:
-                if sensor not in SENSORS_GENERAL:
-                    LOGGER.warning(
-                        "Unknown sensor %s found in %s. Please open a bug report",
-                        sensor,
-                        resource.id,
-                    )
-                    continue
-                sensor_entities.append(
-                    AferoSensorEntity(bridge, controller, resource, sensor)
-                )
-
-    async_add_entities(sensor_entities)
+            if sensors := get_sensors(bridge, controller, resource):
+                async_add_entities(sensors)
 
 
 async def generate_callback(bridge, controller, async_add_entities: callback):
@@ -92,12 +97,7 @@ async def generate_callback(bridge, controller, async_add_entities: callback):
         event_type: EventType, resource: AferoModelResource
     ) -> None:
         """Add an entity."""
-        async_add_entities(
-            [
-                AferoSensorEntity(bridge, controller, resource, sensor)
-                for sensor in resource.binary_sensors
-                if sensor in SENSORS_GENERAL
-            ]
-        )
+        if sensors := get_sensors(bridge, controller, resource):
+            async_add_entities(sensors)
 
     return add_entity_controller

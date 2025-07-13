@@ -25,8 +25,7 @@ exhaust_fan_instance_entity_id = "fan.r3_closet_fan"
 async def mocked_entity(mocked_entry):
     """Initialize a mocked fan and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
-    await bridge.fans.initialize_elem(fan_zandra_instance)
-    await bridge.devices.initialize_elem(fan_zandra[2])
+    await bridge.generate_devices_from_data(fan_zandra)
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -36,21 +35,19 @@ async def mocked_entity(mocked_entry):
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     (
-        "dev",
-        "root_dev",
+        "devices",
         "expected_entities",
     ),
     [
-        (fan_zandra_instance, fan_zandra[2], [fan_zandra_entity_id]),
-        (exhaust_fan_instance, exhaust_fan[2], [exhaust_fan_instance_entity_id]),
+        (fan_zandra, [fan_zandra_entity_id]),
+        (exhaust_fan, [exhaust_fan_instance_entity_id]),
     ],
 )
-async def test_async_setup_entry(dev, root_dev, expected_entities, mocked_entry):
-    """Ensure fanss are properly discovered and registered with Home Assistant."""
+async def test_async_setup_entry(devices, expected_entities, mocked_entry):
+    """Ensure fans are properly discovered and registered with Home Assistant."""
     try:
         hass, entry, bridge = mocked_entry
-        await bridge.fans.initialize_elem(dev)
-        await bridge.devices.initialize_elem(root_dev)
+        await bridge.generate_devices_from_data(devices)
         await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
         entity_reg = er.async_get(hass)
@@ -114,8 +111,7 @@ async def test_turn_on_preset(mocked_entity):
 async def test_turn_on_limited(mocked_entry):
     """Ensure the service call turn_on works as expected."""
     hass, entry, bridge = mocked_entry
-    await bridge.fans.initialize_elem(exhaust_fan_instance)
-    await bridge.devices.initialize_elem(exhaust_fan[2])
+    await bridge.generate_devices_from_data(exhaust_fan)
     bridge.fans[exhaust_fan_instance.id].on.on = False
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
@@ -143,12 +139,7 @@ async def test_turn_on_limited(mocked_entry):
             value="on",
         ),
     )
-    event = {
-        "type": "update",
-        "device_id": exhaust_fan_update.id,
-        "device": exhaust_fan_update,
-    }
-    bridge.emit_event("update", event)
+    await bridge.generate_devices_from_data([exhaust_fan_update])
     await hass.async_block_till_done()
     assert bridge.fans[exhaust_fan_update.id].on.on
     test_entity = hass.states.get(exhaust_fan_instance_entity_id)
