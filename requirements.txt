@@ -1,3 +1,3 @@
 homeassistant
-aioafero>=4.2.0
+aioafero>=5
 aiofiles>=24.1.0

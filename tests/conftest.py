@@ -5,7 +5,7 @@ import datetime
 import logging
 
 from aioafero import AferoDevice, v1
-from aioafero.v1.auth import token_data
+from aioafero.v1.auth import TokenData
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
@@ -41,7 +41,7 @@ async def mocked_bridge(mocker) -> v1.AferoBridgeV1:
     )
 
     bridge.set_token_data(
-        token_data(
+        TokenData(
             "mock-token",
             "mock-access",
             "mock-refresh-token",
