@@ -39,6 +39,22 @@ async def mocked_entity_toggled(mocked_entry):
     await bridge.close()
 
 
+@pytest.fixture
+async def mocked_exhaust_fan(mocked_entry):
+    """Initialize a mocked exhaust fan and register it within Home Assistant."""
+    hass, entry, bridge = mocked_entry
+    # Now generate update event by emitting the json we've sent as incoming event
+    await bridge.generate_devices_from_data(
+        create_devices_from_data("fan-exhaust-fan.json")
+    )
+    # Register callbacks
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    assert len(bridge.devices.items) == 1
+    yield hass, entry, bridge
+    await bridge.close()
+
+
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     (
@@ -235,4 +251,21 @@ async def test_add_new_device(mocked_entry):
         transformer_entity_zone_2,
         transformer_entity_zone_3,
     ]:
+        assert entity_reg.async_get(entity) is not None
+
+
+@pytest.mark.asyncio
+async def test_exhaust_fan_names(mocked_exhaust_fan):
+    """Ensure there was no API break when between aioafero 4 and 5 for the plugin."""
+    hass, _, bridge = mocked_exhaust_fan
+    assert len(bridge.switches.items) == 5
+    expected_switches = [
+        "switch.r3_closet_humidity_sensor_led",
+        "switch.r3_closet_motion_sensor_led",
+        "switch.r3_closet_humidity_detection_enabled",
+        "switch.r3_closet_speaker_power",
+        "switch.r3_closet_motion_detection_enabled_exhaust_fan",
+    ]
+    entity_reg = er.async_get(hass)
+    for entity in expected_switches:
         assert entity_reg.async_get(entity) is not None
