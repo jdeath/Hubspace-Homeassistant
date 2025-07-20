@@ -66,6 +66,8 @@ async def async_setup_entry(
 
     for controller in bridge.api.controllers:
         # Listen for new devices
+        if not controller.ITEM_SENSORS:
+            continue
         config_entry.async_on_unload(
             controller.subscribe(
                 await generate_callback(bridge, controller, async_add_entities),
@@ -74,8 +76,6 @@ async def async_setup_entry(
         )
         # Add any currently tracked entities
         for resource in controller:
-            if not hasattr(resource, "sensors"):
-                continue
             if sensors := get_sensors(bridge, controller, resource):
                 async_add_entities(sensors)
 
