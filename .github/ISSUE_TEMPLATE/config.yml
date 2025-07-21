@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: I'm unsure where to go
+    url: https://community.home-assistant.io/t/add-support-for-hubspace-by-afero/306645
+    about: If you are unsure what type of issue, ask in the Home Assistant thread related to Hubspace
