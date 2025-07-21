@@ -3,8 +3,6 @@
 This repository provides an integration between Hubspace and Home Assistant. Due to the cloud-first
 nature of Hubspace devices, an internet connection needs to be available, along with the Hubspace servers.
 
-Please ask support questions in homeassistant forums: https://community.home-assistant.io/t/add-support-for-hubspace-by-afero/306645
-
 ## Supported Devices
 
 A supported device indicates that is maps into Home Assistant. Please note that not all

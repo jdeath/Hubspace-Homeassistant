@@ -1,0 +1,40 @@
+name: Enhancement
+description: A device is missing or requesting new functionality
+labels: ["enhancement"]
+assignees:
+  - Expl0dingBanana
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This issue form is for adding a new functionality only!
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: The device
+      description: >-
+        Provide a link to the product
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: Features
+      description: >-
+        What features(s) do you want enabled? Optionally provide screenshots of the
+        corresponding app for the feature.
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: Datadump
+      description: >-
+        Place to upload ``_dump_hs_devices.json`` which contains device information. Upload the
+        file and not the contents of the file.
+        [How to generate file](https://github.com/jdeath/Hubspace-Homeassistant?tab=readme-ov-file#troubleshooting) .
+        This link does not open a new tab.
+  - type: textarea
+    attributes:
+      label: Additional information
+      description: >
+        If you have any additional information for us, use the field below.
