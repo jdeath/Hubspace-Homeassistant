@@ -293,6 +293,34 @@ async def test_light_speaker_power(mocked_light_speaker):
     hass, _, bridge = mocked_light_speaker
     assert len(bridge.switches.items) == 1
     entity_reg = er.async_get(hass)
-    assert (
-        entity_reg.async_get("switch.office_bathroom_light_speaker_power") is not None
+    speaker_light_id = "switch.office_bathroom_light_speaker_power"
+    assert entity_reg.async_get(speaker_light_id) is not None
+    await hass.services.async_call(
+        "switch",
+        "turn_on",
+        {"entity_id": speaker_light_id},
+        blocking=True,
     )
+    update_call = bridge.request.call_args_list[-1]
+    assert update_call.args[0] == "put"
+    payload = update_call.kwargs["json"]
+    assert payload["metadeviceId"] == "3bec6eaa-3d87-4f3c-a065-a2b32f87c39f"
+    update = payload["values"][0]
+    assert update["functionClass"] == "toggle"
+    assert update["functionInstance"] == "speaker-power"
+    assert update["value"] == "on"
+    # Now generate update event by emitting the json we've sent as incoming event
+    hs_switch_update = create_devices_from_data("light-with-speaker.json")
+    modify_state(
+        hs_switch_update[0],
+        AferoState(
+            functionClass="toggle",
+            functionInstance="speaker-power",
+            value="on",
+        ),
+    )
+    await bridge.generate_devices_from_data(hs_switch_update)
+    await hass.async_block_till_done()
+    test_switch = hass.states.get(speaker_light_id)
+    assert test_switch is not None
+    assert test_switch.state == "on"
