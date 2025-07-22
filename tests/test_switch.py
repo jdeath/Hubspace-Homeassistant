@@ -55,6 +55,22 @@ async def mocked_exhaust_fan(mocked_entry):
     await bridge.close()
 
 
+@pytest.fixture
+async def mocked_light_speaker(mocked_entry):
+    """Initialize a mocked light with a speaker and register it within Home Assistant."""
+    hass, entry, bridge = mocked_entry
+    # Now generate update event by emitting the json we've sent as incoming event
+    await bridge.generate_devices_from_data(
+        create_devices_from_data("light-with-speaker.json")
+    )
+    # Register callbacks
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    assert len(bridge.devices.items) == 1
+    yield hass, entry, bridge
+    await bridge.close()
+
+
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     (
@@ -269,3 +285,42 @@ async def test_exhaust_fan_names(mocked_exhaust_fan):
     entity_reg = er.async_get(hass)
     for entity in expected_switches:
         assert entity_reg.async_get(entity) is not None
+
+
+@pytest.mark.asyncio
+async def test_light_speaker_power(mocked_light_speaker):
+    """Ensure that the light speaker creates a switch."""
+    hass, _, bridge = mocked_light_speaker
+    assert len(bridge.switches.items) == 1
+    entity_reg = er.async_get(hass)
+    speaker_light_id = "switch.office_bathroom_light_speaker_power"
+    assert entity_reg.async_get(speaker_light_id) is not None
+    await hass.services.async_call(
+        "switch",
+        "turn_on",
+        {"entity_id": speaker_light_id},
+        blocking=True,
+    )
+    update_call = bridge.request.call_args_list[-1]
+    assert update_call.args[0] == "put"
+    payload = update_call.kwargs["json"]
+    assert payload["metadeviceId"] == "3bec6eaa-3d87-4f3c-a065-a2b32f87c39f"
+    update = payload["values"][0]
+    assert update["functionClass"] == "toggle"
+    assert update["functionInstance"] == "speaker-power"
+    assert update["value"] == "on"
+    # Now generate update event by emitting the json we've sent as incoming event
+    hs_switch_update = create_devices_from_data("light-with-speaker.json")
+    modify_state(
+        hs_switch_update[0],
+        AferoState(
+            functionClass="toggle",
+            functionInstance="speaker-power",
+            value="on",
+        ),
+    )
+    await bridge.generate_devices_from_data(hs_switch_update)
+    await hass.async_block_till_done()
+    test_switch = hass.states.get(speaker_light_id)
+    assert test_switch is not None
+    assert test_switch.state == "on"
