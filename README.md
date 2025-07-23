@@ -67,17 +67,22 @@ are as follows:
 
 ## Changelog
 
+- 5.5.0
+
+  - Enable switch control for lights that utilize toggles ([#172](https://github.com/jdeath/Hubspace-Homeassistant/issues/172))
+  - Fix an issue where sensors would not appear for docker containers ([#176](https://github.com/jdeath/Hubspace-Homeassistant/issues/176))
+
 - 5.4.0
 
-  - Add support for the light LCN3002LM-01 WH
+  - Add support for the light LCN3002LM-01 WH ([#160](https://github.com/jdeath/Hubspace-Homeassistant/issues/160))
 
 - 5.3.1
 
-  - Fixed an issue where a failure during auth produced an Unhandled exception
+  - Fixed an issue where a failure during auth produced an Unhandled exception ([#169](https://github.com/jdeath/Hubspace-Homeassistant/issues/169))
 
 - 5.3.0
 
-  - Add support for Portable ACs
+  - Add support for Portable ACs ([#162](https://github.com/jdeath/Hubspace-Homeassistant/issues/162))
   - Update climate devices to adjust more closely to Hubspace
   - Fix an issue where Thermostats could incorrectly use Auto
 
@@ -87,7 +92,7 @@ are as follows:
 
 - 5.2.2
 
-  - Fix battery percentage not showing
+  - Fix battery percentage not showing ([#164](https://github.com/jdeath/Hubspace-Homeassistant/issues/164))
 
 - 5.2.1
 
@@ -95,7 +100,7 @@ are as follows:
 
 - 5.2.0
 
-  - Fully implement exhaust fans
+  - Fully implement exhaust fans ([#152](https://github.com/jdeath/Hubspace-Homeassistant/issues/152))
 
 - 5.1.0
 
@@ -104,7 +109,7 @@ are as follows:
 - 5.0.0
 
   - BREAK: Binary Sensor names are more accurate but have new entity IDs
-  - Implement climate / thermostats (#143)
+  - Implement climate / thermostats ([#143](https://github.com/jdeath/Hubspace-Homeassistant/issues/143))
 
 - 4.6.0
 
@@ -113,7 +118,7 @@ are as follows:
 - 4.5.0
 
   - Convert to aioafero==2.0.0
-  - Update minimum version of HA to 2024.8 (#149)
+  - Update minimum version of HA to 2024.8 ([#149](https://github.com/jdeath/Hubspace-Homeassistant/issues/149))
 
 - 4.4.2
 
