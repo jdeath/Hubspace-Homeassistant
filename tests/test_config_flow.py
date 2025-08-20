@@ -55,6 +55,7 @@ def mocked_config_flow(mocked_bridge, mocker):
                 CONF_PASSWORD: "beans",
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             None,
             None,
@@ -62,6 +63,7 @@ def mocked_config_flow(mocked_bridge, mocker):
                 CONF_USERNAME: "cool",
                 CONF_PASSWORD: "beans",
                 CONF_TOKEN: "mock-refresh-token",
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             {
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
@@ -75,6 +77,7 @@ def mocked_config_flow(mocked_bridge, mocker):
                 CONF_PASSWORD: "beans",
                 POLLING_TIME_STR: 0,
                 CONF_TIMEOUT: 0,
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             None,
             None,
@@ -82,6 +85,7 @@ def mocked_config_flow(mocked_bridge, mocker):
                 CONF_USERNAME: "cool",
                 CONF_PASSWORD: "beans",
                 CONF_TOKEN: "mock-refresh-token",
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             {
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
@@ -95,6 +99,7 @@ def mocked_config_flow(mocked_bridge, mocker):
                 CONF_PASSWORD: "beans",
                 POLLING_TIME_STR: 1,
                 CONF_TIMEOUT: 0,
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             None,
             "polling_too_short",
@@ -108,6 +113,7 @@ def mocked_config_flow(mocked_bridge, mocker):
                 CONF_PASSWORD: "beans",
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             TimeoutError,
             "cannot_connect",
@@ -121,6 +127,7 @@ def mocked_config_flow(mocked_bridge, mocker):
                 CONF_PASSWORD: "beans",
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             InvalidAuth,
             "invalid_auth",
@@ -134,6 +141,7 @@ def mocked_config_flow(mocked_bridge, mocker):
                 CONF_PASSWORD: "beans",
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             KeyError,
             "unknown",
@@ -197,6 +205,7 @@ async def test_HubspaceConfigFlow_async_step_user(
                 "data": {
                     CONF_USERNAME: "cool",
                     CONF_PASSWORD: "beans",
+                    const.CONF_CLIENT: const.DEFAULT_CLIENT,
                 },
                 "options": {
                     POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
@@ -209,11 +218,13 @@ async def test_HubspaceConfigFlow_async_step_user(
                 CONF_PASSWORD: "beans2",
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             {
                 CONF_USERNAME: "cool",
                 CONF_PASSWORD: "beans2",
                 CONF_TOKEN: "mock-refresh-token",
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             {
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
@@ -228,7 +239,11 @@ async def test_HubspaceConfigFlow_async_step_user(
         # Changing username
         (
             {
-                "data": {CONF_USERNAME: "cool", CONF_PASSWORD: "beans"},
+                "data": {
+                    CONF_USERNAME: "cool",
+                    CONF_PASSWORD: "beans",
+                    const.CONF_CLIENT: const.DEFAULT_CLIENT,
+                },
                 "options": {
                     POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                     CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
@@ -240,10 +255,12 @@ async def test_HubspaceConfigFlow_async_step_user(
                 CONF_PASSWORD: "beans2",
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             {
                 CONF_USERNAME: "cool",
                 CONF_PASSWORD: "beans2",
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             {
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,

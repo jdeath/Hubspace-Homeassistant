@@ -9,12 +9,14 @@ from typing import Any, NamedTuple
 
 from aioafero import InvalidAuth
 from aioafero.v1 import AferoBridgeV1
+from aioafero.v1.v1_const import AFERO_CLIENTS
 from homeassistant import config_entries
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
 from homeassistant.core import callback
 import voluptuous as vol
 
 from .const import (
+    CONF_CLIENT,
     DEFAULT_POLLING_INTERVAL_SEC,
     DEFAULT_TIMEOUT,
     DOMAIN,
@@ -28,6 +30,7 @@ _LOGGER = logging.getLogger(__name__)
 LOGIN_REQS = {
     vol.Required(CONF_USERNAME): str,
     vol.Required(CONF_PASSWORD): str,
+    vol.Required(CONF_CLIENT): vol.In(sorted(AFERO_CLIENTS.keys())),
 }
 REAUTH = vol.Schema(
     {
@@ -72,6 +75,7 @@ class HubspaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self.bridge = AferoBridgeV1(
             user_input[CONF_USERNAME],
             user_input[CONF_PASSWORD],
+            afero_client=user_input[CONF_CLIENT],
         )
         try:
             async with timeout(user_input[CONF_TIMEOUT] / 1000):

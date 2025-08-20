@@ -83,6 +83,27 @@ def v3_config_entry(hass):
     return hass, v1_config_entry
 
 
+@pytest.fixture
+def v4_config_entry(hass):
+    """Register a v4 config entry."""
+    v1_config_entry = MockConfigEntry(
+        domain=const.DOMAIN,
+        data={
+            CONF_USERNAME: "cool",
+            CONF_PASSWORD: "beans",
+            CONF_TOKEN: "mock-refresh-token",
+        },
+        options={
+            CONF_TIMEOUT: 10000,
+            const.POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+        },
+        version=4,
+        minor_version=0,
+    )
+    v1_config_entry.add_to_hass(hass)
+    return hass, v1_config_entry
+
+
 @pytest.mark.asyncio
 async def test_async_migrate_entry(v1_config_entry):
     """Test configuration migration."""
@@ -91,11 +112,13 @@ async def test_async_migrate_entry(v1_config_entry):
         CONF_USERNAME: "cool",
         CONF_PASSWORD: "beans",
         CONF_TOKEN: "mock-refresh-token",
+        const.CONF_CLIENT: const.DEFAULT_CLIENT,
     }
     assert v1_config_entry[1].options == {
         CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
         const.POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
     }
+    assert v1_config_entry[1].version == const.VERSION_MAJOR
 
 
 @pytest.mark.asyncio
@@ -202,3 +225,17 @@ async def test_perform_v4_migration_from_v3_with_err(
     assert v3_config_entry[1].unique_id is None
     assert v3_config_entry[1].version == 3
     assert v3_config_entry[1].minor_version == 0
+
+
+@pytest.mark.asyncio
+async def test_perform_v5_migration_from_v4(v4_config_entry):
+    """Test configuration migration from v4 to v5."""
+    await hubspace.perform_v5_migration(v4_config_entry[0], v4_config_entry[1])
+    assert v4_config_entry[1].data == {
+        CONF_USERNAME: "cool",
+        CONF_PASSWORD: "beans",
+        CONF_TOKEN: "mock-refresh-token",
+        const.CONF_CLIENT: const.DEFAULT_CLIENT,
+    }
+    assert v4_config_entry[1].version == 5
+    assert v4_config_entry[1].minor_version == 0

@@ -15,7 +15,7 @@ from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_US
 from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers import aiohttp_client
 
-from .const import DOMAIN, PLATFORMS, POLLING_TIME_STR
+from .const import CONF_CLIENT, DOMAIN, PLATFORMS, POLLING_TIME_STR
 from .device import async_setup_devices
 
 
@@ -61,6 +61,7 @@ class HubspaceBridge:
             refresh_token=self.config_entry.data[CONF_TOKEN],
             session=aiohttp_client.async_get_clientsession(hass),
             polling_interval=polling_interval,
+            afero_client=self.config_entry.data[CONF_CLIENT],
         )
         # store (this) bridge object in hass data
         hass.data.setdefault(DOMAIN, {})[self.config_entry.entry_id] = self
