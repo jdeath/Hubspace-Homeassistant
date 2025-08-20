@@ -58,6 +58,29 @@ class AuthResult(NamedTuple):
     err_type: str
 
 
+async def validate_auth(user_input: dict[str, Any] | None = None) -> AuthResult | None:
+    """Validate and save auth."""
+    err_type = None
+    bridge = AferoBridgeV1(
+        user_input[CONF_USERNAME],
+        user_input[CONF_PASSWORD],
+        afero_client=user_input[CONF_CLIENT],
+    )
+    try:
+        async with timeout(user_input[CONF_TIMEOUT] / 1000):
+            await bridge.get_account_id()
+    except TimeoutError:
+        err_type = "cannot_connect"
+    except InvalidAuth:
+        err_type = "invalid_auth"
+    except Exception:
+        _LOGGER.exception("Unexpected exception")
+        err_type = "unknown"
+    finally:
+        await bridge.close()
+    return AuthResult(bridge.refresh_token, err_type)
+
+
 class HubspaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Hubspace."""
 
@@ -66,30 +89,6 @@ class HubspaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     username: str
     password: str
     conn: AferoBridgeV1
-
-    async def validate_auth(
-        self, user_input: dict[str, Any] | None = None
-    ) -> AuthResult | None:
-        """Validate and save auth."""
-        err_type = None
-        self.bridge = AferoBridgeV1(
-            user_input[CONF_USERNAME],
-            user_input[CONF_PASSWORD],
-            afero_client=user_input[CONF_CLIENT],
-        )
-        try:
-            async with timeout(user_input[CONF_TIMEOUT] / 1000):
-                await self.bridge.get_account_id()
-        except TimeoutError:
-            err_type = "cannot_connect"
-        except InvalidAuth:
-            err_type = "invalid_auth"
-        except Exception:
-            _LOGGER.exception("Unexpected exception")
-            err_type = "unknown"
-        finally:
-            await self.bridge.close()
-        return AuthResult(self.bridge.refresh_token, err_type)
 
     @staticmethod
     def extract_user_data(user_input: dict[str, Any] | None) -> tuple[dict, dict]:
@@ -135,7 +134,7 @@ class HubspaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     data_schema=LOGIN_SCHEMA,
                     errors=errors,
                 )
-            auth_data = await self.validate_auth(user_input)
+            auth_data = await validate_auth(user_input)
             if not auth_data.err_type:
                 data[CONF_TOKEN] = auth_data.token
                 if user_input[POLLING_TIME_STR] < 2:
