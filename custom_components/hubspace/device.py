@@ -15,14 +15,14 @@ from homeassistant.helpers import device_registry as dr
 from .const import DOMAIN
 
 if TYPE_CHECKING:
-    from .bridge import HubspaceBridge
+    from .bridge import HubspaceBridge  # pragma: nocover
 
 
 async def async_setup_devices(bridge: HubspaceBridge):
     """Manage setup of devices."""
     entry = bridge.config_entry
     hass = bridge.hass
-    api: AferoBridgeV1 = bridge.api  # to satisfy typing
+    api: AferoBridgeV1 = bridge.api
     dev_reg = dr.async_get(hass)
     dev_controller: DeviceController = api.devices
 
@@ -46,6 +46,11 @@ async def async_setup_devices(bridge: HubspaceBridge):
             or hs_device.device_information.default_name,
             manufacturer=hs_device.device_information.manufacturer,
             connections=connections,
+            sw_version=hs_device.device_information.version_data.get(
+                "applicationVersionString"
+            )
+            if hs_device.device_information.version_data
+            else None,
         )
 
     @callback

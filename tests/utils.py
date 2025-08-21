@@ -95,6 +95,7 @@ def hs_raw_from_device(device: AferoDevice) -> dict:
             "values": convert_states(device.states),
         },
         "typeId": "metadevice.device",
+        "version_data": device.version_data,
     }
 
 
