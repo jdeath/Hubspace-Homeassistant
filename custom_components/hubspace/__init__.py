@@ -11,6 +11,8 @@ from homeassistant.helpers import aiohttp_client, device_registry as dr
 
 from .bridge import HubspaceBridge
 from .const import (
+    CONF_CLIENT,
+    DEFAULT_CLIENT,
     DEFAULT_POLLING_INTERVAL_SEC,
     DEFAULT_TIMEOUT,
     DOMAIN,
@@ -56,6 +58,8 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
         await perform_v3_migration(hass, config_entry)
     if config_entry.version == 3 and config_entry.minor_version == 0:
         res = await perform_v4_migration(hass, config_entry)
+    if config_entry.version == 4 and config_entry.minor_version == 0:
+        res = await perform_v5_migration(hass, config_entry)
     _LOGGER.debug(
         "Migration to configuration version %s.%s successful",
         config_entry.version,
@@ -137,6 +141,19 @@ async def perform_v4_migration(hass: HomeAssistant, config_entry: ConfigEntry) -
         minor_version=0,
         unique_id=unique_id,
         title=unique_id,
+    )
+    return True
+
+
+async def perform_v5_migration(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
+    """Perform version 5 migration of the configuration entry.
+
+    * Ensure client is set
+    """
+    new_data = {**config_entry.data}
+    new_data[CONF_CLIENT] = DEFAULT_CLIENT
+    hass.config_entries.async_update_entry(
+        config_entry, data=new_data, version=5, minor_version=0
     )
     return True
 

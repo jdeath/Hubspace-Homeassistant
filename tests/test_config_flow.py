@@ -10,6 +10,7 @@ import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.hubspace import POLLING_TIME_STR, const
+from custom_components.hubspace.config_flow import validate_auth
 
 
 @pytest.fixture
@@ -55,6 +56,7 @@ def mocked_config_flow(mocked_bridge, mocker):
                 CONF_PASSWORD: "beans",
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             None,
             None,
@@ -62,6 +64,7 @@ def mocked_config_flow(mocked_bridge, mocker):
                 CONF_USERNAME: "cool",
                 CONF_PASSWORD: "beans",
                 CONF_TOKEN: "mock-refresh-token",
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             {
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
@@ -75,6 +78,7 @@ def mocked_config_flow(mocked_bridge, mocker):
                 CONF_PASSWORD: "beans",
                 POLLING_TIME_STR: 0,
                 CONF_TIMEOUT: 0,
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             None,
             None,
@@ -82,6 +86,7 @@ def mocked_config_flow(mocked_bridge, mocker):
                 CONF_USERNAME: "cool",
                 CONF_PASSWORD: "beans",
                 CONF_TOKEN: "mock-refresh-token",
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             {
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
@@ -95,6 +100,7 @@ def mocked_config_flow(mocked_bridge, mocker):
                 CONF_PASSWORD: "beans",
                 POLLING_TIME_STR: 1,
                 CONF_TIMEOUT: 0,
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             None,
             "polling_too_short",
@@ -108,6 +114,7 @@ def mocked_config_flow(mocked_bridge, mocker):
                 CONF_PASSWORD: "beans",
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             TimeoutError,
             "cannot_connect",
@@ -121,6 +128,7 @@ def mocked_config_flow(mocked_bridge, mocker):
                 CONF_PASSWORD: "beans",
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             InvalidAuth,
             "invalid_auth",
@@ -134,6 +142,7 @@ def mocked_config_flow(mocked_bridge, mocker):
                 CONF_PASSWORD: "beans",
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             KeyError,
             "unknown",
@@ -197,6 +206,7 @@ async def test_HubspaceConfigFlow_async_step_user(
                 "data": {
                     CONF_USERNAME: "cool",
                     CONF_PASSWORD: "beans",
+                    const.CONF_CLIENT: const.DEFAULT_CLIENT,
                 },
                 "options": {
                     POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
@@ -209,11 +219,13 @@ async def test_HubspaceConfigFlow_async_step_user(
                 CONF_PASSWORD: "beans2",
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             {
                 CONF_USERNAME: "cool",
                 CONF_PASSWORD: "beans2",
                 CONF_TOKEN: "mock-refresh-token",
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             {
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
@@ -228,7 +240,11 @@ async def test_HubspaceConfigFlow_async_step_user(
         # Changing username
         (
             {
-                "data": {CONF_USERNAME: "cool", CONF_PASSWORD: "beans"},
+                "data": {
+                    CONF_USERNAME: "cool",
+                    CONF_PASSWORD: "beans",
+                    const.CONF_CLIENT: const.DEFAULT_CLIENT,
+                },
                 "options": {
                     POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                     CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
@@ -240,10 +256,12 @@ async def test_HubspaceConfigFlow_async_step_user(
                 CONF_PASSWORD: "beans2",
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             {
                 CONF_USERNAME: "cool",
                 CONF_PASSWORD: "beans2",
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             {
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
@@ -374,3 +392,51 @@ async def test_HubspaceConfigFlow_async_step_options(
         assert result["errors"]["base"] == error_code
     else:
         assert entry.options == expected_options
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("get_account_id_side_effect", "expected_err"),
+    [
+        # Happy path
+        (
+            lambda: None,
+            None,
+        ),
+        # Timeout
+        (TimeoutError, "cannot_connect"),
+        # Auth Issue
+        (InvalidAuth, "invalid_auth"),
+        # Unknown
+        (AttributeError, "unknown"),
+    ],
+)
+async def test_validate_auth(get_account_id_side_effect, expected_err, mocker):
+    """Ensure errors are properly handled during auth validation."""
+    mocked_bridge = mocker.MagicMock()
+    mocked_bridge.get_account_id = mocker.AsyncMock(
+        side_effect=get_account_id_side_effect
+    )
+    mocked_bridge.close = mocker.AsyncMock()
+    mocker.patch(
+        "custom_components.hubspace.config_flow.AferoBridgeV1",
+        return_value=mocked_bridge,
+    )
+    if expected_err:
+        mocked_bridge.refresh_token = None
+    else:
+        mocked_bridge.refresh_token = "cool-beans"
+    result = await validate_auth(
+        {
+            CONF_USERNAME: "cool",
+            CONF_PASSWORD: "beans",
+            CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+            const.CONF_CLIENT: const.DEFAULT_CLIENT,
+        }
+    )
+    if not expected_err:
+        assert result.err_type is None
+        assert result.token == "cool-beans"
+    else:
+        assert result.err_type == expected_err
+        assert result.token is None

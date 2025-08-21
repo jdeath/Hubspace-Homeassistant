@@ -11,6 +11,8 @@ import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.hubspace.const import (
+    CONF_CLIENT,
+    DEFAULT_CLIENT,
     DEFAULT_POLLING_INTERVAL_SEC,
     DOMAIN,
     POLLING_TIME_STR,
@@ -88,6 +90,7 @@ async def mocked_entry(hass, mocker, mocked_bridge) -> MockConfigEntry:
             CONF_USERNAME: "username",
             CONF_PASSWORD: "password",
             CONF_TOKEN: "mock-token",
+            CONF_CLIENT: DEFAULT_CLIENT,
         },
         options={
             CONF_TIMEOUT: 30,
