@@ -67,6 +67,10 @@ are as follows:
 
 ## Changelog
 
+- 5.7.0
+
+  - Display version information for devices
+
 - 5.6.0
 
   - Enable support for all aioafero clients ([#180](https://github.com/jdeath/Hubspace-Homeassistant/issues/180))

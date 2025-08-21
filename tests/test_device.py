@@ -8,7 +8,7 @@ from custom_components.hubspace import const
 from .utils import create_devices_from_data, hs_raw_from_dump
 
 fan_zandra = create_devices_from_data("fan-ZandraFan.json")
-fan_zandra_light = fan_zandra[1]
+device_light = create_devices_from_data("light-a21.json")
 
 
 @pytest.fixture
@@ -42,6 +42,31 @@ async def test_async_setup_entry(mocked_entry):
         assert device.connections == {
             (dr.CONNECTION_NETWORK_MAC, "abbc66b9-d102-4404-9b14-f7d62fec1d2c"),
             (dr.CONNECTION_BLUETOOTH, "cb948b76-713f-4a20-8ad4-2abc97b402c8"),
+        }
+    finally:
+        await bridge.close()
+
+
+@pytest.mark.asyncio
+async def test_async_setup_entry_no_sw(mocked_entry):
+    """Ensure parent devices are properly discovered and registered with Home Assistant."""
+    try:
+        hass, entry, bridge = mocked_entry
+        await bridge.generate_devices_from_data(device_light)
+        await hass.config_entries.async_setup(entry.entry_id)
+        await hass.async_block_till_done()
+        device_reg = dr.async_get(hass)
+        device = device_reg.async_get_device(
+            identifiers={(const.DOMAIN, "30a2df8c-109b-42c2-aed6-a6b30c565f8f")}
+        )
+        assert device is not None
+        assert device.name == "friendly-device-53"
+        assert device.model == "A21 Color CCT Light"
+        assert device.manufacturer == "Ecosmart"
+        assert device.sw_version is None
+        assert device.connections == {
+            (dr.CONNECTION_NETWORK_MAC, "b31d2f3f-86f6-4e7e-b91b-4fbc161d410d"),
+            (dr.CONNECTION_BLUETOOTH, "9c70c759-1d54-4f61-a067-bb4294bef7ae"),
         }
     finally:
         await bridge.close()
