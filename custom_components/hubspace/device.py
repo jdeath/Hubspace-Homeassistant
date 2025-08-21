@@ -46,7 +46,7 @@ async def async_setup_devices(bridge: HubspaceBridge):
             or hs_device.device_information.default_name,
             manufacturer=hs_device.device_information.manufacturer,
             connections=connections,
-            sw_version=hs_device.device_information.version_data.get("applicationVersionString", None),
+            sw_version=hs_device.device_information.version_data.get("applicationVersionString") if hs_device.device_information.version_data else None,
         )
 
     @callback
