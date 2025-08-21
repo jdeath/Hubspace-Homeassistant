@@ -67,6 +67,10 @@ are as follows:
 
 ## Changelog
 
+- 5.6.0
+
+  - Enable support for all aioafero clients ([#180](https://github.com/jdeath/Hubspace-Homeassistant/issues/180))
+
 - 5.5.0
 
   - Enable switch control for lights that utilize toggles ([#172](https://github.com/jdeath/Hubspace-Homeassistant/issues/172))
