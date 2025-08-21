@@ -907,6 +907,10 @@
         "lastUpdateTime": 0,
         "functionInstance": null
       }
-    ]
+    ],
+    "version_data": {
+      "applicationVersionString": "1.0.0"
+    },
+    "manufacturerName": "Hampton Bay"
   }
 ]
