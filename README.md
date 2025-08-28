@@ -67,6 +67,10 @@ are as follows:
 
 ## Changelog
 
+- 5.7.1
+
+  - Fix an issue where auth would not retry
+
 - 5.7.0
 
   - Display version information for devices
