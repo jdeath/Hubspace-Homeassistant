@@ -11,7 +11,7 @@ import pytest
 
 from .utils import create_devices_from_data, hs_raw_from_dump, modify_state
 
-alarm_panel = create_devices_from_data("security-system.json")[1]
+alarm_panel = create_devices_from_data("security-system.json")
 alarm_panel_id = "alarm_control_panel.helms_deep_securitysystem"
 
 
@@ -19,14 +19,11 @@ alarm_panel_id = "alarm_control_panel.helms_deep_securitysystem"
 async def mocked_entity(mocked_entry):
     """Initialize a mocked Alarm Panel and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
-    # Register callbacks
+    await bridge.generate_devices_from_data(alarm_panel)
     await hass.config_entries.async_setup(entry.entry_id)
-    # Now generate update event by emitting the json we've sent as incoming event
-    afero_data = hs_raw_from_dump("security-system.json")
-    await bridge.generate_events_from_data(afero_data)
-    await bridge.async_block_until_done()
     await hass.async_block_till_done()
-    return mocked_entry
+    yield hass, entry, bridge
+    await bridge.close()
 
 
 @pytest.mark.asyncio
@@ -105,166 +102,101 @@ async def test_add_new_device(mocked_entry):
         assert entity_reg.async_get(entity) is not None
 
 
-@pytest.mark.asyncio
-async def test_service_alarm_disarm(mocked_entity):
-    """Ensure the service call turn_on works as expected."""
-    hass, _, bridge = mocked_entity
-    expected_state = "disarmed"
-    bridge.security_systems[alarm_panel.id].alarm_state.mode = "armed-away"
+async def setup_and_test_state(
+    hass,
+    entry,
+    bridge,
+    service_call,
+    starting_state,
+    expected_starting_state,
+    expected_state,
+):
+    """Set up the entry and verify the alarm panel state."""
+    # Setup the alarm panel to be in a different state than expected
+    changed_alarm_panel = create_devices_from_data("security-system.json")[1]
+    modify_state(
+        changed_alarm_panel,
+        AferoState(
+            functionClass="alarm-state",
+            functionInstance=None,
+            value=starting_state,
+        ),
+    )
+    await bridge.generate_devices_from_data([changed_alarm_panel])
+    await hass.config_entries.async_setup(entry.entry_id)
+    await bridge.async_block_until_done()
+    await hass.async_block_till_done()
+    entity = hass.states.get(alarm_panel_id)
+    assert entity is not None
+    assert entity.state == expected_starting_state
     await hass.services.async_call(
         "alarm_control_panel",
+        service_call,
+        {"entity_id": alarm_panel_id},
+        blocking=True,
+    )
+    await bridge.async_block_until_done()
+    await hass.async_block_till_done()
+    update_call = bridge.request.call_args_list[-1]
+    assert update_call.args[0] == "put"
+    payload = update_call.kwargs["json"]
+    assert payload["metadeviceId"] == changed_alarm_panel.id
+    entity = hass.states.get(alarm_panel_id)
+    assert entity is not None
+    assert entity.state == expected_state
+
+
+@pytest.mark.asyncio
+async def test_service_alarm_disarm(mocked_entry):
+    """Ensure the service call alarm_disarm works as expected."""
+    await setup_and_test_state(
+        mocked_entry[0],
+        mocked_entry[1],
+        mocked_entry[2],
         "alarm_disarm",
-        {"entity_id": alarm_panel_id},
-        blocking=True,
+        "arm-away",
+        AlarmControlPanelState.ARMED_AWAY,
+        AlarmControlPanelState.DISARMED,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == alarm_panel.id
-    update = payload["values"][0]
-    assert update["functionClass"] == "alarm-state"
-    assert update["functionInstance"] is None
-    assert update["value"] == expected_state
-    # Now generate update event by emitting the json we've sent as incoming event
-    entity_update = create_devices_from_data("security-system.json")[1]
-    modify_state(
-        alarm_panel,
-        AferoState(
-            functionClass="alarm-state",
-            functionInstance=None,
-            value=expected_state,
-        ),
-    )
-    event = {
-        "type": "update",
-        "device_id": alarm_panel.id,
-        "device": entity_update,
-    }
-    bridge.emit_event("update", event)
-    await hass.async_block_till_done()
-    entity = hass.states.get(alarm_panel_id)
-    assert entity is not None
-    assert entity.state == AlarmControlPanelState.DISARMED
 
 
 @pytest.mark.asyncio
-async def test_service_alarm_arm_home(mocked_entity):
-    """Ensure the service call turn_on works as expected."""
-    hass, _, bridge = mocked_entity
-    expected_state = "arm-started-stay"
-    await hass.services.async_call(
-        "alarm_control_panel",
+async def test_service_alarm_arm_home(mocked_entry):
+    """Ensure the service call alarm_arm_home works as expected."""
+    await setup_and_test_state(
+        mocked_entry[0],
+        mocked_entry[1],
+        mocked_entry[2],
         "alarm_arm_home",
-        {"entity_id": alarm_panel_id},
-        blocking=True,
+        "disarmed",
+        AlarmControlPanelState.DISARMED,
+        AlarmControlPanelState.ARMING,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == alarm_panel.id
-    update = payload["values"][0]
-    assert update["functionClass"] == "alarm-state"
-    assert update["functionInstance"] is None
-    assert update["value"] == expected_state
-    # Now generate update event by emitting the json we've sent as incoming event
-    entity_update = create_devices_from_data("security-system.json")[1]
-    modify_state(
-        entity_update,
-        AferoState(
-            functionClass="alarm-state",
-            functionInstance=None,
-            value=expected_state,
-        ),
-    )
-    event = {
-        "type": "update",
-        "device_id": alarm_panel.id,
-        "device": entity_update,
-    }
-    bridge.emit_event("update", event)
-    await hass.async_block_till_done()
-    entity = hass.states.get(alarm_panel_id)
-    assert entity is not None
-    assert entity.state == AlarmControlPanelState.ARMING
 
 
 @pytest.mark.asyncio
-async def test_service_alarm_arm_away(mocked_entity):
-    """Ensure the service call turn_on works as expected."""
-    hass, _, bridge = mocked_entity
-    expected_state = "arm-started-away"
-    await hass.services.async_call(
-        "alarm_control_panel",
+async def test_service_alarm_arm_away(mocked_entry):
+    """Ensure the service call alarm_arm_away works as expected."""
+    await setup_and_test_state(
+        mocked_entry[0],
+        mocked_entry[1],
+        mocked_entry[2],
         "alarm_arm_away",
-        {"entity_id": alarm_panel_id},
-        blocking=True,
+        "disarmed",
+        AlarmControlPanelState.DISARMED,
+        AlarmControlPanelState.ARMING,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == alarm_panel.id
-    update = payload["values"][0]
-    assert update["functionClass"] == "alarm-state"
-    assert update["functionInstance"] is None
-    assert update["value"] == expected_state
-    # Now generate update event by emitting the json we've sent as incoming event
-    entity_update = create_devices_from_data("security-system.json")[1]
-    modify_state(
-        entity_update,
-        AferoState(
-            functionClass="alarm-state",
-            functionInstance=None,
-            value=expected_state,
-        ),
-    )
-    event = {
-        "type": "update",
-        "device_id": alarm_panel.id,
-        "device": entity_update,
-    }
-    bridge.emit_event("update", event)
-    await hass.async_block_till_done()
-    entity = hass.states.get(alarm_panel_id)
-    assert entity is not None
-    assert entity.state == AlarmControlPanelState.ARMING
 
 
 @pytest.mark.asyncio
-async def test_service_alarm_trigger(mocked_entity):
-    """Ensure the service call turn_on works as expected."""
-    hass, _, bridge = mocked_entity
-    expected_state = "alarming-sos"
-    await hass.services.async_call(
-        "alarm_control_panel",
+async def test_service_alarm_trigger(mocked_entry):
+    """Ensure the service call alarm_trigger works as expected."""
+    await setup_and_test_state(
+        mocked_entry[0],
+        mocked_entry[1],
+        mocked_entry[2],
         "alarm_trigger",
-        {"entity_id": alarm_panel_id},
-        blocking=True,
+        "disarmed",
+        AlarmControlPanelState.DISARMED,
+        AlarmControlPanelState.TRIGGERED,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == alarm_panel.id
-    update = payload["values"][0]
-    assert update["functionClass"] == "alarm-state"
-    assert update["functionInstance"] is None
-    assert update["value"] == expected_state
-    # Now generate update event by emitting the json we've sent as incoming event
-    entity_update = create_devices_from_data("security-system.json")[1]
-    modify_state(
-        entity_update,
-        AferoState(
-            functionClass="alarm-state",
-            functionInstance=None,
-            value=expected_state,
-        ),
-    )
-    event = {
-        "type": "update",
-        "device_id": alarm_panel.id,
-        "device": entity_update,
-    }
-    bridge.emit_event("update", event)
-    await hass.async_block_till_done()
-    entity = hass.states.get(alarm_panel_id)
-    assert entity is not None
-    assert entity.state == AlarmControlPanelState.TRIGGERED
