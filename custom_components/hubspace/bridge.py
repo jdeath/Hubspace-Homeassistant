@@ -35,7 +35,7 @@ def mock_get_data(filename: str) -> dict:
     current_path: Path = Path(__file__.rsplit(os.sep, 1)[0])
     file_path = current_path / filename
 
-    async def get_data():
+    async def get_data(*args, **kwargs):
         return json.load(file_path.open())
 
     return get_data

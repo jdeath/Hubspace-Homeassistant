@@ -213,4 +213,9 @@ BINARY_SENSORS = {
         name="Triggered",
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
+    "battery-powered|None": BinarySensorEntityDescription(
+        key="battery-powered|None",
+        name="Running on battery",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
 }
