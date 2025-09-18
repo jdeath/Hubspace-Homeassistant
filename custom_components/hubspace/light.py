@@ -22,7 +22,7 @@ from homeassistant.util.color import brightness_to_value, value_to_brightness
 
 from .bridge import HubspaceBridge
 from .const import DOMAIN
-from .entity import HubspaceBaseEntity, update_decorator
+from .entity import HubspaceBaseEntity
 
 
 class HubspaceLight(HubspaceBaseEntity, LightEntity):
@@ -137,7 +137,6 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
             return LightEntityFeature(0) | LightEntityFeature.EFFECT
         return LightEntityFeature(0)
 
-    @update_decorator
     async def async_turn_on(self, **kwargs) -> None:
         """Turn device on."""
         brightness: int | None = None
@@ -164,7 +163,6 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
             effect=effect,
         )
 
-    @update_decorator
     async def async_turn_off(self, **kwargs) -> None:
         """Turn device off."""
         await self.bridge.async_request_call(

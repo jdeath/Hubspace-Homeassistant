@@ -29,7 +29,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .bridge import HubspaceBridge
 from .const import DOMAIN
-from .entity import HubspaceBaseEntity, update_decorator
+from .entity import HubspaceBaseEntity
 
 
 class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
@@ -174,7 +174,6 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
             else UnitOfTemperature.CELSIUS
         )
 
-    @update_decorator
     async def translate_hvac_mode_to_hubspace(self, hvac_mode) -> str | None:
         """Convert HomeAssistant -> Hubspace."""
         tracked_modes = {
@@ -188,7 +187,6 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
         }
         return tracked_modes.get(hvac_mode)
 
-    @update_decorator
     async def async_set_hvac_mode(self, hvac_mode: str) -> None:
         """Set new hvac mode."""
         mode = await self.translate_hvac_mode_to_hubspace(hvac_mode)
@@ -196,7 +194,6 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
             self.controller.set_state, device_id=self.resource.id, hvac_mode=mode
         )
 
-    @update_decorator
     async def async_set_fan_mode(self, fan_mode: str) -> None:
         """Set new fan mode."""
         tracked_modes = {
@@ -209,7 +206,6 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
             fan_mode=tracked_modes.get(fan_mode, fan_mode),
         )
 
-    @update_decorator
     async def async_set_temperature(self, **kwargs):
         """Set new target temperature."""
         await self.bridge.async_request_call(

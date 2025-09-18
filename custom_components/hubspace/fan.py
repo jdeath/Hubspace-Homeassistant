@@ -13,7 +13,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .bridge import HubspaceBridge
 from .const import DOMAIN
-from .entity import HubspaceBaseEntity, update_decorator
+from .entity import HubspaceBaseEntity
 
 PRESET_HS_TO_HA = {"comfort-breeze": "breeze"}
 
@@ -99,7 +99,6 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
             else None
         )
 
-    @update_decorator
     async def async_turn_on(
         self,
         percentage: Optional[int] = None,
@@ -115,7 +114,6 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
             preset=bool(preset_mode),
         )
 
-    @update_decorator
     async def async_turn_off(
         self,
         **kwargs: Any,
@@ -127,7 +125,6 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
             on=False,
         )
 
-    @update_decorator
     async def async_set_percentage(self, percentage: int) -> None:
         """Set the speed percentage of the fan."""
         await self.bridge.async_request_call(
@@ -137,7 +134,6 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
             speed=percentage,
         )
 
-    @update_decorator
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode of the fan."""
         await self.bridge.async_request_call(
@@ -147,7 +143,6 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
             preset=bool(preset_mode),
         )
 
-    @update_decorator
     async def async_set_direction(self, direction: str) -> None:
         """Set the direction of the fan."""
         await self.bridge.async_request_call(

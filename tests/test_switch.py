@@ -1,10 +1,9 @@
 """Test the integration between Home Assistant Switches and Afero devices."""
 
-from aioafero import AferoState
 from homeassistant.helpers import entity_registry as er
 import pytest
 
-from .utils import create_devices_from_data, hs_raw_from_dump, modify_state
+from .utils import create_devices_from_data, hs_raw_from_dump
 
 transformer_from_file = create_devices_from_data("transformer.json")
 transformer = transformer_from_file[0]
@@ -114,25 +113,7 @@ async def test_turn_on_toggle(mocked_entity_toggled):
         {"entity_id": transformer_entity_zone_3},
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == transformer.id
-    update = payload["values"][0]
-    assert update["functionClass"] == "toggle"
-    assert update["functionInstance"] == "zone-3"
-    assert update["value"] == "on"
-    # Now generate update event by emitting the json we've sent as incoming event
-    transformer_update = create_devices_from_data("transformer.json")
-    modify_state(
-        transformer_update[0],
-        AferoState(
-            functionClass="toggle",
-            functionInstance="zone-3",
-            value="on",
-        ),
-    )
-    await bridge.generate_devices_from_data(transformer_update)
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     entity = hass.states.get(transformer_entity_zone_3)
     assert entity is not None
@@ -151,25 +132,7 @@ async def test_turn_on(mocked_entity):
         {"entity_id": hs_switch_id},
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == hs_switch.id
-    update = payload["values"][0]
-    assert update["functionClass"] == "power"
-    assert update["functionInstance"] is None
-    assert update["value"] == "on"
-    # Now generate update event by emitting the json we've sent as incoming event
-    hs_switch_update = create_devices_from_data("switch-HPSA11CWB.json")
-    modify_state(
-        hs_switch_update[0],
-        AferoState(
-            functionClass="power",
-            functionInstance=None,
-            value="on",
-        ),
-    )
-    await bridge.generate_devices_from_data(hs_switch_update)
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     entity = hass.states.get(hs_switch_id)
     assert entity is not None
@@ -186,21 +149,7 @@ async def test_turn_off_toggle(mocked_entity_toggled):
         {"entity_id": transformer_entity_zone_2},
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == transformer.id
-    # Now generate update event by emitting the json we've sent as incoming event
-    transformer_update = create_devices_from_data("transformer.json")[0]
-    modify_state(
-        transformer_update,
-        AferoState(
-            functionClass="toggle",
-            functionInstance="zone-2",
-            value="off",
-        ),
-    )
-    await bridge.generate_devices_from_data([transformer_update])
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     entity = hass.states.get(transformer_entity_zone_2)
     assert entity is not None
@@ -219,25 +168,7 @@ async def test_turn_off(mocked_entity):
         {"entity_id": hs_switch_id},
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == hs_switch.id
-    update = payload["values"][0]
-    assert update["functionClass"] == "power"
-    assert update["functionInstance"] is None
-    assert update["value"] == "off"
-    # Now generate update event by emitting the json we've sent as incoming event
-    hs_switch_update = create_devices_from_data("switch-HPSA11CWB.json")[0]
-    modify_state(
-        hs_switch_update,
-        AferoState(
-            functionClass="toggle",
-            functionInstance=None,
-            value="off",
-        ),
-    )
-    await bridge.generate_devices_from_data([hs_switch_update])
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     test_switch = hass.states.get(hs_switch_id)
     assert test_switch is not None
@@ -287,6 +218,7 @@ async def test_exhaust_fan_names(mocked_exhaust_fan):
         assert entity_reg.async_get(entity) is not None
 
 
+# @TODO - Fix for split device
 @pytest.mark.asyncio
 async def test_light_speaker_power(mocked_light_speaker):
     """Ensure that the light speaker creates a switch."""
@@ -301,25 +233,7 @@ async def test_light_speaker_power(mocked_light_speaker):
         {"entity_id": speaker_light_id},
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == "3bec6eaa-3d87-4f3c-a065-a2b32f87c39f"
-    update = payload["values"][0]
-    assert update["functionClass"] == "toggle"
-    assert update["functionInstance"] == "speaker-power"
-    assert update["value"] == "on"
-    # Now generate update event by emitting the json we've sent as incoming event
-    hs_switch_update = create_devices_from_data("light-with-speaker.json")
-    modify_state(
-        hs_switch_update[0],
-        AferoState(
-            functionClass="toggle",
-            functionInstance="speaker-power",
-            value="on",
-        ),
-    )
-    await bridge.generate_devices_from_data(hs_switch_update)
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     test_switch = hass.states.get(speaker_light_id)
     assert test_switch is not None

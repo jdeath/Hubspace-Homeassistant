@@ -6,6 +6,7 @@ import logging
 
 from aioafero import AferoDevice, v1
 from aioafero.v1.auth import TokenData
+from aioafero.v1.controllers.base import dataclass_to_afero
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
@@ -72,6 +73,32 @@ async def mocked_bridge(mocker) -> v1.AferoBridgeV1:
         await bridge.events.generate_events_from_data(raw_data)
         await bridge.async_block_until_done()
 
+    # Fake the response from the API when updating states
+    def mock_update_afero_api(device_id, result):
+        json_resp = mocker.AsyncMock()
+        json_resp.return_value = {"metadeviceId": device_id, "values": result}
+        resp = mocker.AsyncMock()
+        resp.json = json_resp
+        resp.status = 200
+        mocker.patch(
+            "aioafero.v1.controllers.base.BaseResourcesController.update_afero_api",
+            return_value=resp,
+        )
+
+    # Enable "results" to be returned on update
+    actual_dataclass_to_afero = dataclass_to_afero
+
+    def mocked_dataclass_to_afero(*args, **kwargs):
+        result = actual_dataclass_to_afero(*args, **kwargs)
+        mock_update_afero_api(args[0].id, result)
+        return result
+
+    mocker.patch(
+        "aioafero.v1.controllers.base.dataclass_to_afero",
+        side_effect=mocked_dataclass_to_afero,
+    )
+
+    bridge.mock_update_afero_api = mock_update_afero_api
     bridge.generate_devices_from_data = generate_devices_from_data
     bridge.generate_events_from_data = generate_events_from_data
 

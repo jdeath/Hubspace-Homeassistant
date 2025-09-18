@@ -13,7 +13,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .bridge import HubspaceBridge
 from .const import DOMAIN
-from .entity import HubspaceBaseEntity, update_decorator
+from .entity import HubspaceBaseEntity
 
 
 class HubspaceValve(HubspaceBaseEntity, ValveEntity):
@@ -59,7 +59,6 @@ class HubspaceValve(HubspaceBaseEntity, ValveEntity):
             return 100 if feature.open else 0
         return None
 
-    @update_decorator
     async def async_open_valve(self, **kwargs) -> None:
         """Open the valve."""
         self.logger.info("Opening valve on %s", self._attr_name)
@@ -70,7 +69,6 @@ class HubspaceValve(HubspaceBaseEntity, ValveEntity):
             instance=self.instance,
         )
 
-    @update_decorator
     async def async_close_valve(self, **kwargs) -> None:
         """Close valve."""
         self.logger.info("Closing valve on %s", self._attr_name)

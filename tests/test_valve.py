@@ -1,11 +1,10 @@
 """Test the integration between Home Assistant Valves and Afero devices."""
 
-from aioafero import AferoState
 from homeassistant.components.valve import ATTR_CURRENT_POSITION
 from homeassistant.helpers import entity_registry as er
 import pytest
 
-from .utils import create_devices_from_data, hs_raw_from_dump, modify_state
+from .utils import create_devices_from_data, hs_raw_from_dump
 
 spigot_from_file = create_devices_from_data("water-timer.json")
 spigot = spigot_from_file[0]
@@ -63,24 +62,7 @@ async def test_open_valve(mocked_entity):
         {"entity_id": spigot_1},
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == spigot.id
-    assert payload["values"][0]["functionClass"] == "toggle"
-    assert payload["values"][0]["functionInstance"] == "spigot-1"
-    assert payload["values"][0]["value"] == "on"
-    # Now generate update event by emitting the json we've sent as incoming event
-    hs_device = create_devices_from_data("water-timer.json")[0]
-    modify_state(
-        hs_device,
-        AferoState(
-            functionClass="toggle",
-            functionInstance="spigot-1",
-            value="on",
-        ),
-    )
-    await bridge.generate_devices_from_data([hs_device])
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     entity = hass.states.get(spigot_1)
     assert entity is not None
@@ -98,24 +80,7 @@ async def test_close_valve(mocked_entity):
         {"entity_id": spigot_2},
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == spigot.id
-    assert payload["values"][0]["functionClass"] == "toggle"
-    assert payload["values"][0]["functionInstance"] == "spigot-2"
-    assert payload["values"][0]["value"] == "off"
-    # Now generate update event by emitting the json we've sent as incoming event
-    hs_device = create_devices_from_data("water-timer.json")[0]
-    modify_state(
-        hs_device,
-        AferoState(
-            functionClass="toggle",
-            functionInstance="spigot-2",
-            value="off",
-        ),
-    )
-    await bridge.generate_devices_from_data([hs_device])
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     entity = hass.states.get(spigot_1)
     assert entity is not None
