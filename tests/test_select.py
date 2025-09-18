@@ -118,3 +118,37 @@ async def test_add_new_device(mocked_entry):
     entity_reg = er.async_get(hass)
     for entity in expected_entities:
         assert entity_reg.async_get(entity) is not None
+
+
+@pytest.mark.asyncio
+async def test_security_sensor_select(mocked_entry):
+    """Ensure selects work properly for security systems."""
+    hass, entry, bridge = mocked_entry
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    alarm_panel = create_devices_from_data("security-system.json")[1]
+    modify_state(
+        alarm_panel,
+        AferoState(
+            functionClass="sensor-config",
+            functionInstance="sensor-4",
+            value={
+                "security-sensor-config-v2": {
+                    "chirpMode": 1,
+                    "triggerType": 3,
+                    "bypassType": 0,
+                }
+            },
+        ),
+    )
+    alarm_panel = create_devices_from_data("security-system.json")[1]
+    await bridge.generate_devices_from_data([alarm_panel])
+    await bridge.async_block_until_done()
+    await hass.services.async_call(
+        "select",
+        "select_option",
+        {"entity_id": "select.helms_deep_sensor_4_can_be_bypassed", "option": "On"},
+        blocking=True,
+    )
+    await bridge.async_block_until_done()
+    await hass.async_block_till_done()
