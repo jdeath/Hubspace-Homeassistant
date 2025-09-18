@@ -11,7 +11,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .bridge import HubspaceBridge
 from .const import DOMAIN
-from .entity import HubspaceBaseEntity, update_decorator
+from .entity import HubspaceBaseEntity
 
 
 class AferoNumberEntity(HubspaceBaseEntity, NumberEntity):
@@ -54,7 +54,6 @@ class AferoNumberEntity(HubspaceBaseEntity, NumberEntity):
         """The unit of measurement that the sensor's value is expressed in."""
         return self.resource.numbers[self._identifier].unit
 
-    @update_decorator
     async def async_set_native_value(self, value: float) -> None:
         """Update the current value."""
         await self.bridge.async_request_call(

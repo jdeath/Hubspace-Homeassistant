@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from functools import wraps
-
 from aioafero.v1 import AferoController, AferoModelResource
 from aioafero.v1.controllers.event import EventType
 from homeassistant.core import callback
@@ -80,21 +78,3 @@ class HubspaceBaseEntity(Entity):  # pylint: disable=hass-enforce-class-module
         self.logger.debug("Received status update for %s", self.entity_id)
         self.on_update()
         self.async_write_ha_state()
-
-
-def update_decorator(method):
-    """Force HA to automatically update.
-
-    Hubspace can be slow to update, which causes a delay between HA UI
-    and what the user just did. Force it to take the new states right
-    away.
-    """
-
-    @wraps(method)
-    async def _impl(*args, **kwargs):
-        res = await method(*args, **kwargs)
-        ha_entity: HubspaceBaseEntity = args[0]
-        ha_entity.handle_event(EventType.RESOURCE_UPDATED, None)
-        return res
-
-    return _impl

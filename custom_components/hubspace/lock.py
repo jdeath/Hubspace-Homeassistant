@@ -13,7 +13,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .bridge import HubspaceBridge
 from .const import DOMAIN
-from .entity import HubspaceBaseEntity, update_decorator
+from .entity import HubspaceBaseEntity
 
 
 class HubspaceLock(HubspaceBaseEntity, LockEntity):
@@ -62,7 +62,6 @@ class HubspaceLock(HubspaceBaseEntity, LockEntity):
         """Indication of whether the lock is currently open."""
         return self.resource.position.position == features.CurrentPositionEnum.UNLOCKED
 
-    @update_decorator
     async def async_unlock(self, **kwargs) -> None:
         """Unlock all or specified locks."""
         self.logger.info("Unlocking %s [%s]", self.name, self.resource.id)
@@ -72,7 +71,6 @@ class HubspaceLock(HubspaceBaseEntity, LockEntity):
             lock_position=features.CurrentPositionEnum.UNLOCKING,
         )
 
-    @update_decorator
     async def async_lock(self, **kwargs) -> None:
         """Lock all or specified locks."""
         self.logger.info("Unlocking %s [%s]", self.name, self.resource.id)

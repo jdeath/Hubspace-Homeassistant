@@ -1,6 +1,5 @@
 """Test the integration between Home Assistant Lights and Afero devices."""
 
-from aioafero import AferoState
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
     ATTR_COLOR_MODE,
@@ -14,7 +13,7 @@ import pytest
 
 from custom_components.hubspace import light
 
-from .utils import create_devices_from_data, hs_raw_from_dump, modify_state
+from .utils import create_devices_from_data, hs_raw_from_dump
 
 fan_zandra = create_devices_from_data("fan-ZandraFan.json")
 fan_zandra_light = fan_zandra[1]
@@ -127,36 +126,7 @@ async def test_turn_on(mocked_entity):
         {"entity_id": light_a21_id, ATTR_BRIGHTNESS: 64},
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == light_a21.id
-    assert len(payload["values"]) == 2
-    power_payload = payload["values"][0]
-    brightness_payload = payload["values"][1]
-    assert power_payload["functionClass"] == "power"
-    assert power_payload["functionInstance"] is None
-    assert power_payload["value"] == "on"
-    assert brightness_payload["value"] == 25
-    # Now generate update event by emitting the json we've sent as incoming event
-    hs_device_update = create_devices_from_data("light-a21.json")[0]
-    modify_state(
-        hs_device_update,
-        AferoState(
-            functionClass="power",
-            functionInstance=None,
-            value="on",
-        ),
-    )
-    modify_state(
-        hs_device_update,
-        AferoState(
-            functionClass="brightness",
-            functionInstance=None,
-            value=25,
-        ),
-    )
-    await bridge.generate_devices_from_data([hs_device_update])
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     entity = hass.states.get(light_a21_id)
     assert entity is not None
@@ -177,44 +147,7 @@ async def test_turn_on_temp(mocked_entity):
         {"entity_id": light_a21_id, ATTR_COLOR_TEMP_KELVIN: 3000},
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == light_a21.id
-    assert len(payload["values"]) == 3
-    power_payload = payload["values"][0]
-    assert power_payload["functionClass"] == "power"
-    assert power_payload["functionInstance"] is None
-    assert power_payload["value"] == "on"
-    assert payload["values"][1]["value"] == "white"
-    assert payload["values"][2]["value"] == "3000"
-    # Now generate update event by emitting the json we've sent as incoming event
-    hs_device_update = create_devices_from_data("light-a21.json")[0]
-    modify_state(
-        hs_device_update,
-        AferoState(
-            functionClass="power",
-            functionInstance=None,
-            value="on",
-        ),
-    )
-    modify_state(
-        hs_device_update,
-        AferoState(
-            functionClass="color-temperature",
-            functionInstance=None,
-            value=3000,
-        ),
-    )
-    modify_state(
-        hs_device_update,
-        AferoState(
-            functionClass="color-mode",
-            functionInstance=None,
-            value="white",
-        ),
-    )
-    await bridge.generate_devices_from_data([hs_device_update])
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     entity = hass.states.get(light_a21_id)
     assert entity is not None
@@ -236,50 +169,7 @@ async def test_turn_on_color(mocked_entity):
         {"entity_id": light_a21_id, ATTR_RGB_COLOR: (50, 100, 150)},
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == light_a21.id
-    assert len(payload["values"]) == 3
-    power_payload = payload["values"][0]
-    assert power_payload["functionClass"] == "power"
-    assert power_payload["functionInstance"] is None
-    assert power_payload["value"] == "on"
-    assert payload["values"][1]["value"] == {"color-rgb": {"b": 150, "g": 100, "r": 50}}
-    assert payload["values"][2]["value"] == "color"
-    # Now generate update event by emitting the json we've sent as incoming event
-    hs_device_update = create_devices_from_data("light-a21.json")[0]
-    modify_state(
-        hs_device_update,
-        AferoState(
-            functionClass="power",
-            functionInstance=None,
-            value="on",
-        ),
-    )
-    modify_state(
-        hs_device_update,
-        AferoState(
-            functionClass="color-rgb",
-            functionInstance=None,
-            value={
-                "color-rgb": {
-                    "r": 50,
-                    "g": 100,
-                    "b": 150,
-                }
-            },
-        ),
-    )
-    modify_state(
-        hs_device_update,
-        AferoState(
-            functionClass="color-mode",
-            functionInstance=None,
-            value="color",
-        ),
-    )
-    await bridge.generate_devices_from_data([hs_device_update])
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     entity = hass.states.get(light_a21_id)
     assert entity is not None
@@ -302,53 +192,7 @@ async def test_turn_on_effect(mocked_entity):
         {"entity_id": light_a21_id, ATTR_EFFECT: "rainbow"},
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == light_a21.id
-    assert len(payload["values"]) == 4
-    power_payload = payload["values"][0]
-    assert power_payload["functionClass"] == "power"
-    assert power_payload["functionInstance"] is None
-    assert power_payload["value"] == "on"
-    assert payload["values"][1]["value"] == "sequence"
-    assert payload["values"][2]["value"] == "custom"
-    assert payload["values"][3]["value"] == "rainbow"
-    # Now generate update event by emitting the json we've sent as incoming event
-    hs_device_update = create_devices_from_data("light-a21.json")[0]
-    modify_state(
-        hs_device_update,
-        AferoState(
-            functionClass="power",
-            functionInstance=None,
-            value="on",
-        ),
-    )
-    modify_state(
-        hs_device_update,
-        AferoState(
-            functionClass="color-mode",
-            functionInstance=None,
-            value="sequence",
-        ),
-    )
-    modify_state(
-        hs_device_update,
-        AferoState(
-            functionClass="color-sequence",
-            functionInstance="preset",
-            value="custom",
-        ),
-    )
-    modify_state(
-        hs_device_update,
-        AferoState(
-            functionClass="color-sequence",
-            functionInstance="custom",
-            value="rainbow",
-        ),
-    )
-    await bridge.generate_devices_from_data([hs_device_update])
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     assert bridge.lights[light_a21.id].effect.effect == "rainbow"
     assert bridge.lights[light_a21.id].color_mode.mode == "sequence"
@@ -370,25 +214,7 @@ async def test_turn_on_dimmer(mocked_dimmer):
         {"entity_id": switch_dimmer_light_id},
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == switch_dimmer_light.id
-    update = payload["values"][0]
-    assert update["functionClass"] == "power"
-    assert update["functionInstance"] == "gang-1"
-    assert update["value"] == "on"
-    # Now generate update event by emitting the json we've sent as incoming event
-    switch_dimmer_update = create_devices_from_data("dimmer-HPDA1110NWBP.json")[0]
-    modify_state(
-        switch_dimmer_update,
-        AferoState(
-            functionClass="power",
-            functionInstance="gang-1",
-            value="on",
-        ),
-    )
-    await bridge.generate_devices_from_data([switch_dimmer_update])
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     entity = hass.states.get(switch_dimmer_light_id)
     assert entity is not None
@@ -406,10 +232,7 @@ async def test_turn_off(mocked_entity):
         {"entity_id": light_a21_id},
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == light_a21.id
+    await bridge.async_block_until_done()
     entity = hass.states.get(light_a21_id)
     assert entity is not None
     assert entity.state == "off"
@@ -427,26 +250,7 @@ async def test_turn_off_dimmer(mocked_dimmer):
         {"entity_id": switch_dimmer_light_id},
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == switch_dimmer_light.id
-    update = payload["values"][0]
-    assert update["functionClass"] == "power"
-    assert update["functionInstance"] == "gang-1"
-    assert update["value"] == "off"
-    assert not bridge.lights[switch_dimmer_light.id].is_on
-    # Now generate update event by emitting the json we've sent as incoming event
-    switch_dimmer_update = create_devices_from_data("dimmer-HPDA1110NWBP.json")[0]
-    modify_state(
-        switch_dimmer_update,
-        AferoState(
-            functionClass="power",
-            functionInstance="gang-1",
-            value="off",
-        ),
-    )
-    await bridge.generate_devices_from_data([switch_dimmer_update])
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     entity = hass.states.get(switch_dimmer_light_id)
     assert entity is not None

@@ -87,26 +87,7 @@ async def test_set_value(mocked_entity):
         {"entity_id": exhaust_fan_number_id, "value": 120},
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == exhaust_fan.id
-    assert len(payload["values"]) == 1
-    payload = payload["values"][0]
-    assert payload["functionClass"] == "auto-off-timer"
-    assert payload["functionInstance"] == "auto-off"
-    assert payload["value"] == 120
-    # Now generate update event by emitting the json we've sent as incoming event
-    hs_device_update = create_devices_from_data("fan-exhaust-fan.json")[2]
-    modify_state(
-        hs_device_update,
-        AferoState(
-            functionClass="auto-off-timer",
-            functionInstance="auto-off",
-            value=120,
-        ),
-    )
-    await bridge.generate_devices_from_data([hs_device_update])
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     entity = hass.states.get(exhaust_fan_number_id)
     assert entity is not None

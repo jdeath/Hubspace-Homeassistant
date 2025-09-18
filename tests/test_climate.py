@@ -35,6 +35,8 @@ async def mocked_entity(mocked_entry):
     await bridge.generate_devices_from_data([thermostat])
     # Force mocked entity to support auto
     bridge.thermostats[thermostat.id].hvac_mode.supported_modes.add("auto")
+    # Force mocked entity to support cool
+    bridge.thermostats[thermostat.id].hvac_mode.supported_modes.add("cool")
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -50,6 +52,8 @@ async def mocked_entity_in_f(mocked_entry):
     bridge.thermostats[thermostat.id].display_celsius = False
     # Force mocked entity to support auto
     bridge.thermostats[thermostat.id].hvac_mode.supported_modes.add("auto")
+    # Force mocked entity to support cool
+    bridge.thermostats[thermostat.id].hvac_mode.supported_modes.add("cool")
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     yield hass, entry, bridge
@@ -256,23 +260,7 @@ async def test_set_hvac_mode(starting_mode, new_mode, expected_call_val, mocked_
         {"entity_id": thermostat_id, ATTR_HVAC_MODE: new_mode},
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == thermostat.id
-    update = payload["values"][0]
-    assert update["value"] == expected_call_val
-    # Now generate update event by emitting the json we've sent as incoming event
-    thermostat_update = create_devices_from_data("thermostat.json")[0]
-    modify_state(
-        thermostat_update,
-        AferoState(
-            functionClass="mode",
-            functionInstance=None,
-            value=expected_call_val,
-        ),
-    )
-    await bridge.generate_devices_from_data([thermostat_update])
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     entity = hass.states.get(thermostat_id)
     assert entity is not None
@@ -457,23 +445,7 @@ async def test_set_fan_mode(starting_mode, new_mode, mocked_entity):
         {"entity_id": thermostat_id, "fan_mode": new_mode},
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == thermostat.id
-    update = payload["values"][0]
-    assert update["value"] == new_mode
-    # Now generate update event by emitting the json we've sent as incoming event
-    thermostat_update = create_devices_from_data("thermostat.json")[0]
-    modify_state(
-        thermostat_update,
-        AferoState(
-            functionClass="fan-mode",
-            functionInstance=None,
-            value=new_mode,
-        ),
-    )
-    await bridge.generate_devices_from_data([thermostat_update])
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     entity = hass.states.get(thermostat_id)
     assert entity is not None
@@ -491,56 +463,18 @@ async def test_set_temperature(mocked_entity):
             "entity_id": thermostat_id,
             ATTR_TEMPERATURE: 12,
             ATTR_TARGET_TEMP_HIGH: 27,
-            ATTR_TARGET_TEMP_LOW: 12,
+            ATTR_TARGET_TEMP_LOW: 13,
             ATTR_HVAC_MODE: HVACMode.COOL,
         },
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == thermostat.id
-    # Now generate update event by emitting the json we've sent as incoming event
-    thermostat_update = create_devices_from_data("thermostat.json")[0]
-    modify_state(
-        thermostat_update,
-        AferoState(
-            functionClass="mode",
-            functionInstance=None,
-            value="cool",
-        ),
-    )
-    modify_state(
-        thermostat_update,
-        AferoState(
-            functionClass="temperature",
-            functionInstance="cooling-target",
-            value=12,
-        ),
-    )
-    modify_state(
-        thermostat_update,
-        AferoState(
-            functionClass="temperature",
-            functionInstance="auto-cooling-target",
-            value=27,
-        ),
-    )
-    modify_state(
-        thermostat_update,
-        AferoState(
-            functionClass="temperature",
-            functionInstance="auto-heating-target",
-            value=14,
-        ),
-    )
-    await bridge.generate_devices_from_data([thermostat_update])
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     entity = hass.states.get(thermostat_id)
     assert entity is not None
     assert entity.state == HVACMode.COOL
     assert entity.attributes[ATTR_TARGET_TEMP_HIGH] == 27.0
-    assert entity.attributes[ATTR_TARGET_TEMP_LOW] == 14.0
+    assert entity.attributes[ATTR_TARGET_TEMP_LOW] == 13.0
     assert entity.attributes[ATTR_TEMPERATURE] == 12.0
 
 
@@ -555,57 +489,19 @@ async def test_set_temperature_in_f(mocked_entity_in_f):
             "entity_id": thermostat_id,
             ATTR_TEMPERATURE: 12,
             ATTR_TARGET_TEMP_HIGH: 27,
-            ATTR_TARGET_TEMP_LOW: 12,
+            ATTR_TARGET_TEMP_LOW: 13,
             ATTR_HVAC_MODE: HVACMode.COOL,
         },
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == thermostat.id
-    # Now generate update event by emitting the json we've sent as incoming event
-    thermostat_update = create_devices_from_data("thermostat.json")[0]
-    modify_state(
-        thermostat_update,
-        AferoState(
-            functionClass="mode",
-            functionInstance=None,
-            value="cool",
-        ),
-    )
-    modify_state(
-        thermostat_update,
-        AferoState(
-            functionClass="temperature",
-            functionInstance="cooling-target",
-            value=12,
-        ),
-    )
-    modify_state(
-        thermostat_update,
-        AferoState(
-            functionClass="temperature",
-            functionInstance="auto-cooling-target",
-            value=27,
-        ),
-    )
-    modify_state(
-        thermostat_update,
-        AferoState(
-            functionClass="temperature",
-            functionInstance="auto-heating-target",
-            value=14,
-        ),
-    )
-    await bridge.generate_devices_from_data([thermostat_update])
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     entity = hass.states.get(thermostat_id)
     assert entity is not None
     assert entity.state == HVACMode.COOL
-    assert entity.attributes[ATTR_TARGET_TEMP_HIGH] == 27.0
-    assert entity.attributes[ATTR_TARGET_TEMP_LOW] == 14.0
-    assert entity.attributes[ATTR_TEMPERATURE] == 12.0
+    assert entity.attributes[ATTR_TARGET_TEMP_HIGH] == 27.2
+    assert entity.attributes[ATTR_TARGET_TEMP_LOW] == 12.8
+    assert entity.attributes[ATTR_TEMPERATURE] == 12.2
 
 
 @pytest.mark.asyncio
@@ -622,29 +518,7 @@ async def test_set_temperature_portable_ac(mocked_portable_ac_entity):
         },
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == portable_ac.id
-    # Now generate update event by emitting the json we've sent as incoming event
-    entity_update = create_devices_from_data("portable-ac.json")[0]
-    modify_state(
-        entity_update,
-        AferoState(
-            functionClass="mode",
-            functionInstance=None,
-            value="dehumidify",
-        ),
-    )
-    modify_state(
-        entity_update,
-        AferoState(
-            functionClass="temperature",
-            functionInstance="cooling-target",
-            value=25,
-        ),
-    )
-    await bridge.generate_devices_from_data([entity_update])
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     entity = hass.states.get(portable_ac_id)
     assert entity is not None

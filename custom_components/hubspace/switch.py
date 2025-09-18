@@ -14,7 +14,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .bridge import HubspaceBridge
 from .const import DOMAIN
-from .entity import HubspaceBaseEntity, update_decorator
+from .entity import HubspaceBaseEntity
 
 
 class HubspaceSwitch(HubspaceBaseEntity, SwitchEntity):
@@ -39,7 +39,6 @@ class HubspaceSwitch(HubspaceBaseEntity, SwitchEntity):
             return feature.on
         return None
 
-    @update_decorator
     async def async_turn_on(
         self,
         **kwargs: Any,
@@ -53,7 +52,6 @@ class HubspaceSwitch(HubspaceBaseEntity, SwitchEntity):
             instance=self.instance,
         )
 
-    @update_decorator
     async def async_turn_off(
         self,
         **kwargs: Any,

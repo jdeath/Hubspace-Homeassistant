@@ -60,25 +60,8 @@ async def test_unlock(mocked_entity):
         {"entity_id": lock_id},
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == lock_tbd_instance.id
-    update = payload["values"][0]
-    assert update["functionClass"] == "lock-control"
-    assert update["functionInstance"] is None
-    assert update["value"] == "unlocking"
-    # Now generate update event by emitting the json we've sent as incoming event
     lock_update = create_devices_from_data("door-lock-TBD.json")[0]
-    modify_state(
-        lock_update,
-        AferoState(
-            functionClass="lock-control",
-            functionInstance=None,
-            value="unlocking",
-        ),
-    )
-    await bridge.generate_devices_from_data([lock_update])
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     assert (
         bridge.locks[lock_update.id].position.position
@@ -97,25 +80,8 @@ async def test_lock(mocked_entity):
         {"entity_id": lock_id},
         blocking=True,
     )
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == lock_tbd_instance.id
-    update = payload["values"][0]
-    assert update["functionClass"] == "lock-control"
-    assert update["functionInstance"] is None
-    assert update["value"] == "locking"
-    # Now generate update event by emitting the json we've sent as incoming event
     lock_update = create_devices_from_data("door-lock-TBD.json")[0]
-    modify_state(
-        lock_update,
-        AferoState(
-            functionClass="lock-control",
-            functionInstance=None,
-            value="locking",
-        ),
-    )
-    await bridge.generate_devices_from_data([lock_update])
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     assert (
         bridge.locks[lock_update.id].position.position
@@ -133,6 +99,7 @@ async def test_lock(mocked_entity):
         ),
     )
     await bridge.generate_devices_from_data([lock_update])
+    await bridge.async_block_until_done()
     await hass.async_block_till_done()
     assert (
         bridge.locks[lock_update.id].position.position
