@@ -218,7 +218,6 @@ async def test_exhaust_fan_names(mocked_exhaust_fan):
         assert entity_reg.async_get(entity) is not None
 
 
-# @TODO - Fix for split device
 @pytest.mark.asyncio
 async def test_light_speaker_power(mocked_light_speaker):
     """Ensure that the light speaker creates a switch."""

@@ -29,7 +29,6 @@ async def mocked_entity(mocked_entry):
     await bridge.close()
 
 
-# @TODO - Manually mock afero_api_response
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     (
