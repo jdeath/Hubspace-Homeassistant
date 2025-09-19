@@ -203,13 +203,18 @@ BINARY_SENSORS = {
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     # Security System
-    "tampered": BinarySensorEntityDescription(
-        key="tampered",
-        name="Tampered",
+    "tampered|None": BinarySensorEntityDescription(
+        key="tampered|None",
+        name="Cover Open",
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
-    "triggered": BinarySensorEntityDescription(
-        key="triggered",
+    "tamper-detection|None": BinarySensorEntityDescription(
+        key="tamper-detection|None",
+        name="Cover Open",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "triggered|None": BinarySensorEntityDescription(
+        key="triggered|None",
         name="Triggered",
         entity_category=EntityCategory.DIAGNOSTIC,
     ),

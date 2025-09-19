@@ -17,7 +17,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .bridge import HubspaceBridge
 from .const import DOMAIN
-from .entity import HubspaceBaseEntity, update_decorator
+from .entity import HubspaceBaseEntity
 
 
 class HubspaceSecuritySystem(HubspaceBaseEntity, AlarmControlPanelEntity):
@@ -57,15 +57,14 @@ class HubspaceSecuritySystem(HubspaceBaseEntity, AlarmControlPanelEntity):
         """Format for PIN."""
         return CodeFormat.NUMBER
 
-    @update_decorator
     async def async_alarm_disarm(self, code: str | None = None) -> None:
         """Send disarm command."""
         await self.bridge.async_request_call(
             self.controller.disarm,
             device_id=self.resource.id,
+            disarm_pin=code,
         )
 
-    @update_decorator
     async def async_alarm_arm_home(self, code: str | None = None) -> None:
         """Send arm home command."""
         await self.bridge.async_request_call(
@@ -73,7 +72,6 @@ class HubspaceSecuritySystem(HubspaceBaseEntity, AlarmControlPanelEntity):
             device_id=self.resource.id,
         )
 
-    @update_decorator
     async def async_alarm_arm_away(self, code: str | None = None) -> None:
         """Send arm away command."""
         await self.bridge.async_request_call(
@@ -81,7 +79,6 @@ class HubspaceSecuritySystem(HubspaceBaseEntity, AlarmControlPanelEntity):
             device_id=self.resource.id,
         )
 
-    @update_decorator
     async def async_alarm_trigger(self, code: str | None = None) -> None:
         """Send alarm trigger command."""
         await self.bridge.async_request_call(
