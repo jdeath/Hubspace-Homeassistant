@@ -33,12 +33,12 @@ class AferoSelectEntitiy(HubspaceBaseEntity, SelectEntity):
     @property
     def current_option(self) -> str:
         """The current select option."""
-        return self.resource.selects[self._identifier].selected
+        return str(self.resource.selects[self._identifier].selected)
 
     @property
     def options(self) -> list:
         """A list of available options as strings."""
-        return sorted(self.resource.selects[self._identifier].selects)
+        return sorted([str(x) for x in self.resource.selects[self._identifier].selects])
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
