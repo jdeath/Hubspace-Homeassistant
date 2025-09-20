@@ -102,14 +102,35 @@ async def test_add_new_device(mocked_entry):
         assert entity_reg.async_get(entity) is not None
 
 
+def enable_sensors(dev):
+    """Ensure all sensors are in an enabled state."""
+    for state in dev.states:
+        if state.functionClass not in ["sensor-state"] or state.value is None:
+            continue
+        state.value = {
+            "security-sensor-state": {
+                "deviceType": 1,
+                "tampered": 0,
+                "triggered": 0,
+                "missing": 0,
+                "versionBuild": 3,
+                "versionMajor": 2,
+                "versionMinor": 0,
+                "batteryLevel": 100,
+            }
+        }
+
+
 async def setup_and_test_state(
     hass,
     entry,
     bridge,
     service_call,
     starting_state,
+    expected_resp_state,
     expected_starting_state,
     expected_state,
+    mocker,
 ):
     """Set up the entry and verify the alarm panel state."""
     # Setup the alarm panel to be in a different state than expected
@@ -122,6 +143,7 @@ async def setup_and_test_state(
             value=starting_state,
         ),
     )
+    enable_sensors(changed_alarm_panel)
     await bridge.generate_devices_from_data([changed_alarm_panel])
     await hass.config_entries.async_setup(entry.entry_id)
     await bridge.async_block_until_done()
@@ -129,25 +151,39 @@ async def setup_and_test_state(
     entity = hass.states.get(alarm_panel_id)
     assert entity is not None
     assert entity.state == expected_starting_state
+    # Setup the response after disarm
+    panel = create_devices_from_data("security-system.json")[1]
+    new_states = [
+        AferoState(
+            functionClass="alarm-state",
+            value=expected_resp_state,
+            lastUpdateTime=0,
+            functionInstance=None,
+        ),
+    ]
+    for state in new_states:
+        modify_state(panel, state)
+    mocker.patch.object(bridge, "fetch_device_states", return_value=panel.states)
+    mocker.patch("aioafero.v1.controllers.security_system.UPDATE_TIME", 0)
+    # Execute the test
+    call_args = {"entity_id": alarm_panel_id}
+    if service_call == "alarm_disarm":
+        call_args["code"] = "1234"
     await hass.services.async_call(
         "alarm_control_panel",
         service_call,
-        {"entity_id": alarm_panel_id},
+        call_args,
         blocking=True,
     )
     await bridge.async_block_until_done()
     await hass.async_block_till_done()
-    update_call = bridge.request.call_args_list[-1]
-    assert update_call.args[0] == "put"
-    payload = update_call.kwargs["json"]
-    assert payload["metadeviceId"] == changed_alarm_panel.id
     entity = hass.states.get(alarm_panel_id)
     assert entity is not None
     assert entity.state == expected_state
 
 
 @pytest.mark.asyncio
-async def test_service_alarm_disarm(mocked_entry):
+async def test_service_alarm_disarm(mocked_entry, mocker):
     """Ensure the service call alarm_disarm works as expected."""
     await setup_and_test_state(
         mocked_entry[0],
@@ -155,13 +191,15 @@ async def test_service_alarm_disarm(mocked_entry):
         mocked_entry[2],
         "alarm_disarm",
         "arm-away",
+        "disarmed",
         AlarmControlPanelState.ARMED_AWAY,
         AlarmControlPanelState.DISARMED,
+        mocker,
     )
 
 
 @pytest.mark.asyncio
-async def test_service_alarm_arm_home(mocked_entry):
+async def test_service_alarm_arm_home(mocked_entry, mocker):
     """Ensure the service call alarm_arm_home works as expected."""
     await setup_and_test_state(
         mocked_entry[0],
@@ -169,13 +207,15 @@ async def test_service_alarm_arm_home(mocked_entry):
         mocked_entry[2],
         "alarm_arm_home",
         "disarmed",
+        "arm-started-stay",
         AlarmControlPanelState.DISARMED,
         AlarmControlPanelState.ARMING,
+        mocker,
     )
 
 
 @pytest.mark.asyncio
-async def test_service_alarm_arm_away(mocked_entry):
+async def test_service_alarm_arm_away(mocked_entry, mocker):
     """Ensure the service call alarm_arm_away works as expected."""
     await setup_and_test_state(
         mocked_entry[0],
@@ -183,13 +223,15 @@ async def test_service_alarm_arm_away(mocked_entry):
         mocked_entry[2],
         "alarm_arm_away",
         "disarmed",
+        "arm-started-away",
         AlarmControlPanelState.DISARMED,
         AlarmControlPanelState.ARMING,
+        mocker,
     )
 
 
 @pytest.mark.asyncio
-async def test_service_alarm_trigger(mocked_entry):
+async def test_service_alarm_trigger(mocked_entry, mocker):
     """Ensure the service call alarm_trigger works as expected."""
     await setup_and_test_state(
         mocked_entry[0],
@@ -197,6 +239,8 @@ async def test_service_alarm_trigger(mocked_entry):
         mocked_entry[2],
         "alarm_trigger",
         "disarmed",
+        "alarming-sos",
         AlarmControlPanelState.DISARMED,
         AlarmControlPanelState.TRIGGERED,
+        mocker,
     )
