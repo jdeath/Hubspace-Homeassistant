@@ -152,7 +152,6 @@ async def setup_and_test_state(
     assert entity is not None
     assert entity.state == expected_starting_state
     # Setup the response after disarm
-    panel = create_devices_from_data("security-system.json")[1]
     new_states = [
         AferoState(
             functionClass="alarm-state",
@@ -162,8 +161,10 @@ async def setup_and_test_state(
         ),
     ]
     for state in new_states:
-        modify_state(panel, state)
-    mocker.patch.object(bridge, "fetch_device_states", return_value=panel.states)
+        modify_state(changed_alarm_panel, state)
+    mocker.patch.object(
+        bridge, "fetch_device_states", return_value=changed_alarm_panel.states
+    )
     mocker.patch("aioafero.v1.controllers.security_system.UPDATE_TIME", 0)
     # Execute the test
     call_args = {"entity_id": alarm_panel_id}
