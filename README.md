@@ -67,9 +67,13 @@ are as follows:
 
 ## Changelog
 
+- 5.8.0
+
+  - Add alarm panels ([#180](https://github.com/jdeath/Hubspace-Homeassistant/issues/168))
+
 - 5.7.1
 
-  - Fix an issue where auth would not retry
+  - Fix an issue where auth would not retry ([#169](https://github.com/jdeath/Hubspace-Homeassistant/issues/169))
 
 - 5.7.0
 
@@ -77,7 +81,7 @@ are as follows:
 
 - 5.6.0
 
-  - Enable support for all aioafero clients ([#180](https://github.com/jdeath/Hubspace-Homeassistant/issues/180))
+  - Enable support for all aioafero clients ([#168](https://github.com/jdeath/Hubspace-Homeassistant/issues/180))
 
 - 5.5.0
 
