@@ -1,4 +1,4 @@
 homeassistant
 aioafero>=5.4.0
 aiofiles>=24.1.0
-packaging
+packaging>=25.0
