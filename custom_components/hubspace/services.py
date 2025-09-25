@@ -1,6 +1,7 @@
 """Register Afero services within Home Assistant."""
 
 import asyncio
+from importlib.metadata import version
 import logging
 from typing import Final
 
@@ -9,6 +10,7 @@ from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers import entity_registry as er
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.service import verify_domain_control
+from packaging.version import Version
 import voluptuous as vol
 
 from .bridge import HubspaceBridge
@@ -82,10 +84,17 @@ def async_register_services(hass: HomeAssistant) -> None:
         return cv.string(value)
 
     if not hass.services.has_service(DOMAIN, SERVICE_SEND_COMMAND):
+        # @TODO - Deprecate in 2026.6+
+        arg_change_ver: Version = Version("2025.10")
+        current_ver: Version = Version(version("homeassistant"))
+        if current_ver < arg_change_ver:
+            args = [hass, DOMAIN]
+        else:
+            args = [DOMAIN]
         hass.services.async_register(
             DOMAIN,
             SERVICE_SEND_COMMAND,
-            verify_domain_control(hass, DOMAIN)(send_command),
+            verify_domain_control(*args)(send_command),
             schema=vol.Schema(
                 {
                     vol.Required("entity_id"): cv.entity_ids,
