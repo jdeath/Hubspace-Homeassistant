@@ -1,7 +1,7 @@
-pytest>=8.0.2
-pytest-mock>=3.15
-pytest-asyncio>=1.2
-responses>=0.25.8
-pre-commit>=4.3.0
-pytest-homeassistant-custom-component>=0.13.282
-tox>=4.30.2
+pytest
+pytest-mock
+pytest-asyncio
+responses
+pre-commit
+pytest-homeassistant-custom-component
+tox
