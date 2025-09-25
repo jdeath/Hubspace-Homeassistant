@@ -1,10 +1,21 @@
 """Test the integration between Home Assistant Services and Afero devices."""
 
 from aioafero import AferoState
+from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
 import pytest
+from pytest_homeassistant_custom_component.common import MockConfigEntry
 import voluptuous as vol
 
 from custom_components.hubspace import const, services
+from custom_components.hubspace.const import (
+    CONF_CLIENT,
+    DEFAULT_CLIENT,
+    DEFAULT_POLLING_INTERVAL_SEC,
+    DOMAIN,
+    POLLING_TIME_STR,
+    VERSION_MAJOR,
+    VERSION_MINOR,
+)
 
 from .utils import create_devices_from_data, modify_state
 
@@ -135,3 +146,32 @@ async def test_service_valid_no_username(
             await hass.async_block_till_done()
             if error_bridge:
                 assert f"No bridge using account {account}" in caplog.text
+
+
+async def test_service_deprecated_args(hass, mocker, mocked_bridge, caplog):
+    """Ensure the deprecated argument warning is not present."""
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        data={
+            CONF_USERNAME: "username",
+            CONF_PASSWORD: "password",
+            CONF_TOKEN: "mock-token",
+            CONF_CLIENT: DEFAULT_CLIENT,
+        },
+        options={
+            CONF_TIMEOUT: 30,
+            POLLING_TIME_STR: DEFAULT_POLLING_INTERVAL_SEC,
+        },
+        version=VERSION_MAJOR,
+        minor_version=VERSION_MINOR,
+    )
+    entry.add_to_hass(hass)
+    mocker.patch(
+        "custom_components.hubspace.bridge.AferoBridgeV1", return_value=mocked_bridge
+    )
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    assert (
+        "he deprecated argument hass was passed to verify_domain_control from hubspace. It will be removed in HA Core 2026.10."
+        not in caplog.text
+    )

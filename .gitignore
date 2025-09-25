@@ -2,3 +2,4 @@ __pycache__
 .idea/
 custom_components/hubspace/dump_*.json
 .coverage
+*.egg-info
