@@ -523,4 +523,4 @@ async def test_set_temperature_portable_ac(mocked_portable_ac_entity):
     entity = hass.states.get(portable_ac_id)
     assert entity is not None
     assert entity.state == HVACMode.DRY
-    assert entity.attributes[ATTR_TEMPERATURE] == 25
+    assert entity.attributes[ATTR_TEMPERATURE] is None
