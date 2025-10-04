@@ -67,6 +67,10 @@ are as follows:
 
 ## Changelog
 
+- 5.9.0
+
+  - Support OTP login workflow ([#188](https://github.com/jdeath/Hubspace-Homeassistant/issues/188))
+
 - 5.8.0
 
   - Add alarm panels ([#180](https://github.com/jdeath/Hubspace-Homeassistant/issues/168))
