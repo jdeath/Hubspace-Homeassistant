@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from asyncio import timeout
 from collections.abc import Mapping
+from contextlib import suppress
 import logging
 from typing import Any
 
@@ -135,6 +136,8 @@ class AferoConfigFlow(ConfigFlow, domain=DOMAIN):
             return self.async_update_reload_and_abort(
                 existing_entry, data=data, options=options
             )
+        with suppress(Exception):
+            await self._conn.close()
         return self.async_create_entry(
             title=unique_id,
             data=data,
