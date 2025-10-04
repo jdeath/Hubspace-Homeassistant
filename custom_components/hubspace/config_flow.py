@@ -51,8 +51,6 @@ OPTIONAL = {
 LOGIN_SCHEMA = vol.Schema(LOGIN_REQS | OPTIONAL)
 RECONFIG_SCHEMA = vol.Schema(OPTIONAL)
 
-BRIDGE_INSTANCE: dict[str, AferoBridgeV1] = {}
-
 
 class AferoConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Afero."""

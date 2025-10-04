@@ -11,12 +11,6 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.hubspace import POLLING_TIME_STR, const
 
-# @pytest.fixture(autouse=True)
-# async def run_clear_bridge():
-#     """Clear the bridge instance before each test."""
-#     yield
-#     await clear_bridge()
-
 
 @pytest.fixture
 def config_entry(hass):
