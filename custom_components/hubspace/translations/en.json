@@ -16,6 +16,15 @@
           "polling_time": "Time in seconds between polling intervals (Default: 30)"
         }
       },
+      "otp": {
+        "title": "Two-Factor Authentication",
+        "data": {
+          "otp_code": "OTP code"
+        },
+        "data_description": {
+          "otp_code": "Enter the OTP code you received via email"
+        }
+      },
       "reauth_confirm": {
         "description": "The Hubspace integration needs to re-authenticate your account"
       }
@@ -25,7 +34,10 @@
       "invalid_auth": "Unable to authenticate with the provided credentials",
       "unknown": "Unknown error occurred. Please review to the logs",
       "polling_too_short": "Interval must be at least 2 seconds",
-      "unique_id_mismatch": "Account name cannot be changed during reauth"
+      "unique_id_mismatch": "Account name cannot be changed during reauth",
+      "otp_required": "An OTP code is required for authentication",
+      "invalid_otp": "An invalid OTP code was provided",
+      "unknown_otp": "An unknown error occurred during OTP validation"
     }
   },
   "options": {
