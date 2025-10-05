@@ -16,6 +16,10 @@ import voluptuous as vol
 from .bridge import HubspaceBridge
 from .const import DOMAIN
 
+# @TODO - Deprecate when minimum version is 2025.10
+VERIFY_DOMAIN_CONTROL_CHANGE: Final[Version] = Version("2025.10")
+CURRENT_VERSION: Final[Version] = Version(version("homeassistant"))
+
 SERVICE_SEND_COMMAND = "send_command"
 
 SERVICE_SEND_COMMAND_FUNC_CLASS: Final[str] = "function_class"
@@ -24,6 +28,53 @@ SERVICE_SEND_COMMAND_VALUE: Final[str] = "value"
 SERVICE_SEND_COMMAND_ACCOUNT: Final[str] = "account"
 
 LOGGER = logging.getLogger(__name__)
+
+
+def optional(value):
+    """Validate optional string values.
+
+    Args:
+        value: Value to validate
+
+    Returns:
+        The validated string value or None if value is None
+
+    """
+    if value is None:
+        return value
+    return cv.string(value)
+
+
+async def send_command(call: ServiceCall) -> None:
+    """Send command to Hubspace device(s).
+
+    Sends a specified command with parameters to one or more Hubspace devices.
+    Commands are sent through the appropriate bridge based on account.
+
+    Args:
+        call: Service call containing command parameters
+
+    """
+    states: list[dict] = []
+    states.append(
+        {
+            "value": call.data.get(SERVICE_SEND_COMMAND_VALUE),
+            "functionClass": call.data.get(SERVICE_SEND_COMMAND_FUNC_CLASS),
+            "functionInstance": call.data.get(SERVICE_SEND_COMMAND_FUNC_INSTANCE),
+        }
+    )
+    entity_reg = er.async_get(call.hass)
+    tasks = []
+    account = call.data.get("account")
+    for entity_name in call.data.get("entity_id", []):
+        entity = entity_reg.async_get(entity_name)
+        bridge = await find_bridge(call.hass, account)
+        if bridge:
+            tasks.append(bridge.api.send_service_request(entity.unique_id, states))
+        else:
+            LOGGER.warning("No bridge using account %s", account)
+            return
+    await asyncio.gather(*tasks)
 
 
 def async_register_services(hass: HomeAssistant) -> None:
@@ -36,61 +87,11 @@ def async_register_services(hass: HomeAssistant) -> None:
         hass: HomeAssistant instance to register services with
 
     """
-
-    async def send_command(call: ServiceCall, skip_reload=True) -> None:
-        """Send command to Hubspace device(s).
-
-        Sends a specified command with parameters to one or more Hubspace devices.
-        Commands are sent through the appropriate bridge based on account.
-
-        Args:
-            call: Service call containing command parameters
-            skip_reload: Whether to skip reloading devices after command (default: True)
-
-        """
-        states: list[dict] = []
-        states.append(
-            {
-                "value": call.data.get(SERVICE_SEND_COMMAND_VALUE),
-                "functionClass": call.data.get(SERVICE_SEND_COMMAND_FUNC_CLASS),
-                "functionInstance": call.data.get(SERVICE_SEND_COMMAND_FUNC_INSTANCE),
-            }
-        )
-        entity_reg = er.async_get(hass)
-        tasks = []
-        account = call.data.get("account")
-        for entity_name in call.data.get("entity_id", []):
-            entity = entity_reg.async_get(entity_name)
-            bridge = await find_bridge(hass, account)
-            if bridge:
-                tasks.append(bridge.api.send_service_request(entity.unique_id, states))
-            else:
-                LOGGER.warning("No bridge using account %s", account)
-                return
-        await asyncio.gather(*tasks)
-
-    def optional(value):
-        """Validate optional string values.
-
-        Args:
-            value: Value to validate
-
-        Returns:
-            The validated string value or None if value is None
-
-        """
-        if value is None:
-            return value
-        return cv.string(value)
-
+    if CURRENT_VERSION < VERIFY_DOMAIN_CONTROL_CHANGE:
+        args = [hass, DOMAIN]
+    else:
+        args = [DOMAIN]
     if not hass.services.has_service(DOMAIN, SERVICE_SEND_COMMAND):
-        # @TODO - Deprecate in 2026.6+
-        arg_change_ver: Version = Version("2025.10")
-        current_ver: Version = Version(version("homeassistant"))
-        if current_ver < arg_change_ver:
-            args = [hass, DOMAIN]
-        else:
-            args = [DOMAIN]
         hass.services.async_register(
             DOMAIN,
             SERVICE_SEND_COMMAND,
