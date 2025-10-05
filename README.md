@@ -70,6 +70,8 @@ are as follows:
 - 5.9.0
 
   - Support OTP login workflow ([#188](https://github.com/jdeath/Hubspace-Homeassistant/issues/188))
+  - Fix an issue where reauth or reconfig did not have a translation
+  - Ensure that only one entry can be present at a time
 
 - 5.8.0
 
