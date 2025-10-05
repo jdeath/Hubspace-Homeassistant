@@ -24,6 +24,7 @@ import voluptuous as vol
 from .const import (
     CONF_CLIENT,
     CONF_OTP,
+    DEFAULT_CLIENT,
     DEFAULT_POLLING_INTERVAL_SEC,
     DEFAULT_TIMEOUT,
     DOMAIN,
@@ -184,7 +185,8 @@ class AferoConfigFlow(ConfigFlow, domain=DOMAIN):
         current = self._get_reauth_entry()
         self._username = current.data[CONF_USERNAME]
         self._password = current.data[CONF_PASSWORD]
-        self._client = current.data[CONF_CLIENT]
+        # reauth workflow is used as part of the migration and CONF_CLIENT may not be set
+        self._client = current.data.get(CONF_CLIENT, DEFAULT_CLIENT)
         self._timeout = current.options.get(CONF_TIMEOUT, DEFAULT_TIMEOUT)
         self._polling = current.options.get(
             POLLING_TIME_STR, DEFAULT_POLLING_INTERVAL_SEC
