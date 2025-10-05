@@ -67,6 +67,10 @@ are as follows:
 
 ## Changelog
 
+- 5.9.1
+
+  - Fix an issue during initialization to generated a blocking call
+
 - 5.9.0
 
   - Support OTP login workflow ([#188](https://github.com/jdeath/Hubspace-Homeassistant/issues/188))
