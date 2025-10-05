@@ -38,6 +38,11 @@
       "otp_required": "An OTP code is required for authentication",
       "invalid_otp": "An invalid OTP code was provided",
       "unknown_otp": "An unknown error occurred during OTP validation"
+    },
+    "abort": {
+      "already_configured": "This account is already configured",
+      "reauth_successful": "Re-authentication was successful",
+      "reconfigure_successful": "Reconfiguration was successful"
     }
   },
   "options": {
