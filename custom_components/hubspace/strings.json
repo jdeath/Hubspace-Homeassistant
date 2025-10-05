@@ -13,6 +13,12 @@
       "reauth_confirm": {
         "title": "[%key:common::config_flow::title::reauth%]",
         "description": "[%key:component::hubspace::step::step::reauth_confirm::description%]"
+      },
+      "otp": {
+        "title": "[%key:common::config_flow::title::otp%]",
+        "data": {
+          "otp_code": "[%key:component::hubspace::step::otp::otp_code%]"
+        }
       }
     },
     "error": {
@@ -20,7 +26,10 @@
       "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
       "unknown": "[%key:common::config_flow::error::unknown%]",
       "polling_too_short": "[%key:component::hubspace::step::error::polling_too_short%]",
-      "unique_id_mismatch": "[%key:component::hubspace::step::error::unique_id_mismatch%]"
+      "unique_id_mismatch": "[%key:component::hubspace::step::error::unique_id_mismatch%]",
+      "otp_required": "[%key:component::hubspace::step::error::otp_required%]",
+      "invalid_otp": "[%key:component::hubspace::step::error::invalid_otp%]",
+      "unknown_otp": "[%key:component::hubspace::step::error::unknown_otp%]"
     },
     "abort": {
       "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",

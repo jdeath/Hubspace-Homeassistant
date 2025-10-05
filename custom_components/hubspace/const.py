@@ -32,6 +32,7 @@ DEFAULT_POLLING_INTERVAL_SEC: Final[int] = 30
 POLLING_TIME_STR: Final[str] = "polling_time"
 DEFAULT_CLIENT: Final[str] = "hubspace"
 CONF_CLIENT: Final[str] = "client"
+CONF_OTP: Final[str] = "otp_code"
 
 VERSION_MAJOR: Final[int] = 5
 VERSION_MINOR: Final[int] = 0

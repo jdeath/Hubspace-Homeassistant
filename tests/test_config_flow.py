@@ -2,7 +2,7 @@
 
 import sys
 
-from aioafero import InvalidAuth
+from aioafero import InvalidAuth, InvalidOTP, OTPRequired
 from homeassistant import config_entries, setup
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
 from homeassistant.data_entry_flow import FlowResultType
@@ -10,7 +10,6 @@ import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.hubspace import POLLING_TIME_STR, const
-from custom_components.hubspace.config_flow import validate_auth
 
 
 @pytest.fixture
@@ -215,11 +214,7 @@ async def test_HubspaceConfigFlow_async_step_user(
                 "unique_id": "cool",
             },
             {
-                CONF_USERNAME: "cool",
                 CONF_PASSWORD: "beans2",
-                POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
-                CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
-                const.CONF_CLIENT: const.DEFAULT_CLIENT,
             },
             {
                 CONF_USERNAME: "cool",
@@ -236,39 +231,6 @@ async def test_HubspaceConfigFlow_async_step_user(
             marks=pytest.mark.skipif(
                 sys.version_info <= (3, 13), reason="DNS issues on 3.12"
             ),
-        ),
-        # Changing username
-        (
-            {
-                "data": {
-                    CONF_USERNAME: "cool",
-                    CONF_PASSWORD: "beans",
-                    const.CONF_CLIENT: const.DEFAULT_CLIENT,
-                },
-                "options": {
-                    POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
-                    CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
-                },
-                "unique_id": "cool",
-            },
-            {
-                CONF_USERNAME: "cool2",
-                CONF_PASSWORD: "beans2",
-                POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
-                CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
-                const.CONF_CLIENT: const.DEFAULT_CLIENT,
-            },
-            {
-                CONF_USERNAME: "cool",
-                CONF_PASSWORD: "beans2",
-                const.CONF_CLIENT: const.DEFAULT_CLIENT,
-            },
-            {
-                POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
-                CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
-            },
-            None,
-            "unique_id_mismatch",
         ),
     ],
 )
@@ -299,7 +261,6 @@ async def test_HubspaceConfigFlow_async_step_user_reauth(
     # Accept the second popup
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
-        user_input={},
     )
     # Set the new data
     result = await hass.config_entries.flow.async_configure(
@@ -370,8 +331,6 @@ async def test_HubspaceConfigFlow_async_step_options(
     user_data,
     expected_options,
     error_code,
-    mocked_config_flow,
-    mocker,
     hass,
 ):
     """Ensure config flow properly handles all use-cases."""
@@ -394,49 +353,78 @@ async def test_HubspaceConfigFlow_async_step_options(
         assert entry.options == expected_options
 
 
-@pytest.mark.asyncio
-@pytest.mark.parametrize(
-    ("get_account_id_side_effect", "expected_err"),
-    [
-        # Happy path
-        (
-            lambda: None,
-            None,
-        ),
-        # Timeout
-        (TimeoutError, "cannot_connect"),
-        # Auth Issue
-        (InvalidAuth, "invalid_auth"),
-        # Unknown
-        (AttributeError, "unknown"),
-    ],
-)
-async def test_validate_auth(get_account_id_side_effect, expected_err, mocker):
-    """Ensure errors are properly handled during auth validation."""
-    mocked_bridge = mocker.MagicMock()
-    mocked_bridge.get_account_id = mocker.AsyncMock(
-        side_effect=get_account_id_side_effect
+async def test_HubspaceConfigFlow_otp_flow(hass, mocker, mocked_config_flow):
+    """Ensure OTP flow works."""
+    mocker.patch.object(
+        mocked_config_flow,
+        "get_account_id",
+        side_effect=mocker.AsyncMock(side_effect=OTPRequired),
     )
-    mocked_bridge.close = mocker.AsyncMock()
-    mocker.patch(
-        "custom_components.hubspace.config_flow.AferoBridgeV1",
-        return_value=mocked_bridge,
+    await setup.async_setup_component(hass, const.DOMAIN, {})
+    result = await hass.config_entries.flow.async_init(
+        const.DOMAIN, context={"source": config_entries.SOURCE_USER}
     )
-    if expected_err:
-        mocked_bridge.refresh_token = None
-    else:
-        mocked_bridge.refresh_token = "cool-beans"
-    result = await validate_auth(
-        {
-            CONF_USERNAME: "cool",
-            CONF_PASSWORD: "beans",
-            CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
-            const.CONF_CLIENT: const.DEFAULT_CLIENT,
-        }
+    assert result["type"] is FlowResultType.FORM
+    assert result["step_id"] == "user"
+    user_data = {
+        CONF_USERNAME: "cool",
+        CONF_PASSWORD: "beans",
+        POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+        CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+        const.CONF_CLIENT: const.DEFAULT_CLIENT,
+    }
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"],
+        user_input=user_data,
     )
-    if not expected_err:
-        assert result.err_type is None
-        assert result.token == "cool-beans"
-    else:
-        assert result.err_type == expected_err
-        assert result.token is None
+    # Verify OTP is prompted
+    assert result["type"] == FlowResultType.FORM
+    assert result["step_id"] == "otp"
+    # Accept the OTP popup
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"],
+    )
+    # Submit the OTP form and show an unexpected exception
+    mocker.patch.object(
+        mocked_config_flow,
+        "otp_login",
+        side_effect=mocker.AsyncMock(side_effect=ValueError),
+    )
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"],
+        user_input={const.CONF_OTP: "123456"},
+    )
+    assert result["errors"]["base"] == "unknown_otp"
+    # Submit an invalid OTP
+    mocker.patch.object(
+        mocked_config_flow,
+        "otp_login",
+        side_effect=mocker.AsyncMock(side_effect=InvalidOTP),
+    )
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"],
+        user_input={const.CONF_OTP: "123456"},
+    )
+    assert result["errors"]["base"] == "invalid_otp"
+    # Submit a valid OTP
+    mocker.patch.object(
+        mocked_config_flow,
+        "otp_login",
+        side_effect=mocker.AsyncMock(side_effect=None),
+    )
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"],
+        user_input={const.CONF_OTP: "123456"},
+    )
+    assert result["type"] == FlowResultType.CREATE_ENTRY
+    assert result["title"] == user_data[CONF_USERNAME]
+    assert result["data"] == {
+        CONF_USERNAME: user_data[CONF_USERNAME],
+        CONF_PASSWORD: user_data[CONF_PASSWORD],
+        CONF_TOKEN: "mock-refresh-token",
+        const.CONF_CLIENT: user_data[const.CONF_CLIENT],
+    }
+    assert result["options"] == {
+        POLLING_TIME_STR: user_data[POLLING_TIME_STR],
+        CONF_TIMEOUT: user_data[CONF_TIMEOUT],
+    }
