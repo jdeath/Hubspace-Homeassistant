@@ -13,6 +13,16 @@ jobs:
       matrix:
         python-version:
           - "3.13"
+        ha_version:
+          - "2025.2"
+          - "2025.3"
+          - "2025.4"
+          - "2025.5"
+          - "2025.6"
+          - "2025.7"
+          - "2025.8"
+          - "2025.9"
+          - "2025.10"
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
@@ -21,7 +31,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install requirements
         run: |
-          pip install -r requirements.txt -r test-requirements.txt
+          pip install -r requirements.txt -r test-requirements.txt homeassistant==${{ matrix.ha_version }}
       - name: Execute Tests
         run: |
           pytest

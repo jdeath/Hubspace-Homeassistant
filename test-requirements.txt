@@ -1,6 +1,7 @@
-pytest
+pytest>=8.2.2
 pytest-mock
 pytest-asyncio
 responses
 pre-commit
 pytest-homeassistant-custom-component
+tox
