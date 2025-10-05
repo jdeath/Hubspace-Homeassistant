@@ -281,6 +281,14 @@ that can access Home Assistants Filestore.
 
   - Generate the debug logs and create an issue on GitHub.
 
+- I enabled MFA within my app but I was not forced to re-login.
+
+  - Tokens are not invalidated when you enable MFA and must invalidate them manually. For Hubspace,
+    this is done by going to "Manage Account" and clicking "Where You're Signed In", then clicking
+    "SIGN OUT OF ALL OTHER DEVICES". Once signed out, the existing token could be valid for up to
+    two more minutes. Once the current token is expired, Home Assistant will show there is a repair
+    available for "Authentication expired for <email>".
+
 _Thanks to everyone who starred my repo! To star it click on the image below, then it will be on top right. Thanks!_
 
 [![Star History Chart](https://api.star-history.com/svg?repos=jdeath/Hubspace-Homeassistant&type=Date)](https://star-history.com/#jdeath/Hubspace-Homeassistant&Date)
