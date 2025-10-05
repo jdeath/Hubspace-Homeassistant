@@ -10,6 +10,6 @@
   "issue_tracker": "https://github.com/jdeath/Hubspace-Homeassistant/issues",
   "loggers": ["aioafero"],
   "requirements": ["aioafero==5.6.0", "aiofiles", "packaging"],
-  "version": "5.9.0",
-  "single_config_entry": true
+  "single_config_entry": true,
+  "version": "5.9.0"
 }
