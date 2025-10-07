@@ -69,10 +69,8 @@ are as follows:
 
 - 5.10.0
 
-  - Enable full support for fahrenheit for climate devices
-
-    - To enable fahrenheit support, you must update to this version, reconfigure the integration and select fahrenheit,
-      then restart your HA instance.
+  - Enable full support for fahrenheit for climate devices. The unit to use is determined by the
+    selected units within Settings -> System -> General -> Unit system.
 
 - 5.9.1
 
@@ -300,11 +298,10 @@ that can access Home Assistants Filestore.
     two more minutes. Once the current token is expired, Home Assistant will show there is a repair
     available for "Authentication expired for <email>".
 
-- I swapped temperature units but my devices are not showing the updated change
+- I adjusted Home Assistants Unit system and now the values are displaying incorrectly
 
-  - Changing the temperature unit does not restart everything required. To show the correct unit, you
-    must perform a full restart Home Assistant for everything to properly update. Ensure that the same
-    unit is also set in System -> Settings -> General -> Unit System.
+  - After updating the Unit system, you must also reload the integration for the values to show correctly. This
+    can be accomplished by going to Settings -> Devices & services -> Hubspace -> Triple dots -> Reload.
 
 _Thanks to everyone who starred my repo! To star it click on the image below, then it will be on top right. Thanks!_
 
