@@ -5,13 +5,19 @@ import logging
 from pathlib import Path
 from typing import Any, Callable
 
-from aioafero import EventType, InvalidAuth, InvalidResponse
+from aioafero import EventType, InvalidAuth, InvalidResponse, TemperatureUnit
 from aioafero.v1 import AferoBridgeV1
 import aiohttp
 from aiohttp import client_exceptions
 from homeassistant import core
 from homeassistant.config_entries import SOURCE_REAUTH, ConfigEntry
-from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
+from homeassistant.const import (
+    CONF_PASSWORD,
+    CONF_TEMPERATURE_UNIT,
+    CONF_TIMEOUT,
+    CONF_TOKEN,
+    CONF_USERNAME,
+)
 from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers import aiohttp_client
 
@@ -54,6 +60,13 @@ class HubspaceBridge:
         # self.sensor_manager: SensorManager | None = None
         self.logger = logging.getLogger(__name__)
         polling_interval = int(self.config_entry.options[POLLING_TIME_STR])
+        # Afero only supports Celsius and Fahrenheit so we use hass.config.units.temperature_unit
+        temp_unit = (
+            TemperatureUnit.CELSIUS
+            if self.config_entry.options.get(CONF_TEMPERATURE_UNIT, "Celsius")
+            == "Celsius"
+            else TemperatureUnit.FAHRENHEIT
+        )
         # store actual api connection to bridge as api
         self.api = AferoBridgeV1(
             self.config_entry.data[CONF_USERNAME],
@@ -62,6 +75,7 @@ class HubspaceBridge:
             session=aiohttp_client.async_get_clientsession(hass),
             polling_interval=polling_interval,
             afero_client=self.config_entry.data[CONF_CLIENT],
+            temperature_unit=temp_unit,
         )
         # store (this) bridge object in hass data
         hass.data.setdefault(DOMAIN, {})[self.config_entry.entry_id] = self

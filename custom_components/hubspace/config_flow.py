@@ -35,6 +35,8 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
+SUPPORTED_UNITS = ["Celsius", "Fahrenheit"]
+
 LOGIN_REQS = {
     vol.Required(CONF_USERNAME): str,
     vol.Required(CONF_PASSWORD): str,

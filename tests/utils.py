@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 from typing import Any
 
-from aioafero import AferoDevice, AferoState
+from aioafero import AferoCapability, AferoDevice, AferoState
 
 current_path: Path = Path(__file__.rsplit(os.sep, 1)[0])
 
@@ -38,6 +38,9 @@ def create_devices_from_data(file_name: str) -> list[AferoDevice]:
     for device in devices:
         processed_states = [AferoState(**state) for state in device["states"]]
         device["states"] = processed_states
+        device["capabilities"] = [
+            AferoCapability(**cap) for cap in device.get("capabilities", [])
+        ]
         if "children" not in device:
             device["children"] = []
         processed.append(AferoDevice(**device))
@@ -94,6 +97,7 @@ def hs_raw_from_device(device: AferoDevice) -> dict:
             "metadeviceId": device.id,
             "values": convert_states(device.states),
         },
+        "capabilities": [x.raw_dump() for x in device.capabilities],
         "typeId": "metadevice.device",
         "version_data": device.version_data,
     }

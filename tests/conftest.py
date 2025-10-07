@@ -4,7 +4,7 @@ import asyncio
 import datetime
 import logging
 
-from aioafero import AferoDevice, v1
+from aioafero import AferoDevice, TemperatureUnit, v1
 from aioafero.v1.auth import TokenData
 from aioafero.v1.controllers.base import dataclass_to_afero
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
@@ -34,8 +34,10 @@ def auto_enable_custom_integrations(enable_custom_integrations):
 async def mocked_bridge(mocker) -> v1.AferoBridgeV1:
     """Create a mocked afero bridge to be used in tests."""
     mocker.patch("aioafero.v1.controllers.event.EventStream.gather_data")
-
-    bridge: v1.AferoBridgeV1 = v1.AferoBridgeV1("username2", "password2")
+    # All current dumps are in C so assume C
+    bridge: v1.AferoBridgeV1 = v1.AferoBridgeV1(
+        "username2", "password2", temperature_unit=TemperatureUnit.CELSIUS
+    )
     mocker.patch.object(bridge, "_account_id", "mocked-account-id")
     mocker.patch.object(bridge, "fetch_data", return_value=[])
     mocker.patch.object(bridge, "request", side_effect=mocker.AsyncMock())

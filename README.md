@@ -67,6 +67,13 @@ are as follows:
 
 ## Changelog
 
+- 5.10.0
+
+  - Enable full support for fahrenheit for climate devices
+
+    - To enable fahrenheit support, you must update to this version, reconfigure the integration and select fahrenheit,
+      then restart your HA instance.
+
 - 5.9.1
 
   - Fix an issue during initialization to generated a blocking call
@@ -292,6 +299,12 @@ that can access Home Assistants Filestore.
     "SIGN OUT OF ALL OTHER DEVICES". Once signed out, the existing token could be valid for up to
     two more minutes. Once the current token is expired, Home Assistant will show there is a repair
     available for "Authentication expired for <email>".
+
+- I swapped temperature units but my devices are not showing the updated change
+
+  - Changing the temperature unit does not restart everything required. To show the correct unit, you
+    must perform a full restart Home Assistant for everything to properly update. Ensure that the same
+    unit is also set in System -> Settings -> General -> Unit System.
 
 _Thanks to everyone who starred my repo! To star it click on the image below, then it will be on top right. Thanks!_
 
