@@ -11,15 +11,10 @@ import aiohttp
 from aiohttp import client_exceptions
 from homeassistant import core
 from homeassistant.config_entries import SOURCE_REAUTH, ConfigEntry
-from homeassistant.const import (
-    CONF_PASSWORD,
-    CONF_TEMPERATURE_UNIT,
-    CONF_TIMEOUT,
-    CONF_TOKEN,
-    CONF_USERNAME,
-)
+from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
 from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers import aiohttp_client
+from homeassistant.util.unit_system import METRIC_SYSTEM
 
 from .const import CONF_CLIENT, DOMAIN, PLATFORMS, POLLING_TIME_STR
 from .device import async_setup_devices
@@ -63,8 +58,7 @@ class HubspaceBridge:
         # Afero only supports Celsius and Fahrenheit so we use hass.config.units.temperature_unit
         temp_unit = (
             TemperatureUnit.CELSIUS
-            if self.config_entry.options.get(CONF_TEMPERATURE_UNIT, "Celsius")
-            == "Celsius"
+            if hass.config.units == METRIC_SYSTEM
             else TemperatureUnit.FAHRENHEIT
         )
         # store actual api connection to bridge as api
