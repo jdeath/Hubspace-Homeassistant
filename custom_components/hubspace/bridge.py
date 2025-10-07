@@ -80,6 +80,7 @@ class HubspaceBridge:
         try:
             async with asyncio.timeout(self.config_entry.options[CONF_TIMEOUT]):
                 await self.api.initialize()
+                await self.api.async_block_until_done()
             setup_ok = True
         except (InvalidAuth, InvalidResponse, aiohttp.web_exceptions.HTTPForbidden):
             # Credentials have changed. Force a re-login

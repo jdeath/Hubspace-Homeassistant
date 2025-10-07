@@ -67,6 +67,10 @@ are as follows:
 
 ## Changelog
 
+- 5.9.2
+
+  - Fix an issue where the integration stated it was ready too early
+
 - 5.9.1
 
   - Fix an issue during initialization to generated a blocking call
