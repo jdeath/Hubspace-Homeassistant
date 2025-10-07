@@ -1,6 +1,6 @@
 """Test the integration between Home Assistant Climate and Afero devices."""
 
-from aioafero import AferoState
+from aioafero import AferoState, TemperatureUnit
 from homeassistant.components.climate import (
     ATTR_HVAC_MODE,
     ATTR_TARGET_TEMP_HIGH,
@@ -13,6 +13,7 @@ from homeassistant.components.climate import (
     HVACMode,
 )
 from homeassistant.helpers import entity_registry as er
+from homeassistant.util.unit_system import IMPERIAL_SYSTEM
 import pytest
 
 from .utils import create_devices_from_data, hs_raw_from_dump, modify_state
@@ -20,12 +21,11 @@ from .utils import create_devices_from_data, hs_raw_from_dump, modify_state
 thermostat = create_devices_from_data("thermostat.json")[0]
 thermostat_id = "climate.home_heat_thermostat"
 
-
-thermostat_f = create_devices_from_data("thermostat-f.json")[0]
-thermostat_f_id = "climate.home_heat_thermostat"
-
 portable_ac = create_devices_from_data("portable-ac.json")[0]
 portable_ac_id = "climate.garage_ac_portableac"
+
+portable_ac_f = create_devices_from_data("portable-ac-f.json")[0]
+portable_ac_f_id = "climate.steve_ac_portableac"
 
 
 @pytest.fixture
@@ -33,23 +33,6 @@ async def mocked_entity(mocked_entry):
     """Initialize a mocked thermostat and register it within Home Assistant."""
     hass, entry, bridge = mocked_entry
     await bridge.generate_devices_from_data([thermostat])
-    # Force mocked entity to support auto
-    bridge.thermostats[thermostat.id].hvac_mode.supported_modes.add("auto")
-    # Force mocked entity to support cool
-    bridge.thermostats[thermostat.id].hvac_mode.supported_modes.add("cool")
-    await hass.config_entries.async_setup(entry.entry_id)
-    await hass.async_block_till_done()
-    yield hass, entry, bridge
-    await bridge.close()
-
-
-@pytest.fixture
-async def mocked_entity_in_f(mocked_entry):
-    """Initialize a mocked thermostat and register it within Home Assistant."""
-    hass, entry, bridge = mocked_entry
-    await bridge.generate_devices_from_data([thermostat])
-    # Force mocked entity to be in F
-    bridge.thermostats[thermostat.id].display_celsius = False
     # Force mocked entity to support auto
     bridge.thermostats[thermostat.id].hvac_mode.supported_modes.add("auto")
     # Force mocked entity to support cool
@@ -110,38 +93,6 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry):
     )
 
 
-# These numbers are slightly different from above due to the handling
-# of C to F within Hubspace.
-# For example, Hubspace displays 64F as 18C, but 18C is actually 64.4. Home Assistant
-# doesn't do this funkiness so it shows slightly different here
-async def test_async_setup_entry_in_f(mocked_entry):
-    """Ensure climates are properly discovered and registered with Home Assistant."""
-    hass, entry, bridge = mocked_entry
-    await bridge.generate_devices_from_data([thermostat_f])
-    await hass.config_entries.async_setup(entry.entry_id)
-    await hass.async_block_till_done()
-    entity_reg = er.async_get(hass)
-    assert entity_reg.async_get(thermostat_f_id) is not None
-    entity = hass.states.get(thermostat_id)
-    assert entity is not None
-    assert entity.state == "heat"
-    assert entity.attributes[ATTR_TEMPERATURE] == 17.8
-    assert entity.attributes["hvac_action"] == "off"
-    assert set(entity.attributes["hvac_modes"]) == {
-        HVACMode.FAN_ONLY,
-        HVACMode.HEAT,
-        HVACMode.OFF,
-    }
-    assert entity.attributes["target_temp_step"] == 1
-    assert entity.attributes["fan_mode"] == "auto"
-    assert set(entity.attributes["fan_modes"]) == {"auto", "intermittent", "on"}
-    assert entity.attributes["current_temperature"] == 18.3
-    assert (
-        entity.attributes["supported_features"]
-        == ClimateEntityFeature.TARGET_TEMPERATURE + ClimateEntityFeature.FAN_MODE
-    )
-
-
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     (
@@ -174,6 +125,49 @@ async def test_async_setup_entry_portable_ac(dev, expected_entity, mocked_entry)
         assert "fan_mode" not in entity.attributes
         assert "fan_modes" not in entity.attributes
         assert entity.attributes["current_temperature"] == 35
+        assert (
+            entity.attributes["supported_features"]
+            == ClimateEntityFeature.TARGET_TEMPERATURE
+        )
+    finally:
+        await bridge.close()
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    (
+        "dev",
+        "expected_entity",
+    ),
+    [(portable_ac_f, portable_ac_f_id)],
+)
+async def test_async_setup_entry_portable_ac_f(dev, expected_entity, mocked_entry):
+    """Ensure climates are properly discovered and registered with Home Assistant."""
+    try:
+        hass, entry, bridge = mocked_entry
+        bridge.temperature_unit = TemperatureUnit.FAHRENHEIT
+        hass.config.units = IMPERIAL_SYSTEM
+        await bridge.generate_devices_from_data([dev])
+        await bridge.async_block_until_done()
+        await hass.config_entries.async_setup(entry.entry_id)
+        await hass.async_block_till_done()
+        entity_reg = er.async_get(hass)
+        assert entity_reg.async_get(expected_entity) is not None
+        entity = hass.states.get(expected_entity)
+        assert entity
+        assert entity.state == "auto"
+        assert entity.attributes[ATTR_TEMPERATURE] == 60
+        assert "hvac_action" not in entity.attributes
+        assert set(entity.attributes["hvac_modes"]) == {
+            HVACMode.AUTO,
+            HVACMode.COOL,
+            HVACMode.DRY,
+            HVACMode.FAN_ONLY,
+        }
+        assert entity.attributes["target_temp_step"] == 1
+        assert "fan_mode" not in entity.attributes
+        assert "fan_modes" not in entity.attributes
+        assert entity.attributes["current_temperature"] == 82
         assert (
             entity.attributes["supported_features"]
             == ClimateEntityFeature.TARGET_TEMPERATURE
@@ -476,32 +470,6 @@ async def test_set_temperature(mocked_entity):
     assert entity.attributes[ATTR_TARGET_TEMP_HIGH] == 27.0
     assert entity.attributes[ATTR_TARGET_TEMP_LOW] == 13.0
     assert entity.attributes[ATTR_TEMPERATURE] == 12.0
-
-
-@pytest.mark.asyncio
-async def test_set_temperature_in_f(mocked_entity_in_f):
-    """Ensure the service call set_temperature works as expected."""
-    hass, _, bridge = mocked_entity_in_f
-    await hass.services.async_call(
-        "climate",
-        "set_temperature",
-        {
-            "entity_id": thermostat_id,
-            ATTR_TEMPERATURE: 12,
-            ATTR_TARGET_TEMP_HIGH: 27,
-            ATTR_TARGET_TEMP_LOW: 13,
-            ATTR_HVAC_MODE: HVACMode.COOL,
-        },
-        blocking=True,
-    )
-    await bridge.async_block_until_done()
-    await hass.async_block_till_done()
-    entity = hass.states.get(thermostat_id)
-    assert entity is not None
-    assert entity.state == HVACMode.COOL
-    assert entity.attributes[ATTR_TARGET_TEMP_HIGH] == 27.2
-    assert entity.attributes[ATTR_TARGET_TEMP_LOW] == 12.8
-    assert entity.attributes[ATTR_TEMPERATURE] == 12.2
 
 
 @pytest.mark.asyncio

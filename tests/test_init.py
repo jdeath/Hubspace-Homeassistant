@@ -34,7 +34,7 @@ def v1_config_entry(hass):
 @pytest.fixture
 def v2_config_entry(hass):
     """Register a v2 config entry."""
-    v1_config_entry = MockConfigEntry(
+    v2_config_entry = MockConfigEntry(
         domain=const.DOMAIN,
         data={
             CONF_USERNAME: "cool",
@@ -45,28 +45,28 @@ def v2_config_entry(hass):
         version=2,
         minor_version=0,
     )
-    v1_config_entry.add_to_hass(hass)
-    return hass, v1_config_entry
+    v2_config_entry.add_to_hass(hass)
+    return hass, v2_config_entry
 
 
 @pytest.fixture
 def v2_config_entry_custom(hass):
     """Register a v2 config entry with a custom timeout."""
-    v1_config_entry = MockConfigEntry(
+    v2_config_entry = MockConfigEntry(
         domain=const.DOMAIN,
         data={CONF_USERNAME: "cool", CONF_PASSWORD: "beans", CONF_TIMEOUT: 42},
         options={},
         version=2,
         minor_version=0,
     )
-    v1_config_entry.add_to_hass(hass)
-    return hass, v1_config_entry
+    v2_config_entry.add_to_hass(hass)
+    return hass, v2_config_entry
 
 
 @pytest.fixture
 def v3_config_entry(hass):
     """Register a v3 config entry."""
-    v1_config_entry = MockConfigEntry(
+    v3_config_entry = MockConfigEntry(
         domain=const.DOMAIN,
         data={
             CONF_USERNAME: "cool",
@@ -79,14 +79,14 @@ def v3_config_entry(hass):
         version=3,
         minor_version=0,
     )
-    v1_config_entry.add_to_hass(hass)
-    return hass, v1_config_entry
+    v3_config_entry.add_to_hass(hass)
+    return hass, v3_config_entry
 
 
 @pytest.fixture
 def v4_config_entry(hass):
     """Register a v4 config entry."""
-    v1_config_entry = MockConfigEntry(
+    v4_config_entry = MockConfigEntry(
         domain=const.DOMAIN,
         data={
             CONF_USERNAME: "cool",
@@ -100,8 +100,30 @@ def v4_config_entry(hass):
         version=4,
         minor_version=0,
     )
-    v1_config_entry.add_to_hass(hass)
-    return hass, v1_config_entry
+    v4_config_entry.add_to_hass(hass)
+    return hass, v4_config_entry
+
+
+@pytest.fixture
+def v5_config_entry(hass):
+    """Register a v5 config entry."""
+    v5_config_entry = MockConfigEntry(
+        domain=const.DOMAIN,
+        data={
+            CONF_USERNAME: "cool",
+            CONF_PASSWORD: "beans",
+            CONF_TOKEN: "mock-refresh-token",
+            const.CONF_CLIENT: const.DEFAULT_CLIENT,
+        },
+        options={
+            CONF_TIMEOUT: 10000,
+            const.POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+        },
+        version=5,
+        minor_version=0,
+    )
+    v5_config_entry.add_to_hass(hass)
+    return hass, v5_config_entry
 
 
 @pytest.mark.asyncio

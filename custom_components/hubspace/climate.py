@@ -2,6 +2,7 @@
 
 from functools import partial
 
+from aioafero import TemperatureUnit
 from aioafero.v1 import (
     AferoBridgeV1,
     AferoModelResource,
@@ -170,7 +171,7 @@ class HubspaceThermostat(HubspaceBaseEntity, ClimateEntity):
         """Unit for backend data."""
         return (
             UnitOfTemperature.FAHRENHEIT
-            if not self.resource.display_celsius
+            if self.bridge.api.temperature_unit == TemperatureUnit.FAHRENHEIT
             else UnitOfTemperature.CELSIUS
         )
 

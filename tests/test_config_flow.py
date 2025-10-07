@@ -120,7 +120,7 @@ def mocked_config_flow(mocked_bridge, mocker):
             None,
             None,
         ),
-        # Timeout
+        # Invalid auth provided
         (
             {
                 CONF_USERNAME: "cool",
