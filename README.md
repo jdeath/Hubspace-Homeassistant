@@ -69,7 +69,7 @@ are as follows:
 
 - 5.9.2
 
-  - Fix an issue where the integration stated it was ready too early
+  - Fix an issue where the integration stated it was ready too early ([#189](https://github.com/jdeath/Hubspace-Homeassistant/issues/189))
 
 - 5.9.1
 
