@@ -71,6 +71,7 @@ are as follows:
 
   - Enable full support for fahrenheit for climate devices. The unit to use is determined by the
     selected units within Settings -> System -> General -> Unit system.
+  - Add Swing on/off to climate devices that support this functionality
 
 - 5.9.2
 
