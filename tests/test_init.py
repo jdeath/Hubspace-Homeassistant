@@ -294,6 +294,7 @@ async def test_reload(hass, mocker):
     }
     # Test reload
     await hubspace.async_unload_entry(hass, entry)
+    await hass.async_block_till_done()
     bridge = get_mocked_bridge(mocker)
     await bridge.initialize()
     await bridge.async_block_until_done()
