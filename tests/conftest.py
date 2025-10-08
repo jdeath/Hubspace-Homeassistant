@@ -39,6 +39,7 @@ async def mocked_bridge(mocker) -> v1.AferoBridgeV1:
     mocker.patch.object(bridge, "_account_id", "mocked-account-id")
     mocker.patch.object(bridge, "fetch_data", return_value=[])
     mocker.patch.object(bridge, "request", side_effect=mocker.AsyncMock())
+    mocker.patch.object(bridge.events, "_first_poll_completed", True)
     mocker.patch.object(
         bridge, "fetch_data", side_effect=mocker.AsyncMock(return_value=[])
     )
