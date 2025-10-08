@@ -160,7 +160,10 @@ async def perform_v5_migration(hass: HomeAssistant, config_entry: ConfigEntry) -
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
-    unload_success = await hass.data[DOMAIN][entry.entry_id].async_reset()
+    try:
+        unload_success = await hass.data[DOMAIN][entry.entry_id].async_reset()
+    except KeyError:
+        unload_success = True
     if len(hass.data[DOMAIN]) == 0:
         hass.data.pop(DOMAIN)
     return unload_success

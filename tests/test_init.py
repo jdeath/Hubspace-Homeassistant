@@ -2,11 +2,14 @@
 
 from aioafero.errors import InvalidAuth
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
+from homeassistant.helpers import device_registry as dr
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components import hubspace
 from custom_components.hubspace import const
+
+from .utils import create_devices_from_data, get_mocked_bridge, get_mocked_entry
 
 
 @pytest.fixture(autouse=True)
@@ -261,3 +264,55 @@ async def test_perform_v5_migration_from_v4(v4_config_entry):
     }
     assert v4_config_entry[1].version == 5
     assert v4_config_entry[1].minor_version == 0
+
+
+@pytest.mark.asyncio
+async def test_reload(hass, mocker):
+    """Ensure we can reload the config entry."""
+    fan_zandra = create_devices_from_data("fan-ZandraFan.json")
+    # Test initial load
+    bridge = get_mocked_bridge(mocker)
+    await bridge.initialize()
+    await bridge.async_block_until_done()
+    _, entry, _ = get_mocked_entry(hass, mocker, bridge)
+    await bridge.generate_devices_from_data(fan_zandra)
+    await bridge.async_block_until_done()
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    device_reg = dr.async_get(hass)
+    device = device_reg.async_get_device(
+        identifiers={(const.DOMAIN, "2a3572cb-3fbf-4094-846e-f2ebcb10521a")}
+    )
+    assert device is not None
+    assert device.name == "friendly-device-2"
+    assert device.model == "Zandra"
+    assert device.manufacturer == "Hampton Bay"
+    assert device.sw_version == "1.0.0"
+    assert device.connections == {
+        (dr.CONNECTION_NETWORK_MAC, "abbc66b9-d102-4404-9b14-f7d62fec1d2c"),
+        (dr.CONNECTION_BLUETOOTH, "cb948b76-713f-4a20-8ad4-2abc97b402c8"),
+    }
+    # Test reload
+    await hubspace.async_unload_entry(hass, entry)
+    await hass.async_block_till_done()
+    bridge = get_mocked_bridge(mocker)
+    await bridge.initialize()
+    await bridge.async_block_until_done()
+    _, entry, _ = get_mocked_entry(hass, mocker, bridge)
+    await bridge.generate_devices_from_data(fan_zandra)
+    await bridge.async_block_until_done()
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    device_reg = dr.async_get(hass)
+    device = device_reg.async_get_device(
+        identifiers={(const.DOMAIN, "2a3572cb-3fbf-4094-846e-f2ebcb10521a")}
+    )
+    assert device is not None
+    assert device.name == "friendly-device-2"
+    assert device.model == "Zandra"
+    assert device.manufacturer == "Hampton Bay"
+    assert device.sw_version == "1.0.0"
+    assert device.connections == {
+        (dr.CONNECTION_NETWORK_MAC, "abbc66b9-d102-4404-9b14-f7d62fec1d2c"),
+        (dr.CONNECTION_BLUETOOTH, "cb948b76-713f-4a20-8ad4-2abc97b402c8"),
+    }

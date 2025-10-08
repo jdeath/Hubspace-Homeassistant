@@ -70,8 +70,9 @@ are as follows:
 - 5.10.0
 
   - Enable full support for fahrenheit for climate devices. The unit to use is determined by the
-    selected units within Settings -> System -> General -> Unit system.
-  - Add Swing on/off to climate devices that support this functionality
+    selected units within Settings -> System -> General -> Unit system. ([#198](https://github.com/jdeath/Hubspace-Homeassistant/issues/198))
+  - Add Swing on/off to climate devices that support this functionality [#187](https://github.com/jdeath/Hubspace-Homeassistant/issues/187))
+  - Fix an issue where performing a reload would lose all device names ([#199](https://github.com/jdeath/Hubspace-Homeassistant/issues/199))
 
 - 5.9.2
 
