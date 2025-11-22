@@ -3,3 +3,4 @@ __pycache__
 custom_components/hubspace/dump_*.json
 .coverage
 *.egg-info
+.venv
