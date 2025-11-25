@@ -11,6 +11,11 @@ exhaust_fan = create_devices_from_data("fan-exhaust-fan.json")[2]
 exhaust_fan_id = "select.r3_closet_humidity_sensitivity"
 
 
+light_with_speed_from_file = create_devices_from_data("light-with-speed.json")
+light_with_speed = light_with_speed_from_file[2]
+light_with_speed_id = "select.landscaping_tree_lights_speed"
+
+
 @pytest.fixture
 async def mocked_entity(mocked_entry):
     """Initialize a mocked Exhaust Fan and register it within Home Assistant."""
@@ -28,9 +33,7 @@ async def mocked_entity(mocked_entry):
         "dev",
         "expected_entities",
     ),
-    [
-        (exhaust_fan, [exhaust_fan_id]),
-    ],
+    [(exhaust_fan, [exhaust_fan_id]), (light_with_speed, [light_with_speed_id])],
 )
 async def test_async_setup_entry(dev, expected_entities, mocked_entry):
     """Ensure selects are properly discovered and registered with Home Assistant."""
