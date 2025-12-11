@@ -28,9 +28,7 @@ async def mocked_entity(mocked_entry):
         "dev",
         "expected_entities",
     ),
-    [
-        (exhaust_fan, [exhaust_fan_id]),
-    ],
+    [(exhaust_fan, [exhaust_fan_id])],
 )
 async def test_async_setup_entry(dev, expected_entities, mocked_entry):
     """Ensure selects are properly discovered and registered with Home Assistant."""

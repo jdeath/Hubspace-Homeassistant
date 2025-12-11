@@ -1,0 +1,2539 @@
+[
+  {
+    "id": "a6029499-771f-4d2a-8655-083cbda0ceb6",
+    "device_id": "7b8c3a10-1f38-4798-9e7e-9acdb4bacb56",
+    "model": null,
+    "device_class": null,
+    "default_name": null,
+    "default_image": null,
+    "friendly_name": "Front Yard",
+    "capabilities": [],
+    "functions": [],
+    "states": [],
+    "children": ["ac231706-0c55-489f-a964-ffb0df9071eb"],
+    "manufacturerName": null,
+    "split_identifier": null,
+    "version_data": null
+  },
+  {
+    "id": "9d08b1cc-cf12-49ef-8ea0-3b2701cf85c7",
+    "device_id": "7b8c3a10-1f38-4798-9e7e-9acdb4bacb56",
+    "model": null,
+    "device_class": null,
+    "default_name": null,
+    "default_image": null,
+    "friendly_name": "Home",
+    "capabilities": [],
+    "functions": [],
+    "states": [],
+    "children": [
+      "a2d36de5-8b91-411a-907a-ecb665422d00",
+      "0aec49a5-8883-42a4-93db-382b3c969391"
+    ],
+    "manufacturerName": null,
+    "split_identifier": null,
+    "version_data": null
+  },
+  {
+    "id": "a2d36de5-8b91-411a-907a-ecb665422d00",
+    "device_id": "7cfaa27f-21a0-4df0-9277-60aefeeafd7d",
+    "model": "String Lights",
+    "device_class": "light",
+    "default_name": "String Lights",
+    "default_image": "novolink-20-segment-holiday-string-lights-icon",
+    "friendly_name": "Landscaping Tree Lights",
+    "capabilities": [
+      {
+        "functionClass": "available",
+        "type": "boolean",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "visible",
+        "type": "boolean",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "direct",
+        "type": "boolean",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "ble-mac-address",
+        "type": "string",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "geo-coordinates",
+        "type": "object",
+        "schedulable": null,
+        "functionInstance": "system-device-location",
+        "_opts": {}
+      },
+      {
+        "functionClass": "scheduler-flags",
+        "type": "numeric",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "wifi-ssid",
+        "type": "string",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "wifi-rssi",
+        "type": "numeric",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "wifi-steady-state",
+        "type": "category",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {
+          "values": [
+            "not-connected",
+            "pending",
+            "connected",
+            "unknown-failure",
+            "association-failure",
+            "handshake-failed",
+            "echo-failed",
+            "ssid-not-found",
+            "ntp-failed"
+          ],
+          "categoryValues": [
+            {
+              "name": "not-connected",
+              "values": ["0"]
+            },
+            {
+              "name": "pending",
+              "values": ["1"]
+            },
+            {
+              "name": "connected",
+              "values": ["2"]
+            },
+            {
+              "name": "unknown-failure",
+              "values": ["3"]
+            },
+            {
+              "name": "association-failure",
+              "values": ["4"]
+            },
+            {
+              "name": "handshake-failed",
+              "values": ["5"]
+            },
+            {
+              "name": "echo-failed",
+              "values": ["6"]
+            },
+            {
+              "name": "ssid-not-found",
+              "values": ["7"]
+            },
+            {
+              "name": "ntp-failed",
+              "values": ["8"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "wifi-setup-state",
+        "type": "category",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {
+          "values": [
+            "not-connected",
+            "pending",
+            "connected",
+            "unknown-failure",
+            "association-failure",
+            "handshake-failed",
+            "echo-failed",
+            "ssid-not-found",
+            "ntp-failed"
+          ],
+          "categoryValues": [
+            {
+              "name": "not-connected",
+              "values": ["0"]
+            },
+            {
+              "name": "pending",
+              "values": ["1"]
+            },
+            {
+              "name": "connected",
+              "values": ["2"]
+            },
+            {
+              "name": "unknown-failure",
+              "values": ["3"]
+            },
+            {
+              "name": "association-failure",
+              "values": ["4"]
+            },
+            {
+              "name": "handshake-failed",
+              "values": ["5"]
+            },
+            {
+              "name": "echo-failed",
+              "values": ["6"]
+            },
+            {
+              "name": "ssid-not-found",
+              "values": ["7"]
+            },
+            {
+              "name": "ntp-failed",
+              "values": ["8"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "wifi-mac-address",
+        "type": "string",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "toggle",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": "party-mode",
+        "_opts": {
+          "values": ["on", "off"],
+          "categoryValues": [
+            {
+              "name": "on",
+              "values": ["1"]
+            },
+            {
+              "name": "off",
+              "values": ["0"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "restore-values",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": null,
+        "_opts": {
+          "values": ["partial-restore", "not-restored", "restored"],
+          "categoryValues": [
+            {
+              "name": "partial-restore",
+              "values": ["2"]
+            },
+            {
+              "name": "not-restored",
+              "values": ["0"]
+            },
+            {
+              "name": "restored",
+              "values": ["1"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "color-sequence-v2",
+        "type": "object",
+        "schedulable": false,
+        "functionInstance": "custom-3",
+        "_opts": {}
+      },
+      {
+        "functionClass": "color-sequence-v2",
+        "type": "object",
+        "schedulable": false,
+        "functionInstance": "custom-2",
+        "_opts": {}
+      },
+      {
+        "functionClass": "color-sequence-v2",
+        "type": "object",
+        "schedulable": false,
+        "functionInstance": "custom-1",
+        "_opts": {}
+      },
+      {
+        "functionClass": "color-rgb",
+        "type": "object",
+        "schedulable": true,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "color-temperature",
+        "type": "numeric",
+        "schedulable": true,
+        "functionInstance": null,
+        "_opts": {
+          "range": {
+            "min": 2700,
+            "max": 6500,
+            "step": 100
+          }
+        }
+      },
+      {
+        "functionClass": "color-individual",
+        "type": "category",
+        "schedulable": true,
+        "functionInstance": "custom",
+        "_opts": {
+          "values": ["custom-3", "custom-2", "custom-1"],
+          "categoryValues": [
+            {
+              "name": "custom-3",
+              "hints": ["20-segment"],
+              "values": ["353"]
+            },
+            {
+              "name": "custom-2",
+              "hints": ["20-segment"],
+              "values": ["352"]
+            },
+            {
+              "name": "custom-1",
+              "hints": ["20-segment"],
+              "values": ["351"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "color-sequence",
+        "type": "category",
+        "schedulable": true,
+        "functionInstance": "custom",
+        "_opts": {
+          "values": [
+            "moonlight",
+            "getting-ready",
+            "nightlight",
+            "clarity",
+            "dinner-party",
+            "chill",
+            "focus",
+            "sleep",
+            "wake-up"
+          ],
+          "categoryValues": [
+            {
+              "name": "moonlight",
+              "values": ["0C000088130A000000"]
+            },
+            {
+              "name": "getting-ready",
+              "values": ["0B0000CC105B000000"]
+            },
+            {
+              "name": "nightlight",
+              "values": ["0A00008C0A05000000"]
+            },
+            {
+              "name": "clarity",
+              "values": ["090000881364000000"]
+            },
+            {
+              "name": "dinner-party",
+              "values": ["080000F00A3E000000"]
+            },
+            {
+              "name": "chill",
+              "values": ["070000800C28000000"]
+            },
+            {
+              "name": "focus",
+              "values": ["060000301155000000"]
+            },
+            {
+              "name": "sleep",
+              "values": ["0504008C0A280008078C0A05000000"]
+            },
+            {
+              "name": "wake-up",
+              "values": ["0204008C0A050008078C0A64000000"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "power",
+        "type": "category",
+        "schedulable": true,
+        "functionInstance": null,
+        "_opts": {
+          "values": ["off", "on"],
+          "categoryValues": [
+            {
+              "name": "off",
+              "values": ["0"]
+            },
+            {
+              "name": "on",
+              "values": ["1"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "color-sequence",
+        "type": "category",
+        "schedulable": true,
+        "functionInstance": "preset",
+        "_opts": {
+          "values": [
+            "hanukkah",
+            "cross-faded",
+            "rainbow-roll",
+            "may-tricks",
+            "st-patricks-day",
+            "vote-of-confidence-six",
+            "easter-eggs-six",
+            "penguin-disco",
+            "rainbow-rudolf",
+            "prism",
+            "snowfall",
+            "mistletoe",
+            "rainbow-road",
+            "white-star",
+            "red-shift",
+            "effervescent",
+            "under-the-sea",
+            "double-rainbow",
+            "cinco-de-mayo",
+            "halloween",
+            "valentines-day",
+            "rainbow",
+            "july-4th",
+            "christmas",
+            "jump-3",
+            "jump-7",
+            "custom",
+            "fade-3",
+            "fade-7"
+          ],
+          "categoryValues": [
+            {
+              "name": "hanukkah",
+              "hints": ["WinterHolidays"],
+              "values": ["10039"]
+            },
+            {
+              "name": "cross-faded",
+              "hints": ["FunPatterns"],
+              "values": ["10037"]
+            },
+            {
+              "name": "rainbow-roll",
+              "hints": ["FunPatterns"],
+              "values": ["10036"]
+            },
+            {
+              "name": "may-tricks",
+              "hints": ["FunPatterns"],
+              "values": ["10034"]
+            },
+            {
+              "name": "st-patricks-day",
+              "hints": ["MoreHolidays"],
+              "values": ["10032"]
+            },
+            {
+              "name": "vote-of-confidence-six",
+              "hints": ["FunPatterns"],
+              "values": ["10031"]
+            },
+            {
+              "name": "easter-eggs-six",
+              "hints": ["MoreHolidays"],
+              "values": ["10030"]
+            },
+            {
+              "name": "penguin-disco",
+              "hints": ["WinterHolidays"],
+              "values": ["10027"]
+            },
+            {
+              "name": "rainbow-rudolf",
+              "hints": ["WinterHolidays"],
+              "values": ["10025"]
+            },
+            {
+              "name": "prism",
+              "hints": ["FunPatterns"],
+              "values": ["10023"]
+            },
+            {
+              "name": "snowfall",
+              "hints": ["WinterHolidays"],
+              "values": ["10042"]
+            },
+            {
+              "name": "mistletoe",
+              "hints": ["WinterHolidays"],
+              "values": ["10018"]
+            },
+            {
+              "name": "rainbow-road",
+              "hints": ["FunPatterns"],
+              "values": ["10017"]
+            },
+            {
+              "name": "white-star",
+              "hints": ["WinterHolidays"],
+              "values": ["10016"]
+            },
+            {
+              "name": "red-shift",
+              "hints": ["FunPatterns"],
+              "values": ["10012"]
+            },
+            {
+              "name": "effervescent",
+              "hints": ["FunPatterns"],
+              "values": ["10046"]
+            },
+            {
+              "name": "under-the-sea",
+              "hints": ["FunPatterns"],
+              "values": ["10010"]
+            },
+            {
+              "name": "double-rainbow",
+              "hints": ["FunPatterns"],
+              "values": ["10009"]
+            },
+            {
+              "name": "cinco-de-mayo",
+              "hints": ["MoreHolidays"],
+              "values": ["10040"]
+            },
+            {
+              "name": "halloween",
+              "hints": ["FunPatterns"],
+              "values": ["10045"]
+            },
+            {
+              "name": "valentines-day",
+              "hints": ["MoreHolidays"],
+              "values": ["10044"]
+            },
+            {
+              "name": "rainbow",
+              "hints": ["FunPatterns"],
+              "values": ["10002"]
+            },
+            {
+              "name": "july-4th",
+              "hints": ["MoreHolidays"],
+              "values": ["10041"]
+            },
+            {
+              "name": "christmas",
+              "hints": ["WinterHolidays"],
+              "values": ["10000"]
+            },
+            {
+              "name": "jump-3",
+              "hints": ["FunPatterns"],
+              "values": ["305"]
+            },
+            {
+              "name": "jump-7",
+              "hints": ["FunPatterns"],
+              "values": ["304"]
+            },
+            {
+              "name": "custom",
+              "values": ["300"]
+            },
+            {
+              "name": "fade-3",
+              "hints": ["FunPatterns"],
+              "values": ["303"]
+            },
+            {
+              "name": "fade-7",
+              "hints": ["FunPatterns"],
+              "values": ["302"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "speed",
+        "type": "numeric",
+        "schedulable": true,
+        "functionInstance": "color-sequence",
+        "_opts": {
+          "range": {
+            "min": -10,
+            "max": 10,
+            "step": 1
+          }
+        }
+      },
+      {
+        "functionClass": "brightness",
+        "type": "numeric",
+        "schedulable": true,
+        "functionInstance": null,
+        "_opts": {
+          "range": {
+            "min": 1,
+            "max": 100,
+            "step": 1
+          }
+        }
+      },
+      {
+        "functionClass": "color-mode",
+        "type": "category",
+        "schedulable": true,
+        "functionInstance": null,
+        "_opts": {
+          "values": ["individual", "sequence", "white", "color"],
+          "categoryValues": [
+            {
+              "name": "individual",
+              "values": ["4"]
+            },
+            {
+              "name": "sequence",
+              "values": ["2"]
+            },
+            {
+              "name": "white",
+              "values": ["0"]
+            },
+            {
+              "name": "color",
+              "values": ["1"]
+            }
+          ]
+        }
+      }
+    ],
+    "functions": [
+      {
+        "id": "3d04a423-2904-4655-94cc-db3496b9909a",
+        "createdTimestampMs": 1713370774806,
+        "updatedTimestampMs": 1713370774806,
+        "functionClass": "toggle",
+        "functionInstance": "party-mode",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "9781684f-9255-49c1-947e-2ad30705dda9",
+            "createdTimestampMs": 1713370774861,
+            "updatedTimestampMs": 1713370774861,
+            "name": "on",
+            "deviceValues": [
+              {
+                "id": "03b05ea2-d6c4-45a5-adad-55e8e4c91d63",
+                "createdTimestampMs": 1713370774879,
+                "updatedTimestampMs": 1713370774879,
+                "type": "attribute",
+                "key": "31",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "1af4f795-5979-45a9-a55d-04511127dde8",
+            "createdTimestampMs": 1713370774830,
+            "updatedTimestampMs": 1713370774830,
+            "name": "off",
+            "deviceValues": [
+              {
+                "id": "c872490c-605d-42c2-a59c-e202469f4140",
+                "createdTimestampMs": 1713370774849,
+                "updatedTimestampMs": 1713370774849,
+                "type": "attribute",
+                "key": "31",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "3e533c3a-31df-42eb-a2c5-344ad2d7ace4",
+        "createdTimestampMs": 1713370774699,
+        "updatedTimestampMs": 1713370774699,
+        "functionClass": "restore-values",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "acd04b93-0ced-431f-bfe4-4879fe9bf27f",
+            "createdTimestampMs": 1713370774776,
+            "updatedTimestampMs": 1713370774776,
+            "name": "partial-restore",
+            "deviceValues": [
+              {
+                "id": "fec4821f-0eaa-4e59-921e-0c927c8cd521",
+                "createdTimestampMs": 1713370774794,
+                "updatedTimestampMs": 1713370774794,
+                "type": "attribute",
+                "key": "100",
+                "value": "2"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "cc72c693-d1ba-4d00-988a-de54e4571336",
+            "createdTimestampMs": 1713370774747,
+            "updatedTimestampMs": 1713370774747,
+            "name": "not-restored",
+            "deviceValues": [
+              {
+                "id": "b319d674-0c9a-4530-a92e-e3d38c12cc4c",
+                "createdTimestampMs": 1713370774764,
+                "updatedTimestampMs": 1713370774764,
+                "type": "attribute",
+                "key": "100",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "671b06a2-2a67-487f-a48e-5595998c8356",
+            "createdTimestampMs": 1713370774717,
+            "updatedTimestampMs": 1713370774717,
+            "name": "restored",
+            "deviceValues": [
+              {
+                "id": "50bd6fc7-a919-461d-800b-6f20366f917e",
+                "createdTimestampMs": 1713370774735,
+                "updatedTimestampMs": 1713370774735,
+                "type": "attribute",
+                "key": "100",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "a871254e-a4b3-41ca-b0ae-f5ac5f560b40",
+        "createdTimestampMs": 1713370774649,
+        "updatedTimestampMs": 1713370774649,
+        "functionClass": "color-sequence-v2",
+        "functionInstance": "custom-3",
+        "type": "object",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "0b4160af-000a-4bb0-a5f0-c7d2662109b2",
+            "createdTimestampMs": 1713370774667,
+            "updatedTimestampMs": 1713370774667,
+            "name": "color-sequence-v2",
+            "deviceValues": [
+              {
+                "id": "841cacc3-8fc2-4192-92be-865fdf7e2232",
+                "createdTimestampMs": 1713370774686,
+                "updatedTimestampMs": 1713370774686,
+                "type": "attribute",
+                "key": "353",
+                "format": "color-sequence-v2"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "c85670aa-b9d8-43a1-89f6-631c5f20ef16",
+        "createdTimestampMs": 1713370774597,
+        "updatedTimestampMs": 1713370774597,
+        "functionClass": "color-sequence-v2",
+        "functionInstance": "custom-2",
+        "type": "object",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "34ea93e0-5af4-4c29-8222-bc9107fa126e",
+            "createdTimestampMs": 1713370774619,
+            "updatedTimestampMs": 1713370774619,
+            "name": "color-sequence-v2",
+            "deviceValues": [
+              {
+                "id": "f5aef20c-da19-4a63-9061-81a15654ce01",
+                "createdTimestampMs": 1713370774636,
+                "updatedTimestampMs": 1713370774636,
+                "type": "attribute",
+                "key": "352",
+                "format": "color-sequence-v2"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "43cd5bd5-fe4b-495c-9cf0-e7ab178878cd",
+        "createdTimestampMs": 1713370774547,
+        "updatedTimestampMs": 1713370774547,
+        "functionClass": "color-sequence-v2",
+        "functionInstance": "custom-1",
+        "type": "object",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "ecf7df3e-9506-42d8-b56a-11700c69919a",
+            "createdTimestampMs": 1713370774565,
+            "updatedTimestampMs": 1713370774565,
+            "name": "color-sequence-v2",
+            "deviceValues": [
+              {
+                "id": "baaf0789-5bea-44ec-ba0a-639ff10d9d37",
+                "createdTimestampMs": 1713370774583,
+                "updatedTimestampMs": 1713370774583,
+                "type": "attribute",
+                "key": "351",
+                "format": "color-sequence-v2"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "e5866fd5-07a6-4a4f-b622-b1f5cbeaf29d",
+        "createdTimestampMs": 1713370774497,
+        "updatedTimestampMs": 1713370774497,
+        "functionClass": "color-rgb",
+        "type": "object",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "ac3a6639-e502-4140-a0f5-43d6a0e30337",
+            "createdTimestampMs": 1713370774515,
+            "updatedTimestampMs": 1713370774515,
+            "name": "color-rgb",
+            "deviceValues": [
+              {
+                "id": "f2039964-24f6-4dff-af9b-89f3870bcc26",
+                "createdTimestampMs": 1713370774533,
+                "updatedTimestampMs": 1713370774533,
+                "type": "attribute",
+                "key": "4",
+                "format": "color-rgb"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "db436f99-43ac-401c-a750-6386274c29e0",
+        "createdTimestampMs": 1713370774448,
+        "updatedTimestampMs": 1713370774448,
+        "functionClass": "color-temperature",
+        "type": "numeric",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "e707a8c2-490c-4805-b198-ff3788d52e9c",
+            "createdTimestampMs": 1713370774467,
+            "updatedTimestampMs": 1713370774467,
+            "name": "color-temperature",
+            "deviceValues": [
+              {
+                "id": "91fb80b6-38ad-4519-aafb-09a0f43fecaf",
+                "createdTimestampMs": 1713370774485,
+                "updatedTimestampMs": 1713370774485,
+                "type": "attribute",
+                "key": "3"
+              }
+            ],
+            "range": {
+              "min": 2700,
+              "max": 6500,
+              "step": 100
+            }
+          }
+        ]
+      },
+      {
+        "id": "f97382a8-0dc5-4685-a5f8-0f595fc35b27",
+        "createdTimestampMs": 1713370774334,
+        "updatedTimestampMs": 1713370774334,
+        "functionClass": "color-individual",
+        "functionInstance": "custom",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "427e12ad-fa81-40d2-ba50-e14a0913e4f2",
+            "createdTimestampMs": 1713370774413,
+            "updatedTimestampMs": 1713370774413,
+            "name": "custom-3",
+            "hints": ["20-segment"],
+            "deviceValues": [
+              {
+                "id": "9c8441a4-3326-41b3-9e6e-6d97d61e2503",
+                "createdTimestampMs": 1713370774432,
+                "updatedTimestampMs": 1713370774432,
+                "type": "attribute",
+                "key": "12",
+                "value": "353"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "bba4451c-a2da-449e-ab19-76b68273d331",
+            "createdTimestampMs": 1713370774383,
+            "updatedTimestampMs": 1713370774383,
+            "name": "custom-2",
+            "hints": ["20-segment"],
+            "deviceValues": [
+              {
+                "id": "7b6896ad-a00c-44ee-be6e-e5c0188ae9be",
+                "createdTimestampMs": 1713370774401,
+                "updatedTimestampMs": 1713370774401,
+                "type": "attribute",
+                "key": "12",
+                "value": "352"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "e33c89d8-428c-4f01-b0f1-b9e501c7820c",
+            "createdTimestampMs": 1713370774352,
+            "updatedTimestampMs": 1713370774352,
+            "name": "custom-1",
+            "hints": ["20-segment"],
+            "deviceValues": [
+              {
+                "id": "dec5ec57-066a-4733-80a7-7b39adc997db",
+                "createdTimestampMs": 1713370774370,
+                "updatedTimestampMs": 1713370774370,
+                "type": "attribute",
+                "key": "12",
+                "value": "351"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "eeb4b0db-2351-44aa-9a74-6ad800e47b8b",
+        "createdTimestampMs": 1713370774047,
+        "updatedTimestampMs": 1713370774047,
+        "functionClass": "color-sequence",
+        "functionInstance": "custom",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "7b8cd000-430f-4754-abd7-3abef701070a",
+            "createdTimestampMs": 1713370774303,
+            "updatedTimestampMs": 1713370774303,
+            "name": "moonlight",
+            "deviceValues": [
+              {
+                "id": "ce78fe82-e832-45c2-b997-aa7f2d9b527e",
+                "createdTimestampMs": 1713370774321,
+                "updatedTimestampMs": 1713370774321,
+                "type": "attribute",
+                "key": "300",
+                "value": "0C000088130A000000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "939ca0c9-4907-4a43-b280-907cb6c0cf3a",
+            "createdTimestampMs": 1713370774273,
+            "updatedTimestampMs": 1713370774273,
+            "name": "getting-ready",
+            "deviceValues": [
+              {
+                "id": "179e1646-51f2-4ddd-963f-5ae8356b6922",
+                "createdTimestampMs": 1713370774291,
+                "updatedTimestampMs": 1713370774291,
+                "type": "attribute",
+                "key": "300",
+                "value": "0B0000CC105B000000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "8d961102-be1f-47b9-8906-ffe4ceb24c76",
+            "createdTimestampMs": 1713370774242,
+            "updatedTimestampMs": 1713370774242,
+            "name": "nightlight",
+            "deviceValues": [
+              {
+                "id": "1948e239-8e65-49b3-9ce0-8e07085f27e2",
+                "createdTimestampMs": 1713370774260,
+                "updatedTimestampMs": 1713370774260,
+                "type": "attribute",
+                "key": "300",
+                "value": "0A00008C0A05000000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "b5674dbc-b050-4994-9cca-24a83527c461",
+            "createdTimestampMs": 1713370774212,
+            "updatedTimestampMs": 1713370774212,
+            "name": "clarity",
+            "deviceValues": [
+              {
+                "id": "5bb75c65-5d37-47bd-a909-b77027212a53",
+                "createdTimestampMs": 1713370774230,
+                "updatedTimestampMs": 1713370774230,
+                "type": "attribute",
+                "key": "300",
+                "value": "090000881364000000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "4f9eeebd-2710-430c-b3d4-446729945cb5",
+            "createdTimestampMs": 1713370774182,
+            "updatedTimestampMs": 1713370774182,
+            "name": "dinner-party",
+            "deviceValues": [
+              {
+                "id": "d264def4-4dc3-4649-903b-c7d75339f32d",
+                "createdTimestampMs": 1713370774200,
+                "updatedTimestampMs": 1713370774200,
+                "type": "attribute",
+                "key": "300",
+                "value": "080000F00A3E000000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "440b47ef-a4ad-4e49-9cbe-8bbf5ad13603",
+            "createdTimestampMs": 1713370774153,
+            "updatedTimestampMs": 1713370774153,
+            "name": "chill",
+            "deviceValues": [
+              {
+                "id": "c8608a45-3f87-479f-a413-35932a69a799",
+                "createdTimestampMs": 1713370774171,
+                "updatedTimestampMs": 1713370774171,
+                "type": "attribute",
+                "key": "300",
+                "value": "070000800C28000000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "973a8557-ae8a-4011-b725-722bb44e47cb",
+            "createdTimestampMs": 1713370774124,
+            "updatedTimestampMs": 1713370774124,
+            "name": "focus",
+            "deviceValues": [
+              {
+                "id": "c72e43fe-cb5e-495c-8d89-5400022fbc7d",
+                "createdTimestampMs": 1713370774141,
+                "updatedTimestampMs": 1713370774141,
+                "type": "attribute",
+                "key": "300",
+                "value": "060000301155000000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "ac133ea1-fbd6-4025-8501-ba7563d44ba2",
+            "createdTimestampMs": 1713370774094,
+            "updatedTimestampMs": 1713370774094,
+            "name": "sleep",
+            "deviceValues": [
+              {
+                "id": "2c6ecdcd-78c0-4d87-b759-24b3f5b8bd2a",
+                "createdTimestampMs": 1713370774112,
+                "updatedTimestampMs": 1713370774112,
+                "type": "attribute",
+                "key": "300",
+                "value": "0504008C0A280008078C0A05000000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "a4b7b897-9300-439e-adc2-9889e8b01612",
+            "createdTimestampMs": 1713370774065,
+            "updatedTimestampMs": 1713370774065,
+            "name": "wake-up",
+            "deviceValues": [
+              {
+                "id": "c4e98dc8-f710-4dc2-815b-45ddf44bbe1b",
+                "createdTimestampMs": 1713370774082,
+                "updatedTimestampMs": 1713370774082,
+                "type": "attribute",
+                "key": "300",
+                "value": "0204008C0A050008078C0A64000000"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "2d7afbec-4cba-474f-ab14-e1f29fe071dc",
+        "createdTimestampMs": 1713370773021,
+        "updatedTimestampMs": 1713370773021,
+        "functionClass": "power",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "01d0d596-542a-4716-ad11-69108a4acb6e",
+            "createdTimestampMs": 1713370773038,
+            "updatedTimestampMs": 1713370773038,
+            "name": "off",
+            "deviceValues": [
+              {
+                "id": "0689de0c-4c89-484f-ba20-6a39d5110d1c",
+                "createdTimestampMs": 1713370773055,
+                "updatedTimestampMs": 1713370773055,
+                "type": "attribute",
+                "key": "1",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "a947a153-3c0f-4a80-9a10-caa8831d7b1a",
+            "createdTimestampMs": 1713370773068,
+            "updatedTimestampMs": 1713370773068,
+            "name": "on",
+            "deviceValues": [
+              {
+                "id": "ac6bab5f-3e3a-488e-86f8-d6751a5b0085",
+                "createdTimestampMs": 1713370773086,
+                "updatedTimestampMs": 1713370773086,
+                "type": "attribute",
+                "key": "1",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "5e715a21-46d4-4b3f-b2cf-7b0e5e5cce69",
+        "createdTimestampMs": 1713370773099,
+        "updatedTimestampMs": 1713370773099,
+        "functionClass": "color-sequence",
+        "functionInstance": "preset",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "f13aec24-557d-4434-a513-c1d92f48dca5",
+            "createdTimestampMs": 1713370774016,
+            "updatedTimestampMs": 1713370774016,
+            "name": "hanukkah",
+            "hints": ["WinterHolidays"],
+            "deviceValues": [
+              {
+                "id": "4a67f523-705d-493b-984a-486d13470d72",
+                "createdTimestampMs": 1713370774035,
+                "updatedTimestampMs": 1713370774035,
+                "type": "attribute",
+                "key": "6",
+                "value": "10039"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "1ecd2c9f-7599-4412-850d-f2dd6e769eb9",
+            "createdTimestampMs": 1713370773986,
+            "updatedTimestampMs": 1713370773986,
+            "name": "cross-faded",
+            "hints": ["FunPatterns"],
+            "deviceValues": [
+              {
+                "id": "5519012a-ffc0-49a6-9a46-7c5a231e2891",
+                "createdTimestampMs": 1713370774004,
+                "updatedTimestampMs": 1713370774004,
+                "type": "attribute",
+                "key": "6",
+                "value": "10037"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "70ab5776-82a4-45e7-9ff3-fcc6939a076d",
+            "createdTimestampMs": 1713370773956,
+            "updatedTimestampMs": 1713370773956,
+            "name": "rainbow-roll",
+            "hints": ["FunPatterns"],
+            "deviceValues": [
+              {
+                "id": "4752b2c9-ce31-4213-8abc-88b8da98cd5d",
+                "createdTimestampMs": 1713370773973,
+                "updatedTimestampMs": 1713370773973,
+                "type": "attribute",
+                "key": "6",
+                "value": "10036"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "c4dd6210-6347-46e8-a092-802a202a5095",
+            "createdTimestampMs": 1713370773924,
+            "updatedTimestampMs": 1713370773924,
+            "name": "may-tricks",
+            "hints": ["FunPatterns"],
+            "deviceValues": [
+              {
+                "id": "2b1baafc-ca64-457c-9ae8-322e46c25300",
+                "createdTimestampMs": 1713370773943,
+                "updatedTimestampMs": 1713370773943,
+                "type": "attribute",
+                "key": "6",
+                "value": "10034"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "7a309386-9cba-455b-a1f9-9a12127394cb",
+            "createdTimestampMs": 1713370773868,
+            "updatedTimestampMs": 1713370773868,
+            "name": "st-patricks-day",
+            "hints": ["MoreHolidays"],
+            "deviceValues": [
+              {
+                "id": "50d062e9-729a-4ae4-aaf9-703be8782474",
+                "createdTimestampMs": 1713370773910,
+                "updatedTimestampMs": 1713370773910,
+                "type": "attribute",
+                "key": "6",
+                "value": "10032"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "43c4d8d4-0e74-472f-883b-517d5ad4db6d",
+            "createdTimestampMs": 1713370773836,
+            "updatedTimestampMs": 1713370773836,
+            "name": "vote-of-confidence-six",
+            "hints": ["FunPatterns"],
+            "deviceValues": [
+              {
+                "id": "15c76429-b131-46a2-b4bb-42285625de20",
+                "createdTimestampMs": 1713370773855,
+                "updatedTimestampMs": 1713370773855,
+                "type": "attribute",
+                "key": "6",
+                "value": "10031"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "1fe52bd9-2bb3-4f2e-af08-25cfc9e0ca73",
+            "createdTimestampMs": 1713370773803,
+            "updatedTimestampMs": 1713370773803,
+            "name": "easter-eggs-six",
+            "hints": ["MoreHolidays"],
+            "deviceValues": [
+              {
+                "id": "2295206d-a84c-462d-9a76-c0b49e734e06",
+                "createdTimestampMs": 1713370773823,
+                "updatedTimestampMs": 1713370773823,
+                "type": "attribute",
+                "key": "6",
+                "value": "10030"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "c9b47428-88ad-46d3-83bd-6025bd89bdb6",
+            "createdTimestampMs": 1713370773770,
+            "updatedTimestampMs": 1713370773770,
+            "name": "penguin-disco",
+            "hints": ["WinterHolidays"],
+            "deviceValues": [
+              {
+                "id": "afe92bbe-4c69-4758-8219-2873349a89a5",
+                "createdTimestampMs": 1713370773789,
+                "updatedTimestampMs": 1713370773789,
+                "type": "attribute",
+                "key": "6",
+                "value": "10027"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "c75a606a-cbc6-4d29-932c-cff5182f6292",
+            "createdTimestampMs": 1713370773737,
+            "updatedTimestampMs": 1713370773737,
+            "name": "rainbow-rudolf",
+            "hints": ["WinterHolidays"],
+            "deviceValues": [
+              {
+                "id": "a4d45190-faf6-42d4-a485-f9fd2769726a",
+                "createdTimestampMs": 1713370773757,
+                "updatedTimestampMs": 1713370773757,
+                "type": "attribute",
+                "key": "6",
+                "value": "10025"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "b808ab1f-831a-4871-bc3f-19566d41bd90",
+            "createdTimestampMs": 1713370773703,
+            "updatedTimestampMs": 1713370773703,
+            "name": "prism",
+            "hints": ["FunPatterns"],
+            "deviceValues": [
+              {
+                "id": "377a962d-6be0-4919-85bb-e068cf74fc72",
+                "createdTimestampMs": 1713370773723,
+                "updatedTimestampMs": 1713370773723,
+                "type": "attribute",
+                "key": "6",
+                "value": "10023"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "cb483ba5-1382-40ad-b52b-93d35a031f3f",
+            "createdTimestampMs": 1713370773671,
+            "updatedTimestampMs": 1713370773671,
+            "name": "snowfall",
+            "hints": ["WinterHolidays"],
+            "deviceValues": [
+              {
+                "id": "ee5dcd23-cc77-4c68-abd8-eb4ee7384945",
+                "createdTimestampMs": 1713370773690,
+                "updatedTimestampMs": 1713370773690,
+                "type": "attribute",
+                "key": "6",
+                "value": "10042"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "d082e018-1ade-4457-8299-9bc3a506b0b7",
+            "createdTimestampMs": 1713370773639,
+            "updatedTimestampMs": 1713370773639,
+            "name": "mistletoe",
+            "hints": ["WinterHolidays"],
+            "deviceValues": [
+              {
+                "id": "a2138079-e01b-4d87-b00d-a13595f86769",
+                "createdTimestampMs": 1713370773657,
+                "updatedTimestampMs": 1713370773657,
+                "type": "attribute",
+                "key": "6",
+                "value": "10018"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "ca0899f0-d8bf-4c09-958b-c9698eb49a13",
+            "createdTimestampMs": 1713370773609,
+            "updatedTimestampMs": 1713370773609,
+            "name": "rainbow-road",
+            "hints": ["FunPatterns"],
+            "deviceValues": [
+              {
+                "id": "6174534d-8079-42f3-8b1a-bd5605b426c9",
+                "createdTimestampMs": 1713370773626,
+                "updatedTimestampMs": 1713370773626,
+                "type": "attribute",
+                "key": "6",
+                "value": "10017"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "98eed22d-0310-4d05-ab08-bf6d809d13e7",
+            "createdTimestampMs": 1713370773580,
+            "updatedTimestampMs": 1713370773580,
+            "name": "white-star",
+            "hints": ["WinterHolidays"],
+            "deviceValues": [
+              {
+                "id": "c589e0f1-3042-4543-8880-88c15c491eef",
+                "createdTimestampMs": 1713370773598,
+                "updatedTimestampMs": 1713370773598,
+                "type": "attribute",
+                "key": "6",
+                "value": "10016"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "5caa699a-130e-4c6d-bd52-b1c12d9b0d0b",
+            "createdTimestampMs": 1713370773550,
+            "updatedTimestampMs": 1713370773550,
+            "name": "red-shift",
+            "hints": ["FunPatterns"],
+            "deviceValues": [
+              {
+                "id": "81dcfb6f-91a3-4eba-8ce2-47d52b1fe663",
+                "createdTimestampMs": 1713370773568,
+                "updatedTimestampMs": 1713370773568,
+                "type": "attribute",
+                "key": "6",
+                "value": "10012"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "59c2cf4b-b40e-45aa-8c84-f26910b5dad9",
+            "createdTimestampMs": 1713370773520,
+            "updatedTimestampMs": 1713370773520,
+            "name": "effervescent",
+            "hints": ["FunPatterns"],
+            "deviceValues": [
+              {
+                "id": "0dfb14dd-9978-47e0-8f08-2408b973dd0f",
+                "createdTimestampMs": 1713370773538,
+                "updatedTimestampMs": 1713370773538,
+                "type": "attribute",
+                "key": "6",
+                "value": "10046"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "26020c35-bf7c-4094-91b4-74ae2a288b2e",
+            "createdTimestampMs": 1713370773491,
+            "updatedTimestampMs": 1713370773491,
+            "name": "under-the-sea",
+            "hints": ["FunPatterns"],
+            "deviceValues": [
+              {
+                "id": "a9fa2702-88e5-48cb-9fef-56ae7b96324c",
+                "createdTimestampMs": 1713370773508,
+                "updatedTimestampMs": 1713370773508,
+                "type": "attribute",
+                "key": "6",
+                "value": "10010"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "55049895-bf42-49e5-abc6-019148d9fb70",
+            "createdTimestampMs": 1713370773461,
+            "updatedTimestampMs": 1713370773461,
+            "name": "double-rainbow",
+            "hints": ["FunPatterns"],
+            "deviceValues": [
+              {
+                "id": "66c85528-7039-4193-aded-14512718cebd",
+                "createdTimestampMs": 1713370773478,
+                "updatedTimestampMs": 1713370773478,
+                "type": "attribute",
+                "key": "6",
+                "value": "10009"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "b366438b-4b03-409b-8ad5-d58693835fdd",
+            "createdTimestampMs": 1713370773429,
+            "updatedTimestampMs": 1713370773429,
+            "name": "cinco-de-mayo",
+            "hints": ["MoreHolidays"],
+            "deviceValues": [
+              {
+                "id": "d9161b11-4ce2-4d56-871d-8bd563e2007f",
+                "createdTimestampMs": 1713370773448,
+                "updatedTimestampMs": 1713370773448,
+                "type": "attribute",
+                "key": "6",
+                "value": "10040"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "a52191a9-3642-4389-9b2e-7fb051c55724",
+            "createdTimestampMs": 1713370773399,
+            "updatedTimestampMs": 1713370773399,
+            "name": "halloween",
+            "hints": ["FunPatterns"],
+            "deviceValues": [
+              {
+                "id": "055b401b-3a68-4bee-9d19-4a11034e11f9",
+                "createdTimestampMs": 1713370773417,
+                "updatedTimestampMs": 1713370773417,
+                "type": "attribute",
+                "key": "6",
+                "value": "10045"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "0d32d602-25ae-414d-93fd-ebfc684b6d5f",
+            "createdTimestampMs": 1713370773368,
+            "updatedTimestampMs": 1713370773368,
+            "name": "valentines-day",
+            "hints": ["MoreHolidays"],
+            "deviceValues": [
+              {
+                "id": "7a7ac619-c7e8-42e1-a828-c6fe3ca72543",
+                "createdTimestampMs": 1713370773386,
+                "updatedTimestampMs": 1713370773386,
+                "type": "attribute",
+                "key": "6",
+                "value": "10044"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "4255c3d7-9ac3-4014-bb0d-627fd607b811",
+            "createdTimestampMs": 1713370773338,
+            "updatedTimestampMs": 1713370773338,
+            "name": "rainbow",
+            "hints": ["FunPatterns"],
+            "deviceValues": [
+              {
+                "id": "c10ab0eb-4472-42ea-88e7-67aaa67b327d",
+                "createdTimestampMs": 1713370773356,
+                "updatedTimestampMs": 1713370773356,
+                "type": "attribute",
+                "key": "6",
+                "value": "10002"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "624222b5-090e-4a1a-bafc-25b005f8df01",
+            "createdTimestampMs": 1713370773308,
+            "updatedTimestampMs": 1713370773308,
+            "name": "july-4th",
+            "hints": ["MoreHolidays"],
+            "deviceValues": [
+              {
+                "id": "e2a1f88e-b1df-4477-9bd1-bb90635feea1",
+                "createdTimestampMs": 1713370773326,
+                "updatedTimestampMs": 1713370773326,
+                "type": "attribute",
+                "key": "6",
+                "value": "10041"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "8d68f413-4ef2-40c0-81ab-7569e02c98fb",
+            "createdTimestampMs": 1713370773277,
+            "updatedTimestampMs": 1713370773277,
+            "name": "christmas",
+            "hints": ["WinterHolidays"],
+            "deviceValues": [
+              {
+                "id": "60bfd86e-72b4-4ce7-90cf-6b5a7025b3aa",
+                "createdTimestampMs": 1713370773295,
+                "updatedTimestampMs": 1713370773295,
+                "type": "attribute",
+                "key": "6",
+                "value": "10000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "8def658d-018b-4500-8be8-ff619ec76edc",
+            "createdTimestampMs": 1713370773247,
+            "updatedTimestampMs": 1713370773247,
+            "name": "jump-3",
+            "hints": ["FunPatterns"],
+            "deviceValues": [
+              {
+                "id": "9ad8bc61-5465-4bf8-b7fa-9513138af169",
+                "createdTimestampMs": 1713370773265,
+                "updatedTimestampMs": 1713370773265,
+                "type": "attribute",
+                "key": "6",
+                "value": "305"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "d22436a5-7cbd-4581-aeea-7808a3a97fc0",
+            "createdTimestampMs": 1713370773216,
+            "updatedTimestampMs": 1713370773216,
+            "name": "jump-7",
+            "hints": ["FunPatterns"],
+            "deviceValues": [
+              {
+                "id": "5de801ef-19b7-4664-98a7-7d5d26ef99df",
+                "createdTimestampMs": 1713370773233,
+                "updatedTimestampMs": 1713370773233,
+                "type": "attribute",
+                "key": "6",
+                "value": "304"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "bca68497-a997-42c8-af56-f2a89587a6c1",
+            "createdTimestampMs": 1713370773117,
+            "updatedTimestampMs": 1713370773117,
+            "name": "custom",
+            "deviceValues": [
+              {
+                "id": "1de41403-d9f8-4bb9-8229-ec0441a600c3",
+                "createdTimestampMs": 1713370773135,
+                "updatedTimestampMs": 1713370773135,
+                "type": "attribute",
+                "key": "6",
+                "value": "300"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "fd2596a0-90b4-45de-b1ad-d3f818eb173e",
+            "createdTimestampMs": 1713370773178,
+            "updatedTimestampMs": 1713370773178,
+            "name": "fade-3",
+            "hints": ["FunPatterns"],
+            "deviceValues": [
+              {
+                "id": "70ebf122-34eb-4f5a-be40-6e0e42d2666c",
+                "createdTimestampMs": 1713370773199,
+                "updatedTimestampMs": 1713370773199,
+                "type": "attribute",
+                "key": "6",
+                "value": "303"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "2124ac19-434a-4d57-95b9-0263199b0613",
+            "createdTimestampMs": 1713370773147,
+            "updatedTimestampMs": 1713370773147,
+            "name": "fade-7",
+            "hints": ["FunPatterns"],
+            "deviceValues": [
+              {
+                "id": "219e395e-067c-41ce-8861-51ab9f251bbd",
+                "createdTimestampMs": 1713370773165,
+                "updatedTimestampMs": 1713370773165,
+                "type": "attribute",
+                "key": "6",
+                "value": "302"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "cd18245b-b7cf-49ce-89f5-0e9b04e25ab5",
+        "createdTimestampMs": 1713370772973,
+        "updatedTimestampMs": 1713370772973,
+        "functionClass": "speed",
+        "functionInstance": "color-sequence",
+        "type": "numeric",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "e27dc728-4ede-4efd-bcda-cdf7754b824b",
+            "createdTimestampMs": 1713370772990,
+            "updatedTimestampMs": 1713370772990,
+            "name": "speed",
+            "deviceValues": [
+              {
+                "id": "8f8312db-dda8-43ff-a5f4-1bc1cde12cda",
+                "createdTimestampMs": 1713370773008,
+                "updatedTimestampMs": 1713370773008,
+                "type": "attribute",
+                "key": "11"
+              }
+            ],
+            "range": {
+              "min": -10,
+              "max": 10,
+              "step": 1
+            }
+          }
+        ]
+      },
+      {
+        "id": "430e4ea7-aac5-4822-b696-713abd2c843c",
+        "createdTimestampMs": 1713370772925,
+        "updatedTimestampMs": 1713370772925,
+        "functionClass": "brightness",
+        "type": "numeric",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "9577f2f9-2962-4613-8491-40a22488de0b",
+            "createdTimestampMs": 1713370772943,
+            "updatedTimestampMs": 1713370772943,
+            "name": "brightness",
+            "deviceValues": [
+              {
+                "id": "2a574053-5e69-40ea-abbc-31b3e861ccb4",
+                "createdTimestampMs": 1713370772961,
+                "updatedTimestampMs": 1713370772961,
+                "type": "attribute",
+                "key": "2"
+              }
+            ],
+            "range": {
+              "min": 1,
+              "max": 100,
+              "step": 1
+            }
+          }
+        ]
+      },
+      {
+        "id": "1a0e245e-4875-4958-bd84-12eb30b09723",
+        "createdTimestampMs": 1713370772759,
+        "updatedTimestampMs": 1713370772759,
+        "functionClass": "color-mode",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "446b4669-3ccf-49fc-9dee-936dd5e68816",
+            "createdTimestampMs": 1713370772894,
+            "updatedTimestampMs": 1713370772894,
+            "name": "individual",
+            "deviceValues": [
+              {
+                "id": "e2f8871d-584b-484a-97e5-ee5e6c162e9a",
+                "createdTimestampMs": 1713370772913,
+                "updatedTimestampMs": 1713370772913,
+                "type": "attribute",
+                "key": "5",
+                "value": "4"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "73360e58-b9d3-4c57-b27d-2d797edd64c2",
+            "createdTimestampMs": 1713370772864,
+            "updatedTimestampMs": 1713370772864,
+            "name": "sequence",
+            "deviceValues": [
+              {
+                "id": "9b62d327-3413-4f8d-b745-8122a335fa65",
+                "createdTimestampMs": 1713370772882,
+                "updatedTimestampMs": 1713370772882,
+                "type": "attribute",
+                "key": "5",
+                "value": "2"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "338ada17-bd16-4824-b4ec-1be79e127979",
+            "createdTimestampMs": 1713370772834,
+            "updatedTimestampMs": 1713370772834,
+            "name": "white",
+            "deviceValues": [
+              {
+                "id": "ad4de831-7374-4357-83cc-5bca830b3c91",
+                "createdTimestampMs": 1713370772852,
+                "updatedTimestampMs": 1713370772852,
+                "type": "attribute",
+                "key": "5",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "c69c2a47-2b22-4407-a3e3-4809d477a8e0",
+            "createdTimestampMs": 1713370772785,
+            "updatedTimestampMs": 1713370772785,
+            "name": "color",
+            "deviceValues": [
+              {
+                "id": "e22f2ff9-c5bf-4855-a6a8-7c7b0061c861",
+                "createdTimestampMs": 1713370772815,
+                "updatedTimestampMs": 1713370772815,
+                "type": "attribute",
+                "key": "5",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      }
+    ],
+    "states": [
+      {
+        "functionClass": "toggle",
+        "value": "off",
+        "lastUpdateTime": 0,
+        "functionInstance": "party-mode"
+      },
+      {
+        "functionClass": "restore-values",
+        "value": "restored",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "color-sequence-v2",
+        "value": {
+          "color-sequence-v2": {
+            "sequenceFlags": 0,
+            "brightnessSpeed": 50,
+            "motionSpeed": 50,
+            "motionEffect": 0,
+            "brightnessEffect": 0,
+            "headerFlags": 128,
+            "frameBuffer": {
+              "flags": 0,
+              "framebuffer": [
+                {
+                  "r": 0,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                }
+              ]
+            },
+            "id": 0,
+            "version": 1,
+            "brightnessDepth": 100
+          }
+        },
+        "lastUpdateTime": 0,
+        "functionInstance": "custom-3"
+      },
+      {
+        "functionClass": "color-sequence-v2",
+        "value": {
+          "color-sequence-v2": {
+            "sequenceFlags": 0,
+            "brightnessSpeed": 50,
+            "motionSpeed": 50,
+            "motionEffect": 0,
+            "brightnessEffect": 0,
+            "headerFlags": 128,
+            "frameBuffer": {
+              "flags": 0,
+              "framebuffer": [
+                {
+                  "r": 0,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 255,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 255,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 255,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 255,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 255,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 255,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 255,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 255,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 255,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 255,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 255,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 255,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 255,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 255,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 255,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 255,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 255,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 255,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 255,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 0,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 255,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                }
+              ]
+            },
+            "id": 0,
+            "version": 1,
+            "brightnessDepth": 100
+          }
+        },
+        "lastUpdateTime": 0,
+        "functionInstance": "custom-2"
+      },
+      {
+        "functionClass": "color-sequence-v2",
+        "value": {
+          "color-sequence-v2": {
+            "sequenceFlags": 0,
+            "brightnessSpeed": 50,
+            "motionSpeed": 50,
+            "motionEffect": 0,
+            "brightnessEffect": 0,
+            "headerFlags": 128,
+            "frameBuffer": {
+              "flags": 0,
+              "framebuffer": [
+                {
+                  "r": 255,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 53,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 157,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 255,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 53,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 157,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 53,
+                  "b": 255,
+                  "cct": 0,
+                  "g": 157,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 255,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 255,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 255,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 255,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 255,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 255,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 255,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 255,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 255,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 255,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 255,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 255,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 255,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 255,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                },
+                {
+                  "r": 255,
+                  "b": 0,
+                  "cct": 0,
+                  "g": 0,
+                  "colorBrightness": 100,
+                  "whiteBrightness": 0
+                }
+              ]
+            },
+            "id": 0,
+            "version": 1,
+            "brightnessDepth": 100
+          }
+        },
+        "lastUpdateTime": 0,
+        "functionInstance": "custom-1"
+      },
+      {
+        "functionClass": "color-rgb",
+        "value": {
+          "color-rgb": {
+            "r": 255,
+            "b": 0,
+            "g": 51
+          }
+        },
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "color-temperature",
+        "value": 3000,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "color-individual",
+        "value": "custom-1",
+        "lastUpdateTime": 0,
+        "functionInstance": "custom"
+      },
+      {
+        "functionClass": "color-sequence",
+        "value": "focus",
+        "lastUpdateTime": 0,
+        "functionInstance": "custom"
+      },
+      {
+        "functionClass": "power",
+        "value": "on",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "color-sequence",
+        "value": "halloween",
+        "lastUpdateTime": 0,
+        "functionInstance": "preset"
+      },
+      {
+        "functionClass": "speed",
+        "value": -10,
+        "lastUpdateTime": 0,
+        "functionInstance": "color-sequence"
+      },
+      {
+        "functionClass": "brightness",
+        "value": 100,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "color-mode",
+        "value": "sequence",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-ssid",
+        "value": "cb06f4b0-f285-438d-beff-d994fd82165a",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-rssi",
+        "value": -57,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-steady-state",
+        "value": "connected",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-setup-state",
+        "value": "connected",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-mac-address",
+        "value": "0b9379b4-51cc-4a56-91bd-08a475f45040",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "geo-coordinates",
+        "value": {
+          "geo-coordinates": {
+            "latitude": "0",
+            "longitude": "0"
+          }
+        },
+        "lastUpdateTime": 0,
+        "functionInstance": "system-device-location"
+      },
+      {
+        "functionClass": "scheduler-flags",
+        "value": 0,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "available",
+        "value": true,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "visible",
+        "value": true,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "direct",
+        "value": true,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "ble-mac-address",
+        "value": "fabdce5e-1731-4cc4-b87c-d99cb80c4918",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      }
+    ],
+    "children": [],
+    "manufacturerName": "Hampton Bay",
+    "split_identifier": null,
+    "version_data": null
+  }
+]

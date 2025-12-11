@@ -5,3 +5,4 @@ responses
 pre-commit
 pytest-homeassistant-custom-component
 tox
+pycares<5

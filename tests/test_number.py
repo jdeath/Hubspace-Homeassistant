@@ -10,6 +10,10 @@ exhaust_fan_from_file = create_devices_from_data("fan-exhaust-fan.json")
 exhaust_fan = exhaust_fan_from_file[2]
 exhaust_fan_number_id = "number.r3_closet_auto_off_timer"
 
+light_with_speed_from_file = create_devices_from_data("light-with-speed.json")
+light_with_speed = light_with_speed_from_file[2]
+light_with_speed_id = "number.landscaping_tree_lights_speed"
+
 
 @pytest.fixture
 async def mocked_entity(mocked_entry):
@@ -30,6 +34,7 @@ async def mocked_entity(mocked_entry):
     ),
     [
         (exhaust_fan, [exhaust_fan_number_id]),
+        (light_with_speed, [light_with_speed_id]),
     ],
 )
 async def test_async_setup_entry(dev, expected_entities, mocked_entry):
