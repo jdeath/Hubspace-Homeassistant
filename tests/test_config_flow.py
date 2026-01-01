@@ -21,6 +21,7 @@ def config_entry(hass):
         options={
             CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
             const.POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+            const.CONF_DISCOVERY_INTERVAL: const.DEFAULT_DISCOVERY_INTERVAL,
         },
         unique_id="cool",
     )
@@ -56,6 +57,7 @@ def mocked_config_flow(mocked_bridge, mocker):
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
                 const.CONF_CLIENT: const.DEFAULT_CLIENT,
+                const.CONF_DISCOVERY_INTERVAL: const.DEFAULT_DISCOVERY_INTERVAL,
             },
             None,
             None,
@@ -68,6 +70,7 @@ def mocked_config_flow(mocked_bridge, mocker):
             {
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                const.CONF_DISCOVERY_INTERVAL: const.DEFAULT_DISCOVERY_INTERVAL,
             },
         ),
         # Happy path without CONF_TIMEOUT or POLLING_TIME_STR
@@ -78,6 +81,7 @@ def mocked_config_flow(mocked_bridge, mocker):
                 POLLING_TIME_STR: 0,
                 CONF_TIMEOUT: 0,
                 const.CONF_CLIENT: const.DEFAULT_CLIENT,
+                const.CONF_DISCOVERY_INTERVAL: 0,
             },
             None,
             None,
@@ -90,6 +94,7 @@ def mocked_config_flow(mocked_bridge, mocker):
             {
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                const.CONF_DISCOVERY_INTERVAL: const.DEFAULT_DISCOVERY_INTERVAL,
             },
         ),
         # Poll cycle is too short
@@ -100,9 +105,40 @@ def mocked_config_flow(mocked_bridge, mocker):
                 POLLING_TIME_STR: 1,
                 CONF_TIMEOUT: 0,
                 const.CONF_CLIENT: const.DEFAULT_CLIENT,
+                const.CONF_DISCOVERY_INTERVAL: const.DEFAULT_DISCOVERY_INTERVAL,
             },
             None,
             "polling_too_short",
+            None,
+            None,
+        ),
+        # Discovery cycle is too short
+        (
+            {
+                CONF_USERNAME: "cool",
+                CONF_PASSWORD: "beans",
+                POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                CONF_TIMEOUT: 0,
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
+                const.CONF_DISCOVERY_INTERVAL: 1799,
+            },
+            None,
+            "discovery_too_short",
+            None,
+            None,
+        ),
+        # Discovery cycle is smaller than polling
+        (
+            {
+                CONF_USERNAME: "cool",
+                CONF_PASSWORD: "beans",
+                POLLING_TIME_STR: 2000,
+                CONF_TIMEOUT: 0,
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
+                const.CONF_DISCOVERY_INTERVAL: 1900,
+            },
+            None,
+            "discovery_too_short_polling",
             None,
             None,
         ),
@@ -114,6 +150,7 @@ def mocked_config_flow(mocked_bridge, mocker):
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
                 const.CONF_CLIENT: const.DEFAULT_CLIENT,
+                const.CONF_DISCOVERY_INTERVAL: const.DEFAULT_DISCOVERY_INTERVAL,
             },
             TimeoutError,
             "cannot_connect",
@@ -128,6 +165,7 @@ def mocked_config_flow(mocked_bridge, mocker):
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
                 const.CONF_CLIENT: const.DEFAULT_CLIENT,
+                const.CONF_DISCOVERY_INTERVAL: const.DEFAULT_DISCOVERY_INTERVAL,
             },
             InvalidAuth,
             "invalid_auth",
@@ -142,6 +180,7 @@ def mocked_config_flow(mocked_bridge, mocker):
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
                 const.CONF_CLIENT: const.DEFAULT_CLIENT,
+                const.CONF_DISCOVERY_INTERVAL: const.DEFAULT_DISCOVERY_INTERVAL,
             },
             KeyError,
             "unknown",
@@ -210,6 +249,7 @@ async def test_HubspaceConfigFlow_async_step_user(
                 "options": {
                     POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                     CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                    const.CONF_DISCOVERY_INTERVAL: const.DEFAULT_DISCOVERY_INTERVAL,
                 },
                 "unique_id": "cool",
             },
@@ -225,6 +265,7 @@ async def test_HubspaceConfigFlow_async_step_user(
             {
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                const.CONF_DISCOVERY_INTERVAL: const.DEFAULT_DISCOVERY_INTERVAL,
             },
             "reauth_successful",
             None,
@@ -291,16 +332,19 @@ async def test_HubspaceConfigFlow_async_step_user_reauth(
                 "options": {
                     POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                     CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                    const.CONF_DISCOVERY_INTERVAL: const.DEFAULT_DISCOVERY_INTERVAL,
                 },
                 "unique_id": "cool",
             },
             {
                 POLLING_TIME_STR: 0,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                const.CONF_DISCOVERY_INTERVAL: 0,
             },
             {
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                const.CONF_DISCOVERY_INTERVAL: const.DEFAULT_DISCOVERY_INTERVAL,
             },
             None,
         ),
@@ -311,18 +355,40 @@ async def test_HubspaceConfigFlow_async_step_user_reauth(
                 "options": {
                     POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                     CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                    const.CONF_DISCOVERY_INTERVAL: const.DEFAULT_DISCOVERY_INTERVAL,
                 },
                 "unique_id": "cool",
             },
             {
                 POLLING_TIME_STR: 1,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                const.CONF_DISCOVERY_INTERVAL: const.DEFAULT_DISCOVERY_INTERVAL,
             },
             {
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                const.CONF_DISCOVERY_INTERVAL: const.DEFAULT_DISCOVERY_INTERVAL,
             },
             "polling_too_short",
+        ),
+        # Discovery too short
+        (
+            {
+                "data": {CONF_USERNAME: "cool", CONF_PASSWORD: "beans"},
+                "options": {
+                    POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                    CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                    const.CONF_DISCOVERY_INTERVAL: const.DEFAULT_DISCOVERY_INTERVAL,
+                },
+                "unique_id": "cool",
+            },
+            {
+                POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                const.CONF_DISCOVERY_INTERVAL: 1799,
+            },
+            None,
+            "discovery_too_short",
         ),
     ],
 )
@@ -372,6 +438,7 @@ async def test_HubspaceConfigFlow_otp_flow(hass, mocker, mocked_config_flow):
         POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
         CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
         const.CONF_CLIENT: const.DEFAULT_CLIENT,
+        const.CONF_DISCOVERY_INTERVAL: const.DEFAULT_DISCOVERY_INTERVAL,
     }
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
@@ -427,4 +494,5 @@ async def test_HubspaceConfigFlow_otp_flow(hass, mocker, mocked_config_flow):
     assert result["options"] == {
         POLLING_TIME_STR: user_data[POLLING_TIME_STR],
         CONF_TIMEOUT: user_data[CONF_TIMEOUT],
+        const.CONF_DISCOVERY_INTERVAL: user_data[const.CONF_DISCOVERY_INTERVAL],
     }

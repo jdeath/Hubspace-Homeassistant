@@ -12,7 +12,9 @@ from homeassistant.helpers import aiohttp_client, device_registry as dr
 from .bridge import HubspaceBridge
 from .const import (
     CONF_CLIENT,
+    CONF_DISCOVERY_INTERVAL,
     DEFAULT_CLIENT,
+    DEFAULT_DISCOVERY_INTERVAL,
     DEFAULT_POLLING_INTERVAL_SEC,
     DEFAULT_TIMEOUT,
     DOMAIN,
@@ -60,6 +62,8 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
         res = await perform_v4_migration(hass, config_entry)
     if config_entry.version == 4 and config_entry.minor_version == 0:
         res = await perform_v5_migration(hass, config_entry)
+    if config_entry.version == 5 and config_entry.minor_version == 0:
+        res = await perform_v6_migration(hass, config_entry)
     _LOGGER.debug(
         "Migration to configuration version %s.%s successful",
         config_entry.version,
@@ -154,6 +158,19 @@ async def perform_v5_migration(hass: HomeAssistant, config_entry: ConfigEntry) -
     new_data[CONF_CLIENT] = DEFAULT_CLIENT
     hass.config_entries.async_update_entry(
         config_entry, data=new_data, version=5, minor_version=0
+    )
+    return True
+
+
+async def perform_v6_migration(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
+    """Perform version 6 migration of the configuration entry.
+
+    * Ensure discovery_interval is set
+    """
+    options = {**config_entry.options}
+    options[CONF_DISCOVERY_INTERVAL] = DEFAULT_DISCOVERY_INTERVAL
+    hass.config_entries.async_update_entry(
+        config_entry, options=options, version=6, minor_version=0
     )
     return True
 

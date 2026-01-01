@@ -67,6 +67,11 @@ are as follows:
 
 ## Changelog
 
+- 6.1.0
+
+  - Split up discovery and standard polling to reduce the overall bandwidth to the cloud API
+  - Discovery (add / removal) of devices now occurs only during the discovery polling cycle
+
 - 6.0.0
 
   - Break: Some lights that were split (such as ones with trim) now have new entity IDs. Any automations need to be updated to reflect the new IDs

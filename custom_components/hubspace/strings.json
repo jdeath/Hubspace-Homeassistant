@@ -7,7 +7,8 @@
           "username": "[%key:common::config_flow::data::username%]",
           "password": "[%key:common::config_flow::data::password%]",
           "timeout": "[%key:common::config_flow::data::timeout%]",
-          "polling_time": "[%key:component::hubspace::step::step::init::polling_time%]"
+          "polling_time": "[%key:component::hubspace::step::step::init::polling_time%]",
+          "discovery_interval": "[%key:component::hubspace::step::step::init::discovery_interval%]"
         }
       },
       "reauth_confirm": {
@@ -26,6 +27,7 @@
       "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
       "unknown": "[%key:common::config_flow::error::unknown%]",
       "polling_too_short": "[%key:component::hubspace::step::error::polling_too_short%]",
+      "discovery_too_short": "[%key:component::hubspace::step::error::discovery_too_short%]",
       "unique_id_mismatch": "[%key:component::hubspace::step::error::unique_id_mismatch%]",
       "otp_required": "[%key:component::hubspace::step::error::otp_required%]",
       "invalid_otp": "[%key:component::hubspace::step::error::invalid_otp%]",
@@ -41,12 +43,15 @@
     "step": {
       "init": {
         "data": {
-          "polling_time": "[%key:component::hubspace::options::step::init::polling_time%]"
+          "polling_time": "[%key:component::hubspace::options::step::init::polling_time%]",
+          "discovery_interval": "[%key:component::hubspace::options::step::init::discovery_interval%]"
         }
       }
     },
     "error": {
-      "polling_too_short": "[%key:component::hubspace::options::error::polling_too_short%]"
+      "polling_too_short": "[%key:component::hubspace::options::error::polling_too_short%]",
+      "discovery_too_short": "[%key:component::hubspace::options::error::discovery_too_short%]",
+      "discovery_too_short_polling": "[%key:component::hubspace::options::error::discovery_too_short_polling%]"
     }
   },
   "services": {

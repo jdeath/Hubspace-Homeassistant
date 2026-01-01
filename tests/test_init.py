@@ -142,6 +142,7 @@ async def test_async_migrate_entry(v1_config_entry):
     assert v1_config_entry[1].options == {
         CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
         const.POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+        const.CONF_DISCOVERY_INTERVAL: const.DEFAULT_DISCOVERY_INTERVAL,
     }
     assert v1_config_entry[1].version == const.VERSION_MAJOR
 

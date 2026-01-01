@@ -29,12 +29,14 @@ UPDATE_INTERVAL_OBSERVATION = timedelta(seconds=30)
 HUB_IDENTIFIER: Final[str] = "hubspace_debug"
 DEFAULT_TIMEOUT: Final[int] = 10000
 DEFAULT_POLLING_INTERVAL_SEC: Final[int] = 30
+DEFAULT_DISCOVERY_INTERVAL: Final[int] = 3600
 POLLING_TIME_STR: Final[str] = "polling_time"
+CONF_DISCOVERY_INTERVAL: Final[str] = "discovery_interval"
 DEFAULT_CLIENT: Final[str] = "hubspace"
 CONF_CLIENT: Final[str] = "client"
 CONF_OTP: Final[str] = "otp_code"
 
-VERSION_MAJOR: Final[int] = 5
+VERSION_MAJOR: Final[int] = 6
 VERSION_MINOR: Final[int] = 0
 
 

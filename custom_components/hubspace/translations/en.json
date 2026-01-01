@@ -13,7 +13,8 @@
           "username": "Hubspace Username",
           "password": "Hubspace Password",
           "timeout": "Connection Timeout (Default: 10000)",
-          "polling_time": "Time in seconds between polling intervals (Default: 30)"
+          "polling_time": "Time in seconds between polling intervals (Default: 30)",
+          "discovery_interval": "Time in seconds between discovery intervals [new / removal of devices] (Default: 3600)"
         }
       },
       "otp": {
@@ -34,6 +35,8 @@
       "invalid_auth": "Unable to authenticate with the provided credentials",
       "unknown": "Unknown error occurred. Please review to the logs",
       "polling_too_short": "Interval must be at least 2 seconds",
+      "discovery_too_short": "Interval must be at least 1800 seconds",
+      "discovery_too_short_polling": "Discovery interval must be larger than polling interval",
       "unique_id_mismatch": "Account name cannot be changed during reauth",
       "otp_required": "An OTP code is required for authentication",
       "invalid_otp": "An invalid OTP code was provided",
@@ -59,7 +62,9 @@
       }
     },
     "error": {
-      "polling_too_short": "Interval must be at least 2 seconds"
+      "polling_too_short": "Interval must be at least 2 seconds",
+      "discovery_too_short": "Interval must be at least 1800 seconds",
+      "discovery_too_short_polling": "Discovery interval must be larger than polling interval"
     }
   },
   "services": {

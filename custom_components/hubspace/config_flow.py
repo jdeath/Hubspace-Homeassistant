@@ -23,8 +23,10 @@ import voluptuous as vol
 
 from .const import (
     CONF_CLIENT,
+    CONF_DISCOVERY_INTERVAL,
     CONF_OTP,
     DEFAULT_CLIENT,
+    DEFAULT_DISCOVERY_INTERVAL,
     DEFAULT_POLLING_INTERVAL_SEC,
     DEFAULT_TIMEOUT,
     DOMAIN,
@@ -49,6 +51,7 @@ REAUTH_REQS = {
 OPTIONAL = {
     vol.Required(CONF_TIMEOUT): int,
     vol.Required(POLLING_TIME_STR): int,
+    vol.Required(CONF_DISCOVERY_INTERVAL): int,
 }
 LOGIN_SCHEMA = vol.Schema(LOGIN_REQS | OPTIONAL)
 RECONFIG_SCHEMA = vol.Schema(OPTIONAL)
@@ -67,6 +70,7 @@ class AferoConfigFlow(ConfigFlow, domain=DOMAIN):
         self._username: str | None = None
         self._password: str | None = None
         self._polling: int | None = DEFAULT_POLLING_INTERVAL_SEC
+        self._discovery_interval: int | None = DEFAULT_DISCOVERY_INTERVAL
         self._timeout: int | None = DEFAULT_TIMEOUT
         self._client: str | None = None
 
@@ -132,6 +136,7 @@ class AferoConfigFlow(ConfigFlow, domain=DOMAIN):
         options = {
             CONF_TIMEOUT: self._timeout or DEFAULT_TIMEOUT,
             POLLING_TIME_STR: self._polling or DEFAULT_POLLING_INTERVAL_SEC,
+            CONF_DISCOVERY_INTERVAL: self._discovery_interval or DEFAULT_DISCOVERY_INTERVAL,
         }
         if existing_entry:
             return self.async_update_reload_and_abort(
@@ -167,6 +172,7 @@ class AferoConfigFlow(ConfigFlow, domain=DOMAIN):
         self._client = user_input[CONF_CLIENT]
         self._timeout = user_input[CONF_TIMEOUT]
         self._polling = user_input[POLLING_TIME_STR]
+        self._discovery_interval = user_input[CONF_DISCOVERY_INTERVAL]
         return await self._async_afero_login("user", LOGIN_SCHEMA)
 
     async def async_step_otp(
@@ -190,6 +196,9 @@ class AferoConfigFlow(ConfigFlow, domain=DOMAIN):
         self._timeout = current.options.get(CONF_TIMEOUT, DEFAULT_TIMEOUT)
         self._polling = current.options.get(
             POLLING_TIME_STR, DEFAULT_POLLING_INTERVAL_SEC
+        )
+        self._discovery_interval = current.options.get(
+            CONF_DISCOVERY_INTERVAL, DEFAULT_DISCOVERY_INTERVAL
         )
         return await self.async_step_reauth_confirm()
 
@@ -234,17 +243,18 @@ class AferoOptionsFlowHandler(OptionsFlow):
                 errors["base"] = str(err)
             if not errors:
                 return self.async_create_entry(data=user_input)
-            errors["base"] = "polling_too_short"
         poll_time = self.config_entry.options.get(
             POLLING_TIME_STR, DEFAULT_POLLING_INTERVAL_SEC
         )
         tmout = self.config_entry.options.get(CONF_TIMEOUT, DEFAULT_TIMEOUT)
+        disc_int = self.config_entry.options.get(CONF_DISCOVERY_INTERVAL, DEFAULT_DISCOVERY_INTERVAL)
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema(
                 {
                     vol.Optional(CONF_TIMEOUT, default=tmout): int,
                     vol.Optional(POLLING_TIME_STR, default=poll_time): int,
+                    vol.Optional(CONF_DISCOVERY_INTERVAL, default=disc_int): int,
                 },
             ),
             errors=errors,
@@ -257,7 +267,12 @@ def validate_options(user_input: dict[str, Any]) -> dict[str, str]:
         POLLING_TIME_STR: user_input.get(POLLING_TIME_STR, DEFAULT_POLLING_INTERVAL_SEC)
         or DEFAULT_POLLING_INTERVAL_SEC,
         CONF_TIMEOUT: user_input.get(CONF_TIMEOUT, DEFAULT_TIMEOUT) or DEFAULT_TIMEOUT,
+        CONF_DISCOVERY_INTERVAL: user_input.get(CONF_DISCOVERY_INTERVAL, DEFAULT_DISCOVERY_INTERVAL) or DEFAULT_DISCOVERY_INTERVAL,
     }
     if validated[POLLING_TIME_STR] < 2:
         raise ValueError("polling_too_short")
+    if validated[CONF_DISCOVERY_INTERVAL] <= 1800:
+        raise ValueError("discovery_too_short")
+    if validated[CONF_DISCOVERY_INTERVAL] < validated[POLLING_TIME_STR]:
+        raise ValueError("discovery_too_short_polling")
     return validated
