@@ -11,5 +11,5 @@
   "loggers": ["aioafero"],
   "requirements": ["aioafero==6.2.0", "aiofiles", "packaging"],
   "single_config_entry": true,
-  "version": "5.10.0"
+  "version": "6.0.0"
 }
