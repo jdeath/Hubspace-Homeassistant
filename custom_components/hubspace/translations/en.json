@@ -7,7 +7,8 @@
           "username": "Username",
           "password": "Password",
           "timeout": "Connection Timeout",
-          "polling_time": "Polling time"
+          "polling_time": "Polling time",
+          "discovery_interval": "Discovery interval"
         },
         "data_description": {
           "username": "Hubspace Username",
@@ -53,11 +54,13 @@
       "init": {
         "data": {
           "timeout": "Connection Timeout",
-          "polling_time": "Polling time"
+          "polling_time": "Polling time",
+          "discovery_interval": "Discovery interval"
         },
         "data_description": {
           "timeout": "Time in ms for a connection failure (Default: 10000)",
-          "polling_time": "Time in seconds between polling intervals (Default: 30)"
+          "polling_time": "Time in seconds between polling intervals (Default: 30)",
+          "discovery_interval": "Time in seconds between discovery intervals (Default: 3600)"
         }
       }
     },
