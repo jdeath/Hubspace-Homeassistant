@@ -7,4 +7,4 @@ body:
   - type: markdown
     attributes:
       value: |
-        Myko is converting to Myko+ which is will be based on Tuya on or before Feburary 2026. Unfortunately this will not be a protocol we support but there are other integrations that support tuya. Please refer to https://github.com/jdeath/Hubspace-Homeassistant/issues/212.
+        Myko is converting to Myko+ which is will be based on Tuya on or before February 2026. Unfortunately this will not be a protocol we support but there are other integrations that support tuya. Please refer to https://github.com/jdeath/Hubspace-Homeassistant/issues/212.
