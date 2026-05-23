@@ -7,7 +7,9 @@ from pathlib import Path
 
 from hatchling.metadata.plugin.interface import MetadataHookInterface
 
-MANIFEST_PATH = Path(__file__).resolve().parent / "custom_components/hubspace/manifest.json"
+MANIFEST_PATH = (
+    Path(__file__).resolve().parent / "custom_components/hubspace/manifest.json"
+)
 
 
 def load_manifest() -> dict:
