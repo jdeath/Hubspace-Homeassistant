@@ -171,18 +171,24 @@ def modify_state(device: AferoDevice, new_state: AferoState):
         break
 
 
-def get_mocked_bridge(mocker) -> v1.AferoBridgeV1:
-    """Create a mocked afero bridge to be used in tests."""
-    mocker.patch(
-        "aioafero.v1.controllers.event.EventStream.gather_discovery_data",
+def _patch_event_gather(mocker, events, *, return_value: list | None = None) -> None:
+    mocker.patch.object(
+        events,
+        "gather_discovery_data",
+        new=mocker.AsyncMock(return_value=return_value or []),
     )
 
+
+def get_mocked_bridge(mocker) -> v1.AferoBridgeV1:
+    """Create a mocked afero bridge to be used in tests."""
     bridge: v1.AferoBridgeV1 = v1.AferoBridgeV1(
         "username2", "password2", temperature_unit=TemperatureUnit.CELSIUS
     )
     mocker.patch.object(bridge, "_account_id", "mocked-account-id")
     mocker.patch.object(bridge, "request", side_effect=mocker.AsyncMock())
     mocker.patch.object(bridge.events, "_first_poll_completed", True)
+    mocker.patch.object(bridge.events, "initialize_discovery")
+    _patch_event_gather(mocker, bridge.events)
     mocker.patch.object(
         bridge,
         "fetch_discovery_data",
@@ -203,19 +209,13 @@ def get_mocked_bridge(mocker) -> v1.AferoBridgeV1:
         task = asyncio.create_task(bridge.events.generate_events_from_data(data))
         await task
         raw_data = await bridge.events.generate_events_from_data(data)
-        mocker.patch(
-            "aioafero.v1.controllers.event.EventStream.gather_discovery_data",
-            return_value=raw_data,
-        )
+        _patch_event_gather(mocker, bridge.events, return_value=raw_data)
         await bridge.async_block_until_done()
 
     # Fake a poll for discovery
     async def generate_devices_from_data(devices: list[AferoDevice]):
         raw_data = [hs_raw_from_device(device) for device in devices]
-        mocker.patch(
-            "aioafero.v1.controllers.event.EventStream.gather_discovery_data",
-            return_value=raw_data,
-        )
+        _patch_event_gather(mocker, bridge.events, return_value=raw_data)
         await bridge.events.generate_events_from_data(raw_data)
         await bridge.async_block_until_done()
 
