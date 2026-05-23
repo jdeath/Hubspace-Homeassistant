@@ -70,14 +70,15 @@ Committed **`tox.ini`** only defines shared `[testenv]` settings and `lint`; `to
 
 ## Sources of truth
 
-| What                          | File / tool                                                                    |
-| ----------------------------- | ------------------------------------------------------------------------------ |
-| Minimum HA version to test    | `hacs.json` → `"homeassistant"` (e.g. `2025.7`)                                |
-| Maximum HA month to test      | Latest release on PyPI (`homeassistant` package), via `scripts/phcc_matrix.py` |
-| Integration runtime deps      | `custom_components/hubspace/manifest.json` → `"requirements"`                  |
-| phcc / exact HA pin per month | `scripts/phcc_matrix.py` + `.tox/phcc_version_index.json`                      |
-| Python version per tox env    | PyPI `Requires-Python` on each `homeassistant` release (via phcc index)        |
-| Local tox env names           | `toxfile.py` + `phcc_matrix.list_tox_envs()`                                   |
+| What                           | File / tool                                                                                                                    |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| Minimum HA version to test     | `hacs.json` → `"homeassistant"` (e.g. `2025.7`)                                                                                |
+| Maximum HA month to test       | Latest release on PyPI (`homeassistant` package), via `scripts/phcc_matrix.py`                                                 |
+| Integration runtime deps       | `custom_components/hubspace/manifest.json` → `"requirements"`                                                                  |
+| phcc / exact HA pin per month  | `scripts/phcc_matrix.py` + `.tox/phcc_version_index.json`                                                                      |
+| Python version per tox env     | PyPI `Requires-Python` on each `homeassistant` release (via phcc index)                                                        |
+| Local tox env names            | `toxfile.py` + `phcc_matrix.list_tox_envs()`                                                                                   |
+| Tox reinstall on manifest bump | `toxfile.py` copies `manifest.json` `"requirements"` into each HA env’s `deps` and `setenv` (same list as `tox_ha_install.py`) |
 
 There is **no** `requirements.txt` for the integration; tox installs from the manifest.
 
@@ -89,6 +90,22 @@ There is **no** `requirements.txt` for the integration; tox installs from the ma
 - **Network** — first phcc index build or `--refresh` contacts PyPI.
 
 Parallel runs use per-env `COVERAGE_FILE` in `tox.ini` so `.coverage` files do not clash.
+
+### Why startup still feels slow
+
+Not everything is cached across a tox run. What is reused vs what runs every time:
+
+| Layer                          | Cached?      | Notes                                                                                                                 |
+| ------------------------------ | ------------ | --------------------------------------------------------------------------------------------------------------------- |
+| `.tox/py313-ha…` venv          | Yes, per env | Recreated when `deps` / `setenv` hash changes (manifest, test-requirements).                                          |
+| pip wheels                     | Yes          | `~/.cache/pip` (or tox/pip cache). First install of homeassistant + phcc per env is still large.                      |
+| `.tox/phcc_version_index.json` | On disk      | Avoids re-indexing hundreds of phcc releases, but **without offline mode** each install used to re-query PyPI (~30s). |
+| pytest-homeassistant boot      | No           | Each env/run loads Home Assistant for tests (inherent cost).                                                          |
+| Full matrix                    | 11 envs      | `run-parallel` builds **one venv per HA month**; first-time cost × N.                                                 |
+
+After the phcc index exists, `toxfile.py` sets `PHCC_INDEX_OFFLINE=1` (in each env’s `setenv` and in the **tox parent process** before `list_tox_envs()` for `run-parallel`). Without that parent step, every `run-parallel` still hit PyPI for ~30s before any env started. Refresh the index when needed: `PHCC_INDEX_OFFLINE=0 python scripts/phcc_matrix.py --refresh`.
+
+For day-to-day dev, prefer `tox -e py313-ha202510` (one month) over `run-parallel` unless you need the full matrix.
 
 ## Helper scripts
 
@@ -153,14 +170,15 @@ New env names (e.g. `py315-ha202607`) appear automatically once step 1 is in pla
 
 ## Troubleshooting
 
-| Symptom                                                  | Likely cause                                                                                                             |
-| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `pytest` not found / install skipped                     | Ensure `tox.ini` has `deps = -rtest-requirements.txt` and `package = skip`                                               |
-| `Python.h: No such file or directory` during install     | Install dev package for that env’s Python (`python3.13-dev`, `python3.14-dev`, …)                                        |
-| `Lingering task` after `test_reload`                     | Bridge must call `api.close()` on unload (`HubspaceBridge.async_reset`)                                                  |
-| One env fails in parallel with exit code 3, passes alone | Stale shared `.coverage`; fixed via per-env `COVERAGE_FILE` in `tox.ini`                                                 |
-| Very slow first tox run                                  | Building phcc index from PyPI; reuse `.tox/phcc_version_index.json`                                                      |
-| pip appears to hang                                      | Avoid unpinned phcc + separate `homeassistant==`; use `tox_ha_install` only                                              |
-| HA envs missing from `tox -av`                           | tox older than 4.29 or `toxfile.py` not loaded; upgrade tox and run from repo root                                       |
-| `tox -e lint` slow on first run                          | `tox -av` / `run-parallel` builds the phcc index; `tox -e lint` or `tox -e py313-ha…` alone avoids full matrix discovery |
-| PyPI unreachable / offline                               | Reuse `.tox/phcc_version_index.json` if present; build index once online. `--refresh` needs network                      |
+| Symptom                                                         | Likely cause                                                                                                                                                                                    |
+| --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pytest` not found / install skipped                            | Ensure `tox.ini` has `deps = -rtest-requirements.txt` and `package = skip`                                                                                                                      |
+| `Python.h: No such file or directory` during install            | Install dev package for that env’s Python (`python3.13-dev`, `python3.14-dev`, …)                                                                                                               |
+| `Lingering task` after `test_reload`                            | Bridge must call `api.close()` on unload (`HubspaceBridge.async_reset`)                                                                                                                         |
+| One env fails in parallel with exit code 3, passes alone        | Stale shared `.coverage`; fixed via per-env `COVERAGE_FILE` in `tox.ini`                                                                                                                        |
+| Very slow first tox run                                         | Building phcc index from PyPI; reuse `.tox/phcc_version_index.json`                                                                                                                             |
+| pip appears to hang                                             | Avoid unpinned phcc + separate `homeassistant==`; use `tox_ha_install` only                                                                                                                     |
+| HA envs missing from `tox -av`                                  | tox older than 4.29 or `toxfile.py` not loaded; upgrade tox and run from repo root                                                                                                              |
+| `tox -e lint` slow on first run                                 | `tox -av` / `run-parallel` builds the phcc index; `tox -e lint` or `tox -e py313-ha…` alone avoids full matrix discovery                                                                        |
+| PyPI unreachable / offline                                      | Reuse `.tox/phcc_version_index.json` if present; build index once online. `--refresh` needs network                                                                                             |
+| Wrong `aioafero` in tox (missing `gather_discovery_data`, etc.) | Stale env from before `toxfile.py` wired manifest into `deps`; run tox once (install reruns) or `tox … --recreate` if needed. Changing `manifest.json` should invalidate install automatically. |

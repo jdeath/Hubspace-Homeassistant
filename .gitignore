@@ -6,3 +6,7 @@ custom_components/hubspace/dump_*.json
 *.egg-info
 
 uv.lock
+.venv
+.tox
+
+uv.lock

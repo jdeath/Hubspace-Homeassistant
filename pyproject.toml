@@ -1,3 +1,44 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hubspace-homeassistant"
+description = "Development environment for the Hubspace Home Assistant integration"
+requires-python = ">=3.13.2"
+dynamic = ["version", "dependencies"]
+
+[dependency-groups]
+dev = [
+  "homeassistant",
+  "pytest>=8.2.2",
+  "pytest-mock",
+  "pytest-asyncio",
+  "responses",
+  "pytest-homeassistant-custom-component",
+  "pre-commit",
+  "tox",
+]
+
+[tool.hatch.metadata.hooks.custom]
+path = "hubspace_metadata.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "hubspace_metadata.py",
+  "custom_components/hubspace/manifest.json",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["custom_components/hubspace"]
+
+[tool.uv]
+# aiodns 3.5 (via aiohttp) is incompatible with pycares 5.x
+override-dependencies = ["pycares>=4.0.0,<5"]
+
+[tool.uv.sources]
+aioafero = { path = "../aioafero", editable = true }
+
 [tool.ruff]
 required-version = ">=0.11.0"
 

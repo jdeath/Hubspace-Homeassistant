@@ -57,7 +57,7 @@ class DebugButton(ButtonEntity):
 
     async def async_press(self) -> None:
         """Handle the button press."""
-        data = await self.bridge.api.fetch_data()
+        data = await self.bridge.api.fetch_discovery_data()
         current_path: Path = Path(__file__.rsplit(os.sep, 1)[0])
         if self.instance == DebugButtonEnum.ANON:
             dev_dump = current_path / "_dump_hs_devices.json"
