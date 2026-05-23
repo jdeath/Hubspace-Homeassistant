@@ -1,5 +1,8 @@
 __pycache__
+.tox/
 .idea/
 custom_components/hubspace/dump_*.json
 .coverage
 *.egg-info
+
+uv.lock
