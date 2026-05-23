@@ -155,6 +155,11 @@ class HubspaceBridge:
             self.config_entry, PLATFORMS
         )
 
+        try:
+            await self.api.close()
+        except Exception:
+            self.logger.exception("Error closing Hubspace API connection")
+
         if unload_success:
             self.hass.data[DOMAIN].pop(self.config_entry.entry_id)
 

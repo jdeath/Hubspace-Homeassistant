@@ -3,6 +3,4 @@ pytest-mock
 pytest-asyncio
 responses
 pre-commit
-pytest-homeassistant-custom-component
-tox
-pycares<5
+tox>=4.29
