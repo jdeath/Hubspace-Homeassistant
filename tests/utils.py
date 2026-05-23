@@ -3,7 +3,6 @@
 import asyncio
 import datetime
 import json
-import os
 from pathlib import Path
 from typing import Any
 
@@ -23,7 +22,7 @@ from custom_components.hubspace.const import (
     VERSION_MINOR,
 )
 
-current_path: Path = Path(__file__.rsplit(os.sep, 1)[0])
+current_path: Path = Path(__file__).parent
 
 
 def get_device_dump(file_name: Path) -> Any:
@@ -174,7 +173,9 @@ def modify_state(device: AferoDevice, new_state: AferoState):
 
 def get_mocked_bridge(mocker) -> v1.AferoBridgeV1:
     """Create a mocked afero bridge to be used in tests."""
-    mocker.patch("aioafero.v1.controllers.event.EventStream.gather_data")
+    mocker.patch(
+        "aioafero.v1.controllers.event.EventStream.gather_discovery_data",
+    )
 
     bridge: v1.AferoBridgeV1 = v1.AferoBridgeV1(
         "username2", "password2", temperature_unit=TemperatureUnit.CELSIUS
@@ -183,7 +184,9 @@ def get_mocked_bridge(mocker) -> v1.AferoBridgeV1:
     mocker.patch.object(bridge, "request", side_effect=mocker.AsyncMock())
     mocker.patch.object(bridge.events, "_first_poll_completed", True)
     mocker.patch.object(
-        bridge, "fetch_data", side_effect=mocker.AsyncMock(return_value=[])
+        bridge,
+        "fetch_discovery_data",
+        side_effect=mocker.AsyncMock(return_value=[]),
     )
 
     bridge.set_token_data(
@@ -201,7 +204,7 @@ def get_mocked_bridge(mocker) -> v1.AferoBridgeV1:
         await task
         raw_data = await bridge.events.generate_events_from_data(data)
         mocker.patch(
-            "aioafero.v1.controllers.event.EventStream.gather_data",
+            "aioafero.v1.controllers.event.EventStream.gather_discovery_data",
             return_value=raw_data,
         )
         await bridge.async_block_until_done()
@@ -210,7 +213,7 @@ def get_mocked_bridge(mocker) -> v1.AferoBridgeV1:
     async def generate_devices_from_data(devices: list[AferoDevice]):
         raw_data = [hs_raw_from_device(device) for device in devices]
         mocker.patch(
-            "aioafero.v1.controllers.event.EventStream.gather_data",
+            "aioafero.v1.controllers.event.EventStream.gather_discovery_data",
             return_value=raw_data,
         )
         await bridge.events.generate_events_from_data(raw_data)

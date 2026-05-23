@@ -8,3 +8,5 @@ custom_components/hubspace/dump_*.json
 uv.lock
 .venv
 .tox
+
+uv.lock

@@ -14,6 +14,10 @@ light_with_speed_from_file = create_devices_from_data("light-with-speed.json")
 light_with_speed = light_with_speed_from_file[2]
 light_with_speed_id = "number.landscaping_tree_lights_speed"
 
+rgbw_led_strip_from_file = create_devices_from_data("rgbw-led-strip.json")
+rgbw_led_strip = rgbw_led_strip_from_file[0]
+rgbw_led_strip_speed_id = "number.friendly_device_6_speed"
+
 
 @pytest.fixture
 async def mocked_entity(mocked_entry):
@@ -35,6 +39,7 @@ async def mocked_entity(mocked_entry):
     [
         (exhaust_fan, [exhaust_fan_number_id]),
         (light_with_speed, [light_with_speed_id]),
+        (rgbw_led_strip, [rgbw_led_strip_speed_id]),
     ],
 )
 async def test_async_setup_entry(dev, expected_entities, mocked_entry):
@@ -77,6 +82,55 @@ async def test_update(mocked_entry):
     assert number.attributes["min"] == 60
     assert number.attributes["step"] == 60
     assert number.attributes["unit_of_measurement"] == "seconds"
+
+
+@pytest.mark.asyncio
+async def test_light_speed_update(mocked_entry):
+    """Ensure light effect speed updates propagate to Home Assistant."""
+    hass, entry, bridge = mocked_entry
+    await bridge.generate_devices_from_data(light_with_speed_from_file)
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    hs_new_dev = create_devices_from_data("light-with-speed.json")[2]
+    modify_state(
+        hs_new_dev,
+        AferoState(
+            functionClass="speed",
+            functionInstance="color-sequence",
+            value=5,
+        ),
+    )
+    await bridge.generate_devices_from_data([hs_new_dev])
+    await hass.async_block_till_done()
+    number = hass.states.get(light_with_speed_id)
+    assert number.state == "5"
+    assert number.attributes["min"] == -10
+    assert number.attributes["max"] == 10
+    assert number.attributes["unit_of_measurement"] == "speed"
+
+
+@pytest.mark.asyncio
+async def test_light_speed_set_value(mocked_entry):
+    """Ensure number.set_value updates light effect speed."""
+    hass, entry, bridge = mocked_entry
+    await bridge.generate_devices_from_data(light_with_speed_from_file)
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    await hass.services.async_call(
+        "number",
+        "set_value",
+        {"entity_id": light_with_speed_id, "value": -3},
+        blocking=True,
+    )
+    await bridge.async_block_until_done()
+    await hass.async_block_till_done()
+    entity = hass.states.get(light_with_speed_id)
+    assert entity is not None
+    assert entity.state == "-3.0"
+    assert (
+        bridge.lights[light_with_speed.id].numbers[("speed", "color-sequence")].value
+        == -3
+    )
 
 
 @pytest.mark.asyncio

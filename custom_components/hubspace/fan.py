@@ -1,7 +1,7 @@
 """Home Assistant entity for interacting with Afero Fan."""
 
 from functools import partial
-from typing import Any, Optional
+from typing import Any
 
 from aioafero import EventType
 from aioafero.v1 import AferoBridgeV1, FanController
@@ -101,8 +101,8 @@ class HubspaceFan(HubspaceBaseEntity, FanEntity):
 
     async def async_turn_on(
         self,
-        percentage: Optional[int] = None,
-        preset_mode: Optional[str] = None,
+        percentage: int | None = None,
+        preset_mode: str | None = None,
         **kwargs: Any,
     ) -> None:
         """Turn on the entity."""

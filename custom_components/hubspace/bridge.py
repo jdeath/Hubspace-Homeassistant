@@ -1,9 +1,10 @@
 """Bridge knows how to interact with aioafero to update data."""
 
 import asyncio
+from collections.abc import Callable
 import logging
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 from aioafero import EventType, InvalidAuth, InvalidResponse, TemperatureUnit
 from aioafero.v1 import AferoBridgeV1
@@ -83,7 +84,7 @@ class HubspaceBridge:
         setup_ok = False
 
         # Dev mocking
-        # self.api.fetch_data = mock_get_data("security-system-raw.json")
+        # self.api.fetch_discovery_data = mock_get_data("security-system-raw.json")
 
         try:
             async with asyncio.timeout(self.config_entry.options[CONF_TIMEOUT]):
