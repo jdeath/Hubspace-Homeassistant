@@ -124,9 +124,9 @@ Workflow: `.github/workflows/ci.yaml`
 
 1. **lint** — `tox -e lint`
 2. **matrix-prep** — builds/updates `.tox/phcc_version_index.json` once, runs `--github-matrix`, uploads the index as a workflow artifact
-3. **homeassistant** — one job per matrix row; downloads the index artifact, sets `PHCC_INDEX_OFFLINE=1`, installs `tox>=4.29`, then `tox -e ${{ matrix.toxenv }}` (no per-job PyPI phcc indexing)
+3. **homeassistant** — one job per matrix row; downloads the index artifact, sets `PHCC_INDEX_OFFLINE=1`, then `tox -e ${{ matrix.toxenv }}` (no per-job PyPI phcc indexing)
 
-CI installs tox from `test-requirements.txt` in **lint** and `tox>=4.29,<6` in matrix jobs (tox alone is enough there; HA envs pull test deps via tox).
+CI installs `pip install -r test-requirements.txt` before tox in **lint** and **homeassistant** (ensures `tox>=4.29` matches `tox.ini`; HA envs still install test deps into the tox venv via `tox.ini`).
 
 Caches: pip wheels (per job, via `setup-python`); phcc index warm-start in **matrix-prep** only (`actions/cache` on `.tox/phcc_version_index.json`). Matrix jobs use the artifact from the same workflow run, not a separate index rebuild. Full tox venvs are **not** cached in CI.
 

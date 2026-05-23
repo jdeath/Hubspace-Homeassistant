@@ -91,5 +91,5 @@ jobs:
         env:
           PHCC_INDEX_OFFLINE: "1"
         run: |
-          pip install 'tox>=4.29,<6'
+          pip install -r test-requirements.txt
           tox -e ${{ matrix.toxenv }}
