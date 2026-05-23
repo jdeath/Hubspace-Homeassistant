@@ -139,9 +139,7 @@ def resolve_max_ha_month(versions: dict[str, str] | None = None) -> str:
     if versions:
         available = sorted({_ha_minor(v) for v in versions.values()}, key=_month_key)
         if available:
-            logger.info(
-                "using latest phcc-index month %s as max", available[-1]
-            )
+            logger.info("using latest phcc-index month %s as max", available[-1])
             return available[-1]
     raise LookupError(
         "Could not determine latest Home Assistant month (PyPI unreachable and no phcc index)"
@@ -428,9 +426,7 @@ def update_version_index_from_pypi(*, force: bool = False) -> VersionIndex:
                 total = len(todo)
                 for i, phcc_version in enumerate(todo, start=1):
                     if i == 1 or i % 25 == 0 or i == total:
-                        logger.info(
-                            "indexing phcc metadata (%d/%d)...", i, total
-                        )
+                        logger.info("indexing phcc metadata (%d/%d)...", i, total)
                     ha_version = _homeassistant_for_phcc(phcc_version)
                     if ha_version:
                         versions[phcc_version] = ha_version

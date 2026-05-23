@@ -51,11 +51,14 @@ def _lint_only_cli() -> bool:
 def _explicit_ha_envs_cli() -> tuple[str, ...] | None:
     """HA env names from -e when set; None means discover full matrix (tox -av / run-parallel)."""
     selections = _cli_selections()
-    if not selections or any(part == "lint" for part in selections):
+    if not selections:
         return None
-    if not all(TOX_PYTHON_TAG_RE.match(part) for part in selections):
+    ha_envs = [part for part in selections if part != "lint"]
+    if not ha_envs:
         return None
-    return tuple(selections)
+    if not all(TOX_PYTHON_TAG_RE.match(part) for part in ha_envs):
+        return None
+    return tuple(ha_envs)
 
 
 @functools.lru_cache

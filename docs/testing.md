@@ -115,7 +115,7 @@ Tox `install_command` hook. For HA envs it installs `test-requirements.txt`, man
 Tox 4 plugin loaded from the repo root. Appends HA env names to `envlist` so `tox run-parallel` matches CI without a long static list in git. Python interpreters come from `basepython` factors in `tox.ini` (add a line when a new `py315` prefix appears).
 
 - `tox -e lint` — does not load the phcc index for env registration.
-- `tox -e py313-ha202510` — registers only the named HA env(s); does not enumerate the full matrix.
+- `tox -e py313-ha202510` or `tox -e lint,py313-ha202510` — registers only the named HA env(s); does not enumerate the full matrix.
 - `tox -av` / `tox run-parallel` — discovers all HA envs via `list_tox_envs()` (may update the index).
 
 ## GitHub Actions
@@ -124,7 +124,9 @@ Workflow: `.github/workflows/ci.yaml`
 
 1. **lint** — `tox -e lint`
 2. **matrix-prep** — builds/updates `.tox/phcc_version_index.json` once, runs `--github-matrix`, uploads the index as a workflow artifact
-3. **homeassistant** — one job per matrix row; downloads the index artifact, sets `PHCC_INDEX_OFFLINE=1`, then `tox -e ${{ matrix.toxenv }}` (no per-job PyPI phcc indexing)
+3. **homeassistant** — one job per matrix row; downloads the index artifact, sets `PHCC_INDEX_OFFLINE=1`, installs `tox>=4.29`, then `tox -e ${{ matrix.toxenv }}` (no per-job PyPI phcc indexing)
+
+CI installs tox from `test-requirements.txt` in **lint** and `tox>=4.29,<6` in matrix jobs (tox alone is enough there; HA envs pull test deps via tox).
 
 Caches: pip wheels (per job, via `setup-python`); phcc index warm-start in **matrix-prep** only (`actions/cache` on `.tox/phcc_version_index.json`). Matrix jobs use the artifact from the same workflow run, not a separate index rebuild. Full tox venvs are **not** cached in CI.
 
