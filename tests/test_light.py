@@ -27,6 +27,11 @@ light_a21 = create_devices_from_data("light-a21.json")[0]
 light_a21_id = "light.friendly_device_53_light"
 rgbw_led_strip = create_devices_from_data("rgbw-led-strip.json")[0]
 
+trim_light_parent = create_devices_from_data("light-with-trim.json")[0]
+trim_light_trim_id = f"{trim_light_parent.id}-light-trim"
+trim_light_entity_id = "light.dining_room_light_1_trim"
+trim_light_main_entity_id = "light.dining_room_light_1_main"
+
 
 @pytest.fixture
 async def mocked_entity(mocked_entry):
@@ -74,6 +79,12 @@ async def mocked_dimmer(mocked_entry):
             "white",
             {ColorMode.BRIGHTNESS, ColorMode.ONOFF},
             ColorMode.BRIGHTNESS,
+        ),
+        # White - trim-style (RGB advertised; HA 2026 has no filterable WHITE)
+        (
+            "white",
+            {ColorMode.RGB, ColorMode.ONOFF},
+            ColorMode.RGB,
         ),
         # White - fallback
         ("white", set(), ColorMode.ONOFF),
@@ -274,6 +285,14 @@ async def test_turn_off_dimmer(mocked_dimmer):
                 "light.ceiling_light_white",
             ],
         ),
+        (
+            "light-with-trim.json",
+            1,
+            [
+                trim_light_main_entity_id,
+                trim_light_entity_id,
+            ],
+        ),
     ],
 )
 async def test_add_new_device(
@@ -299,3 +318,80 @@ async def test_add_new_device(
         assert entity_reg.async_get(entity) is not None, (
             f"Unable to find entity {entity}"
         )
+
+
+@pytest.fixture
+async def mocked_trim_light(mocked_entry):
+    """Initialize split trim/main lights from the accent-ring dump."""
+    hass, entry, bridge = mocked_entry
+    await bridge.generate_devices_from_data(
+        create_devices_from_data("light-with-trim.json")
+    )
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    for light in bridge.lights.items:
+        light.available = True
+    yield hass, entry, bridge
+    await bridge.close()
+
+
+@pytest.mark.asyncio
+async def test_trim_entity_supports_rgb_not_color_temp(mocked_trim_light):
+    """Trim zone has RGB in HA but not COLOR_TEMP (API white-only warm)."""
+    hass, _, bridge = mocked_trim_light
+    trim = bridge.lights[trim_light_trim_id]
+    assert trim.color_temperature is None
+    assert trim.supports_color_white
+    entity = hass.states.get(trim_light_entity_id)
+    assert entity is not None
+    assert ColorMode.RGB in entity.attributes["supported_color_modes"]
+    assert ColorMode.COLOR_TEMP not in entity.attributes["supported_color_modes"]
+
+
+def _get_hubspace_light(hass, entity_id: str):
+    """Return the Hubspace LightEntity for a registered entity_id."""
+    entities = hass.data["light"].entities
+    if isinstance(entities, dict):
+        return entities[entity_id]
+    for entity in entities:
+        if entity.entity_id == entity_id:
+            return entity
+    raise AssertionError(f"No light entity registered for {entity_id}")
+
+
+@pytest.mark.asyncio
+async def test_trim_api_white_reports_ha_rgb_mode(mocked_trim_light):
+    """Inbound API color-mode white must not map to ONOFF (avoids rgb mismatch)."""
+    hass, _, bridge = mocked_trim_light
+    trim = bridge.lights[trim_light_trim_id]
+    trim.color_mode.mode = "white"
+    light_ent = _get_hubspace_light(hass, trim_light_entity_id)
+    light_ent.on_update()
+    light_ent.async_write_ha_state()
+    await hass.async_block_till_done()
+    assert light_ent.color_mode == ColorMode.RGB
+    assert light_ent.rgb_color == (255, 255, 255)
+
+
+@pytest.mark.asyncio
+async def test_trim_turn_on_white_sends_color_mode(mocked_trim_light, mocker):
+    """Turn-on while API is white must PUT color-mode white without color-temperature."""
+    hass, _, bridge = mocked_trim_light
+    trim = bridge.lights[trim_light_trim_id]
+    trim.on.on = False
+    trim.color_mode.mode = "white"
+    sent = mocker.spy(bridge.lights, "set_state")
+    light_ent = _get_hubspace_light(hass, trim_light_entity_id)
+    await light_ent.async_turn_on(brightness=128)
+    await bridge.async_block_until_done()
+    await hass.async_block_till_done()
+    sent.assert_called()
+    white_calls = [
+        c for c in sent.call_args_list if c.kwargs.get("color_mode") == "white"
+    ]
+    assert white_calls, "expected at least one set_state with color_mode=white"
+    call_kwargs = white_calls[-1].kwargs
+    assert call_kwargs["color_mode"] == "white"
+    assert call_kwargs.get("temperature") is None
+    assert call_kwargs["on"] is True
+    assert call_kwargs["brightness"] == 50

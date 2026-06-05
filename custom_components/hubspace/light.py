@@ -115,14 +115,14 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
     @property
     def rgb_color(self) -> tuple[int, int, int] | None:
         """Get the lights current RGB colors."""
+        if not self.resource.color:
+            return None
+        if api_white_displays_as_rgb(self.resource, self._attr_supported_color_modes):
+            return (255, 255, 255)
         return (
-            (
-                self.resource.color.red,
-                self.resource.color.green,
-                self.resource.color.blue,
-            )
-            if self.resource.color
-            else None
+            self.resource.color.red,
+            self.resource.color.green,
+            self.resource.color.blue,
         )
 
     @property
@@ -152,6 +152,14 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
             color_mode = "color"
         elif effect:
             color_mode = "sequence"
+        elif (
+            self.resource.supports_color_white
+            and not self.resource.supports_color_temperature
+            and self.resource.color_mode
+            and self.resource.color_mode.mode == "white"
+        ):
+            # White-only API zones (e.g. accent trim): keep white on power/brightness.
+            color_mode = "white"
         await self.bridge.async_request_call(
             self.controller.set_state,
             device_id=self.resource.id,
@@ -172,6 +180,16 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
         )
 
 
+def api_white_displays_as_rgb(resource: Light, supported_modes: set[ColorMode]) -> bool:
+    """True when API white is surfaced as HA RGB (no CCT on this zone)."""
+    return (
+        resource.color_mode is not None
+        and resource.color_mode.mode == "white"
+        and ColorMode.COLOR_TEMP not in supported_modes
+        and ColorMode.RGB in supported_modes
+    )
+
+
 def get_color_mode(resource: Light, supported_modes: set[ColorMode]) -> ColorMode:
     """Determine the correct mode.
 
@@ -185,6 +203,8 @@ def get_color_mode(resource: Light, supported_modes: set[ColorMode]) -> ColorMod
     if resource.color_mode.mode == "white":
         if ColorMode.COLOR_TEMP in supported_modes:
             return ColorMode.COLOR_TEMP
+        if api_white_displays_as_rgb(resource, supported_modes):
+            return ColorMode.RGB
         if ColorMode.BRIGHTNESS in supported_modes:
             return ColorMode.BRIGHTNESS
         return ColorMode.ONOFF

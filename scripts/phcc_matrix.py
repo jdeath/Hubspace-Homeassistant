@@ -28,6 +28,11 @@ if not logging.getLogger().handlers:
     )
 
 PHCC_PROJECT = "pytest-homeassistant-custom-component"
+
+# aiohttp/aiodns vs pycares: HA 2025.x needs pycares 4.x; HA 2026+ / aiodns 4 needs pycares 5.x.
+PYCARES_CONSTRAINT_LEGACY = "pycares>=4.0.0,<5"
+PYCARES_CONSTRAINT_MODERN = "pycares>=5.0.0"
+PYPROJECT_PATH = Path(__file__).resolve().parents[1] / "pyproject.toml"
 PHCC_PYPI_JSON = f"https://pypi.org/pypi/{PHCC_PROJECT}/json"
 HA_PYPI_JSON = "https://pypi.org/pypi/homeassistant/json"
 HA_FACTOR_RE = re.compile(r"ha(\d{4,6})")
@@ -85,13 +90,29 @@ def _ha_version_key(version: str) -> tuple[int, ...]:
     return (int(parts[0]), int(parts[1]), int(patch))
 
 
+def pycares_constraint_for_ha_month(ha_month: str) -> str | None:
+    """Extra pycares pin for tox/uv when HA's resolver picks an incompatible wheel."""
+    year = int(ha_month.split(".", 1)[0])
+    if year == 2025:
+        return PYCARES_CONSTRAINT_LEGACY
+    if year >= 2026:
+        return PYCARES_CONSTRAINT_MODERN
+    return None
+
+
+def dev_pycares_constraint(*, refresh: bool = False) -> str | None:
+    """Pycares override for local ``uv sync`` (matches latest HA month in the matrix)."""
+    versions = update_version_index_from_pypi(force=refresh)["versions"]
+    return pycares_constraint_for_ha_month(resolve_max_ha_month(versions))
+
+
 @dataclass(frozen=True)
 class MonthSpec:
     """Resolved phcc install pin for one Home Assistant month."""
 
     ha_month: str
     phcc_spec: str
-    pycares_pin: bool
+    pycares_constraint: str | None
     homeassistant: str
 
 
@@ -459,11 +480,10 @@ def _month_spec_from_index(ha_month: str, versions: dict[str, str]) -> MonthSpec
         spec = f"{PHCC_PROJECT}>={lo_ver},<{upper}"
     else:
         spec = f"{PHCC_PROJECT}>={lo_ver}"
-    year = int(ha_month.split(".")[0])
     return MonthSpec(
         ha_month=ha_month,
         phcc_spec=spec,
-        pycares_pin=year == 2025,
+        pycares_constraint=pycares_constraint_for_ha_month(ha_month),
         homeassistant=hi_ha,
     )
 
@@ -497,11 +517,21 @@ def main() -> None:
         help="Print GHA matrix JSON [{toxenv, python}, ...] (min from hacs.json)",
     )
     parser.add_argument(
+        "--write-uv-overrides",
+        action="store_true",
+        help="Update [tool.uv] override-dependencies in pyproject.toml for local uv sync",
+    )
+    parser.add_argument(
         "ha_month",
         nargs="?",
         help="HA month like 2026.3 (optional; prints derived matrix if omitted)",
     )
     args = parser.parse_args()
+
+    if args.write_uv_overrides:
+        constraint = write_uv_pycares_override(refresh=args.refresh)
+        _out(f"Updated {PYPROJECT_PATH.name}: {constraint or '(no pycares override)'}")
+        return
 
     if args.github_matrix:
         _out(json.dumps(list_github_matrix_entries(refresh=args.refresh)))
@@ -528,8 +558,41 @@ def main() -> None:
     versions = load_version_index()
     _out(f"Index: {INDEX_PATH} ({len(versions)} phcc releases)")
     _out(spec.phcc_spec)
-    if spec.pycares_pin:
-        _out("pycares>=4.0.0,<5")
+    if spec.pycares_constraint:
+        _out(spec.pycares_constraint)
+
+
+def write_uv_pycares_override(*, refresh: bool = False) -> str | None:
+    """Sync ``[tool.uv] override-dependencies`` in pyproject.toml from matrix rules."""
+    constraint = dev_pycares_constraint(refresh=refresh)
+    text = PYPROJECT_PATH.read_text(encoding="utf-8")
+    if not re.search(r"^\[tool\.uv\]\s*$", text, re.MULTILINE):
+        raise RuntimeError(f"{PYPROJECT_PATH} missing [tool.uv] section")
+
+    override_line = (
+        f'override-dependencies = ["{constraint}"]'
+        if constraint
+        else "override-dependencies = []"
+    )
+    if re.search(r"^override-dependencies\s*=", text, re.MULTILINE):
+        new_text = re.sub(
+            r"^override-dependencies\s*=.*$",
+            override_line,
+            text,
+            count=1,
+            flags=re.MULTILINE,
+        )
+    else:
+        new_text = re.sub(
+            r"(^\[tool\.uv\]\s*$)",
+            rf"\1\n{override_line}",
+            text,
+            count=1,
+            flags=re.MULTILINE,
+        )
+    if new_text != text:
+        PYPROJECT_PATH.write_text(new_text, encoding="utf-8")
+    return constraint
 
 
 if __name__ == "__main__":

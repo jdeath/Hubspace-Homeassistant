@@ -33,8 +33,9 @@ include = [
 packages = ["custom_components/hubspace"]
 
 [tool.uv]
-# aiodns 3.5 (via aiohttp) is incompatible with pycares 5.x
-override-dependencies = ["pycares>=4.0.0,<5"]
+# Synced from scripts/phcc_matrix.py (same rules as tox_ha_install.py):
+#   python scripts/phcc_matrix.py --write-uv-overrides
+override-dependencies = ["pycares>=5.0.0"]
 
 [tool.uv.sources]
 aioafero = { path = "../aioafero", editable = true }

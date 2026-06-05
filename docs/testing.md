@@ -125,7 +125,15 @@ Builds and maintains the mapping from HA month → phcc version range → tox en
 
 ### `scripts/tox_ha_install.py`
 
-Tox `install_command` hook. For HA envs it installs `test-requirements.txt`, manifest requirements, phcc (which pins `homeassistant`), and `pycares>=4.0.0,<5` for 2025.x months when needed (aiodns compatibility).
+Tox `install_command` hook. For HA envs it installs `test-requirements.txt`, manifest requirements, phcc (which pins `homeassistant`), and an extra **pycares** pin from `scripts/phcc_matrix.py` (`pycares>=4.0.0,<5` for HA 2025.x, `pycares>=5.0.0` for 2026+).
+
+**Local `uv sync`:** the same rules are written into `pyproject.toml` via:
+
+```bash
+python scripts/phcc_matrix.py --write-uv-overrides
+```
+
+Run that after refreshing the phcc index or when the latest HA month changes (or use `--refresh` with the flag). Tox envs do not read `pyproject.toml` overrides; they use `tox_ha_install.py` only.
 
 ### `toxfile.py`
 
