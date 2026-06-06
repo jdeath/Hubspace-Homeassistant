@@ -80,11 +80,11 @@ async def mocked_dimmer(mocked_entry):
             {ColorMode.BRIGHTNESS, ColorMode.ONOFF},
             ColorMode.BRIGHTNESS,
         ),
-        # White - trim-style (RGB advertised; HA 2026 has no filterable WHITE)
+        # White - trim-style (API white maps to HA white when advertised)
         (
             "white",
-            {ColorMode.RGB, ColorMode.ONOFF},
-            ColorMode.RGB,
+            {ColorMode.RGB, ColorMode.WHITE, ColorMode.ONOFF},
+            ColorMode.WHITE,
         ),
         # White - fallback
         ("white", set(), ColorMode.ONOFF),
@@ -336,8 +336,8 @@ async def mocked_trim_light(mocked_entry):
 
 
 @pytest.mark.asyncio
-async def test_trim_entity_supports_rgb_not_color_temp(mocked_trim_light):
-    """Trim zone has RGB in HA but not COLOR_TEMP (API white-only warm)."""
+async def test_trim_entity_supports_rgb_and_white_not_color_temp(mocked_trim_light):
+    """Trim zone advertises RGB and white (API white), not COLOR_TEMP."""
     hass, _, bridge = mocked_trim_light
     trim = bridge.lights[trim_light_trim_id]
     assert trim.color_temperature is None
@@ -345,6 +345,7 @@ async def test_trim_entity_supports_rgb_not_color_temp(mocked_trim_light):
     entity = hass.states.get(trim_light_entity_id)
     assert entity is not None
     assert ColorMode.RGB in entity.attributes["supported_color_modes"]
+    assert ColorMode.WHITE in entity.attributes["supported_color_modes"]
     assert ColorMode.COLOR_TEMP not in entity.attributes["supported_color_modes"]
 
 
@@ -360,8 +361,8 @@ def _get_hubspace_light(hass, entity_id: str):
 
 
 @pytest.mark.asyncio
-async def test_trim_api_white_reports_ha_rgb_mode(mocked_trim_light):
-    """Inbound API color-mode white must not map to ONOFF (avoids rgb mismatch)."""
+async def test_trim_api_white_reports_ha_white_mode(mocked_trim_light):
+    """Inbound API color-mode white maps to HA white with no rgb_color."""
     hass, _, bridge = mocked_trim_light
     trim = bridge.lights[trim_light_trim_id]
     trim.color_mode.mode = "white"
@@ -369,8 +370,8 @@ async def test_trim_api_white_reports_ha_rgb_mode(mocked_trim_light):
     light_ent.on_update()
     light_ent.async_write_ha_state()
     await hass.async_block_till_done()
-    assert light_ent.color_mode == ColorMode.RGB
-    assert light_ent.rgb_color == (255, 255, 255)
+    assert light_ent.color_mode == ColorMode.WHITE
+    assert light_ent.rgb_color is None
 
 
 @pytest.mark.asyncio
@@ -395,3 +396,37 @@ async def test_trim_turn_on_white_sends_color_mode(mocked_trim_light, mocker):
     assert call_kwargs.get("temperature") is None
     assert call_kwargs["on"] is True
     assert call_kwargs["brightness"] == 50
+
+
+@pytest.mark.asyncio
+async def test_trim_turn_on_white_attr_switches_from_rgb(mocked_trim_light, mocker):
+    """HA white selection must PUT color-mode white when trim was in API color."""
+    hass, _, bridge = mocked_trim_light
+    trim = bridge.lights[trim_light_trim_id]
+    trim.color_mode.mode = "color"
+    sent = mocker.spy(bridge.lights, "set_state")
+    light_ent = _get_hubspace_light(hass, trim_light_entity_id)
+    await light_ent.async_turn_on(white=True)
+    await bridge.async_block_until_done()
+    await hass.async_block_till_done()
+    call_kwargs = sent.call_args.kwargs
+    assert call_kwargs["color_mode"] == "white"
+    assert call_kwargs.get("temperature") is None
+    assert call_kwargs.get("color") is None
+
+
+@pytest.mark.asyncio
+async def test_trim_turn_on_brightness_in_rgb_mode_omits_color_mode(
+    mocked_trim_light, mocker
+):
+    """Brightness-only while in API color must not force color-mode white."""
+    hass, _, bridge = mocked_trim_light
+    trim = bridge.lights[trim_light_trim_id]
+    trim.color_mode.mode = "color"
+    sent = mocker.spy(bridge.lights, "set_state")
+    light_ent = _get_hubspace_light(hass, trim_light_entity_id)
+    await light_ent.async_turn_on(brightness=128)
+    await bridge.async_block_until_done()
+    await hass.async_block_till_done()
+    call_kwargs = sent.call_args.kwargs
+    assert call_kwargs.get("color_mode") is None

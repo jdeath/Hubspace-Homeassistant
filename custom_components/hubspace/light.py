@@ -10,6 +10,7 @@ from homeassistant.components.light import (
     ATTR_COLOR_TEMP_KELVIN,
     ATTR_EFFECT,
     ATTR_RGB_COLOR,
+    ATTR_WHITE,
     ColorMode,
     LightEntity,
     LightEntityFeature,
@@ -43,6 +44,9 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
             supported_color_modes.add(ColorMode.RGB)
         if self.resource.supports_color_temperature:
             supported_color_modes.add(ColorMode.COLOR_TEMP)
+        if self.resource.supports_color_white and self.resource.supports_color:
+            # HA requires a color mode (e.g. RGB) alongside WHITE; trim-style dual zones.
+            supported_color_modes.add(ColorMode.WHITE)
         if self.resource.supports_dimming:
             supported_color_modes.add(ColorMode.BRIGHTNESS)
         self._attr_supported_color_modes = filter_supported_color_modes(
@@ -117,8 +121,8 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
         """Get the lights current RGB colors."""
         if not self.resource.color:
             return None
-        if api_white_displays_as_rgb(self.resource, self._attr_supported_color_modes):
-            return (255, 255, 255)
+        if self.color_mode == ColorMode.WHITE:
+            return None
         return (
             self.resource.color.red,
             self.resource.color.green,
@@ -145,21 +149,25 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
         temperature: int | None = kwargs.get(ATTR_COLOR_TEMP_KELVIN)
         color: tuple[int, int, int] | None = kwargs.get(ATTR_RGB_COLOR)
         effect: str | None = kwargs.get(ATTR_EFFECT)
+        white = kwargs.get(ATTR_WHITE)
         color_mode: str | None = None
-        if temperature:
-            color_mode = "white"
-        elif color:
+        if color:
             color_mode = "color"
         elif effect:
             color_mode = "sequence"
-        elif (
-            self.resource.supports_color_white
-            and not self.resource.supports_color_temperature
-            and self.resource.color_mode
-            and self.resource.color_mode.mode == "white"
+        elif (temperature and self.resource.supports_color_temperature) or (
+            is_api_white_zone(self.resource)
+            and (
+                white is not None
+                or (
+                    self.resource.color_mode is not None
+                    and self.resource.color_mode.mode == "white"
+                )
+            )
         ):
-            # White-only API zones (e.g. accent trim): keep white on power/brightness.
             color_mode = "white"
+        if white is not None and isinstance(white, int):
+            brightness = white
         await self.bridge.async_request_call(
             self.controller.set_state,
             device_id=self.resource.id,
@@ -180,14 +188,9 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
         )
 
 
-def api_white_displays_as_rgb(resource: Light, supported_modes: set[ColorMode]) -> bool:
-    """Return True when API white is surfaced as HA RGB (no CCT on this zone)."""
-    return (
-        resource.color_mode is not None
-        and resource.color_mode.mode == "white"
-        and ColorMode.COLOR_TEMP not in supported_modes
-        and ColorMode.RGB in supported_modes
-    )
+def is_api_white_zone(resource: Light) -> bool:
+    """Return True for zones that use API color-mode white without CCT."""
+    return resource.supports_color_white and not resource.supports_color_temperature
 
 
 def get_color_mode(resource: Light, supported_modes: set[ColorMode]) -> ColorMode:
@@ -203,8 +206,8 @@ def get_color_mode(resource: Light, supported_modes: set[ColorMode]) -> ColorMod
     if resource.color_mode.mode == "white":
         if ColorMode.COLOR_TEMP in supported_modes:
             return ColorMode.COLOR_TEMP
-        if api_white_displays_as_rgb(resource, supported_modes):
-            return ColorMode.RGB
+        if ColorMode.WHITE in supported_modes:
+            return ColorMode.WHITE
         if ColorMode.BRIGHTNESS in supported_modes:
             return ColorMode.BRIGHTNESS
         return ColorMode.ONOFF
