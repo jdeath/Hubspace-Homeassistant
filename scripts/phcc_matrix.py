@@ -29,7 +29,7 @@ if not logging.getLogger().handlers:
 
 PHCC_PROJECT = "pytest-homeassistant-custom-component"
 
-# aiohttp/aiodns vs pycares: HA 2025.x needs pycares 4.x; HA 2026+ / aiodns 4 needs pycares 5.x.
+# aiohttp/aiodns vs pycares: HA 2025.x and 2026.1 need pycares 4.x; HA 2026.2+ / aiodns 4 needs 5.x.
 PYCARES_CONSTRAINT_LEGACY = "pycares>=4.0.0,<5"
 PYCARES_CONSTRAINT_MODERN = "pycares>=5.0.0"
 PYPROJECT_PATH = Path(__file__).resolve().parents[1] / "pyproject.toml"
@@ -92,12 +92,12 @@ def _ha_version_key(version: str) -> tuple[int, ...]:
 
 def pycares_constraint_for_ha_month(ha_month: str) -> str | None:
     """Extra pycares pin for tox/uv when HA's resolver picks an incompatible wheel."""
-    year = int(ha_month.split(".", 1)[0])
-    if year == 2025:
+    key = _month_key(ha_month)
+    if key < (2025, 1):
+        return None
+    if key < (2026, 2):
         return PYCARES_CONSTRAINT_LEGACY
-    if year >= 2026:
-        return PYCARES_CONSTRAINT_MODERN
-    return None
+    return PYCARES_CONSTRAINT_MODERN
 
 
 def dev_pycares_constraint(*, refresh: bool = False) -> str | None:

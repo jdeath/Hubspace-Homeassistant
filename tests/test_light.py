@@ -329,8 +329,8 @@ async def mocked_trim_light(mocked_entry):
     )
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
-    for light in bridge.lights.items:
-        light.available = True
+    for hub_light in bridge.lights.items:
+        hub_light.available = True
     yield hass, entry, bridge
     await bridge.close()
 

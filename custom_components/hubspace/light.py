@@ -181,7 +181,7 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
 
 
 def api_white_displays_as_rgb(resource: Light, supported_modes: set[ColorMode]) -> bool:
-    """True when API white is surfaced as HA RGB (no CCT on this zone)."""
+    """Return True when API white is surfaced as HA RGB (no CCT on this zone)."""
     return (
         resource.color_mode is not None
         and resource.color_mode.mode == "white"

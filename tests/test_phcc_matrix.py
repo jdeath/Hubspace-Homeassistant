@@ -1,9 +1,7 @@
 """Tests for phcc_matrix helpers (no PyPI)."""
 
-import sys
 from pathlib import Path
-
-import pytest
+import sys
 
 _SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 if str(_SCRIPTS) not in sys.path:
@@ -12,14 +10,15 @@ if str(_SCRIPTS) not in sys.path:
 from phcc_matrix import (  # noqa: E402
     PYCARES_CONSTRAINT_LEGACY,
     PYCARES_CONSTRAINT_MODERN,
-    PYPROJECT_PATH,
     pycares_constraint_for_ha_month,
     write_uv_pycares_override,
 )
 
 
 def test_pycares_constraint_for_ha_month():
+    """Legacy pycares 4.x through HA 2026.1; modern 5.x from 2026.2 onward."""
     assert pycares_constraint_for_ha_month("2025.10") == PYCARES_CONSTRAINT_LEGACY
+    assert pycares_constraint_for_ha_month("2026.1") == PYCARES_CONSTRAINT_LEGACY
     assert pycares_constraint_for_ha_month("2026.3") == PYCARES_CONSTRAINT_MODERN
     assert pycares_constraint_for_ha_month("2024.12") is None
 
@@ -47,6 +46,7 @@ def test_write_uv_pycares_override_replaces_existing(tmp_path, monkeypatch):
 
 
 def test_write_uv_pycares_override_inserts_after_uv_section(tmp_path, monkeypatch):
+    """write_uv_pycares_override inserts override-dependencies under [tool.uv]."""
     pyproject = tmp_path / "pyproject.toml"
     pyproject.write_text("[tool.uv]\n\n[tool.uv.sources]\n", encoding="utf-8")
     monkeypatch.setattr("phcc_matrix.PYPROJECT_PATH", pyproject)
