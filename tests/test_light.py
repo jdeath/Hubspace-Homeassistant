@@ -6,6 +6,7 @@ from homeassistant.components.light import (
     ATTR_COLOR_TEMP_KELVIN,
     ATTR_EFFECT,
     ATTR_RGB_COLOR,
+    ATTR_WHITE,
     ColorMode,
 )
 from homeassistant.helpers import entity_registry as er
@@ -29,6 +30,7 @@ rgbw_led_strip = create_devices_from_data("rgbw-led-strip.json")[0]
 
 trim_light_parent = create_devices_from_data("light-with-trim.json")[0]
 trim_light_trim_id = f"{trim_light_parent.id}-light-trim"
+trim_light_main_id = f"{trim_light_parent.id}-light-main"
 trim_light_entity_id = "light.dining_room_light_1_trim"
 trim_light_main_entity_id = "light.dining_room_light_1_main"
 
@@ -349,6 +351,20 @@ async def test_trim_entity_supports_rgb_and_white_not_color_temp(mocked_trim_lig
     assert ColorMode.COLOR_TEMP not in entity.attributes["supported_color_modes"]
 
 
+@pytest.mark.asyncio
+async def test_main_entity_supports_color_temp_not_ha_white(mocked_trim_light):
+    """Main zone uses COLOR_TEMP for kelvin; must not advertise HA white mode."""
+    hass, _, bridge = mocked_trim_light
+    main = bridge.lights[trim_light_main_id]
+    assert main.supports_color_temperature
+    assert main.supports_color_white
+    entity = hass.states.get(trim_light_main_entity_id)
+    assert entity is not None
+    assert ColorMode.COLOR_TEMP in entity.attributes["supported_color_modes"]
+    assert ColorMode.RGB in entity.attributes["supported_color_modes"]
+    assert ColorMode.WHITE not in entity.attributes["supported_color_modes"]
+
+
 def _get_hubspace_light(hass, entity_id: str):
     """Return the Hubspace LightEntity for a registered entity_id."""
     entities = hass.data["light"].entities
@@ -416,6 +432,31 @@ async def test_trim_turn_on_white_attr_switches_from_rgb(mocked_trim_light, mock
 
 
 @pytest.mark.asyncio
+async def test_trim_ha_white_button_from_rgb_when_white_is_none(
+    mocked_trim_light, mocker
+):
+    """HA core may pass white=None after converting white=True without brightness."""
+    hass, _, bridge = mocked_trim_light
+    trim = bridge.lights[trim_light_trim_id]
+    trim.color_mode.mode = "color"
+    trim.on.on = True
+    sent = mocker.spy(bridge.lights, "set_state")
+    light_ent = _get_hubspace_light(hass, trim_light_entity_id)
+    mocker.patch.object(
+        type(light_ent),
+        "brightness",
+        new_callable=mocker.PropertyMock,
+        return_value=None,
+    )
+    await light_ent.async_turn_on(**{ATTR_WHITE: None})
+    await bridge.async_block_until_done()
+    await hass.async_block_till_done()
+    call_kwargs = sent.call_args.kwargs
+    assert call_kwargs["color_mode"] == "white"
+    assert call_kwargs.get("color") is None
+
+
+@pytest.mark.asyncio
 async def test_trim_turn_on_brightness_in_rgb_mode_omits_color_mode(
     mocked_trim_light, mocker
 ):
@@ -430,3 +471,96 @@ async def test_trim_turn_on_brightness_in_rgb_mode_omits_color_mode(
     await hass.async_block_till_done()
     call_kwargs = sent.call_args.kwargs
     assert call_kwargs.get("color_mode") is None
+
+
+@pytest.mark.asyncio
+async def test_trim_turn_on_white_int_scales_brightness(mocked_trim_light, mocker):
+    """HA W button sends white 0-255; API expects brightness 1-100."""
+    hass, _, bridge = mocked_trim_light
+    trim = bridge.lights[trim_light_trim_id]
+    trim.color_mode.mode = "color"
+    sent = mocker.spy(bridge.lights, "set_state")
+    light_ent = _get_hubspace_light(hass, trim_light_entity_id)
+    await light_ent.async_turn_on(**{ATTR_WHITE: 128})
+    await bridge.async_block_until_done()
+    await hass.async_block_till_done()
+    call_kwargs = sent.call_args.kwargs
+    assert call_kwargs["color_mode"] == "white"
+    assert call_kwargs["brightness"] == 50
+
+
+@pytest.mark.asyncio
+async def test_trim_turn_on_white_true_defaults_brightness_when_unknown(
+    mocked_trim_light, mocker
+):
+    """White mode without HA brightness falls back to 100% when pct is unset."""
+    hass, _, bridge = mocked_trim_light
+    trim = bridge.lights[trim_light_trim_id]
+    trim.color_mode.mode = "color"
+    trim.dimming.brightness = None
+    sent = mocker.spy(bridge.lights, "set_state")
+    light_ent = _get_hubspace_light(hass, trim_light_entity_id)
+    await light_ent.async_turn_on(white=True)
+    await bridge.async_block_until_done()
+    await hass.async_block_till_done()
+    call_kwargs = sent.call_args.kwargs
+    assert call_kwargs["color_mode"] == "white"
+    assert call_kwargs["brightness"] == 100
+
+
+@pytest.mark.asyncio
+async def test_main_turn_on_white_does_not_send_api_white(mocked_trim_light, mocker):
+    """Main has CCT; HA white must not route to API color-mode white."""
+    hass, _, bridge = mocked_trim_light
+    sent = mocker.spy(bridge.lights, "set_state")
+    light_ent = _get_hubspace_light(hass, trim_light_main_entity_id)
+    await light_ent.async_turn_on(white=True)
+    await bridge.async_block_until_done()
+    await hass.async_block_till_done()
+    call_kwargs = sent.call_args.kwargs
+    assert call_kwargs.get("color_mode") is None
+
+
+@pytest.mark.asyncio
+async def test_brightness_none_when_no_dimming(mocked_dimmer):
+    """Lights without dimming must not report HA brightness."""
+    hass, _, bridge = mocked_dimmer
+    light_ent = _get_hubspace_light(hass, switch_dimmer_light_id)
+    light_ent.resource.dimming = None
+    assert light_ent.brightness is None
+
+
+@pytest.mark.asyncio
+async def test_brightness_defaults_when_pct_none(mocked_trim_light):
+    """Missing API brightness pct defaults to full scale for HA."""
+    hass, _, bridge = mocked_trim_light
+    trim = bridge.lights[trim_light_trim_id]
+    trim.dimming.brightness = None
+    light_ent = _get_hubspace_light(hass, trim_light_entity_id)
+    assert light_ent.brightness == 255
+
+
+@pytest.mark.asyncio
+async def test_rgb_color_none_without_color_feature(mocked_dimmer):
+    """Non-RGB lights must not expose rgb_color."""
+    hass, _, bridge = mocked_dimmer
+    light_ent = _get_hubspace_light(hass, switch_dimmer_light_id)
+    assert light_ent.resource.color is None
+    assert light_ent.rgb_color is None
+
+
+@pytest.mark.asyncio
+async def test_is_api_white_zone_trim_vs_main(mocked_trim_light):
+    """Trim is white-only; main uses CCT for kelvin."""
+    _, _, bridge = mocked_trim_light
+    assert light.is_api_white_zone(bridge.lights[trim_light_trim_id])
+    assert not light.is_api_white_zone(bridge.lights[trim_light_main_id])
+
+
+@pytest.mark.asyncio
+async def test_default_brightness_pct_fallback(mocked_trim_light):
+    """Cover 100% fallback when dimming exists but pct is unknown."""
+    _, _, bridge = mocked_trim_light
+    trim = bridge.lights[trim_light_trim_id]
+    trim.dimming.brightness = None
+    assert light.default_brightness_pct(trim) == 100
