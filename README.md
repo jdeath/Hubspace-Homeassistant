@@ -68,6 +68,7 @@ are as follows:
 ## Changelog
 
 - 6.0.1
+
   - Fix split lights not being controllable
   - Fix white mode for lights
 
