@@ -67,6 +67,11 @@ are as follows:
 
 ## Changelog
 
+- 6.0.1
+
+  - Fix split lights not being controllable
+  - Fix white mode for lights
+
 - 6.0.0
 
   - Break: Some lights that were split (such as ones with trim) now have new entity IDs. Any automations need to be updated to reflect the new IDs

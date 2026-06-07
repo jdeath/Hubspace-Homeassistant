@@ -1,0 +1,2634 @@
+[
+  {
+    "id": "d3e61c24-eca8-4f29-86b2-a8eec1d97fed",
+    "device_id": "8c49cb2b-c42b-43dd-96c1-03d7b7ed2075",
+    "model": "Recessed Light With Accent Ring",
+    "device_class": "light",
+    "default_name": "Recessed Light With Accent Ring",
+    "default_image": "leedarson-recessed-light-with-trim-icon",
+    "friendly_name": "Dining Room Light 1",
+    "capabilities": [
+      {
+        "functionClass": "available",
+        "type": "boolean",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "visible",
+        "type": "boolean",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "direct",
+        "type": "boolean",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "ble-mac-address",
+        "type": "string",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "geo-coordinates",
+        "type": "object",
+        "schedulable": null,
+        "functionInstance": "system-device-location",
+        "_opts": {}
+      },
+      {
+        "functionClass": "scheduler-flags",
+        "type": "numeric",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "wifi-ssid",
+        "type": "string",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "wifi-rssi",
+        "type": "numeric",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "wifi-steady-state",
+        "type": "category",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {
+          "values": [
+            "not-connected",
+            "pending",
+            "connected",
+            "unknown-failure",
+            "association-failure",
+            "handshake-failed",
+            "echo-failed",
+            "ssid-not-found",
+            "ntp-failed"
+          ],
+          "categoryValues": [
+            {
+              "name": "not-connected",
+              "values": ["0"]
+            },
+            {
+              "name": "pending",
+              "values": ["1"]
+            },
+            {
+              "name": "connected",
+              "values": ["2"]
+            },
+            {
+              "name": "unknown-failure",
+              "values": ["3"]
+            },
+            {
+              "name": "association-failure",
+              "values": ["4"]
+            },
+            {
+              "name": "handshake-failed",
+              "values": ["5"]
+            },
+            {
+              "name": "echo-failed",
+              "values": ["6"]
+            },
+            {
+              "name": "ssid-not-found",
+              "values": ["7"]
+            },
+            {
+              "name": "ntp-failed",
+              "values": ["8"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "wifi-setup-state",
+        "type": "category",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {
+          "values": [
+            "not-connected",
+            "pending",
+            "connected",
+            "unknown-failure",
+            "association-failure",
+            "handshake-failed",
+            "echo-failed",
+            "ssid-not-found",
+            "ntp-failed"
+          ],
+          "categoryValues": [
+            {
+              "name": "not-connected",
+              "values": ["0"]
+            },
+            {
+              "name": "pending",
+              "values": ["1"]
+            },
+            {
+              "name": "connected",
+              "values": ["2"]
+            },
+            {
+              "name": "unknown-failure",
+              "values": ["3"]
+            },
+            {
+              "name": "association-failure",
+              "values": ["4"]
+            },
+            {
+              "name": "handshake-failed",
+              "values": ["5"]
+            },
+            {
+              "name": "echo-failed",
+              "values": ["6"]
+            },
+            {
+              "name": "ssid-not-found",
+              "values": ["7"]
+            },
+            {
+              "name": "ntp-failed",
+              "values": ["8"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "wifi-mac-address",
+        "type": "string",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "ble-scan-responses",
+        "type": "object",
+        "schedulable": false,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "ble-scan-requests",
+        "type": "object",
+        "schedulable": false,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "abc-receiver-keys",
+        "type": "object",
+        "schedulable": false,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "abc-state",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": null,
+        "_opts": {
+          "values": [
+            "transmitter-initialized-receiver-key-mismatch",
+            "transmitter-and-receiver-initialized",
+            "receiver-key-mismatch",
+            "receiver-initialized",
+            "transmitter-initialized",
+            "uninitialized"
+          ],
+          "categoryValues": [
+            {
+              "name": "transmitter-initialized-receiver-key-mismatch",
+              "values": ["5"]
+            },
+            {
+              "name": "transmitter-and-receiver-initialized",
+              "values": ["4"]
+            },
+            {
+              "name": "receiver-key-mismatch",
+              "values": ["3"]
+            },
+            {
+              "name": "receiver-initialized",
+              "values": ["2"]
+            },
+            {
+              "name": "transmitter-initialized",
+              "values": ["1"]
+            },
+            {
+              "name": "uninitialized",
+              "values": ["0"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "micro-hub-soul-mates",
+        "type": "string",
+        "schedulable": false,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "schedule-pause",
+        "type": "object",
+        "schedulable": false,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "schedule-pause",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": "active",
+        "_opts": {
+          "values": ["on", "off"],
+          "categoryValues": [
+            {
+              "name": "on",
+              "values": ["1"]
+            },
+            {
+              "name": "off",
+              "values": ["0"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "vacation-mode-group",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": null,
+        "_opts": {
+          "values": [
+            "group-e",
+            "group-d",
+            "group-c",
+            "group-b",
+            "group-a",
+            "no-group",
+            "opt-out"
+          ],
+          "categoryValues": [
+            {
+              "name": "group-e",
+              "values": [
+                "0100EEEEEEEE020BFFFE000BFF010013FFFF0003FF1700053C040500000300B80B02006401000101010000"
+              ]
+            },
+            {
+              "name": "group-d",
+              "values": [
+                "0100DDDDDDDD020BFFFE000BFF010013FFFF0003FF1700053C040500000300B80B02006401000101010000"
+              ]
+            },
+            {
+              "name": "group-c",
+              "values": [
+                "0100CCCCCCCC020BFFFE000BFF010013FFFF0003FF1700053C040500000300B80B02006401000101010000"
+              ]
+            },
+            {
+              "name": "group-b",
+              "values": [
+                "0100BBBBBBBB020BFFFE000BFF010013FFFF0003FF1700053C040500000300B80B02006401000101010000"
+              ]
+            },
+            {
+              "name": "group-a",
+              "values": [
+                "0100AAAAAAAA020BFFFE000BFF010013FFFF0003FF1700053C040500000300B80B02006401000101010000"
+              ]
+            },
+            {
+              "name": "no-group",
+              "values": [
+                "010000000000020BFFFE000BFF010013FFFF0003FF1700053C040500000300B80B02006401000101010000"
+              ]
+            },
+            {
+              "name": "opt-out",
+              "values": [""]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "vacation-mode-enable",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": null,
+        "_opts": {
+          "values": ["on", "off"],
+          "categoryValues": [
+            {
+              "name": "on",
+              "values": ["1"]
+            },
+            {
+              "name": "off",
+              "values": ["0"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "color-sequence",
+        "type": "category",
+        "schedulable": true,
+        "functionInstance": "custom",
+        "_opts": {
+          "values": [
+            "diwali-fade",
+            "cinco-de-mayo-fade",
+            "hanukkah-fade",
+            "st-patricks-day-fade",
+            "easter-fade",
+            "halloween-fade",
+            "sound-to-sleep",
+            "valentines-day",
+            "moonlight",
+            "getting-ready",
+            "nightlight",
+            "clarity",
+            "dinner-party",
+            "chill",
+            "focus",
+            "sleep",
+            "july-4th",
+            "christmas",
+            "wake-up",
+            "rainbow"
+          ],
+          "categoryValues": [
+            {
+              "name": "diwali-fade",
+              "values": ["154700FF0000640300FFFF0064030000FF00640300"]
+            },
+            {
+              "name": "cinco-de-mayo-fade",
+              "values": ["14470000FF00640300FFFFFF640300FF0000640300"]
+            },
+            {
+              "name": "hanukkah-fade",
+              "values": ["1347000000FF6403002222FF640300FFFFFF640300"]
+            },
+            {
+              "name": "st-patricks-day-fade",
+              "values": ["12470000FF0064030022FF2264030055FF55640300"]
+            },
+            {
+              "name": "easter-fade",
+              "values": ["114700FFFF0064030000FF00640300FF00FF640300"]
+            },
+            {
+              "name": "halloween-fade",
+              "values": ["104700FF270064030000FF006403002F00FF640300"]
+            },
+            {
+              "name": "sound-to-sleep",
+              "values": ["0F04008C0A280008078C0A00000000"]
+            },
+            {
+              "name": "valentines-day",
+              "values": ["0D4700C61C1C640A00FF0000640A00"]
+            },
+            {
+              "name": "moonlight",
+              "values": ["0C000088130A000000"]
+            },
+            {
+              "name": "getting-ready",
+              "values": ["0B0000CC105B000000"]
+            },
+            {
+              "name": "nightlight",
+              "values": ["0A00008C0A05000000"]
+            },
+            {
+              "name": "clarity",
+              "values": ["090000881364000000"]
+            },
+            {
+              "name": "dinner-party",
+              "values": ["080000F00A3E000000"]
+            },
+            {
+              "name": "chill",
+              "values": ["070000800C28000000"]
+            },
+            {
+              "name": "focus",
+              "values": ["060000301155000000"]
+            },
+            {
+              "name": "sleep",
+              "values": ["0504008C0A280008078C0A05000000"]
+            },
+            {
+              "name": "july-4th",
+              "values": ["044B00FF0000641400FFFFFF6414000000FF641400"]
+            },
+            {
+              "name": "christmas",
+              "values": ["034700FF0000640A0000FF00640A00"]
+            },
+            {
+              "name": "wake-up",
+              "values": ["0204008C0A050008078C0A64000000"]
+            },
+            {
+              "name": "rainbow",
+              "values": ["010700FF000064140000FF006414000000FF641400"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "warm-dimming",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": null,
+        "_opts": {
+          "values": ["enabled", "disabled"],
+          "categoryValues": [
+            {
+              "name": "enabled",
+              "values": ["1"]
+            },
+            {
+              "name": "disabled",
+              "values": ["0"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "reconstitution",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": null,
+        "_opts": {
+          "values": ["hw-switching-disabled", "enabled", "disabled"],
+          "categoryValues": [
+            {
+              "name": "hw-switching-disabled",
+              "values": ["2"]
+            },
+            {
+              "name": "enabled",
+              "values": ["1"]
+            },
+            {
+              "name": "disabled",
+              "values": ["0"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "restore-values",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": null,
+        "_opts": {
+          "values": ["partial-restore", "restored", "not-restored"],
+          "categoryValues": [
+            {
+              "name": "partial-restore",
+              "values": ["2"]
+            },
+            {
+              "name": "restored",
+              "values": ["1"]
+            },
+            {
+              "name": "not-restored",
+              "values": ["0"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "power-off-timer",
+        "type": "numeric",
+        "schedulable": true,
+        "functionInstance": null,
+        "_opts": {
+          "range": {
+            "min": 0,
+            "max": 1440,
+            "step": 1
+          }
+        }
+      },
+      {
+        "functionClass": "brightness",
+        "type": "numeric",
+        "schedulable": false,
+        "functionInstance": "global",
+        "_opts": {
+          "range": {
+            "min": 1,
+            "max": 100,
+            "step": 1
+          }
+        }
+      },
+      {
+        "functionClass": "power",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": "global",
+        "_opts": {
+          "values": ["on", "off"],
+          "categoryValues": [
+            {
+              "name": "on",
+              "values": ["1"]
+            },
+            {
+              "name": "off",
+              "values": ["0"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "color-mode",
+        "type": "category",
+        "schedulable": true,
+        "functionInstance": "trim",
+        "_opts": {
+          "values": ["sequence", "white", "color"],
+          "categoryValues": [
+            {
+              "name": "sequence",
+              "values": ["2"]
+            },
+            {
+              "name": "white",
+              "values": ["0"]
+            },
+            {
+              "name": "color",
+              "values": ["1"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "color-rgb",
+        "type": "object",
+        "schedulable": true,
+        "functionInstance": "trim",
+        "_opts": {}
+      },
+      {
+        "functionClass": "brightness",
+        "type": "numeric",
+        "schedulable": true,
+        "functionInstance": "trim",
+        "_opts": {
+          "range": {
+            "min": 1,
+            "max": 100,
+            "step": 1
+          }
+        }
+      },
+      {
+        "functionClass": "power",
+        "type": "category",
+        "schedulable": true,
+        "functionInstance": "trim",
+        "_opts": {
+          "values": ["on", "off"],
+          "categoryValues": [
+            {
+              "name": "on",
+              "values": ["1"]
+            },
+            {
+              "name": "off",
+              "values": ["0"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "speed",
+        "type": "numeric",
+        "schedulable": true,
+        "functionInstance": "color-sequence",
+        "_opts": {
+          "range": {
+            "min": -10,
+            "max": 10,
+            "step": 1
+          }
+        }
+      },
+      {
+        "functionClass": "color-sequence",
+        "type": "category",
+        "schedulable": true,
+        "functionInstance": "preset",
+        "_opts": {
+          "values": ["jump-3", "jump-7", "fade-3", "fade-7", "flash", "custom"],
+          "categoryValues": [
+            {
+              "name": "jump-3",
+              "values": ["305"]
+            },
+            {
+              "name": "jump-7",
+              "values": ["304"]
+            },
+            {
+              "name": "fade-3",
+              "values": ["303"]
+            },
+            {
+              "name": "fade-7",
+              "values": ["302"]
+            },
+            {
+              "name": "flash",
+              "values": ["301"]
+            },
+            {
+              "name": "custom",
+              "values": ["300"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "color-mode",
+        "type": "category",
+        "schedulable": true,
+        "functionInstance": "main",
+        "_opts": {
+          "values": ["circadian-rhythm", "sequence", "white", "color"],
+          "categoryValues": [
+            {
+              "name": "circadian-rhythm",
+              "values": ["10"]
+            },
+            {
+              "name": "sequence",
+              "values": ["2"]
+            },
+            {
+              "name": "white",
+              "values": ["0"]
+            },
+            {
+              "name": "color",
+              "values": ["1"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "color-rgb",
+        "type": "object",
+        "schedulable": true,
+        "functionInstance": "main",
+        "_opts": {}
+      },
+      {
+        "functionClass": "color-temperature",
+        "type": "numeric",
+        "schedulable": true,
+        "functionInstance": "main",
+        "_opts": {
+          "range": {
+            "min": 2700,
+            "max": 6500,
+            "step": 100
+          }
+        }
+      },
+      {
+        "functionClass": "brightness",
+        "type": "numeric",
+        "schedulable": true,
+        "functionInstance": "main",
+        "_opts": {
+          "range": {
+            "min": 1,
+            "max": 100,
+            "step": 1
+          }
+        }
+      },
+      {
+        "functionClass": "power",
+        "type": "category",
+        "schedulable": true,
+        "functionInstance": "main",
+        "_opts": {
+          "values": ["on", "off"],
+          "categoryValues": [
+            {
+              "name": "on",
+              "values": ["1"]
+            },
+            {
+              "name": "off",
+              "values": ["0"]
+            }
+          ]
+        }
+      }
+    ],
+    "functions": [
+      {
+        "id": "3db5268a-8d70-46fd-8f9e-11b8b835f52d",
+        "createdTimestampMs": 1752703504168,
+        "updatedTimestampMs": 1752703504168,
+        "functionClass": "ble-scan-responses",
+        "type": "object",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "3a62e038-bbb1-4467-80b9-1c0f45c64e56",
+            "createdTimestampMs": 1752703504175,
+            "updatedTimestampMs": 1752703504175,
+            "name": "ble-scan-responses",
+            "deviceValues": [
+              {
+                "id": "5f3b3261-1356-4dcb-a5c7-198449e81f03",
+                "createdTimestampMs": 1752703504182,
+                "updatedTimestampMs": 1752703504182,
+                "type": "attribute",
+                "key": "65083",
+                "format": "ble-scan-response-array"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "ad812b36-16e7-4509-ad77-f8b6d8fe4330",
+        "createdTimestampMs": 1752703504148,
+        "updatedTimestampMs": 1752703504148,
+        "functionClass": "ble-scan-requests",
+        "type": "object",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "45c28714-4769-4699-b5d4-c082764b0419",
+            "createdTimestampMs": 1752703504155,
+            "updatedTimestampMs": 1752703504155,
+            "name": "ble-scan-requests",
+            "deviceValues": [
+              {
+                "id": "caf0fb15-e79d-4964-89fb-4306e8810199",
+                "createdTimestampMs": 1752703504163,
+                "updatedTimestampMs": 1752703504163,
+                "type": "attribute",
+                "key": "65082",
+                "format": "ble-scan-request-array"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "a810ac77-9173-479e-93d0-9269f60cf83c",
+        "createdTimestampMs": 1752703504129,
+        "updatedTimestampMs": 1752703504129,
+        "functionClass": "abc-receiver-keys",
+        "type": "object",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "9a175d9f-3d4d-4044-86a4-5411c243c0ba",
+            "createdTimestampMs": 1752703504136,
+            "updatedTimestampMs": 1752703504136,
+            "name": "abc-receiver-keys",
+            "deviceValues": [
+              {
+                "id": "e71da8ce-97b7-4f14-a909-3f23800ec00a",
+                "createdTimestampMs": 1752703504143,
+                "updatedTimestampMs": 1752703504143,
+                "type": "attribute",
+                "key": "65080",
+                "format": "abc-manager-key-array"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "6e084361-c464-4471-bc54-90a3bd8199be",
+        "createdTimestampMs": 1752703504047,
+        "updatedTimestampMs": 1752703504047,
+        "functionClass": "abc-state",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "7f18ec64-14d8-4e28-b79e-7dfc627adc0b",
+            "createdTimestampMs": 1752703504116,
+            "updatedTimestampMs": 1752703504116,
+            "name": "transmitter-initialized-receiver-key-mismatch",
+            "deviceValues": [
+              {
+                "id": "77c2dfe4-4db0-4e02-b9bf-91fc9c4aaede",
+                "createdTimestampMs": 1752703504124,
+                "updatedTimestampMs": 1752703504124,
+                "type": "attribute",
+                "key": "65076",
+                "value": "5"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "205c90b9-2f1f-4b4a-a74f-d8660739e50c",
+            "createdTimestampMs": 1752703504105,
+            "updatedTimestampMs": 1752703504105,
+            "name": "transmitter-and-receiver-initialized",
+            "deviceValues": [
+              {
+                "id": "d21c5028-15f8-4cb8-8d3e-0e4ee2ae5947",
+                "createdTimestampMs": 1752703504112,
+                "updatedTimestampMs": 1752703504112,
+                "type": "attribute",
+                "key": "65076",
+                "value": "4"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "26c8c134-a6f4-4214-990b-23f1fcdc86cf",
+            "createdTimestampMs": 1752703504092,
+            "updatedTimestampMs": 1752703504092,
+            "name": "receiver-key-mismatch",
+            "deviceValues": [
+              {
+                "id": "df3917e2-6a46-429a-a974-fc5929ef3217",
+                "createdTimestampMs": 1752703504099,
+                "updatedTimestampMs": 1752703504099,
+                "type": "attribute",
+                "key": "65076",
+                "value": "3"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "e0a4b485-f671-4132-a2a5-88fd8cb67ae0",
+            "createdTimestampMs": 1752703504079,
+            "updatedTimestampMs": 1752703504079,
+            "name": "receiver-initialized",
+            "deviceValues": [
+              {
+                "id": "0fff7368-5e9e-4e00-8411-fbdaabce4aee",
+                "createdTimestampMs": 1752703504087,
+                "updatedTimestampMs": 1752703504087,
+                "type": "attribute",
+                "key": "65076",
+                "value": "2"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "bc4cbaec-e01d-46aa-97a9-0f9fa9a2dd5a",
+            "createdTimestampMs": 1752703504067,
+            "updatedTimestampMs": 1752703504067,
+            "name": "transmitter-initialized",
+            "deviceValues": [
+              {
+                "id": "7f16b81d-e61c-44cb-b39d-36fc1ffca7a1",
+                "createdTimestampMs": 1752703504074,
+                "updatedTimestampMs": 1752703504074,
+                "type": "attribute",
+                "key": "65076",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "53ef1eba-353b-412d-918f-b1acfb1782e5",
+            "createdTimestampMs": 1752703504055,
+            "updatedTimestampMs": 1752703504055,
+            "name": "uninitialized",
+            "deviceValues": [
+              {
+                "id": "4398f2fc-d433-4ae5-9ce5-d761226e409b",
+                "createdTimestampMs": 1752703504062,
+                "updatedTimestampMs": 1752703504062,
+                "type": "attribute",
+                "key": "65076",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "cb5230d3-d7cf-437a-a4aa-294845c48359",
+        "createdTimestampMs": 1752703504029,
+        "updatedTimestampMs": 1752703504029,
+        "functionClass": "micro-hub-soul-mates",
+        "type": "string",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "f97aade6-c746-49c0-a0ae-cd47aa52407b",
+            "createdTimestampMs": 1752703504036,
+            "updatedTimestampMs": 1752703504036,
+            "name": "soul-mate",
+            "deviceValues": [
+              {
+                "id": "ebf6aa35-18bf-43fc-90e8-5eee1c0467ae",
+                "createdTimestampMs": 1752703504043,
+                "updatedTimestampMs": 1752703504043,
+                "type": "attribute",
+                "key": "65073",
+                "format": "string"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "88f39852-ad01-4ae0-b6f1-2c212fca415e",
+        "createdTimestampMs": 1752703504008,
+        "updatedTimestampMs": 1752703504008,
+        "functionClass": "schedule-pause",
+        "type": "object",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "78899b9e-1a7a-411c-b78e-eb578ed3754f",
+            "createdTimestampMs": 1752703504016,
+            "updatedTimestampMs": 1752703504016,
+            "name": "schedule-pause-time",
+            "deviceValues": [
+              {
+                "id": "940916c4-56b5-47cc-b131-bab540c1c67b",
+                "createdTimestampMs": 1752703504024,
+                "updatedTimestampMs": 1752703504024,
+                "type": "attribute",
+                "key": "49999",
+                "format": "schedule-pause-time-array"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "40eb6ac4-89d4-4b51-a2c0-478fd7d4fb5a",
+        "createdTimestampMs": 1752703503974,
+        "updatedTimestampMs": 1752703503974,
+        "functionClass": "schedule-pause",
+        "functionInstance": "active",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "6f8e67d6-97aa-489a-90f1-62bac81816b0",
+            "createdTimestampMs": 1752703503994,
+            "updatedTimestampMs": 1752703503994,
+            "name": "on",
+            "deviceValues": [
+              {
+                "id": "e5c0557c-e09b-43f7-9735-a2bc2caaae0e",
+                "createdTimestampMs": 1752703504002,
+                "updatedTimestampMs": 1752703504002,
+                "type": "attribute",
+                "key": "49998",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "bf95efd5-9dd0-40c7-a317-112bb20d8c59",
+            "createdTimestampMs": 1752703503981,
+            "updatedTimestampMs": 1752703503981,
+            "name": "off",
+            "deviceValues": [
+              {
+                "id": "036df47e-8b17-4b38-adf1-6c19e872ca47",
+                "createdTimestampMs": 1752703503989,
+                "updatedTimestampMs": 1752703503989,
+                "type": "attribute",
+                "key": "49998",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "1adca1d3-b269-4b12-9fda-9c7e4ade3a1c",
+        "createdTimestampMs": 1752703503882,
+        "updatedTimestampMs": 1752703503882,
+        "functionClass": "vacation-mode-group",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "080dcac2-4a9d-4acc-9e33-4e82865ba0e5",
+            "createdTimestampMs": 1752703503961,
+            "updatedTimestampMs": 1752703503961,
+            "name": "group-e",
+            "deviceValues": [
+              {
+                "id": "a42d80ba-2463-4ff3-8187-4a68b1956806",
+                "createdTimestampMs": 1752703503969,
+                "updatedTimestampMs": 1752703503969,
+                "type": "attribute",
+                "key": "49102",
+                "value": "0100EEEEEEEE020BFFFE000BFF010013FFFF0003FF1700053C040500000300B80B02006401000101010000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "aaaeb357-fba6-48f5-82c0-45ee60d7dca5",
+            "createdTimestampMs": 1752703503950,
+            "updatedTimestampMs": 1752703503950,
+            "name": "group-d",
+            "deviceValues": [
+              {
+                "id": "759fc83e-569b-4537-8532-96631fd56a15",
+                "createdTimestampMs": 1752703503956,
+                "updatedTimestampMs": 1752703503956,
+                "type": "attribute",
+                "key": "49102",
+                "value": "0100DDDDDDDD020BFFFE000BFF010013FFFF0003FF1700053C040500000300B80B02006401000101010000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "6dfb9e6a-76f0-4fb2-98c5-a2331cf8c311",
+            "createdTimestampMs": 1752703503938,
+            "updatedTimestampMs": 1752703503938,
+            "name": "group-c",
+            "deviceValues": [
+              {
+                "id": "1dc1688a-5908-4f3a-8d4f-636dac703a42",
+                "createdTimestampMs": 1752703503945,
+                "updatedTimestampMs": 1752703503945,
+                "type": "attribute",
+                "key": "49102",
+                "value": "0100CCCCCCCC020BFFFE000BFF010013FFFF0003FF1700053C040500000300B80B02006401000101010000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "3cb9f9fb-ba21-4cf8-ac02-28d668bfa861",
+            "createdTimestampMs": 1752703503926,
+            "updatedTimestampMs": 1752703503926,
+            "name": "group-b",
+            "deviceValues": [
+              {
+                "id": "b059d5bc-b8cc-4449-8e5e-60a94d38fccf",
+                "createdTimestampMs": 1752703503933,
+                "updatedTimestampMs": 1752703503933,
+                "type": "attribute",
+                "key": "49102",
+                "value": "0100BBBBBBBB020BFFFE000BFF010013FFFF0003FF1700053C040500000300B80B02006401000101010000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "3b0027d2-46f0-4075-8193-cb832440b3d4",
+            "createdTimestampMs": 1752703503915,
+            "updatedTimestampMs": 1752703503915,
+            "name": "group-a",
+            "deviceValues": [
+              {
+                "id": "b6e171e0-798a-4833-8062-157bf02be508",
+                "createdTimestampMs": 1752703503922,
+                "updatedTimestampMs": 1752703503922,
+                "type": "attribute",
+                "key": "49102",
+                "value": "0100AAAAAAAA020BFFFE000BFF010013FFFF0003FF1700053C040500000300B80B02006401000101010000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "790ab0c7-84c5-4bdb-8388-fb7e0bbb8c14",
+            "createdTimestampMs": 1752703503902,
+            "updatedTimestampMs": 1752703503902,
+            "name": "no-group",
+            "deviceValues": [
+              {
+                "id": "36cd2bfd-4a11-4817-9b0d-f6fdee79c8d8",
+                "createdTimestampMs": 1752703503910,
+                "updatedTimestampMs": 1752703503910,
+                "type": "attribute",
+                "key": "49102",
+                "value": "010000000000020BFFFE000BFF010013FFFF0003FF1700053C040500000300B80B02006401000101010000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "c7444356-bae6-43c2-aefc-2fccb4c13222",
+            "createdTimestampMs": 1752703503889,
+            "updatedTimestampMs": 1752703503889,
+            "name": "opt-out",
+            "deviceValues": [
+              {
+                "id": "2059cd1d-e190-4605-9e94-2d5093a323bb",
+                "createdTimestampMs": 1752703503896,
+                "updatedTimestampMs": 1752703503896,
+                "type": "attribute",
+                "key": "49102",
+                "value": ""
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "ddc7a54c-0d38-4899-889a-962e9183d1ce",
+        "createdTimestampMs": 1752703503848,
+        "updatedTimestampMs": 1752703503848,
+        "functionClass": "vacation-mode-enable",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "07e92977-a979-44c3-9cef-185e444d014f",
+            "createdTimestampMs": 1752703503869,
+            "updatedTimestampMs": 1752703503869,
+            "name": "on",
+            "deviceValues": [
+              {
+                "id": "ec6f5feb-2a48-41c8-bbab-936f2764a7a3",
+                "createdTimestampMs": 1752703503877,
+                "updatedTimestampMs": 1752703503877,
+                "type": "attribute",
+                "key": "49101",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "93cade51-fbb2-4cef-84e0-f2f879948cb0",
+            "createdTimestampMs": 1752703503856,
+            "updatedTimestampMs": 1752703503856,
+            "name": "off",
+            "deviceValues": [
+              {
+                "id": "e266bd97-39b0-4a48-ac80-3a82e78a1b31",
+                "createdTimestampMs": 1752703503864,
+                "updatedTimestampMs": 1752703503864,
+                "type": "attribute",
+                "key": "49101",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "4385931d-6a80-42e0-85b6-2479b7bcfc4d",
+        "createdTimestampMs": 1752703503557,
+        "updatedTimestampMs": 1752703503557,
+        "functionClass": "color-sequence",
+        "functionInstance": "custom",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "8f0d227e-d6ae-4cb7-bc0e-6c17ff9a42c9",
+            "createdTimestampMs": 1752703503836,
+            "updatedTimestampMs": 1752703503836,
+            "name": "diwali-fade",
+            "deviceValues": [
+              {
+                "id": "a0d41e7b-b6d5-443e-86ef-497c7257f7e2",
+                "createdTimestampMs": 1752703503843,
+                "updatedTimestampMs": 1752703503843,
+                "type": "attribute",
+                "key": "300",
+                "value": "154700FF0000640300FFFF0064030000FF00640300"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "9221ce29-0779-43c7-a5ea-a2d823ac436b",
+            "createdTimestampMs": 1752703503824,
+            "updatedTimestampMs": 1752703503824,
+            "name": "cinco-de-mayo-fade",
+            "deviceValues": [
+              {
+                "id": "5c38e0a8-6d93-4cc2-b3aa-bf2ca6f5ba4f",
+                "createdTimestampMs": 1752703503831,
+                "updatedTimestampMs": 1752703503831,
+                "type": "attribute",
+                "key": "300",
+                "value": "14470000FF00640300FFFFFF640300FF0000640300"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "fdf0b0fa-ecb7-449f-8ad0-8b78f25e67ce",
+            "createdTimestampMs": 1752703503813,
+            "updatedTimestampMs": 1752703503813,
+            "name": "hanukkah-fade",
+            "deviceValues": [
+              {
+                "id": "9d2e4bb9-1a08-4487-abdb-621c26af5023",
+                "createdTimestampMs": 1752703503819,
+                "updatedTimestampMs": 1752703503819,
+                "type": "attribute",
+                "key": "300",
+                "value": "1347000000FF6403002222FF640300FFFFFF640300"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "85235c28-9434-46e1-a9cf-442b4576b8db",
+            "createdTimestampMs": 1752703503801,
+            "updatedTimestampMs": 1752703503801,
+            "name": "st-patricks-day-fade",
+            "deviceValues": [
+              {
+                "id": "717d9f8a-c903-44bc-a075-cf87c07c869e",
+                "createdTimestampMs": 1752703503808,
+                "updatedTimestampMs": 1752703503808,
+                "type": "attribute",
+                "key": "300",
+                "value": "12470000FF0064030022FF2264030055FF55640300"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "fb151d55-2068-4e72-8d09-2dee8974fcca",
+            "createdTimestampMs": 1752703503788,
+            "updatedTimestampMs": 1752703503788,
+            "name": "easter-fade",
+            "deviceValues": [
+              {
+                "id": "ffcb1e40-13c1-4294-b4fb-d8261ffe7d5f",
+                "createdTimestampMs": 1752703503795,
+                "updatedTimestampMs": 1752703503795,
+                "type": "attribute",
+                "key": "300",
+                "value": "114700FFFF0064030000FF00640300FF00FF640300"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "828998fc-2ba2-43e3-92cd-f34334a82786",
+            "createdTimestampMs": 1752703503774,
+            "updatedTimestampMs": 1752703503774,
+            "name": "halloween-fade",
+            "deviceValues": [
+              {
+                "id": "a236e185-f481-45d2-b6e0-12d6074f9d09",
+                "createdTimestampMs": 1752703503782,
+                "updatedTimestampMs": 1752703503782,
+                "type": "attribute",
+                "key": "300",
+                "value": "104700FF270064030000FF006403002F00FF640300"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "54523d30-8783-42ad-abd2-0621c260e35d",
+            "createdTimestampMs": 1752703503732,
+            "updatedTimestampMs": 1752703503732,
+            "name": "sound-to-sleep",
+            "deviceValues": [
+              {
+                "id": "f15eddba-6cc0-4bc8-9c12-5582e08d1475",
+                "createdTimestampMs": 1752703503740,
+                "updatedTimestampMs": 1752703503740,
+                "type": "attribute",
+                "key": "300",
+                "value": "0F04008C0A280008078C0A00000000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "f14222c8-7228-4745-b5a4-4b09bd76e363",
+            "createdTimestampMs": 1752703503719,
+            "updatedTimestampMs": 1752703503719,
+            "name": "valentines-day",
+            "deviceValues": [
+              {
+                "id": "7e4fac01-a142-4995-909e-1f309f600af4",
+                "createdTimestampMs": 1752703503727,
+                "updatedTimestampMs": 1752703503727,
+                "type": "attribute",
+                "key": "300",
+                "value": "0D4700C61C1C640A00FF0000640A00"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "44c7268d-b7e0-436b-bda7-1b6e8681b32b",
+            "createdTimestampMs": 1752703503707,
+            "updatedTimestampMs": 1752703503707,
+            "name": "moonlight",
+            "deviceValues": [
+              {
+                "id": "501760ff-ffe2-4bdd-a494-2292499d52cf",
+                "createdTimestampMs": 1752703503714,
+                "updatedTimestampMs": 1752703503714,
+                "type": "attribute",
+                "key": "300",
+                "value": "0C000088130A000000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "15985045-a62f-4e76-8bf9-65dff2d17cd7",
+            "createdTimestampMs": 1752703503694,
+            "updatedTimestampMs": 1752703503694,
+            "name": "getting-ready",
+            "deviceValues": [
+              {
+                "id": "ff065e68-8a2d-4bc6-a605-14a8d57858da",
+                "createdTimestampMs": 1752703503702,
+                "updatedTimestampMs": 1752703503702,
+                "type": "attribute",
+                "key": "300",
+                "value": "0B0000CC105B000000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "727f8ac1-30f0-4b62-8da2-1166e0372205",
+            "createdTimestampMs": 1752703503682,
+            "updatedTimestampMs": 1752703503682,
+            "name": "nightlight",
+            "deviceValues": [
+              {
+                "id": "000cb070-34b7-4f2f-af8c-4456139de900",
+                "createdTimestampMs": 1752703503689,
+                "updatedTimestampMs": 1752703503689,
+                "type": "attribute",
+                "key": "300",
+                "value": "0A00008C0A05000000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "f30a9242-fb78-420b-b2cb-5ea009d1099d",
+            "createdTimestampMs": 1752703503668,
+            "updatedTimestampMs": 1752703503668,
+            "name": "clarity",
+            "deviceValues": [
+              {
+                "id": "9e0e4418-93a3-4181-95e7-a2df43acefdf",
+                "createdTimestampMs": 1752703503677,
+                "updatedTimestampMs": 1752703503677,
+                "type": "attribute",
+                "key": "300",
+                "value": "090000881364000000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "9d8c560f-bb6a-4023-b935-a273619064a1",
+            "createdTimestampMs": 1752703503656,
+            "updatedTimestampMs": 1752703503656,
+            "name": "dinner-party",
+            "deviceValues": [
+              {
+                "id": "a7575edb-fd29-4b35-aa64-92bcbfc62daa",
+                "createdTimestampMs": 1752703503663,
+                "updatedTimestampMs": 1752703503663,
+                "type": "attribute",
+                "key": "300",
+                "value": "080000F00A3E000000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "45884964-06ad-4f1a-a6b7-213c47857a6b",
+            "createdTimestampMs": 1752703503643,
+            "updatedTimestampMs": 1752703503643,
+            "name": "chill",
+            "deviceValues": [
+              {
+                "id": "e9dbe36d-be37-4334-902d-55e68fd8cea7",
+                "createdTimestampMs": 1752703503651,
+                "updatedTimestampMs": 1752703503651,
+                "type": "attribute",
+                "key": "300",
+                "value": "070000800C28000000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "6ee7c2a7-d4b7-46d1-82bd-dd06e9433859",
+            "createdTimestampMs": 1752703503630,
+            "updatedTimestampMs": 1752703503630,
+            "name": "focus",
+            "deviceValues": [
+              {
+                "id": "4d70ef5a-c019-4fc1-8109-65d234385903",
+                "createdTimestampMs": 1752703503638,
+                "updatedTimestampMs": 1752703503638,
+                "type": "attribute",
+                "key": "300",
+                "value": "060000301155000000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "9f1d3329-1e15-4a6f-a63a-f97c1ce26f2c",
+            "createdTimestampMs": 1752703503617,
+            "updatedTimestampMs": 1752703503617,
+            "name": "sleep",
+            "deviceValues": [
+              {
+                "id": "a7c14e26-c044-4d77-8137-0021a15c6f33",
+                "createdTimestampMs": 1752703503625,
+                "updatedTimestampMs": 1752703503625,
+                "type": "attribute",
+                "key": "300",
+                "value": "0504008C0A280008078C0A05000000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "4b155d1a-6ef0-4109-8cfc-72446fb0d473",
+            "createdTimestampMs": 1752703503604,
+            "updatedTimestampMs": 1752703503604,
+            "name": "july-4th",
+            "deviceValues": [
+              {
+                "id": "4f82cce2-7379-406e-9b09-70c9a6d3db70",
+                "createdTimestampMs": 1752703503612,
+                "updatedTimestampMs": 1752703503612,
+                "type": "attribute",
+                "key": "300",
+                "value": "044B00FF0000641400FFFFFF6414000000FF641400"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "902cc28a-73a6-4e0c-9913-e35919f09710",
+            "createdTimestampMs": 1752703503590,
+            "updatedTimestampMs": 1752703503590,
+            "name": "christmas",
+            "deviceValues": [
+              {
+                "id": "a02db161-d56b-45bc-be81-dbe763c32e02",
+                "createdTimestampMs": 1752703503597,
+                "updatedTimestampMs": 1752703503597,
+                "type": "attribute",
+                "key": "300",
+                "value": "034700FF0000640A0000FF00640A00"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "61653929-18c9-4c0d-a5e6-54915c5a9a16",
+            "createdTimestampMs": 1752703503577,
+            "updatedTimestampMs": 1752703503577,
+            "name": "wake-up",
+            "deviceValues": [
+              {
+                "id": "0cb3ef40-0df1-4e62-8fa5-7b67cb3be57c",
+                "createdTimestampMs": 1752703503585,
+                "updatedTimestampMs": 1752703503585,
+                "type": "attribute",
+                "key": "300",
+                "value": "0204008C0A050008078C0A64000000"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "fb92a801-5f5c-48fc-afa6-0e2c1a120a4f",
+            "createdTimestampMs": 1752703503564,
+            "updatedTimestampMs": 1752703503564,
+            "name": "rainbow",
+            "deviceValues": [
+              {
+                "id": "67317e86-babd-44e9-b6a2-35792e94f0eb",
+                "createdTimestampMs": 1752703503572,
+                "updatedTimestampMs": 1752703503572,
+                "type": "attribute",
+                "key": "300",
+                "value": "010700FF000064140000FF006414000000FF641400"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "0456d4bc-136f-4c7d-b30f-1ab3f8038ca6",
+        "createdTimestampMs": 1752703503523,
+        "updatedTimestampMs": 1752703503523,
+        "functionClass": "warm-dimming",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "9e934c1b-6947-4915-a4e1-4922ca0c92dd",
+            "createdTimestampMs": 1752703503543,
+            "updatedTimestampMs": 1752703503543,
+            "name": "enabled",
+            "deviceValues": [
+              {
+                "id": "084ccb47-2d79-49eb-9fa7-236ec4589a2f",
+                "createdTimestampMs": 1752703503551,
+                "updatedTimestampMs": 1752703503551,
+                "type": "attribute",
+                "key": "204",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "24d02b98-674b-4382-bf45-686946c9708e",
+            "createdTimestampMs": 1752703503530,
+            "updatedTimestampMs": 1752703503530,
+            "name": "disabled",
+            "deviceValues": [
+              {
+                "id": "56512ff8-42a0-4fe4-a66c-efc63306c35c",
+                "createdTimestampMs": 1752703503538,
+                "updatedTimestampMs": 1752703503538,
+                "type": "attribute",
+                "key": "204",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "11c27921-60a0-4e6f-8f3d-ad53a2eb904b",
+        "createdTimestampMs": 1752703503478,
+        "updatedTimestampMs": 1752703503478,
+        "functionClass": "reconstitution",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "e1479ca7-88d2-46fa-9e2d-3a699c354123",
+            "createdTimestampMs": 1752703503510,
+            "updatedTimestampMs": 1752703503510,
+            "name": "hw-switching-disabled",
+            "deviceValues": [
+              {
+                "id": "30ac94d4-0d83-43ed-b4a3-1bc1c366a733",
+                "createdTimestampMs": 1752703503518,
+                "updatedTimestampMs": 1752703503518,
+                "type": "attribute",
+                "key": "202",
+                "value": "2"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "49861f39-53fa-4a2e-85b7-12e164a2262a",
+            "createdTimestampMs": 1752703503498,
+            "updatedTimestampMs": 1752703503498,
+            "name": "enabled",
+            "deviceValues": [
+              {
+                "id": "0efa1e99-680d-4cbc-9594-d2df0bb7c908",
+                "createdTimestampMs": 1752703503505,
+                "updatedTimestampMs": 1752703503505,
+                "type": "attribute",
+                "key": "202",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "dc0a0fbe-7547-4a4b-93e3-583ab22af746",
+            "createdTimestampMs": 1752703503486,
+            "updatedTimestampMs": 1752703503486,
+            "name": "disabled",
+            "deviceValues": [
+              {
+                "id": "c806653c-b66b-425a-abfc-6a51efb5ae52",
+                "createdTimestampMs": 1752703503493,
+                "updatedTimestampMs": 1752703503493,
+                "type": "attribute",
+                "key": "202",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "0bf3f3fe-9867-40da-9133-375eb7130a12",
+        "createdTimestampMs": 1752703503433,
+        "updatedTimestampMs": 1752703503433,
+        "functionClass": "restore-values",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "059da949-8399-488c-b549-3841c80872f9",
+            "createdTimestampMs": 1752703503465,
+            "updatedTimestampMs": 1752703503465,
+            "name": "partial-restore",
+            "deviceValues": [
+              {
+                "id": "57490e44-b800-4458-9b51-5093263faea0",
+                "createdTimestampMs": 1752703503472,
+                "updatedTimestampMs": 1752703503472,
+                "type": "attribute",
+                "key": "100",
+                "value": "2"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "f9fbda50-bd89-443c-bebe-d434c216bb7c",
+            "createdTimestampMs": 1752703503453,
+            "updatedTimestampMs": 1752703503453,
+            "name": "restored",
+            "deviceValues": [
+              {
+                "id": "a47637e1-f5ba-41d3-bad3-a348797313d9",
+                "createdTimestampMs": 1752703503460,
+                "updatedTimestampMs": 1752703503460,
+                "type": "attribute",
+                "key": "100",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "24be9b24-4167-4a5f-a6ef-759fa70935fd",
+            "createdTimestampMs": 1752703503440,
+            "updatedTimestampMs": 1752703503440,
+            "name": "not-restored",
+            "deviceValues": [
+              {
+                "id": "54741a03-f2bc-4efe-95cf-d2272191723c",
+                "createdTimestampMs": 1752703503448,
+                "updatedTimestampMs": 1752703503448,
+                "type": "attribute",
+                "key": "100",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "af2a2dc1-ed08-4792-98db-4aeaf19ad440",
+        "createdTimestampMs": 1752703503411,
+        "updatedTimestampMs": 1752703503411,
+        "functionClass": "power-off-timer",
+        "type": "numeric",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "81582947-faef-4def-a415-67e2fab32ca2",
+            "createdTimestampMs": 1752703503420,
+            "updatedTimestampMs": 1752703503420,
+            "name": "timer-global",
+            "deviceValues": [
+              {
+                "id": "96fd6dc9-ad93-4f75-a68a-5700700cdce7",
+                "createdTimestampMs": 1752703503427,
+                "updatedTimestampMs": 1752703503427,
+                "type": "attribute",
+                "key": "55"
+              }
+            ],
+            "range": {
+              "min": 0,
+              "max": 1440,
+              "step": 1
+            }
+          }
+        ]
+      },
+      {
+        "id": "608da16d-16ce-4049-b201-ddb7dd67f3f4",
+        "createdTimestampMs": 1752703503392,
+        "updatedTimestampMs": 1752703503392,
+        "functionClass": "brightness",
+        "functionInstance": "global",
+        "type": "numeric",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "914d174d-22d8-40a5-9f67-b5743b36528f",
+            "createdTimestampMs": 1752703503399,
+            "updatedTimestampMs": 1752703503399,
+            "name": "brightness",
+            "deviceValues": [
+              {
+                "id": "a476e1ad-ce94-4187-85f6-ca09e45f7d17",
+                "createdTimestampMs": 1752703503406,
+                "updatedTimestampMs": 1752703503406,
+                "type": "attribute",
+                "key": "44"
+              }
+            ],
+            "range": {
+              "min": 1,
+              "max": 100,
+              "step": 1
+            }
+          }
+        ]
+      },
+      {
+        "id": "8514f237-60d9-4288-bb33-cb7dadb1f45b",
+        "createdTimestampMs": 1752703503359,
+        "updatedTimestampMs": 1752703503359,
+        "functionClass": "power",
+        "functionInstance": "global",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "af5d9399-203a-467d-b620-6a4822962739",
+            "createdTimestampMs": 1752703503379,
+            "updatedTimestampMs": 1752703503379,
+            "name": "on",
+            "deviceValues": [
+              {
+                "id": "dd88d9eb-8b4b-4dcc-ba46-cd21edab4ad3",
+                "createdTimestampMs": 1752703503387,
+                "updatedTimestampMs": 1752703503387,
+                "type": "attribute",
+                "key": "40",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "1866e8f3-b463-4022-b7e3-20cb9b826a70",
+            "createdTimestampMs": 1752703503367,
+            "updatedTimestampMs": 1752703503367,
+            "name": "off",
+            "deviceValues": [
+              {
+                "id": "4312d3c2-49dd-49d6-81a5-877ab4a6414e",
+                "createdTimestampMs": 1752703503374,
+                "updatedTimestampMs": 1752703503374,
+                "type": "attribute",
+                "key": "40",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "39bbc63f-13dd-4a99-b441-23f1c50bc32c",
+        "createdTimestampMs": 1752703503316,
+        "updatedTimestampMs": 1752703503316,
+        "functionClass": "color-mode",
+        "functionInstance": "trim",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "aadaf748-3fdd-4979-9557-c1a8467937b8",
+            "createdTimestampMs": 1752703503348,
+            "updatedTimestampMs": 1752703503348,
+            "name": "sequence",
+            "deviceValues": [
+              {
+                "id": "618192b5-3d42-44e1-8f06-11ff310c2d9c",
+                "createdTimestampMs": 1752703503355,
+                "updatedTimestampMs": 1752703503355,
+                "type": "attribute",
+                "key": "25",
+                "value": "2"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "feb1af21-3b56-42bb-a790-f315000cc364",
+            "createdTimestampMs": 1752703503336,
+            "updatedTimestampMs": 1752703503336,
+            "name": "white",
+            "deviceValues": [
+              {
+                "id": "c0385337-b700-479f-b212-ffd6096c5aa5",
+                "createdTimestampMs": 1752703503343,
+                "updatedTimestampMs": 1752703503343,
+                "type": "attribute",
+                "key": "25",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "e3a856ba-ced9-4db3-bdc4-a8e7cab720a6",
+            "createdTimestampMs": 1752703503324,
+            "updatedTimestampMs": 1752703503324,
+            "name": "color",
+            "deviceValues": [
+              {
+                "id": "922fe8be-829d-48d1-b829-cc6e44c664aa",
+                "createdTimestampMs": 1752703503331,
+                "updatedTimestampMs": 1752703503331,
+                "type": "attribute",
+                "key": "25",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "b35cd5d1-80dc-4bc1-b930-decbd754a71b",
+        "createdTimestampMs": 1752703503295,
+        "updatedTimestampMs": 1752703503295,
+        "functionClass": "color-rgb",
+        "functionInstance": "trim",
+        "type": "object",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "31fbb5db-8c66-4841-bf10-fff2bcd7fe69",
+            "createdTimestampMs": 1752703503303,
+            "updatedTimestampMs": 1752703503303,
+            "name": "color-rgb",
+            "deviceValues": [
+              {
+                "id": "2e3505d0-bbb1-4ebd-957c-a1c1ba15c286",
+                "createdTimestampMs": 1752703503310,
+                "updatedTimestampMs": 1752703503310,
+                "type": "attribute",
+                "key": "24",
+                "format": "color-rgb"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "4506ceab-167d-4df6-a76f-f7f095d33723",
+        "createdTimestampMs": 1752703503276,
+        "updatedTimestampMs": 1752703503276,
+        "functionClass": "brightness",
+        "functionInstance": "trim",
+        "type": "numeric",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "ad339433-8444-4344-907c-e04c938305ce",
+            "createdTimestampMs": 1752703503283,
+            "updatedTimestampMs": 1752703503283,
+            "name": "brightness",
+            "deviceValues": [
+              {
+                "id": "af8deecd-c71e-4007-ab24-d0e0eb31f4f1",
+                "createdTimestampMs": 1752703503290,
+                "updatedTimestampMs": 1752703503290,
+                "type": "attribute",
+                "key": "22"
+              }
+            ],
+            "range": {
+              "min": 1,
+              "max": 100,
+              "step": 1
+            }
+          }
+        ]
+      },
+      {
+        "id": "eb234271-1e85-4ae3-9d9d-9e7291e9de87",
+        "createdTimestampMs": 1752703503242,
+        "updatedTimestampMs": 1752703503242,
+        "functionClass": "power",
+        "functionInstance": "trim",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "b84c8085-994c-443c-b483-78f53627ec80",
+            "createdTimestampMs": 1752703503263,
+            "updatedTimestampMs": 1752703503263,
+            "name": "on",
+            "deviceValues": [
+              {
+                "id": "bb9ef425-0644-4fb2-8fe2-673af5eb97ae",
+                "createdTimestampMs": 1752703503271,
+                "updatedTimestampMs": 1752703503271,
+                "type": "attribute",
+                "key": "21",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "f767bff9-287e-4913-a409-5a0fba94caba",
+            "createdTimestampMs": 1752703503250,
+            "updatedTimestampMs": 1752703503250,
+            "name": "off",
+            "deviceValues": [
+              {
+                "id": "2800e0c9-ec93-46a9-bbaa-fd527b6c5b1e",
+                "createdTimestampMs": 1752703503258,
+                "updatedTimestampMs": 1752703503258,
+                "type": "attribute",
+                "key": "21",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "bded344b-4419-4c39-90c5-78471891496e",
+        "createdTimestampMs": 1752703503218,
+        "updatedTimestampMs": 1752703503218,
+        "functionClass": "speed",
+        "functionInstance": "color-sequence",
+        "type": "numeric",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "e33542b4-9cc9-4df3-9770-f5ba57002f5c",
+            "createdTimestampMs": 1752703503225,
+            "updatedTimestampMs": 1752703503225,
+            "name": "speed",
+            "deviceValues": [
+              {
+                "id": "3ef18bbc-4e6e-4aa5-9760-3215804381e3",
+                "createdTimestampMs": 1752703503236,
+                "updatedTimestampMs": 1752703503236,
+                "type": "attribute",
+                "key": "11"
+              }
+            ],
+            "range": {
+              "min": -10,
+              "max": 10,
+              "step": 1
+            }
+          }
+        ]
+      },
+      {
+        "id": "ead95daf-7891-4256-b82b-7b4d7c75e7fd",
+        "createdTimestampMs": 1752703503136,
+        "updatedTimestampMs": 1752703503136,
+        "functionClass": "color-sequence",
+        "functionInstance": "preset",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "948feca0-6d73-4c7e-924c-9b00e2e0d543",
+            "createdTimestampMs": 1752703503206,
+            "updatedTimestampMs": 1752703503206,
+            "name": "jump-3",
+            "deviceValues": [
+              {
+                "id": "0ddd26c4-5474-424a-a87f-374f261ff51d",
+                "createdTimestampMs": 1752703503213,
+                "updatedTimestampMs": 1752703503213,
+                "type": "attribute",
+                "key": "6",
+                "value": "305"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "e61eadcd-4772-4d21-a43d-3ceeb82b1d22",
+            "createdTimestampMs": 1752703503194,
+            "updatedTimestampMs": 1752703503194,
+            "name": "jump-7",
+            "deviceValues": [
+              {
+                "id": "ec9f34ae-8165-4378-b6cb-4960d9ab9518",
+                "createdTimestampMs": 1752703503201,
+                "updatedTimestampMs": 1752703503201,
+                "type": "attribute",
+                "key": "6",
+                "value": "304"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "d46ab3c3-92a2-4344-8e4b-cb8d441df005",
+            "createdTimestampMs": 1752703503181,
+            "updatedTimestampMs": 1752703503181,
+            "name": "fade-3",
+            "deviceValues": [
+              {
+                "id": "11d13afa-24ad-438b-a4ae-422ad75c49a2",
+                "createdTimestampMs": 1752703503189,
+                "updatedTimestampMs": 1752703503189,
+                "type": "attribute",
+                "key": "6",
+                "value": "303"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "fc1a13f0-371e-4318-a096-2371225791ef",
+            "createdTimestampMs": 1752703503169,
+            "updatedTimestampMs": 1752703503169,
+            "name": "fade-7",
+            "deviceValues": [
+              {
+                "id": "ef8d7d29-ea4a-493f-b14f-bab336abfb07",
+                "createdTimestampMs": 1752703503176,
+                "updatedTimestampMs": 1752703503176,
+                "type": "attribute",
+                "key": "6",
+                "value": "302"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "dd84a37b-420d-4c08-9733-d067fd446022",
+            "createdTimestampMs": 1752703503156,
+            "updatedTimestampMs": 1752703503156,
+            "name": "flash",
+            "deviceValues": [
+              {
+                "id": "a3e87ae7-36da-4ee2-b6c5-2ebc07371c18",
+                "createdTimestampMs": 1752703503163,
+                "updatedTimestampMs": 1752703503163,
+                "type": "attribute",
+                "key": "6",
+                "value": "301"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "015560df-7907-42ca-97c6-3ae46fc047d1",
+            "createdTimestampMs": 1752703503143,
+            "updatedTimestampMs": 1752703503143,
+            "name": "custom",
+            "deviceValues": [
+              {
+                "id": "8ae1ddad-6ec9-42b8-9826-1f0d5433db3e",
+                "createdTimestampMs": 1752703503151,
+                "updatedTimestampMs": 1752703503151,
+                "type": "attribute",
+                "key": "6",
+                "value": "300"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "2ab48e84-16e2-49f8-aa89-4723ba850f5f",
+        "createdTimestampMs": 1752703503079,
+        "updatedTimestampMs": 1752703503079,
+        "functionClass": "color-mode",
+        "functionInstance": "main",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "1c122372-e0da-4501-ac75-d8871cd0e338",
+            "createdTimestampMs": 1752703503123,
+            "updatedTimestampMs": 1752703503123,
+            "name": "circadian-rhythm",
+            "deviceValues": [
+              {
+                "id": "9d68a31e-d083-404d-a897-1efb037eb5af",
+                "createdTimestampMs": 1752703503130,
+                "updatedTimestampMs": 1752703503130,
+                "type": "attribute",
+                "key": "5",
+                "value": "10"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "26cfabe1-0209-4e01-9331-2a0e283bfa44",
+            "createdTimestampMs": 1752703503111,
+            "updatedTimestampMs": 1752703503111,
+            "name": "sequence",
+            "deviceValues": [
+              {
+                "id": "b1afd28a-1395-494d-9ff9-8e32fa8ba58c",
+                "createdTimestampMs": 1752703503119,
+                "updatedTimestampMs": 1752703503119,
+                "type": "attribute",
+                "key": "5",
+                "value": "2"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "a591fd1a-83b1-469c-b03a-cba51e7a85cf",
+            "createdTimestampMs": 1752703503098,
+            "updatedTimestampMs": 1752703503098,
+            "name": "white",
+            "deviceValues": [
+              {
+                "id": "7701cc46-3a2b-45cb-85da-a0839b90f03e",
+                "createdTimestampMs": 1752703503106,
+                "updatedTimestampMs": 1752703503106,
+                "type": "attribute",
+                "key": "5",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "e050f25d-76ee-4895-b15f-9f47dfe8be84",
+            "createdTimestampMs": 1752703503087,
+            "updatedTimestampMs": 1752703503087,
+            "name": "color",
+            "deviceValues": [
+              {
+                "id": "adef7fa3-5214-4c79-9382-9634b9b410c6",
+                "createdTimestampMs": 1752703503094,
+                "updatedTimestampMs": 1752703503094,
+                "type": "attribute",
+                "key": "5",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "0874d03a-d319-465f-bd4c-94874cd80b0b",
+        "createdTimestampMs": 1752703503059,
+        "updatedTimestampMs": 1752703503059,
+        "functionClass": "color-rgb",
+        "functionInstance": "main",
+        "type": "object",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "f17f3ee6-d968-4b7d-9907-842b70ae8bd5",
+            "createdTimestampMs": 1752703503065,
+            "updatedTimestampMs": 1752703503065,
+            "name": "color-rgb",
+            "deviceValues": [
+              {
+                "id": "bf029846-ca9c-406a-8180-7156fa323c2d",
+                "createdTimestampMs": 1752703503074,
+                "updatedTimestampMs": 1752703503074,
+                "type": "attribute",
+                "key": "4",
+                "format": "color-rgb"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "01e72bad-8149-4972-bd61-b3a44b335852",
+        "createdTimestampMs": 1752703503038,
+        "updatedTimestampMs": 1752703503038,
+        "functionClass": "color-temperature",
+        "functionInstance": "main",
+        "type": "numeric",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "369c2d5e-1d73-4bf9-ba61-5a0a9ebc09bf",
+            "createdTimestampMs": 1752703503046,
+            "updatedTimestampMs": 1752703503046,
+            "name": "color-temperature",
+            "deviceValues": [
+              {
+                "id": "f630599f-c35c-47b0-ada6-cd862a9d8111",
+                "createdTimestampMs": 1752703503054,
+                "updatedTimestampMs": 1752703503054,
+                "type": "attribute",
+                "key": "3"
+              }
+            ],
+            "range": {
+              "min": 2700,
+              "max": 6500,
+              "step": 100
+            }
+          }
+        ]
+      },
+      {
+        "id": "88e6b4d2-8c4d-445b-bcd4-c85f4b533c94",
+        "createdTimestampMs": 1752703503017,
+        "updatedTimestampMs": 1752703503017,
+        "functionClass": "brightness",
+        "functionInstance": "main",
+        "type": "numeric",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "c27c9798-c714-4e76-9742-5c225af25464",
+            "createdTimestampMs": 1752703503025,
+            "updatedTimestampMs": 1752703503025,
+            "name": "brightness",
+            "deviceValues": [
+              {
+                "id": "4c05d9e9-ce3d-42ce-8a84-1f87c5b9a107",
+                "createdTimestampMs": 1752703503033,
+                "updatedTimestampMs": 1752703503033,
+                "type": "attribute",
+                "key": "2"
+              }
+            ],
+            "range": {
+              "min": 1,
+              "max": 100,
+              "step": 1
+            }
+          }
+        ]
+      },
+      {
+        "id": "d152f4ec-8e0e-44ec-abaf-d8e79a0e6395",
+        "createdTimestampMs": 1752703502985,
+        "updatedTimestampMs": 1752703502985,
+        "functionClass": "power",
+        "functionInstance": "main",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "c4defa9b-2392-4a7e-964f-dd39b35d9b7f",
+            "createdTimestampMs": 1752703503005,
+            "updatedTimestampMs": 1752703503005,
+            "name": "on",
+            "deviceValues": [
+              {
+                "id": "42862cc5-ca4e-4d8c-9284-af3337d2425c",
+                "createdTimestampMs": 1752703503012,
+                "updatedTimestampMs": 1752703503012,
+                "type": "attribute",
+                "key": "1",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "ce7157b2-17ed-4d6b-9208-df11f7b83467",
+            "createdTimestampMs": 1752703502993,
+            "updatedTimestampMs": 1752703502993,
+            "name": "off",
+            "deviceValues": [
+              {
+                "id": "25e28b6d-44c4-4cce-86a2-819442554b28",
+                "createdTimestampMs": 1752703503000,
+                "updatedTimestampMs": 1752703503000,
+                "type": "attribute",
+                "key": "1",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      }
+    ],
+    "states": [
+      {
+        "functionClass": "ble-scan-responses",
+        "value": null,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "ble-scan-requests",
+        "value": null,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "abc-receiver-keys",
+        "value": null,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "abc-state",
+        "value": "uninitialized",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "schedule-pause",
+        "value": null,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "schedule-pause",
+        "value": "off",
+        "lastUpdateTime": 0,
+        "functionInstance": "active"
+      },
+      {
+        "functionClass": "vacation-mode-group",
+        "value": "no-group",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "vacation-mode-enable",
+        "value": "off",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "color-sequence",
+        "value": "rainbow",
+        "lastUpdateTime": 0,
+        "functionInstance": "custom"
+      },
+      {
+        "functionClass": "warm-dimming",
+        "value": "disabled",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "reconstitution",
+        "value": "enabled",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "restore-values",
+        "value": "partial-restore",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "power-off-timer",
+        "value": 0,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "brightness",
+        "value": 100,
+        "lastUpdateTime": 0,
+        "functionInstance": "global"
+      },
+      {
+        "functionClass": "power",
+        "value": "on",
+        "lastUpdateTime": 0,
+        "functionInstance": "global"
+      },
+      {
+        "functionClass": "color-mode",
+        "value": "white",
+        "lastUpdateTime": 0,
+        "functionInstance": "trim"
+      },
+      {
+        "functionClass": "color-rgb",
+        "value": {
+          "color-rgb": {
+            "r": 255,
+            "b": 0,
+            "g": 255
+          }
+        },
+        "lastUpdateTime": 0,
+        "functionInstance": "trim"
+      },
+      {
+        "functionClass": "brightness",
+        "value": 100,
+        "lastUpdateTime": 0,
+        "functionInstance": "trim"
+      },
+      {
+        "functionClass": "power",
+        "value": "off",
+        "lastUpdateTime": 0,
+        "functionInstance": "trim"
+      },
+      {
+        "functionClass": "speed",
+        "value": 1,
+        "lastUpdateTime": 0,
+        "functionInstance": "color-sequence"
+      },
+      {
+        "functionClass": "color-sequence",
+        "value": "custom",
+        "lastUpdateTime": 0,
+        "functionInstance": "preset"
+      },
+      {
+        "functionClass": "color-mode",
+        "value": "white",
+        "lastUpdateTime": 0,
+        "functionInstance": "main"
+      },
+      {
+        "functionClass": "color-rgb",
+        "value": {
+          "color-rgb": {
+            "r": 255,
+            "b": 0,
+            "g": 51
+          }
+        },
+        "lastUpdateTime": 0,
+        "functionInstance": "main"
+      },
+      {
+        "functionClass": "color-temperature",
+        "value": 3000,
+        "lastUpdateTime": 0,
+        "functionInstance": "main"
+      },
+      {
+        "functionClass": "brightness",
+        "value": 100,
+        "lastUpdateTime": 0,
+        "functionInstance": "main"
+      },
+      {
+        "functionClass": "power",
+        "value": "on",
+        "lastUpdateTime": 0,
+        "functionInstance": "main"
+      },
+      {
+        "functionClass": "wifi-ssid",
+        "value": "f93e48f6-eb1e-4d95-b120-8240c12e52da",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-rssi",
+        "value": -70,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-steady-state",
+        "value": "connected",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-setup-state",
+        "value": "connected",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-mac-address",
+        "value": "7801042a-c6f5-4107-a518-a4dd01e51830",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "geo-coordinates",
+        "value": {
+          "geo-coordinates": {
+            "latitude": "0",
+            "longitude": "0"
+          }
+        },
+        "lastUpdateTime": 0,
+        "functionInstance": "system-device-location"
+      },
+      {
+        "functionClass": "scheduler-flags",
+        "value": 0,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "available",
+        "value": false,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "visible",
+        "value": false,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "direct",
+        "value": false,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "ble-mac-address",
+        "value": "fc0466fe-f321-4339-aab4-a06e44d96a07",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      }
+    ],
+    "children": [],
+    "manufacturerName": "Commercial Electric",
+    "split_identifier": null,
+    "version_data": null
+  }
+]

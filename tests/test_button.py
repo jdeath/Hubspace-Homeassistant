@@ -38,7 +38,12 @@ async def test_async_setup_entry(mocked_entry):
 async def test_press_button(entity_id, expected_file, mocked_entry, mocker):
     """Ensure the file is created when the button is pressed."""
     hass, entry, bridge = mocked_entry
-    mocker.patch.object(bridge, "fetch_data", side_effect=AsyncMock(return_value=[]))
+    # mocked_entry's bridge is AferoBridgeV1 (also HubspaceBridge.api after setup).
+    mocker.patch.object(
+        bridge,
+        "fetch_discovery_data",
+        side_effect=AsyncMock(return_value=[]),
+    )
     expected_path = EXPECTED_DIR / expected_file
     with contextlib.suppress(Exception):
         Path(expected_path).unlink()

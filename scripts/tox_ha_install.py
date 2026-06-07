@@ -51,8 +51,8 @@ def main() -> int:
         *load_manifest_requirements(),
         spec.phcc_spec,
     ]
-    if spec.pycares_pin:
-        packages.append("pycares>=4.0.0,<5")
+    if spec.pycares_constraint:
+        packages.append(spec.pycares_constraint)
 
     cmd = [
         sys.executable,
