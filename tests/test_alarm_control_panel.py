@@ -12,7 +12,7 @@ import pytest
 from .utils import create_devices_from_data, hs_raw_from_dump, modify_state
 
 alarm_panel = create_devices_from_data("security-system.json")
-alarm_panel_id = "alarm_control_panel.helms_deep_securitysystem"
+alarm_panel_id = "alarm_control_panel.helms_deep"
 
 
 @pytest.fixture

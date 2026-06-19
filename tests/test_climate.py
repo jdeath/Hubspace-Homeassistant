@@ -19,13 +19,13 @@ import pytest
 from .utils import create_devices_from_data, hs_raw_from_dump, modify_state
 
 thermostat = create_devices_from_data("thermostat.json")[0]
-thermostat_id = "climate.home_heat_thermostat"
+thermostat_id = "climate.home_heat"
 
 portable_ac = create_devices_from_data("portable-ac.json")[0]
-portable_ac_id = "climate.garage_ac_portableac"
+portable_ac_id = "climate.garage_ac"
 
 portable_ac_f = create_devices_from_data("portable-ac-f.json")[0]
-portable_ac_f_id = "climate.steve_ac_portableac"
+portable_ac_f_id = "climate.steve_ac"
 
 
 @pytest.fixture

@@ -9,7 +9,7 @@ from .utils import create_devices_from_data, hs_raw_from_dump, modify_state
 
 lock_tbd = create_devices_from_data("door-lock-TBD.json")
 lock_tbd_instance = lock_tbd[0]
-lock_id = "lock.friendly_device_0_lock"
+lock_id = "lock.friendly_device_0"
 
 
 @pytest.fixture
