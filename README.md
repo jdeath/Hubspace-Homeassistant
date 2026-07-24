@@ -71,7 +71,7 @@ are as follows:
 - 6.0.2
 
   - Add Night Light mode support for fixtures that expose it (e.g. Hampton Bay Penrose) ([#232](https://github.com/jdeath/Hubspace-Homeassistant/issues/232))
-  - Depend on aioafero `fix/night-light` (git) until 7.0.8 is published
+  - Require aioafero `7.0.8`
 
 - 6.0.1
 

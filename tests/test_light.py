@@ -585,8 +585,8 @@ async def mocked_penrose(mocked_entry):
 @pytest.mark.asyncio
 async def test_penrose_discovers_night_light_entity(mocked_penrose):
     """Fixtures with night-light color-mode get a second on/off light entity."""
-    hass, _, api = mocked_penrose
-    assert light.has_night_light_mode(api.lights[penrose_light.id])
+    hass, _, bridge = mocked_penrose
+    assert light.has_night_light_mode(bridge.lights[penrose_light.id])
     assert hass.states.get(penrose_main_entity_id) is not None
     night = hass.states.get(penrose_night_entity_id)
     assert night is not None
@@ -596,15 +596,15 @@ async def test_penrose_discovers_night_light_entity(mocked_penrose):
 @pytest.mark.asyncio
 async def test_night_light_turn_on_stashes_previous_mode(mocked_penrose, mocker):
     """Enabling night-light stores the prior mode and asks aioafero to set it."""
-    hass, entry, api = mocked_penrose
+    hass, entry, bridge = mocked_penrose
     hub = hass.data["hubspace"][entry.entry_id]
-    resource = api.lights[penrose_light.id]
+    resource = bridge.lights[penrose_light.id]
     resource.on.on = False
     resource.color_mode.mode = "white"
-    sent = mocker.spy(api.lights, "set_state")
+    sent = mocker.spy(bridge.lights, "set_state")
     night_ent = _get_hubspace_light(hass, penrose_night_entity_id)
     await night_ent.async_turn_on()
-    await api.async_block_until_done()
+    await bridge.async_block_until_done()
     assert hub.night_light_previous_modes[penrose_light.id] == "white"
     assert hub.night_light_was_on[penrose_light.id] is False
     assert sent.call_args.kwargs["color_mode"] == "night-light"
@@ -614,16 +614,16 @@ async def test_night_light_turn_on_stashes_previous_mode(mocked_penrose, mocker)
 @pytest.mark.asyncio
 async def test_night_light_turn_off_restores_mode_when_was_on(mocked_penrose, mocker):
     """Disabling night-light while previously on restores the prior mode."""
-    hass, entry, api = mocked_penrose
+    hass, entry, bridge = mocked_penrose
     hub = hass.data["hubspace"][entry.entry_id]
-    resource = api.lights[penrose_light.id]
+    resource = bridge.lights[penrose_light.id]
     resource.on.on = True
     resource.color_mode.mode = "color"
-    sent = mocker.spy(api.lights, "set_state")
+    sent = mocker.spy(bridge.lights, "set_state")
     night_ent = _get_hubspace_light(hass, penrose_night_entity_id)
     await night_ent.async_turn_on()
     await night_ent.async_turn_off()
-    await api.async_block_until_done()
+    await bridge.async_block_until_done()
     assert hub.night_light_was_on[penrose_light.id] is True
     assert sent.call_args.kwargs["color_mode"] == "color"
     assert sent.call_args.kwargs["on"] is True
@@ -632,17 +632,17 @@ async def test_night_light_turn_off_restores_mode_when_was_on(mocked_penrose, mo
 @pytest.mark.asyncio
 async def test_night_light_turn_off_powers_off_when_was_off(mocked_penrose, mocker):
     """Disabling night-light when it was enabled from off only powers off."""
-    hass, _, api = mocked_penrose
-    resource = api.lights[penrose_light.id]
+    hass, _, bridge = mocked_penrose
+    resource = bridge.lights[penrose_light.id]
     resource.on.on = False
     resource.color_mode.mode = "white"
-    sent = mocker.spy(api.lights, "set_state")
+    sent = mocker.spy(bridge.lights, "set_state")
     night_ent = _get_hubspace_light(hass, penrose_night_entity_id)
     await night_ent.async_turn_on()
     resource.on.on = True
     resource.color_mode.mode = "night-light"
     await night_ent.async_turn_off()
-    await api.async_block_until_done()
+    await bridge.async_block_until_done()
     assert sent.call_args.kwargs["on"] is False
     assert sent.call_args.kwargs.get("color_mode") is None
 
@@ -650,17 +650,17 @@ async def test_night_light_turn_off_powers_off_when_was_off(mocked_penrose, mock
 @pytest.mark.asyncio
 async def test_night_light_turn_off_after_reload_stays_on(mocked_penrose, mocker):
     """Missing was_on after reload defaults to restoring mode while staying on."""
-    hass, entry, api = mocked_penrose
+    hass, entry, bridge = mocked_penrose
     hub = hass.data["hubspace"][entry.entry_id]
-    resource = api.lights[penrose_light.id]
+    resource = bridge.lights[penrose_light.id]
     resource.on.on = True
     resource.color_mode.mode = "night-light"
     hub.night_light_previous_modes[penrose_light.id] = "white"
     hub.night_light_was_on.clear()
-    sent = mocker.spy(api.lights, "set_state")
+    sent = mocker.spy(bridge.lights, "set_state")
     night_ent = _get_hubspace_light(hass, penrose_night_entity_id)
     await night_ent.async_turn_off()
-    await api.async_block_until_done()
+    await bridge.async_block_until_done()
     assert sent.call_args.kwargs["on"] is True
     assert sent.call_args.kwargs["color_mode"] == "white"
 
@@ -668,8 +668,8 @@ async def test_night_light_turn_off_after_reload_stays_on(mocked_penrose, mocker
 @pytest.mark.asyncio
 async def test_main_reports_off_while_night_light_active(mocked_penrose):
     """Main light reports off while night-light mode owns the fixture."""
-    hass, _, api = mocked_penrose
-    resource = api.lights[penrose_light.id]
+    hass, _, bridge = mocked_penrose
+    resource = bridge.lights[penrose_light.id]
     resource.on.on = True
     resource.color_mode.mode = "night-light"
     main_ent = _get_hubspace_light(hass, penrose_main_entity_id)
@@ -683,16 +683,16 @@ async def test_main_turn_on_restores_mode_when_stuck_in_night_light(
     mocked_penrose, mocker
 ):
     """Main turn-on while stored mode is night-light restores the prior mode first."""
-    hass, entry, api = mocked_penrose
+    hass, entry, bridge = mocked_penrose
     hub = hass.data["hubspace"][entry.entry_id]
-    resource = api.lights[penrose_light.id]
+    resource = bridge.lights[penrose_light.id]
     resource.on.on = False
     resource.color_mode.mode = "night-light"
     hub.night_light_previous_modes[penrose_light.id] = "color"
-    sent = mocker.spy(api.lights, "set_state")
+    sent = mocker.spy(bridge.lights, "set_state")
     main_ent = _get_hubspace_light(hass, penrose_main_entity_id)
     await main_ent.async_turn_on()
-    await api.async_block_until_done()
+    await bridge.async_block_until_done()
     assert sent.call_count == 2
     assert sent.call_args_list[0].kwargs == {
         "device_id": penrose_light.id,
@@ -707,14 +707,14 @@ async def test_main_turn_on_rgb_while_off_in_night_light_sets_mode_first(
     mocked_penrose, mocker
 ):
     """Explicit RGB while off in night-light still mode-before-powers."""
-    hass, _, api = mocked_penrose
-    resource = api.lights[penrose_light.id]
+    hass, _, bridge = mocked_penrose
+    resource = bridge.lights[penrose_light.id]
     resource.on.on = False
     resource.color_mode.mode = "night-light"
-    sent = mocker.spy(api.lights, "set_state")
+    sent = mocker.spy(bridge.lights, "set_state")
     main_ent = _get_hubspace_light(hass, penrose_main_entity_id)
     await main_ent.async_turn_on(rgb_color=(10, 20, 30))
-    await api.async_block_until_done()
+    await bridge.async_block_until_done()
     assert sent.call_count == 2
     assert sent.call_args_list[0].kwargs == {
         "device_id": penrose_light.id,
