@@ -69,8 +69,9 @@ are as follows:
 
 - 6.0.2
 
-  - Fix climate temperatures reverting to Celsius after polling by bumping
-    aioafero to 7.0.6 ([#231](https://github.com/jdeath/Hubspace-Homeassistant/issues/231))
+  - Fix climate temperatures reverting to Celsius after polling ([#231](https://github.com/jdeath/Hubspace-Homeassistant/issues/231)).
+    Temporarily installs `aioafero` from git `fix/unit-polling` (not PyPI) so the
+    Fahrenheit poll fix can be validated before a library release.
 
 - 6.0.1
 
