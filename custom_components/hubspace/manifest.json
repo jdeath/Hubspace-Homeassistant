@@ -9,7 +9,11 @@
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/jdeath/Hubspace-Homeassistant/issues",
   "loggers": ["aioafero"],
-  "requirements": ["aioafero==7.0.4", "aiofiles", "packaging"],
+  "requirements": [
+    "aioafero @ git+https://github.com/Expl0dingBanana/aioafero.git@fix/night-light",
+    "aiofiles",
+    "packaging"
+  ],
   "single_config_entry": true,
-  "version": "6.0.1"
+  "version": "6.0.2"
 }
