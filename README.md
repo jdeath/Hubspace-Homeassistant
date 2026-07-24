@@ -67,6 +67,11 @@ are as follows:
 
 ## Changelog
 
+- 6.0.2
+
+  - Fix climate temperatures reverting to Celsius after polling by bumping
+    aioafero to 7.0.6 ([#231](https://github.com/jdeath/Hubspace-Homeassistant/issues/231))
+
 - 6.0.1
 
   - Fix split lights not being controllable
