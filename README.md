@@ -30,6 +30,7 @@ are as follows:
   - Color Sequences
   - Dimming
   - RGB
+  - Night Light mode (separate on/off entity when the fixture exposes it)
 
 - Outlet
 
@@ -66,6 +67,11 @@ are as follows:
   - Open / Close
 
 ## Changelog
+
+- 6.0.2
+
+  - Add Night Light mode support for fixtures that expose it (e.g. Hampton Bay Penrose) ([#232](https://github.com/jdeath/Hubspace-Homeassistant/issues/232))
+  - Require aioafero `7.0.8`
 
 - 6.0.1
 
