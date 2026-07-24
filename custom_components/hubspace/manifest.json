@@ -10,7 +10,7 @@
   "issue_tracker": "https://github.com/jdeath/Hubspace-Homeassistant/issues",
   "loggers": ["aioafero"],
   "requirements": [
-    "aioafero@git+https://github.com/Expl0dingBanana/aioafero.git@fix/night-light",
+    "aioafero==7.0.8",
     "aiofiles",
     "packaging"
   ],
