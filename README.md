@@ -68,6 +68,11 @@ are as follows:
 
 ## Changelog
 
+- 6.0.3
+
+  - Fix portable AC power switch having no effect ([#234](https://github.com/jdeath/Hubspace-Homeassistant/issues/234))
+  - Require aioafero `7.0.9`
+
 - 6.0.2
 
   - Add Night Light mode support for fixtures that expose it (e.g. Hampton Bay Penrose) ([#232](https://github.com/jdeath/Hubspace-Homeassistant/issues/232))
