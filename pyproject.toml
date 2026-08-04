@@ -20,6 +20,9 @@ dev = [
   "tox",
 ]
 
+[tool.hatch.metadata]
+allow-direct-references = true
+
 [tool.hatch.metadata.hooks.custom]
 path = "hubspace_metadata.py"
 

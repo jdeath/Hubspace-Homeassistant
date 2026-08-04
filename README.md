@@ -81,6 +81,9 @@ are as follows:
     [#230](https://github.com/jdeath/Hubspace-Homeassistant/issues/230))
   - aioafero prefers API `color-mode: mixed` when both channels are on, and moves
     back to exclusive `color` / `white` when a channel is turned off
+  - Fix state updates that omitted or guessed `functionClass` / `functionInstance`
+    (e.g. fans sending `functionInstance: null` instead of `fan-power`), which could
+    make devices ignore commands ([#240](https://github.com/jdeath/Hubspace-Homeassistant/issues/240))
 
 - 6.0.3
 
