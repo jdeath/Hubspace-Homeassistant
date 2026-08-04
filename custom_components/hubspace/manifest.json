@@ -10,7 +10,7 @@
   "issue_tracker": "https://github.com/jdeath/Hubspace-Homeassistant/issues",
   "loggers": ["aioafero"],
   "requirements": [
-    "aioafero@git+https://github.com/Expl0dingBanana/aioafero.git@98be7f1e6349a8cc5f54e0eb1ea99ddbed9d4f4a",
+    "aioafero@git+https://github.com/Expl0dingBanana/aioafero.git@break/explicit-feature-update",
     "aiofiles",
     "packaging"
   ],
