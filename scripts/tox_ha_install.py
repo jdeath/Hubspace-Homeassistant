@@ -30,7 +30,9 @@ def _rewrite_local_aioafero(requirements: list[str]) -> list[str]:
     for req in requirements:
         name = req.split("@", 1)[0].strip() if "@" in req else req
         if name == "aioafero" or req.startswith("aioafero=="):
-            rewritten.append(f"-e{LOCAL_AIOAFERO}")
+            # One requirement line: tox deps treat each list item as a line, and a
+            # bare ``-e`` crashes PythonDeps. Space form also matches pip's -e API.
+            rewritten.append(f"-e {LOCAL_AIOAFERO}")
         else:
             rewritten.append(req)
     return rewritten
