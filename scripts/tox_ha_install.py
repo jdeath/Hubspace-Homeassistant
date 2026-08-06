@@ -12,6 +12,7 @@ import sys
 _ROOT = Path(__file__).resolve().parents[1]
 _SCRIPTS = Path(__file__).resolve().parent
 MANIFEST_PATH = _ROOT / "custom_components" / "hubspace" / "manifest.json"
+LOCAL_AIOAFERO = (_ROOT / ".." / "aioafero").resolve()
 
 if str(_SCRIPTS) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS))
@@ -21,13 +22,27 @@ from phcc_matrix import get_month_spec, parse_ha_month_from_env  # noqa: E402
 logger = logging.getLogger("tox_ha_install")
 
 
+def _rewrite_local_aioafero(requirements: list[str]) -> list[str]:
+    """Prefer editable ../aioafero when developing against an unreleased version."""
+    if not (LOCAL_AIOAFERO / "pyproject.toml").is_file():
+        return requirements
+    rewritten: list[str] = []
+    for req in requirements:
+        name = req.split("@", 1)[0].strip() if "@" in req else req
+        if name == "aioafero" or req.startswith("aioafero=="):
+            rewritten.append(f"-e{LOCAL_AIOAFERO}")
+        else:
+            rewritten.append(req)
+    return rewritten
+
+
 def load_manifest_requirements() -> list[str]:
     """Integration runtime deps from manifest.json (same source HACS uses)."""
     data = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
     requirements = data.get("requirements")
     if not requirements:
         raise KeyError(f"{MANIFEST_PATH} missing 'requirements'")
-    return list(requirements)
+    return _rewrite_local_aioafero(list(requirements))
 
 
 def main() -> int:

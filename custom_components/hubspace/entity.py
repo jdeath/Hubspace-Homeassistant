@@ -42,7 +42,7 @@ class HubspaceBaseEntity(Entity):  # pylint: disable=hass-enforce-class-module
                 f"-{self.resource.split_identifier}-", 1
             )[1]
         else:
-            self._attr_name = type(self.resource).__name__
+            self._attr_name = None
 
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self.resource.device_information.parent_id)},

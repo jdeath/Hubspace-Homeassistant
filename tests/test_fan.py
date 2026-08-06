@@ -12,12 +12,12 @@ from .utils import create_devices_from_data, hs_raw_from_dump
 
 fan_zandra = create_devices_from_data("fan-ZandraFan.json")
 fan_zandra_instance = fan_zandra[0]
-fan_zandra_entity_id = "fan.friendly_device_2_fan"
+fan_zandra_entity_id = "fan.friendly_device_2"
 
 
 exhaust_fan = create_devices_from_data("fan-exhaust-fan.json")
 exhaust_fan_instance = exhaust_fan[3]
-exhaust_fan_instance_entity_id = "fan.r3_closet_fan"
+exhaust_fan_instance_entity_id = "fan.r3_closet"
 
 
 @pytest.fixture
@@ -206,7 +206,7 @@ async def test_add_new_device(mocked_entry):
     await bridge.async_block_until_done()
     await hass.async_block_till_done()
     assert len(bridge.devices.items) == 1
-    expected_entities = ["fan.friendly_device_2_fan"]
+    expected_entities = ["fan.friendly_device_2"]
     entity_reg = er.async_get(hass)
     await hass.async_block_till_done()
     for entity in expected_entities:

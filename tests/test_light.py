@@ -16,23 +16,27 @@ from custom_components.hubspace import light
 
 from .utils import create_devices_from_data, hs_raw_from_dump
 
-fan_zandra = create_devices_from_data("fan-ZandraFan.json")
-fan_zandra_light = fan_zandra[1]
-
 switch_dimmer = create_devices_from_data("dimmer-HPDA1110NWBP.json")
 switch_dimmer_light = switch_dimmer[0]
-switch_dimmer_light_id = "light.laundry_room_light"
+switch_dimmer_light_id = "light.laundry_room"
 
-rgb_temp_light = create_devices_from_data("light-rgb_temp.json")[0]
 light_a21 = create_devices_from_data("light-a21.json")[0]
-light_a21_id = "light.friendly_device_53_light"
-rgbw_led_strip = create_devices_from_data("rgbw-led-strip.json")[0]
+light_a21_id = "light.friendly_device_53"
 
 trim_light_parent = create_devices_from_data("light-with-trim.json")[0]
 trim_light_trim_id = f"{trim_light_parent.id}-light-trim"
 trim_light_main_id = f"{trim_light_parent.id}-light-main"
 trim_light_entity_id = "light.dining_room_light_1_trim"
 trim_light_main_entity_id = "light.dining_room_light_1_main"
+
+flushmount_from_file = create_devices_from_data("light-flushmount.json")
+flushmount_dev = flushmount_from_file[0]
+flushmount_color_entity_id = "light.ceiling_light_color"
+flushmount_white_entity_id = "light.ceiling_light_white"
+
+rgbcw_strip = create_devices_from_data("rgbcw-led-strip.json")[0]
+rgbcw_color_entity_id = "light.kitchen_counter_light_2_color"
+rgbcw_white_entity_id = "light.kitchen_counter_light_2_white"
 
 
 @pytest.fixture
@@ -283,8 +287,8 @@ async def test_turn_off_dimmer(mocked_dimmer):
             "light-flushmount.json",
             1,
             [
-                "light.ceiling_light_color",
-                "light.ceiling_light_white",
+                flushmount_color_entity_id,
+                flushmount_white_entity_id,
             ],
         ),
         (
@@ -293,6 +297,14 @@ async def test_turn_off_dimmer(mocked_dimmer):
             [
                 trim_light_main_entity_id,
                 trim_light_entity_id,
+            ],
+        ),
+        (
+            "rgbcw-led-strip.json",
+            1,
+            [
+                rgbcw_color_entity_id,
+                rgbcw_white_entity_id,
             ],
         ),
     ],
@@ -320,6 +332,23 @@ async def test_add_new_device(
         assert entity_reg.async_get(entity) is not None, (
             f"Unable to find entity {entity}"
         )
+
+
+@pytest.fixture
+async def mocked_flushmount_light(mocked_entry):
+    """Initialize a dual-channel flushmount light."""
+    hass, entry, bridge = mocked_entry
+    # Wire presentation policy before discovery so Auto splits this model.
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    await bridge.generate_devices_from_data(
+        create_devices_from_data("light-flushmount.json")
+    )
+    await hass.async_block_till_done()
+    for hub_light in bridge.lights.items:
+        hub_light.available = True
+    yield hass, entry, bridge
+    await bridge.close()
 
 
 @pytest.fixture
@@ -566,8 +595,126 @@ async def test_default_brightness_pct_fallback(mocked_trim_light):
     assert light.default_brightness_pct(trim) == 100
 
 
+@pytest.mark.asyncio
+async def test_flushmount_color_supports_rgb_not_cct(mocked_flushmount_light):
+    """Flushmount color light exposes RGB; white light owns CCT."""
+    hass, _, bridge = mocked_flushmount_light
+    resource = bridge.lights[flushmount_dev.id]
+    assert resource.is_dual_channel
+    assert resource.supports_color
+    assert resource.supports_color_temperature
+    color_ent = hass.states.get(flushmount_color_entity_id)
+    white_ent = hass.states.get(flushmount_white_entity_id)
+    assert ColorMode.RGB in color_ent.attributes["supported_color_modes"]
+    assert ColorMode.COLOR_TEMP not in color_ent.attributes["supported_color_modes"]
+    assert ColorMode.COLOR_TEMP in white_ent.attributes["supported_color_modes"]
+    assert ColorMode.RGB not in white_ent.attributes["supported_color_modes"]
+
+
+@pytest.mark.asyncio
+async def test_flushmount_turn_on_rgb_sends_color_mode(mocked_flushmount_light, mocker):
+    """RGB turn-on targets the shared light with color channel context."""
+    hass, _, bridge = mocked_flushmount_light
+    sent = mocker.spy(bridge.lights, "set_state")
+    light_ent = _get_hubspace_light(hass, flushmount_color_entity_id)
+    await light_ent.async_turn_on(rgb_color=(10, 20, 30), brightness=128)
+    await bridge.async_block_until_done()
+    await hass.async_block_till_done()
+    call_kwargs = sent.call_args.kwargs
+    assert call_kwargs["device_id"] == flushmount_dev.id
+    assert call_kwargs["color_mode"] == "color"
+    assert call_kwargs["channel"] == "color"
+    assert call_kwargs["color"] == (10, 20, 30)
+    assert call_kwargs["brightness"] == 50
+
+
+@pytest.fixture
+async def mocked_rgbcw_strip_light(mocked_entry):
+    """Initialize a combined dual-channel RGBCW strip light."""
+    hass, entry, bridge = mocked_entry
+    await bridge.generate_devices_from_data([rgbcw_strip])
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    yield hass, entry, bridge
+    await bridge.close()
+
+
+@pytest.mark.asyncio
+async def test_should_split_dual_channel_light_flushmount(mocked_flushmount_light):
+    """Dual-channel flushmounts present as color + white light entities."""
+    _, _, bridge = mocked_flushmount_light
+    resource = bridge.lights[flushmount_dev.id]
+    assert light.should_split_dual_channel_light(resource) is True
+    entities = light.entities_for_light(bridge, bridge.lights, resource)
+    assert [entity.unique_id for entity in entities] == [
+        f"{resource.id}.color",
+        f"{resource.id}.white",
+    ]
+
+
+@pytest.mark.asyncio
+async def test_should_split_dual_channel_light_strip(mocked_rgbcw_strip_light):
+    """Dual-channel RGBCW strips also present as color + white light entities."""
+    _, _, bridge = mocked_rgbcw_strip_light
+    resource = bridge.lights[rgbcw_strip.id]
+    assert light.should_split_dual_channel_light(resource) is True
+    entities = light.entities_for_light(bridge, bridge.lights, resource)
+    assert [entity.unique_id for entity in entities] == [
+        f"{resource.id}.color",
+        f"{resource.id}.white",
+    ]
+
+
+@pytest.mark.asyncio
+async def test_rgbcw_strip_split_light_entities(mocked_rgbcw_strip_light):
+    """RGBCW strip discovers as color + white lights, not channel switches."""
+    hass, _, bridge = mocked_rgbcw_strip_light
+    resource = bridge.lights[rgbcw_strip.id]
+    assert resource.is_dual_channel
+    entity_reg = er.async_get(hass)
+    assert entity_reg.async_get(rgbcw_color_entity_id) is not None
+    assert entity_reg.async_get(rgbcw_white_entity_id) is not None
+    assert entity_reg.async_get("light.kitchen_counter_light_2") is None
+    assert entity_reg.async_get("switch.kitchen_counter_light_2_color") is None
+    assert entity_reg.async_get("switch.kitchen_counter_light_2_white") is None
+    color_ent = hass.states.get(rgbcw_color_entity_id)
+    white_ent = hass.states.get(rgbcw_white_entity_id)
+    assert ColorMode.RGB in color_ent.attributes["supported_color_modes"]
+    assert ColorMode.COLOR_TEMP not in color_ent.attributes["supported_color_modes"]
+    assert ColorMode.COLOR_TEMP in white_ent.attributes["supported_color_modes"]
+    assert ColorMode.RGB not in white_ent.attributes["supported_color_modes"]
+
+
+@pytest.mark.asyncio
+async def test_rgbcw_color_turn_on_uses_channel(mocked_rgbcw_strip_light, mocker):
+    """RGBCW color light turn-on targets set_state with channel=color."""
+    hass, _, bridge = mocked_rgbcw_strip_light
+    sent = mocker.spy(bridge.lights, "set_state")
+    light_ent = _get_hubspace_light(hass, rgbcw_color_entity_id)
+    await light_ent.async_turn_on(rgb_color=(12, 34, 56), brightness=128)
+    await bridge.async_block_until_done()
+    await hass.async_block_till_done()
+    call_kwargs = sent.call_args.kwargs
+    assert call_kwargs["device_id"] == rgbcw_strip.id
+    assert call_kwargs["channel"] == "color"
+    assert call_kwargs["color_mode"] == "color"
+    assert call_kwargs["color"] == (12, 34, 56)
+
+
+@pytest.mark.asyncio
+async def test_displayed_brightness_pct_channel_entities(mocked_rgbcw_strip_light):
+    """Split channel entities read brightness from their own channel."""
+    _, _, bridge = mocked_rgbcw_strip_light
+    resource = bridge.lights[rgbcw_strip.id]
+    resource.channels["color"].brightness = 80
+    resource.channels["white"].brightness = 40
+    resource.dimming.brightness = 55
+    assert light.displayed_brightness_pct(resource, channel="color") == 80
+    assert light.displayed_brightness_pct(resource, channel="white") == 40
+
+
 penrose_light = create_devices_from_data("light-penrose.json")[0]
-penrose_main_entity_id = "light.vanity_bar_light_light"
+penrose_main_entity_id = "light.vanity_bar_light"
 penrose_night_entity_id = "light.vanity_bar_light_night_light"
 
 

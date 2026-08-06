@@ -21,7 +21,7 @@ from .utils import create_devices_from_data, modify_state
 
 fan_zandra = create_devices_from_data("fan-ZandraFan.json")
 fan_zandra_light = fan_zandra[1]
-fan_zandra_light_id = "light.friendly_device_2_light"
+fan_zandra_light_id = "light.friendly_device_2"
 
 
 @pytest.fixture

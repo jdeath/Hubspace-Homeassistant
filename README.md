@@ -68,6 +68,20 @@ are as follows:
 
 ## Changelog
 
+- 7.0.0
+
+  - Break: Primary entity IDs change — naming follows HA `has_entity_name` (device name
+    only, no class-name suffix). Example: `light.laundry_room_light` → `light.laundry_room`.
+    Update automations/dashboards. Instance and split entities are unchanged.
+  - Require `aioafero==8.0.0`: dual-channel RGB+WW fixtures stay one API light;
+    each color/white channel is a separate HA light entity. Per-channel brightness
+    lives on `Light.channels` (not Number sliders)
+    ([#160](https://github.com/jdeath/Hubspace-Homeassistant/issues/160),
+    [#218](https://github.com/jdeath/Hubspace-Homeassistant/issues/218),
+    [#230](https://github.com/jdeath/Hubspace-Homeassistant/issues/230))
+  - aioafero prefers API `color-mode: mixed` when both channels are on, and moves
+    back to exclusive `color` / `white` when a channel is turned off
+
 - 6.0.3
 
   - Fix portable AC power switch having no effect ([#234](https://github.com/jdeath/Hubspace-Homeassistant/issues/234))
@@ -329,6 +343,18 @@ that can access Home Assistants Filestore.
 
   - After updating the Unit system, you must also reload the integration for the values to show correctly. This
     can be accomplished by going to Settings -> Devices & services -> Hubspace -> Triple dots -> Reload.
+
+- I upgraded Hubspace and my RGB / flushmount light shows extra entities or wrong brightness
+
+  - Version 7.0.0 keeps dual-channel lights as **one** API light (not separate
+    aioafero `_color` / `_white` light resources). In Home Assistant they present as
+    two light entities (color + white) on one device — including RGBCW strips and
+    flushmounts. Channel brightness is not exposed as Number entities — use each
+    light's slider. Reload after upgrading so Home Assistant drops stale entities.
+  - Turn a channel off with that light's Off control; aioafero adjusts `color-mode`
+    (including leaving `mixed` when only one channel remains).
+  - If automations reference old entity IDs from earlier split-light changes, update them in
+    Settings → Devices & services → Entities.
 
 _Thanks to everyone who starred my repo! To star it click on the image below, then it will be on top right. Thanks!_
 

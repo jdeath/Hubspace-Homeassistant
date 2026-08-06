@@ -12,11 +12,11 @@ exhaust_fan_number_id = "number.r3_closet_auto_off_timer"
 
 light_with_speed_from_file = create_devices_from_data("light-with-speed.json")
 light_with_speed = light_with_speed_from_file[2]
-light_with_speed_id = "number.landscaping_tree_lights_speed"
+light_with_speed_id = "number.landscaping_tree_lights_effect_speed"
 
 rgbw_led_strip_from_file = create_devices_from_data("rgbw-led-strip.json")
 rgbw_led_strip = rgbw_led_strip_from_file[0]
-rgbw_led_strip_speed_id = "number.friendly_device_6_speed"
+rgbw_led_strip_speed_id = "number.friendly_device_6_effect_speed"
 
 
 @pytest.fixture
