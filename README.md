@@ -361,4 +361,4 @@ that can access Home Assistants Filestore.
 
 _Thanks to everyone who starred my repo! To star it click on the image below, then it will be on top right. Thanks!_
 
-[![Star History Chart](https://api.star-history.com/svg?repos=jdeath/Hubspace-Homeassistant&type=Date)](https://star-history.com/#jdeath/Hubspace-Homeassistant&Date)
+[![Star History Chart](https://star-history.dera.page/svg?repos=jdeath/Hubspace-Homeassistant&type=Date)](https://star-history.dera.page/#jdeath/Hubspace-Homeassistant&Date)
