@@ -389,10 +389,12 @@ def displayed_brightness_pct(
         return int(pct) if pct is not None else 100
     api_mode = resource.color_mode.mode if resource.color_mode else None
     if api_mode in ("color", "sequence"):
-        return int(resource.channel_brightness("color") or resource.brightness)
-    if api_mode == "white":
-        return int(resource.channel_brightness("white") or resource.brightness)
-    return int(resource.brightness)
+        pct = resource.channel_brightness("color") or resource.brightness
+    elif api_mode == "white":
+        pct = resource.channel_brightness("white") or resource.brightness
+    else:
+        pct = resource.brightness
+    return int(pct) if pct is not None else 100
 
 
 def is_api_white_zone(resource: Light) -> bool:
@@ -446,7 +448,7 @@ def get_color_mode(
             return ColorMode.BRIGHTNESS
         return ColorMode.ONOFF
     if not resource.color_mode:
-        return list(supported_modes)[0] if len(supported_modes) else ColorMode.ONOFF
+        return _preferred_supported_color_mode(supported_modes)
     if resource.color_mode.mode == "color":
         return ColorMode.RGB
     if resource.color_mode.mode == "mixed":
@@ -465,7 +467,21 @@ def get_color_mode(
         if ColorMode.BRIGHTNESS in supported_modes:
             return ColorMode.BRIGHTNESS
         return ColorMode.ONOFF
-    return list(supported_modes)[-1] if len(supported_modes) else ColorMode.ONOFF
+    return _preferred_supported_color_mode(supported_modes)
+
+
+def _preferred_supported_color_mode(supported_modes: set[ColorMode]) -> ColorMode:
+    """Pick a stable color mode when API mode is missing or unknown."""
+    for mode in (
+        ColorMode.RGB,
+        ColorMode.COLOR_TEMP,
+        ColorMode.WHITE,
+        ColorMode.BRIGHTNESS,
+        ColorMode.ONOFF,
+    ):
+        if mode in supported_modes:
+            return mode
+    return ColorMode.ONOFF
 
 
 async def async_setup_entry(
