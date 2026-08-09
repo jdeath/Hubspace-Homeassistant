@@ -12,7 +12,7 @@ Do these steps in order the first time you run tests on a machine.
 
 3. **Install dev headers on Linux** for every interpreter you will use, e.g. `python3.13-dev` and `python3.14-dev` (or your distro’s equivalent). Without them, HA dependency installs can fail with `Python.h: No such file or directory`.
 
-4. **Create a venv and install test tools** (includes tox ≥ 4.29):
+4. **Create a venv and install test tools** (includes tox ≥ 4.29). Either:
 
    ```bash
    python3.13 -m venv .venv
@@ -21,10 +21,17 @@ Do these steps in order the first time you run tests on a machine.
    pip install -r test-requirements.txt
    ```
 
+   or with uv (installs the same tools from `[dependency-groups] dev`):
+
+   ```bash
+   uv sync
+   ```
+
 5. **Lint:**
 
    ```bash
    tox -e lint
+   # or: uv run tox -e lint
    ```
 
 6. **One HA release month** (name from `tox -av` or `python scripts/phcc_matrix.py`):
@@ -190,3 +197,4 @@ New env names (e.g. `py315-ha202607`) appear automatically once step 1 is in pla
 | `tox -e lint` slow on first run                                 | `tox -av` / `run-parallel` builds the phcc index; `tox -e lint` or `tox -e py313-ha…` alone avoids full matrix discovery                                                                        |
 | PyPI unreachable / offline                                      | Reuse `.tox/phcc_version_index.json` if present; build index once online. `--refresh` needs network                                                                                             |
 | Wrong `aioafero` in tox (missing `gather_discovery_data`, etc.) | Stale env from before `toxfile.py` wired manifest into `deps`; run tox once (install reruns) or `tox … --recreate` if needed. Changing `manifest.json` should invalidate install automatically. |
+| `… is not a valid editable requirement` for local `../aioafero` | Fixed by expanding `-e /path` into two pip argv tokens in `tox_ha_install.py`. Recreate the env after pulling that fix.                                                                         |

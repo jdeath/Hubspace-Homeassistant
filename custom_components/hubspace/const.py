@@ -33,8 +33,11 @@ POLLING_TIME_STR: Final[str] = "polling_time"
 DEFAULT_CLIENT: Final[str] = "hubspace"
 CONF_CLIENT: Final[str] = "client"
 CONF_OTP: Final[str] = "otp_code"
+CONF_REFRESH_TOKEN: Final[str] = "refresh_token"
+# Config entry data key used before schema v6 (HA's CONF_TOKEN).
+LEGACY_CONF_TOKEN: Final[str] = "token"
 
-VERSION_MAJOR: Final[int] = 5
+VERSION_MAJOR: Final[int] = 6
 VERSION_MINOR: Final[int] = 0
 
 

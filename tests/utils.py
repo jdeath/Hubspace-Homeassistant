@@ -9,11 +9,12 @@ from typing import Any
 from aioafero import AferoCapability, AferoDevice, AferoState, TemperatureUnit, v1
 from aioafero.v1.auth import TokenData
 from aioafero.v1.controllers.base import dataclass_to_afero
-from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
+from homeassistant.const import CONF_TIMEOUT, CONF_USERNAME
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.hubspace.const import (
     CONF_CLIENT,
+    CONF_REFRESH_TOKEN,
     DEFAULT_CLIENT,
     DEFAULT_POLLING_INTERVAL_SEC,
     DOMAIN,
@@ -182,7 +183,10 @@ def _patch_event_gather(mocker, events, *, return_value: list | None = None) -> 
 def get_mocked_bridge(mocker) -> v1.AferoBridgeV1:
     """Create a mocked afero bridge to be used in tests."""
     bridge: v1.AferoBridgeV1 = v1.AferoBridgeV1(
-        "username2", "password2", temperature_unit=TemperatureUnit.CELSIUS
+        "username2",
+        "mock-refresh-token",
+        mocker.Mock(),
+        temperature_unit=TemperatureUnit.CELSIUS,
     )
     mocker.patch.object(bridge, "_account_id", "mocked-account-id")
     mocker.patch.object(bridge, "request", side_effect=mocker.AsyncMock())
@@ -258,8 +262,7 @@ def get_mocked_entry(hass, mocker, mocked_bridge) -> MockConfigEntry:
         domain=DOMAIN,
         data={
             CONF_USERNAME: "username",
-            CONF_PASSWORD: "password",
-            CONF_TOKEN: "mock-token",
+            CONF_REFRESH_TOKEN: "mock-token",
             CONF_CLIENT: DEFAULT_CLIENT,
         },
         options={
