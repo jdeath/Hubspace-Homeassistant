@@ -9,15 +9,16 @@ requires-python = ">=3.13.2"
 dynamic = ["version", "dependencies"]
 
 [dependency-groups]
+# Tools for invoking tox / lint locally. Home Assistant and phcc are installed
+# per tox env by scripts/tox_ha_install.py — do not list them here or ``uv run``
+# will try to resolve every HA month against requires-python and fail.
 dev = [
-  "homeassistant",
   "pytest>=8.2.2",
   "pytest-mock",
   "pytest-asyncio",
   "responses",
-  "pytest-homeassistant-custom-component",
   "pre-commit",
-  "tox",
+  "tox>=4.29",
 ]
 
 [tool.hatch.metadata]

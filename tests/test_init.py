@@ -1,22 +1,30 @@
 """Test the plugins initialization tasks."""
 
 from aioafero.errors import InvalidAuth
-from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
+from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_USERNAME
 from homeassistant.helpers import device_registry as dr
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components import hubspace
 from custom_components.hubspace import const
+from custom_components.hubspace.const import CONF_REFRESH_TOKEN, LEGACY_CONF_TOKEN
 
 from .utils import create_devices_from_data, get_mocked_bridge, get_mocked_entry
 
 
 @pytest.fixture(autouse=True)
-def hubspace_migration(mocked_bridge, mocker):
-    """Mock the Bridge."""
-    mocker.patch("custom_components.hubspace.AferoBridgeV1", return_value=mocked_bridge)
-    return mocked_bridge
+def hubspace_migration(mocker):
+    """Mock AferoAuth.for_login used by config-entry migrations."""
+    token_data = mocker.Mock()
+    token_data.refresh_token = "mock-refresh-token"
+    auth = mocker.Mock()
+    auth.login = mocker.AsyncMock(return_value=token_data)
+    mocker.patch(
+        "custom_components.hubspace.AferoAuth.for_login",
+        return_value=auth,
+    )
+    return auth
 
 
 @pytest.fixture
@@ -94,7 +102,7 @@ def v4_config_entry(hass):
         data={
             CONF_USERNAME: "cool",
             CONF_PASSWORD: "beans",
-            CONF_TOKEN: "mock-refresh-token",
+            LEGACY_CONF_TOKEN: "mock-refresh-token",
         },
         options={
             CONF_TIMEOUT: 10000,
@@ -115,7 +123,7 @@ def v5_config_entry(hass):
         data={
             CONF_USERNAME: "cool",
             CONF_PASSWORD: "beans",
-            CONF_TOKEN: "mock-refresh-token",
+            LEGACY_CONF_TOKEN: "mock-refresh-token",
             const.CONF_CLIENT: const.DEFAULT_CLIENT,
         },
         options={
@@ -135,8 +143,7 @@ async def test_async_migrate_entry(v1_config_entry):
     assert await hubspace.async_migrate_entry(v1_config_entry[0], v1_config_entry[1])
     assert v1_config_entry[1].data == {
         CONF_USERNAME: "cool",
-        CONF_PASSWORD: "beans",
-        CONF_TOKEN: "mock-refresh-token",
+        CONF_REFRESH_TOKEN: "mock-refresh-token",
         const.CONF_CLIENT: const.DEFAULT_CLIENT,
     }
     assert v1_config_entry[1].options == {
@@ -221,7 +228,7 @@ async def test_perform_v4_migration_from_v3(v3_config_entry):
     assert v3_config_entry[1].data == {
         CONF_USERNAME: "cool",
         CONF_PASSWORD: "beans",
-        CONF_TOKEN: "mock-refresh-token",
+        LEGACY_CONF_TOKEN: "mock-refresh-token",
     }
     assert v3_config_entry[1].options == {
         CONF_TIMEOUT: 10000,
@@ -237,7 +244,7 @@ async def test_perform_v4_migration_from_v3_with_err(
     v3_config_entry, hubspace_migration, mocker
 ):
     """Test configuration migration from v3 to v4 but contains an error."""
-    mocker.patch.object(hubspace_migration, "get_account_id", side_effect=InvalidAuth())
+    mocker.patch.object(hubspace_migration, "login", side_effect=InvalidAuth())
     await hubspace.perform_v4_migration(v3_config_entry[0], v3_config_entry[1])
     assert v3_config_entry[1].data == {
         CONF_USERNAME: "cool",
@@ -259,11 +266,26 @@ async def test_perform_v5_migration_from_v4(v4_config_entry):
     assert v4_config_entry[1].data == {
         CONF_USERNAME: "cool",
         CONF_PASSWORD: "beans",
-        CONF_TOKEN: "mock-refresh-token",
+        LEGACY_CONF_TOKEN: "mock-refresh-token",
         const.CONF_CLIENT: const.DEFAULT_CLIENT,
     }
     assert v4_config_entry[1].version == 5
     assert v4_config_entry[1].minor_version == 0
+
+
+@pytest.mark.asyncio
+async def test_perform_v6_migration_from_v5(v5_config_entry):
+    """Test v6 migration strips passwords and renames the token key."""
+    await hubspace.perform_v6_migration(v5_config_entry[0], v5_config_entry[1])
+    assert v5_config_entry[1].data == {
+        CONF_USERNAME: "cool",
+        CONF_REFRESH_TOKEN: "mock-refresh-token",
+        const.CONF_CLIENT: const.DEFAULT_CLIENT,
+    }
+    assert CONF_PASSWORD not in v5_config_entry[1].data
+    assert LEGACY_CONF_TOKEN not in v5_config_entry[1].data
+    assert v5_config_entry[1].version == 6
+    assert v5_config_entry[1].minor_version == 0
 
 
 @pytest.mark.asyncio

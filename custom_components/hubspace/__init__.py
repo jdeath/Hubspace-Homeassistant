@@ -2,20 +2,22 @@
 
 import logging
 
-from aioafero import InvalidAuth
-from aioafero.v1 import AferoBridgeV1
+from aioafero import InvalidAuth, OTPRequired
+from aioafero.v1 import AferoAuth
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
+from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import aiohttp_client, device_registry as dr
 
 from .bridge import HubspaceBridge
 from .const import (
     CONF_CLIENT,
+    CONF_REFRESH_TOKEN,
     DEFAULT_CLIENT,
     DEFAULT_POLLING_INTERVAL_SEC,
     DEFAULT_TIMEOUT,
     DOMAIN,
+    LEGACY_CONF_TOKEN,
     POLLING_TIME_STR,
 )
 from .services import async_register_services
@@ -60,6 +62,8 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
         res = await perform_v4_migration(hass, config_entry)
     if config_entry.version == 4 and config_entry.minor_version == 0:
         res = await perform_v5_migration(hass, config_entry)
+    if config_entry.version == 5 and config_entry.minor_version == 0:
+        res = await perform_v6_migration(hass, config_entry)
     _LOGGER.debug(
         "Migration to configuration version %s.%s successful",
         config_entry.version,
@@ -114,23 +118,22 @@ async def perform_v3_migration(hass: HomeAssistant, config_entry: ConfigEntry) -
 async def perform_v4_migration(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """Perform version 4 migration of the configuration entry.
 
-    * Ensure CONF_TOKEN is set
+    * Ensure a refresh token is set (legacy data key ``token``; renamed in v6)
     """
     options = {**config_entry.options}
     data = {**config_entry.data}
-    # Generate the new token
-    api = AferoBridgeV1(
+    auth = AferoAuth.for_login(
+        aiohttp_client.async_get_clientsession(hass),
         config_entry.data[CONF_USERNAME],
         config_entry.data[CONF_PASSWORD],
-        session=aiohttp_client.async_get_clientsession(hass),
-        polling_interval=config_entry.options[POLLING_TIME_STR],
+        client_name="Home Assistant",
     )
     try:
-        await api.get_account_id()
-    except InvalidAuth:
+        token_data = await auth.login()
+    except (InvalidAuth, OTPRequired):
         config_entry.async_start_reauth(hass)
         return False
-    data[CONF_TOKEN] = api.refresh_token
+    data[LEGACY_CONF_TOKEN] = token_data.refresh_token
     # Previous versions may have used None for the unique ID
     unique_id = config_entry.data[CONF_USERNAME].lower()
     hass.config_entries.async_update_entry(
@@ -154,6 +157,22 @@ async def perform_v5_migration(hass: HomeAssistant, config_entry: ConfigEntry) -
     new_data[CONF_CLIENT] = DEFAULT_CLIENT
     hass.config_entries.async_update_entry(
         config_entry, data=new_data, version=5, minor_version=0
+    )
+    return True
+
+
+async def perform_v6_migration(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
+    """Perform version 6 migration of the configuration entry.
+
+    * Remove stored account password (refresh token is sufficient at runtime)
+    * Rename legacy ``token`` data key to ``refresh_token``
+    """
+    new_data = {**config_entry.data}
+    new_data.pop(CONF_PASSWORD, None)
+    if LEGACY_CONF_TOKEN in new_data:
+        new_data[CONF_REFRESH_TOKEN] = new_data.pop(LEGACY_CONF_TOKEN)
+    hass.config_entries.async_update_entry(
+        config_entry, data=new_data, version=6, minor_version=0
     )
     return True
 

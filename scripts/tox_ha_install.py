@@ -30,12 +30,31 @@ def _rewrite_local_aioafero(requirements: list[str]) -> list[str]:
     for req in requirements:
         name = req.split("@", 1)[0].strip() if "@" in req else req
         if name == "aioafero" or req.startswith("aioafero=="):
-            # One requirement line: tox deps treat each list item as a line, and a
-            # bare ``-e`` crashes PythonDeps. Space form also matches pip's -e API.
+            # One tox dep line (bare ``-e`` alone crashes PythonDeps). Tox splits
+            # ``-e /path`` when expanding {packages}; pip still needs two argv
+            # tokens — see ``_pip_argv``.
             rewritten.append(f"-e {LOCAL_AIOAFERO}")
         else:
             rewritten.append(req)
     return rewritten
+
+
+def _pip_argv(requirements: list[str]) -> list[str]:
+    r"""Expand ``-e /path`` lines into separate argv tokens for pip.
+
+    A single ``"-e /path"`` argument is rejected by pip as an invalid editable
+    requirement; ``-e`` and ``/path`` must be consecutive argv entries.
+    """
+    argv: list[str] = []
+    for req in requirements:
+        if req.startswith("-e "):
+            path = req[3:].strip()
+            if not path:
+                raise ValueError(f"editable requirement missing path: {req!r}")
+            argv.extend(["-e", path])
+        else:
+            argv.append(req)
+    return argv
 
 
 def load_manifest_requirements() -> list[str]:
@@ -64,12 +83,13 @@ def main() -> int:
         return subprocess.call(cmd)
 
     spec = get_month_spec(ha_month)
-    packages = [
-        *load_manifest_requirements(),
-        spec.phcc_spec,
-    ]
-    if spec.pycares_constraint:
-        packages.append(spec.pycares_constraint)
+    packages = _pip_argv(
+        [
+            *load_manifest_requirements(),
+            spec.phcc_spec,
+            *([spec.pycares_constraint] if spec.pycares_constraint else []),
+        ]
+    )
 
     cmd = [
         sys.executable,
