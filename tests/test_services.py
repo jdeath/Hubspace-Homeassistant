@@ -1,7 +1,7 @@
 """Test the integration between Home Assistant Services and Afero devices."""
 
 from aioafero import AferoState
-from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
+from homeassistant.const import CONF_TIMEOUT, CONF_USERNAME
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 import voluptuous as vol
@@ -9,6 +9,7 @@ import voluptuous as vol
 from custom_components.hubspace import const, services
 from custom_components.hubspace.const import (
     CONF_CLIENT,
+    CONF_REFRESH_TOKEN,
     DEFAULT_CLIENT,
     DEFAULT_POLLING_INTERVAL_SEC,
     DOMAIN,
@@ -154,8 +155,7 @@ async def test_service_deprecated_args(hass, mocker, mocked_bridge, caplog):
         domain=DOMAIN,
         data={
             CONF_USERNAME: "username",
-            CONF_PASSWORD: "password",
-            CONF_TOKEN: "mock-token",
+            CONF_REFRESH_TOKEN: "mock-token",
             CONF_CLIENT: DEFAULT_CLIENT,
         },
         options={

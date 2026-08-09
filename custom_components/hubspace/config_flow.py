@@ -4,12 +4,12 @@ from __future__ import annotations
 
 from asyncio import timeout
 from collections.abc import Mapping
-from contextlib import suppress
 import logging
 from typing import Any
 
 from aioafero import InvalidAuth, InvalidOTP, OTPRequired
-from aioafero.v1 import AferoBridgeV1
+from aioafero.v1 import AferoAuth
+from aioafero.v1.auth import TokenData
 from aioafero.v1.v1_const import AFERO_CLIENTS
 from homeassistant.config_entries import (
     ConfigEntry,
@@ -17,13 +17,15 @@ from homeassistant.config_entries import (
     ConfigFlowResult,
     OptionsFlow,
 )
-from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_TOKEN, CONF_USERNAME
+from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_USERNAME
 from homeassistant.core import callback
+from homeassistant.helpers import aiohttp_client
 import voluptuous as vol
 
 from .const import (
     CONF_CLIENT,
     CONF_OTP,
+    CONF_REFRESH_TOKEN,
     DEFAULT_CLIENT,
     DEFAULT_POLLING_INTERVAL_SEC,
     DEFAULT_TIMEOUT,
@@ -62,7 +64,8 @@ class AferoConfigFlow(ConfigFlow, domain=DOMAIN):
 
     def __init__(self) -> None:
         """Initialize."""
-        self._conn: AferoBridgeV1 | None = None
+        self._auth: AferoAuth | None = None
+        self._token_data: TokenData | None = None
         self._otp_code: str | None = None
         self._username: str | None = None
         self._password: str | None = None
@@ -75,7 +78,9 @@ class AferoConfigFlow(ConfigFlow, domain=DOMAIN):
     ) -> ConfigFlowResult:
         """Validate the Afero username and password."""
         errors = {}
-        self._conn = AferoBridgeV1(
+        session = aiohttp_client.async_get_clientsession(self.hass)
+        self._auth = AferoAuth.for_login(
+            session,
             self._username,
             self._password,
             afero_client=self._client,
@@ -83,7 +88,7 @@ class AferoConfigFlow(ConfigFlow, domain=DOMAIN):
         )
         try:
             async with timeout(self._timeout):
-                await self._conn.get_account_id()
+                self._token_data = await self._auth.login()
         except TimeoutError:
             errors = {"base": "cannot_connect"}
         except InvalidAuth:
@@ -103,7 +108,7 @@ class AferoConfigFlow(ConfigFlow, domain=DOMAIN):
         """Handle the OTP step for Afero."""
         try:
             async with timeout(self._timeout):
-                await self._conn.otp_login(self._otp_code)
+                self._token_data = await self._auth.submit_otp(self._otp_code)
         except InvalidOTP:
             return self.async_show_form(
                 step_id="otp",
@@ -125,20 +130,19 @@ class AferoConfigFlow(ConfigFlow, domain=DOMAIN):
         existing_entry = await self.async_set_unique_id(unique_id)
         data = {
             CONF_USERNAME: self._username,
-            CONF_PASSWORD: self._password,
             CONF_CLIENT: self._client,
-            CONF_TOKEN: self._conn.refresh_token,
+            CONF_REFRESH_TOKEN: self._token_data.refresh_token,
         }
         options = {
             CONF_TIMEOUT: self._timeout or DEFAULT_TIMEOUT,
             POLLING_TIME_STR: self._polling or DEFAULT_POLLING_INTERVAL_SEC,
         }
+        # Password is only used for the login handshake; never persist it.
+        self._password = None
         if existing_entry:
             return self.async_update_reload_and_abort(
                 existing_entry, data=data, options=options
             )
-        with suppress(Exception):
-            await self._conn.close()
         return self.async_create_entry(
             title=unique_id,
             data=data,
@@ -184,7 +188,7 @@ class AferoConfigFlow(ConfigFlow, domain=DOMAIN):
         """Handle reauthorization request from Afero."""
         current = self._get_reauth_entry()
         self._username = current.data[CONF_USERNAME]
-        self._password = current.data[CONF_PASSWORD]
+        self._password = None
         # reauth workflow is used as part of the migration and CONF_CLIENT may not be set
         self._client = current.data.get(CONF_CLIENT, DEFAULT_CLIENT)
         self._timeout = current.options.get(CONF_TIMEOUT, DEFAULT_TIMEOUT)
