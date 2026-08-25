@@ -4,6 +4,15 @@ All notable changes to the Hubspace Home Assistant integration are documented he
 Release notes on GitHub Releases are kept in sync for recent versions so HACS update
 notifications stay useful.
 
+## 8.2.0
+
+- Break: Night Light is no longer a separate `light.*` entity. Fixtures that
+  expose API `color-mode: night-light` use the **Night Light Mode** effect on
+  the main light instead ([#232](https://github.com/jdeath/Hubspace-Homeassistant/issues/232),
+  [#253](https://github.com/jdeath/Hubspace-Homeassistant/issues/253)).
+- Fix: `light.turn_off` targeting all lights no longer turns Hubspace track /
+  vanity fixtures back on via a hidden night-light entity ([#253](https://github.com/jdeath/Hubspace-Homeassistant/issues/253)).
+
 ## 8.1.0
 
 - Add dehumidifier support (Vissani `VAD50PS1AWTS`, Hubspace device class
