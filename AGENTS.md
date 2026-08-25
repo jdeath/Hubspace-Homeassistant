@@ -80,9 +80,9 @@ config_flow / migrations → HubspaceBridge → AferoBridgeV1 (aioafero)
 - **Dual-channel:** one aioafero light can become separate HA color + white
   entities; channel brightness lives on those lights (not Number sliders). See
   `light.py` and the README FAQ.
-- **Night light:** separate entity; bridge keeps previous mode / on state when
-  night light is toggled — do not treat it as a normal color-mode on the main
-  light.
+- **Night light:** API `color-mode: night-light` maps to the **Night Light Mode**
+  HA effect on the main light (not a second entity). Sequence effects such as
+  `nightlight` stay separate in the effect list.
 
 ## Layout
 
