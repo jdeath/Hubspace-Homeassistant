@@ -92,7 +92,6 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
             self._channel is None
             and self.resource.color_mode
             and self.resource.color_mode.mode == NIGHT_LIGHT_MODE
-            and self.resource.color_mode_has_hint(NIGHT_LIGHT_MODE, "no-brightness")
         ):
             return None
         pct = displayed_brightness_pct(self.resource, channel=self._channel)
@@ -394,11 +393,6 @@ def get_color_mode(
     if not resource.color_mode:
         return _preferred_supported_color_mode(supported_modes)
     if resource.color_mode.mode == NIGHT_LIGHT_MODE:
-        if (
-            ColorMode.BRIGHTNESS in supported_modes
-            and displayed_brightness_pct(resource) is not None
-        ):
-            return ColorMode.BRIGHTNESS
         return ColorMode.ONOFF
     if resource.color_mode.mode == "color":
         return ColorMode.RGB

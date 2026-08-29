@@ -5,7 +5,6 @@ from homeassistant.components.light import (
     ATTR_COLOR_MODE,
     ATTR_COLOR_TEMP_KELVIN,
     ATTR_EFFECT,
-    ATTR_EFFECT_LIST,
     ATTR_RGB_COLOR,
     ATTR_WHITE,
     ColorMode,
@@ -718,6 +717,98 @@ penrose_light = create_devices_from_data("light-penrose.json")[0]
 penrose_main_entity_id = "light.vanity_bar_light"
 
 
+async def _load_light_resource(mocked_bridge, device):
+    """Seed bridge discovery and return the Light model for a dump device."""
+    await mocked_bridge.generate_devices_from_data([device])
+    await mocked_bridge.async_block_until_done()
+    return mocked_bridge.lights[device.id]
+
+
+@pytest.mark.parametrize(
+    ("dump_name", "expected"),
+    [
+        ("light-penrose.json", True),
+        ("light-a21.json", False),
+    ],
+)
+@pytest.mark.asyncio
+async def test_has_night_light_mode(mocked_bridge, dump_name, expected):
+    """Advertised color-modes include night-light only on capable fixtures."""
+    device = create_devices_from_data(dump_name)[0]
+    resource = await _load_light_resource(mocked_bridge, device)
+    assert light.has_night_light_mode(resource) is expected
+
+
+@pytest.mark.asyncio
+async def test_has_night_light_mode_false_when_color_modes_missing(mocked_bridge):
+    """Missing color_modes metadata is treated as unsupported."""
+    resource = await _load_light_resource(mocked_bridge, penrose_light)
+    resource.color_modes = None
+    assert light.has_night_light_mode(resource) is False
+
+
+@pytest.mark.asyncio
+async def test_build_effect_list_includes_night_light_mode(mocked_bridge):
+    """Penrose lists Night Light Mode separately from sequence nightlight."""
+    resource = await _load_light_resource(mocked_bridge, penrose_light)
+    effects = light.build_effect_list(resource)
+    assert effects is not None
+    assert light.NIGHT_LIGHT_EFFECT in effects
+    assert "nightlight" in effects
+
+
+@pytest.mark.asyncio
+async def test_build_effect_list_omits_night_light_mode_without_capability(
+    mocked_bridge,
+):
+    """Fixtures without night-light color-mode only expose sequence effects."""
+    resource = await _load_light_resource(mocked_bridge, light_a21)
+    effects = light.build_effect_list(resource)
+    assert effects is not None
+    assert light.NIGHT_LIGHT_EFFECT not in effects
+
+
+@pytest.mark.asyncio
+async def test_build_effect_list_none_without_effects(mocked_bridge):
+    """Dimmer-style lights with no effects and no night-light return None."""
+    resource = await _load_light_resource(mocked_bridge, switch_dimmer_light)
+    assert light.build_effect_list(resource) is None
+
+
+@pytest.mark.asyncio
+async def test_current_ha_effect_maps_night_light_color_mode(mocked_bridge):
+    """API night-light color-mode reports as the Night Light Mode effect."""
+    resource = await _load_light_resource(mocked_bridge, penrose_light)
+    resource.color_mode.mode = "night-light"
+    assert light.current_ha_effect(resource) == light.NIGHT_LIGHT_EFFECT
+
+
+@pytest.mark.asyncio
+async def test_current_ha_effect_maps_sequence(mocked_bridge):
+    """Sequence color-mode exposes the active sequence name."""
+    resource = await _load_light_resource(mocked_bridge, light_a21)
+    resource.color_mode.mode = "sequence"
+    resource.effect.effect = "rainbow"
+    assert light.current_ha_effect(resource) == "rainbow"
+
+
+@pytest.mark.parametrize("channel", ["white"])
+@pytest.mark.asyncio
+async def test_current_ha_effect_none_for_white_channel(mocked_bridge, channel):
+    """Dual white channel entities do not report an effect."""
+    resource = await _load_light_resource(mocked_bridge, penrose_light)
+    resource.color_mode.mode = "night-light"
+    assert light.current_ha_effect(resource, channel=channel) is None
+
+
+@pytest.mark.asyncio
+async def test_current_ha_effect_none_for_non_sequence_modes(mocked_bridge):
+    """White/color API modes are not mapped to HA effects."""
+    resource = await _load_light_resource(mocked_bridge, penrose_light)
+    resource.color_mode.mode = "white"
+    assert light.current_ha_effect(resource) is None
+
+
 @pytest.fixture
 async def mocked_penrose(mocked_entry):
     """Initialize a Penrose vanity light with night-light color-mode."""
@@ -730,40 +821,6 @@ async def mocked_penrose(mocked_entry):
 
 
 @pytest.mark.asyncio
-async def test_build_effect_list_includes_night_light_mode(mocked_bridge):
-    """Night-light capability adds a distinct effect name from sequence nightlight."""
-    await mocked_bridge.generate_devices_from_data([penrose_light])
-    await mocked_bridge.async_block_until_done()
-    resource = mocked_bridge.lights[penrose_light.id]
-    effects = light.build_effect_list(resource)
-    assert effects is not None
-    assert light.NIGHT_LIGHT_EFFECT in effects
-    assert "nightlight" in effects
-
-
-@pytest.mark.asyncio
-async def test_current_ha_effect_maps_night_light_color_mode(mocked_bridge):
-    """API night-light color-mode reports as the Night Light Mode effect."""
-    await mocked_bridge.generate_devices_from_data([penrose_light])
-    await mocked_bridge.async_block_until_done()
-    resource = mocked_bridge.lights[penrose_light.id]
-    resource.color_mode.mode = "night-light"
-    assert light.current_ha_effect(resource) == light.NIGHT_LIGHT_EFFECT
-
-
-@pytest.mark.asyncio
-async def test_penrose_single_light_entity(mocked_penrose):
-    """Night-light fixtures expose one light with Night Light Mode in effects."""
-    hass, _, bridge = mocked_penrose
-    assert light.has_night_light_mode(bridge.lights[penrose_light.id])
-    assert hass.states.get(penrose_main_entity_id) is not None
-    assert hass.states.get("switch.vanity_bar_light_night_light") is None
-    main = hass.states.get(penrose_main_entity_id)
-    assert light.NIGHT_LIGHT_EFFECT in main.attributes[ATTR_EFFECT_LIST]
-    assert "nightlight" in main.attributes[ATTR_EFFECT_LIST]
-
-
-@pytest.mark.asyncio
 async def test_penrose_reports_night_light_effect_when_active(mocked_penrose):
     """Main light shows Night Light Mode effect while API mode is night-light."""
     hass, _, bridge = mocked_penrose
@@ -773,6 +830,8 @@ async def test_penrose_reports_night_light_effect_when_active(mocked_penrose):
     main_ent = _get_hubspace_light(hass, penrose_main_entity_id)
     assert main_ent.is_on is True
     assert main_ent.effect == light.NIGHT_LIGHT_EFFECT
+    assert main_ent.color_mode == ColorMode.ONOFF
+    assert main_ent.brightness is None
 
 
 @pytest.mark.asyncio
