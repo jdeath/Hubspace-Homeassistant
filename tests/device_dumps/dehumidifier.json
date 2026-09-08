@@ -1,0 +1,1193 @@
+[
+  {
+    "id": "5240e1d0-958e-4861-a9cd-d273943a0d64",
+    "device_id": "bf6ddaa4-0bd1-48fb-812f-e5408f222057",
+    "model": "VAD50PS1AWTS",
+    "device_class": "dehumidifier",
+    "default_name": "Smart Dehumidifier",
+    "default_image": "midea-dehumidifier-with-pump-icon",
+    "friendly_name": "Server Closet Dehumidifier",
+    "capabilities": [
+      {
+        "functionClass": "available",
+        "type": "boolean",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "visible",
+        "type": "boolean",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "direct",
+        "type": "boolean",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "ble-mac-address",
+        "type": "string",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "geo-coordinates",
+        "type": "object",
+        "schedulable": null,
+        "functionInstance": "system-device-location",
+        "_opts": {}
+      },
+      {
+        "functionClass": "scheduler-flags",
+        "type": "numeric",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "wifi-ssid",
+        "type": "string",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "wifi-rssi",
+        "type": "numeric",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "wifi-steady-state",
+        "type": "category",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {
+          "values": [
+            "not-connected",
+            "pending",
+            "connected",
+            "unknown-failure",
+            "association-failure",
+            "handshake-failed",
+            "echo-failed",
+            "ssid-not-found",
+            "ntp-failed"
+          ],
+          "categoryValues": [
+            {
+              "name": "not-connected",
+              "values": [
+                "0"
+              ]
+            },
+            {
+              "name": "pending",
+              "values": [
+                "1"
+              ]
+            },
+            {
+              "name": "connected",
+              "values": [
+                "2"
+              ]
+            },
+            {
+              "name": "unknown-failure",
+              "values": [
+                "3"
+              ]
+            },
+            {
+              "name": "association-failure",
+              "values": [
+                "4"
+              ]
+            },
+            {
+              "name": "handshake-failed",
+              "values": [
+                "5"
+              ]
+            },
+            {
+              "name": "echo-failed",
+              "values": [
+                "6"
+              ]
+            },
+            {
+              "name": "ssid-not-found",
+              "values": [
+                "7"
+              ]
+            },
+            {
+              "name": "ntp-failed",
+              "values": [
+                "8"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "wifi-setup-state",
+        "type": "category",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {
+          "values": [
+            "not-connected",
+            "pending",
+            "connected",
+            "unknown-failure",
+            "association-failure",
+            "handshake-failed",
+            "echo-failed",
+            "ssid-not-found",
+            "ntp-failed"
+          ],
+          "categoryValues": [
+            {
+              "name": "not-connected",
+              "values": [
+                "0"
+              ]
+            },
+            {
+              "name": "pending",
+              "values": [
+                "1"
+              ]
+            },
+            {
+              "name": "connected",
+              "values": [
+                "2"
+              ]
+            },
+            {
+              "name": "unknown-failure",
+              "values": [
+                "3"
+              ]
+            },
+            {
+              "name": "association-failure",
+              "values": [
+                "4"
+              ]
+            },
+            {
+              "name": "handshake-failed",
+              "values": [
+                "5"
+              ]
+            },
+            {
+              "name": "echo-failed",
+              "values": [
+                "6"
+              ]
+            },
+            {
+              "name": "ssid-not-found",
+              "values": [
+                "7"
+              ]
+            },
+            {
+              "name": "ntp-failed",
+              "values": [
+                "8"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "wifi-mac-address",
+        "type": "string",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "error",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": "check-filter",
+        "_opts": {
+          "values": [
+            "alerting",
+            "normal"
+          ],
+          "categoryValues": [
+            {
+              "name": "alerting",
+              "values": [
+                "1"
+              ]
+            },
+            {
+              "name": "normal",
+              "values": [
+                "0"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "error",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": "eeprom",
+        "_opts": {
+          "values": [
+            "alerting",
+            "normal"
+          ],
+          "categoryValues": [
+            {
+              "name": "alerting",
+              "values": [
+                "1"
+              ]
+            },
+            {
+              "name": "normal",
+              "values": [
+                "0"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "error",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": "water-tray-full",
+        "_opts": {
+          "values": [
+            "alerting",
+            "normal"
+          ],
+          "categoryValues": [
+            {
+              "name": "alerting",
+              "values": [
+                "1"
+              ]
+            },
+            {
+              "name": "normal",
+              "values": [
+                "0"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "error",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": "evaporator-temperature-sensor-failed",
+        "_opts": {
+          "values": [
+            "alerting",
+            "normal"
+          ],
+          "categoryValues": [
+            {
+              "name": "alerting",
+              "values": [
+                "1"
+              ]
+            },
+            {
+              "name": "normal",
+              "values": [
+                "0"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "error",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": "indoor-temperature-sensor-failed",
+        "_opts": {
+          "values": [
+            "alerting",
+            "normal"
+          ],
+          "categoryValues": [
+            {
+              "name": "alerting",
+              "values": [
+                "1"
+              ]
+            },
+            {
+              "name": "normal",
+              "values": [
+                "0"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "humidity",
+        "type": "numeric",
+        "schedulable": false,
+        "functionInstance": "current",
+        "_opts": {
+          "range": {
+            "min": 0,
+            "max": 100,
+            "step": 1
+          }
+        }
+      },
+      {
+        "functionClass": "humidity",
+        "type": "numeric",
+        "schedulable": true,
+        "functionInstance": "target",
+        "_opts": {
+          "range": {
+            "min": 35,
+            "max": 85,
+            "step": 5
+          }
+        }
+      },
+      {
+        "functionClass": "pump",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": null,
+        "_opts": {
+          "values": [
+            "on",
+            "off"
+          ],
+          "categoryValues": [
+            {
+              "name": "on",
+              "values": [
+                "1"
+              ]
+            },
+            {
+              "name": "off",
+              "values": [
+                "0"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "timer",
+        "type": "numeric",
+        "schedulable": false,
+        "functionInstance": null,
+        "_opts": {
+          "range": {
+            "min": 0,
+            "max": 1440,
+            "step": 30
+          }
+        }
+      },
+      {
+        "functionClass": "fan-speed",
+        "type": "category",
+        "schedulable": true,
+        "functionInstance": "dehumidifier-fan-speed",
+        "_opts": {
+          "values": [
+            "fan-speed-2-100",
+            "fan-speed-2-050"
+          ],
+          "categoryValues": [
+            {
+              "name": "fan-speed-2-100",
+              "values": [
+                "3"
+              ]
+            },
+            {
+              "name": "fan-speed-2-050",
+              "values": [
+                "1"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "mode",
+        "type": "category",
+        "schedulable": true,
+        "functionInstance": "dehumidifier-mode",
+        "_opts": {
+          "values": [
+            "comfort",
+            "dryer",
+            "continuous",
+            "set"
+          ],
+          "categoryValues": [
+            {
+              "name": "comfort",
+              "values": [
+                "3"
+              ]
+            },
+            {
+              "name": "dryer",
+              "values": [
+                "2"
+              ]
+            },
+            {
+              "name": "continuous",
+              "values": [
+                "1"
+              ]
+            },
+            {
+              "name": "set",
+              "values": [
+                "0"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "power",
+        "type": "category",
+        "schedulable": true,
+        "functionInstance": null,
+        "_opts": {
+          "values": [
+            "on",
+            "off"
+          ],
+          "categoryValues": [
+            {
+              "name": "on",
+              "values": [
+                "1"
+              ]
+            },
+            {
+              "name": "off",
+              "values": [
+                "0"
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "functions": [
+      {
+        "id": "a74f599a-9baa-436a-989a-c240af1a2f1a",
+        "createdTimestampMs": 1721758090390,
+        "updatedTimestampMs": 1721758090390,
+        "functionClass": "error",
+        "functionInstance": "check-filter",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "796cd4b5-4950-498f-92aa-a5e721a5ddb9",
+            "createdTimestampMs": 1721758090411,
+            "updatedTimestampMs": 1721758090411,
+            "name": "alerting",
+            "deviceValues": [
+              {
+                "id": "3170418a-8b5e-47ef-b817-1e4604c29747",
+                "createdTimestampMs": 1721758090420,
+                "updatedTimestampMs": 1721758090420,
+                "type": "attribute",
+                "key": "407",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "602d6179-b90d-4b07-83c1-2be09c289ac7",
+            "createdTimestampMs": 1721758090398,
+            "updatedTimestampMs": 1721758090398,
+            "name": "normal",
+            "deviceValues": [
+              {
+                "id": "8bc2d438-440d-402c-a565-ad4746c47d2e",
+                "createdTimestampMs": 1721758090405,
+                "updatedTimestampMs": 1721758090405,
+                "type": "attribute",
+                "key": "407",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "c3ce0ab0-a0b2-4d0c-bcc8-89b9cb147621",
+        "createdTimestampMs": 1721758090355,
+        "updatedTimestampMs": 1721758090355,
+        "functionClass": "error",
+        "functionInstance": "eeprom",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "e5b556d6-40f5-49f5-8f68-1b864d79d381",
+            "createdTimestampMs": 1721758090376,
+            "updatedTimestampMs": 1721758090376,
+            "name": "alerting",
+            "deviceValues": [
+              {
+                "id": "32121c74-d145-4ade-902b-1a679857e1de",
+                "createdTimestampMs": 1721758090384,
+                "updatedTimestampMs": 1721758090384,
+                "type": "attribute",
+                "key": "406",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "5c7e0277-adb8-47ce-8b2c-81400712a8e3",
+            "createdTimestampMs": 1721758090363,
+            "updatedTimestampMs": 1721758090363,
+            "name": "normal",
+            "deviceValues": [
+              {
+                "id": "e5e0e5c1-4fb6-4fb5-ba51-69deabd3b170",
+                "createdTimestampMs": 1721758090371,
+                "updatedTimestampMs": 1721758090371,
+                "type": "attribute",
+                "key": "406",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "e58ab781-5e5a-43a7-b9ab-aa606a81f0f0",
+        "createdTimestampMs": 1721758090322,
+        "updatedTimestampMs": 1721758090322,
+        "functionClass": "error",
+        "functionInstance": "water-tray-full",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "5683ae8e-38c0-40d2-8c12-aced29cbaa53",
+            "createdTimestampMs": 1721758090342,
+            "updatedTimestampMs": 1721758090342,
+            "name": "alerting",
+            "deviceValues": [
+              {
+                "id": "0dccf9f0-d9f1-449b-a9b0-cee34005e2c4",
+                "createdTimestampMs": 1721758090350,
+                "updatedTimestampMs": 1721758090350,
+                "type": "attribute",
+                "key": "405",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "4bac01ef-03fb-4116-a9ae-992047d42601",
+            "createdTimestampMs": 1721758090330,
+            "updatedTimestampMs": 1721758090330,
+            "name": "normal",
+            "deviceValues": [
+              {
+                "id": "3ced488a-97b9-41ed-beef-6ed3309d2143",
+                "createdTimestampMs": 1721758090337,
+                "updatedTimestampMs": 1721758090337,
+                "type": "attribute",
+                "key": "405",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "dc7b5972-c3d8-44f5-88fa-396533018497",
+        "createdTimestampMs": 1721758090283,
+        "updatedTimestampMs": 1721758090283,
+        "functionClass": "error",
+        "functionInstance": "evaporator-temperature-sensor-failed",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "0149e80d-1531-4f11-9b4b-bf58739f1568",
+            "createdTimestampMs": 1721758090307,
+            "updatedTimestampMs": 1721758090307,
+            "name": "alerting",
+            "deviceValues": [
+              {
+                "id": "3d63d66f-8b55-478b-ba93-0cf18414445f",
+                "createdTimestampMs": 1721758090316,
+                "updatedTimestampMs": 1721758090316,
+                "type": "attribute",
+                "key": "403",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "f7f0f2bd-5490-4f80-bb2f-14e205bee3d0",
+            "createdTimestampMs": 1721758090292,
+            "updatedTimestampMs": 1721758090292,
+            "name": "normal",
+            "deviceValues": [
+              {
+                "id": "5982c7cb-9f5f-4190-b7ba-cc64bdf2704b",
+                "createdTimestampMs": 1721758090301,
+                "updatedTimestampMs": 1721758090301,
+                "type": "attribute",
+                "key": "403",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "f55ad303-7e4b-42dc-9482-6b7890af5af3",
+        "createdTimestampMs": 1721758090245,
+        "updatedTimestampMs": 1721758090245,
+        "functionClass": "error",
+        "functionInstance": "indoor-temperature-sensor-failed",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "a9e9d6f8-46b4-4264-860f-724bda34459b",
+            "createdTimestampMs": 1721758090268,
+            "updatedTimestampMs": 1721758090268,
+            "name": "alerting",
+            "deviceValues": [
+              {
+                "id": "1f6b5761-1694-4710-80e8-b7a99c8c831c",
+                "createdTimestampMs": 1721758090276,
+                "updatedTimestampMs": 1721758090276,
+                "type": "attribute",
+                "key": "400",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "845890fa-61c9-42da-ba04-86d05ecdbeb7",
+            "createdTimestampMs": 1721758090253,
+            "updatedTimestampMs": 1721758090253,
+            "name": "normal",
+            "deviceValues": [
+              {
+                "id": "7ff25178-ba15-42de-be23-038418cb2776",
+                "createdTimestampMs": 1721758090262,
+                "updatedTimestampMs": 1721758090262,
+                "type": "attribute",
+                "key": "400",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "536ee52e-d7e6-4d9c-a69c-b0fab113677c",
+        "createdTimestampMs": 1721758090223,
+        "updatedTimestampMs": 1721758090223,
+        "functionClass": "humidity",
+        "functionInstance": "current",
+        "type": "numeric",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "7fdf88ce-d1d4-4a57-8f27-d2f100e5647a",
+            "createdTimestampMs": 1721758090230,
+            "updatedTimestampMs": 1721758090230,
+            "name": "current",
+            "deviceValues": [
+              {
+                "id": "a219c13f-2cb4-4f84-9b30-f36cffd027bd",
+                "createdTimestampMs": 1721758090239,
+                "updatedTimestampMs": 1721758090239,
+                "type": "attribute",
+                "key": "21"
+              }
+            ],
+            "range": {
+              "min": 0,
+              "max": 100,
+              "step": 1
+            }
+          }
+        ]
+      },
+      {
+        "id": "277e3b92-955e-4e27-9df2-b80e4152a63f",
+        "createdTimestampMs": 1721758090200,
+        "updatedTimestampMs": 1721758090200,
+        "functionClass": "humidity",
+        "functionInstance": "target",
+        "type": "numeric",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "9ccd09d2-8c38-478d-8626-e54504362306",
+            "createdTimestampMs": 1721758090209,
+            "updatedTimestampMs": 1721758090209,
+            "name": "target",
+            "deviceValues": [
+              {
+                "id": "0705ddef-6cf3-47f2-aa5d-132600760cd3",
+                "createdTimestampMs": 1721758090217,
+                "updatedTimestampMs": 1721758090217,
+                "type": "attribute",
+                "key": "12"
+              }
+            ],
+            "range": {
+              "min": 35,
+              "max": 85,
+              "step": 5
+            }
+          }
+        ]
+      },
+      {
+        "id": "e0984225-b264-4f45-a610-430eca1fee03",
+        "createdTimestampMs": 1721758090166,
+        "updatedTimestampMs": 1721758090166,
+        "functionClass": "pump",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "7a50f2da-36d0-42f4-849e-56c20616df08",
+            "createdTimestampMs": 1721758090186,
+            "updatedTimestampMs": 1721758090186,
+            "name": "on",
+            "deviceValues": [
+              {
+                "id": "5ce92697-bd28-47c2-a617-51cd172e8761",
+                "createdTimestampMs": 1721758090194,
+                "updatedTimestampMs": 1721758090194,
+                "type": "attribute",
+                "key": "7",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "7efe5ef3-d9bf-48fb-b8f9-20af6d6142a7",
+            "createdTimestampMs": 1721758090173,
+            "updatedTimestampMs": 1721758090173,
+            "name": "off",
+            "deviceValues": [
+              {
+                "id": "16ad93b7-749f-456e-addb-2389a4192cb3",
+                "createdTimestampMs": 1721758090180,
+                "updatedTimestampMs": 1721758090180,
+                "type": "attribute",
+                "key": "7",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "293fcb10-2611-43d9-864d-fdbbe6fa8712",
+        "createdTimestampMs": 1721758090144,
+        "updatedTimestampMs": 1721758090144,
+        "functionClass": "timer",
+        "type": "numeric",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "fcb07066-3631-456e-a9d6-e7c65303ca42",
+            "createdTimestampMs": 1721758090151,
+            "updatedTimestampMs": 1721758090151,
+            "name": "timer",
+            "deviceValues": [
+              {
+                "id": "86a6bb13-f439-4e9d-9c1d-dedf36bcabb3",
+                "createdTimestampMs": 1721758090160,
+                "updatedTimestampMs": 1721758090160,
+                "type": "attribute",
+                "key": "6"
+              }
+            ],
+            "range": {
+              "min": 0,
+              "max": 1440,
+              "step": 30
+            }
+          }
+        ]
+      },
+      {
+        "id": "be4eeef7-d248-4785-9619-8545a4ec9b89",
+        "createdTimestampMs": 1721758090109,
+        "updatedTimestampMs": 1721758090109,
+        "functionClass": "fan-speed",
+        "functionInstance": "dehumidifier-fan-speed",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "1738824d-1cb2-4c9d-8ad7-47f91ac6fef1",
+            "createdTimestampMs": 1721758090130,
+            "updatedTimestampMs": 1721758090130,
+            "name": "fan-speed-2-100",
+            "deviceValues": [
+              {
+                "id": "43b397a3-35bf-497a-85ec-8712d98b8865",
+                "createdTimestampMs": 1721758090138,
+                "updatedTimestampMs": 1721758090138,
+                "type": "attribute",
+                "key": "3",
+                "value": "3"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "2d357897-0c05-4d19-b5af-28324f1e588e",
+            "createdTimestampMs": 1721758090116,
+            "updatedTimestampMs": 1721758090116,
+            "name": "fan-speed-2-050",
+            "deviceValues": [
+              {
+                "id": "3cb50e7c-c666-457d-8596-8696f4b15ada",
+                "createdTimestampMs": 1721758090124,
+                "updatedTimestampMs": 1721758090124,
+                "type": "attribute",
+                "key": "3",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "f089e347-3e57-471c-9014-de9c50310df9",
+        "createdTimestampMs": 1721758090047,
+        "updatedTimestampMs": 1721758090047,
+        "functionClass": "mode",
+        "functionInstance": "dehumidifier-mode",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "86f07027-f74b-4a7e-bcc9-92f38b76fd63",
+            "createdTimestampMs": 1721758090096,
+            "updatedTimestampMs": 1721758090096,
+            "name": "comfort",
+            "deviceValues": [
+              {
+                "id": "fc21960d-7228-4426-b659-a18cb3ed893e",
+                "createdTimestampMs": 1721758090103,
+                "updatedTimestampMs": 1721758090103,
+                "type": "attribute",
+                "key": "2",
+                "value": "3"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "adf1c975-726f-4133-b742-bf3fce1b992c",
+            "createdTimestampMs": 1721758090082,
+            "updatedTimestampMs": 1721758090082,
+            "name": "dryer",
+            "deviceValues": [
+              {
+                "id": "5e2207bf-a334-44f9-b7c2-917489520c6c",
+                "createdTimestampMs": 1721758090090,
+                "updatedTimestampMs": 1721758090090,
+                "type": "attribute",
+                "key": "2",
+                "value": "2"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "11c02eb2-070e-46f1-80bc-3d9fbae79501",
+            "createdTimestampMs": 1721758090068,
+            "updatedTimestampMs": 1721758090068,
+            "name": "continuous",
+            "deviceValues": [
+              {
+                "id": "582a00fc-f90f-4d42-bd21-92ba4a091b98",
+                "createdTimestampMs": 1721758090076,
+                "updatedTimestampMs": 1721758090076,
+                "type": "attribute",
+                "key": "2",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "0b0e9ef4-1472-4752-a834-66a17d7aa585",
+            "createdTimestampMs": 1721758090055,
+            "updatedTimestampMs": 1721758090055,
+            "name": "set",
+            "deviceValues": [
+              {
+                "id": "be3e53ce-2b23-4e46-97b1-cf29af914462",
+                "createdTimestampMs": 1721758090063,
+                "updatedTimestampMs": 1721758090063,
+                "type": "attribute",
+                "key": "2",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "c3380b21-2625-4246-833c-1f35ddc749c6",
+        "createdTimestampMs": 1721758090010,
+        "updatedTimestampMs": 1721758090010,
+        "functionClass": "power",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "10dc72d3-4c01-42a1-8c35-3cbadb5dbe9d",
+            "createdTimestampMs": 1721758090034,
+            "updatedTimestampMs": 1721758090034,
+            "name": "on",
+            "deviceValues": [
+              {
+                "id": "0a4239d8-627c-4027-9b6d-5ba31be7effb",
+                "createdTimestampMs": 1721758090041,
+                "updatedTimestampMs": 1721758090041,
+                "type": "attribute",
+                "key": "1",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "553af837-147a-4121-a609-8465427aa075",
+            "createdTimestampMs": 1721758090019,
+            "updatedTimestampMs": 1721758090019,
+            "name": "off",
+            "deviceValues": [
+              {
+                "id": "083391b2-4041-4562-a5f7-27e8d01968f7",
+                "createdTimestampMs": 1721758090027,
+                "updatedTimestampMs": 1721758090027,
+                "type": "attribute",
+                "key": "1",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      }
+    ],
+    "states": [
+      {
+        "functionClass": "error",
+        "value": "normal",
+        "lastUpdateTime": 0,
+        "functionInstance": "check-filter"
+      },
+      {
+        "functionClass": "error",
+        "value": "normal",
+        "lastUpdateTime": 0,
+        "functionInstance": "eeprom"
+      },
+      {
+        "functionClass": "error",
+        "value": "normal",
+        "lastUpdateTime": 0,
+        "functionInstance": "water-tray-full"
+      },
+      {
+        "functionClass": "error",
+        "value": "normal",
+        "lastUpdateTime": 0,
+        "functionInstance": "evaporator-temperature-sensor-failed"
+      },
+      {
+        "functionClass": "error",
+        "value": "normal",
+        "lastUpdateTime": 0,
+        "functionInstance": "indoor-temperature-sensor-failed"
+      },
+      {
+        "functionClass": "humidity",
+        "value": 48,
+        "lastUpdateTime": 0,
+        "functionInstance": "current"
+      },
+      {
+        "functionClass": "humidity",
+        "value": 40,
+        "lastUpdateTime": 0,
+        "functionInstance": "target"
+      },
+      {
+        "functionClass": "pump",
+        "value": "on",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "timer",
+        "value": 0,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "fan-speed",
+        "value": "fan-speed-2-100",
+        "lastUpdateTime": 0,
+        "functionInstance": "dehumidifier-fan-speed"
+      },
+      {
+        "functionClass": "mode",
+        "value": "set",
+        "lastUpdateTime": 0,
+        "functionInstance": "dehumidifier-mode"
+      },
+      {
+        "functionClass": "power",
+        "value": "on",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-ssid",
+        "value": "042d7b6b-0b74-4346-b789-64f491421a0b",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-rssi",
+        "value": -70,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-steady-state",
+        "value": "connected",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-setup-state",
+        "value": "connected",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-mac-address",
+        "value": "0c9265ee-f46f-4feb-bd28-7832e44ca69c",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "geo-coordinates",
+        "value": {
+          "geo-coordinates": {
+            "latitude": "0",
+            "longitude": "0"
+          }
+        },
+        "lastUpdateTime": 0,
+        "functionInstance": "system-device-location"
+      },
+      {
+        "functionClass": "scheduler-flags",
+        "value": 0,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "available",
+        "value": true,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "visible",
+        "value": true,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "direct",
+        "value": true,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "ble-mac-address",
+        "value": "cde7ae16-5c05-4efe-b0fd-b6f6266d41d9",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      }
+    ],
+    "children": [],
+    "manufacturerName": "TBD",
+    "split_identifier": null,
+    "version_data": null
+  }
+]

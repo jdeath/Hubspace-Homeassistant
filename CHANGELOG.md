@@ -4,6 +4,16 @@ All notable changes to the Hubspace Home Assistant integration are documented he
 Release notes on GitHub Releases are kept in sync for recent versions so HACS update
 notifications stay useful.
 
+## 8.1.0
+
+- Add dehumidifier support (Vissani `VAD50PS1AWTS`, Hubspace device class
+  `dehumidifier`) as a `humidifier` entity: power, mode, current and target
+  humidity, plus `Fan Speed` and `Pump` selects
+  ([#259](https://github.com/jdeath/Hubspace-Homeassistant/issues/259)).
+- Add `Check Filter`, `EEPROM Error`, and `Evaporator Temperature Sensor Failed`
+  diagnostic binary sensors reported by the dehumidifier.
+- Require `aioafero==9.2.0`.
+
 ## 8.0.0
 
 - Break: Require `aioafero==9.0.1`. Login/reauth use `AferoAuth`; the bridge

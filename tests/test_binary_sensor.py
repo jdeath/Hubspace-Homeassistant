@@ -6,6 +6,7 @@ import pytest
 from .utils import create_devices_from_data
 
 freezer = create_devices_from_data("freezer.json")[0]
+dehumidifier = create_devices_from_data("dehumidifier.json")[0]
 
 
 @pytest.fixture
@@ -35,6 +36,16 @@ async def mocked_entity(mocked_entry):
                 "binary_sensor.friendly_device_0_sensor_failure": "off",
             },
         ),
+        (
+            dehumidifier,
+            {
+                "binary_sensor.server_closet_dehumidifier_check_filter": "off",
+                "binary_sensor.server_closet_dehumidifier_eeprom_error": "off",
+                "binary_sensor.server_closet_dehumidifier_water_tray_full": "off",
+                "binary_sensor.server_closet_dehumidifier_evaporator_temperature_sensor_failed": "off",
+                "binary_sensor.server_closet_dehumidifier_indoor_temperature_sensor_failed": "off",
+            },
+        ),
     ],
 )
 async def test_async_setup_entry(dev, expected_entities, mocked_entry, caplog):
@@ -43,7 +54,7 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry, caplog):
         hass, entry, bridge = mocked_entry
         await bridge.generate_devices_from_data([dev])
         # Add in a bad sensor
-        bridge.devices[freezer.id].binary_sensors["bad_sensor"] = {}
+        bridge.devices[dev.id].binary_sensors["bad_sensor"] = {}
         await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
         for entity, exp_value in expected_entities.items():
@@ -51,7 +62,7 @@ async def test_async_setup_entry(dev, expected_entities, mocked_entry, caplog):
             assert ent is not None, f"Unable to find entity {entity}"
             assert ent.state == exp_value, f"Unexpected value on {entity}"
         assert (
-            "Unknown sensor bad_sensor found in DeviceController friendly-device-0. Please open a bug report"
+            f"Unknown sensor bad_sensor found in DeviceController {dev.friendly_name}. Please open a bug report"
             in caplog.text
         )
     finally:
