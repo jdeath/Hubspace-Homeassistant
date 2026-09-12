@@ -13,6 +13,7 @@ from homeassistant.components.humidifier import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .bridge import HubspaceBridge
@@ -35,11 +36,13 @@ class HubspaceDehumidifier(HubspaceBaseEntity, HumidifierEntity):
         super().__init__(bridge, controller, resource)
         if self.resource.mode:
             self._attr_supported_features = HumidifierEntityFeature.MODES
+        if self.resource.target_humidity:
+            self._attr_target_humidity_step = self.resource.target_humidity.step
 
     @property
-    def is_on(self) -> bool:
+    def is_on(self) -> bool | None:
         """Return whether the dehumidifier is powered on."""
-        return self.resource.on.on
+        return self.resource.on.on if self.resource.on else None
 
     @property
     def current_humidity(self) -> int | None:
@@ -47,19 +50,22 @@ class HubspaceDehumidifier(HubspaceBaseEntity, HumidifierEntity):
         return self.resource.current_humidity
 
     @property
-    def target_humidity(self) -> int:
+    def target_humidity(self) -> int | None:
         """Return the relative humidity the unit is trying to reach."""
-        return self.resource.target_humidity.value
+        target = self.resource.target_humidity
+        return target.value if target else None
 
     @property
     def min_humidity(self) -> float:
         """Return the lowest settable target humidity."""
-        return self.resource.target_humidity.min
+        target = self.resource.target_humidity
+        return target.min if target else super().min_humidity
 
     @property
     def max_humidity(self) -> float:
         """Return the highest settable target humidity."""
-        return self.resource.target_humidity.max
+        target = self.resource.target_humidity
+        return target.max if target else super().max_humidity
 
     @property
     def mode(self) -> str | None:
@@ -85,7 +91,8 @@ class HubspaceDehumidifier(HubspaceBaseEntity, HumidifierEntity):
 
     async def async_set_humidity(self, humidity: int) -> None:
         """Set a new target humidity, snapped to the unit's step and range."""
-        target = self.resource.target_humidity
+        if (target := self.resource.target_humidity) is None:
+            raise ServiceValidationError("Device does not report a target humidity")
         snapped = (
             target.min + round((humidity - target.min) / target.step) * target.step
         )

@@ -1,5 +1,6 @@
 """Test the integration between Home Assistant Humidifiers and Afero dehumidifiers."""
 
+from aioafero import EventType
 from homeassistant.components.humidifier import (
     ATTR_AVAILABLE_MODES,
     ATTR_CURRENT_HUMIDITY,
@@ -7,6 +8,7 @@ from homeassistant.components.humidifier import (
     ATTR_MAX_HUMIDITY,
     ATTR_MIN_HUMIDITY,
     ATTR_MODE,
+    ATTR_TARGET_HUMIDITY_STEP,
     DOMAIN as HUMIDIFIER_DOMAIN,
     SERVICE_SET_HUMIDITY,
     SERVICE_SET_MODE,
@@ -18,7 +20,9 @@ from homeassistant.const import (
     SERVICE_TURN_ON,
     STATE_OFF,
     STATE_ON,
+    STATE_UNKNOWN,
 )
+from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers import entity_registry as er
 import pytest
 
@@ -64,6 +68,7 @@ async def test_async_setup_entry(mocked_entity):
     assert entity.attributes[ATTR_CURRENT_HUMIDITY] == 48
     assert entity.attributes[ATTR_MIN_HUMIDITY] == 35
     assert entity.attributes[ATTR_MAX_HUMIDITY] == 85
+    assert entity.attributes[ATTR_TARGET_HUMIDITY_STEP] == 5
     assert entity.attributes[ATTR_MODE] == "set"
     assert entity.attributes[ATTR_AVAILABLE_MODES] == [
         "comfort",
@@ -134,3 +139,23 @@ async def test_add_new_device(mocked_entry):
     await bridge.generate_devices_from_data([dehumidifier])
     await hass.async_block_till_done()
     assert hass.states.get(dehumidifier_id).state == STATE_ON
+
+
+@pytest.mark.asyncio
+async def test_missing_optional_features(mocked_entity):
+    """A resource without power or target humidity degrades instead of crashing."""
+    hass, _, bridge = mocked_entity
+    resource = bridge.dehumidifiers[dehumidifier.id]
+    resource.on = None
+    resource.target_humidity = None
+    await bridge.dehumidifiers.emit_to_subscribers(
+        EventType.RESOURCE_UPDATED, dehumidifier.id, resource
+    )
+    await hass.async_block_till_done()
+    entity = hass.states.get(dehumidifier_id)
+    assert entity.state == STATE_UNKNOWN
+    assert ATTR_HUMIDITY not in entity.attributes
+    assert entity.attributes[ATTR_MIN_HUMIDITY] == 0
+    assert entity.attributes[ATTR_MAX_HUMIDITY] == 100
+    with pytest.raises(ServiceValidationError):
+        await _call(hass, bridge, SERVICE_SET_HUMIDITY, {ATTR_HUMIDITY: 50})
