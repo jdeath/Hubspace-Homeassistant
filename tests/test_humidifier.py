@@ -102,6 +102,20 @@ async def test_set_humidity(mocked_entity, requested, expected):
 
 
 @pytest.mark.asyncio
+async def test_set_humidity_respects_device_range(mocked_entity):
+    """Snap relative to the minimum and clamp when the range is not step-aligned."""
+    hass, _, bridge = mocked_entity
+    feature = bridge.dehumidifiers[dehumidifier.id].target_humidity
+    feature.min, feature.max = 36, 84
+    # 37 is nearest to 36 (absolute snapping would give 35, below the minimum)
+    entity = await _call(hass, bridge, SERVICE_SET_HUMIDITY, {ATTR_HUMIDITY: 37})
+    assert entity.attributes[ATTR_HUMIDITY] == 36
+    # 84 snaps to 86 relative to the minimum; clamp back to the maximum
+    entity = await _call(hass, bridge, SERVICE_SET_HUMIDITY, {ATTR_HUMIDITY: 84})
+    assert entity.attributes[ATTR_HUMIDITY] == 84
+
+
+@pytest.mark.asyncio
 async def test_set_mode(mocked_entity):
     """Ensure set_mode round-trips through the controller."""
     hass, _, bridge = mocked_entity

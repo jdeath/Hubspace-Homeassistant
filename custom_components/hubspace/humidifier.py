@@ -84,12 +84,15 @@ class HubspaceDehumidifier(HubspaceBaseEntity, HumidifierEntity):
         )
 
     async def async_set_humidity(self, humidity: int) -> None:
-        """Set a new target humidity, snapped to the unit's step."""
-        step = self.resource.target_humidity.step
+        """Set a new target humidity, snapped to the unit's step and range."""
+        target = self.resource.target_humidity
+        snapped = (
+            target.min + round((humidity - target.min) / target.step) * target.step
+        )
         await self.bridge.async_request_call(
             self.controller.set_state,
             device_id=self.resource.id,
-            target_humidity=int(round(humidity / step) * step),
+            target_humidity=int(min(max(snapped, target.min), target.max)),
         )
 
     async def async_set_mode(self, mode: str) -> None:
