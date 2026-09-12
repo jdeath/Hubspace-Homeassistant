@@ -84,57 +84,39 @@
           "categoryValues": [
             {
               "name": "not-connected",
-              "values": [
-                "0"
-              ]
+              "values": ["0"]
             },
             {
               "name": "pending",
-              "values": [
-                "1"
-              ]
+              "values": ["1"]
             },
             {
               "name": "connected",
-              "values": [
-                "2"
-              ]
+              "values": ["2"]
             },
             {
               "name": "unknown-failure",
-              "values": [
-                "3"
-              ]
+              "values": ["3"]
             },
             {
               "name": "association-failure",
-              "values": [
-                "4"
-              ]
+              "values": ["4"]
             },
             {
               "name": "handshake-failed",
-              "values": [
-                "5"
-              ]
+              "values": ["5"]
             },
             {
               "name": "echo-failed",
-              "values": [
-                "6"
-              ]
+              "values": ["6"]
             },
             {
               "name": "ssid-not-found",
-              "values": [
-                "7"
-              ]
+              "values": ["7"]
             },
             {
               "name": "ntp-failed",
-              "values": [
-                "8"
-              ]
+              "values": ["8"]
             }
           ]
         }
@@ -159,57 +141,39 @@
           "categoryValues": [
             {
               "name": "not-connected",
-              "values": [
-                "0"
-              ]
+              "values": ["0"]
             },
             {
               "name": "pending",
-              "values": [
-                "1"
-              ]
+              "values": ["1"]
             },
             {
               "name": "connected",
-              "values": [
-                "2"
-              ]
+              "values": ["2"]
             },
             {
               "name": "unknown-failure",
-              "values": [
-                "3"
-              ]
+              "values": ["3"]
             },
             {
               "name": "association-failure",
-              "values": [
-                "4"
-              ]
+              "values": ["4"]
             },
             {
               "name": "handshake-failed",
-              "values": [
-                "5"
-              ]
+              "values": ["5"]
             },
             {
               "name": "echo-failed",
-              "values": [
-                "6"
-              ]
+              "values": ["6"]
             },
             {
               "name": "ssid-not-found",
-              "values": [
-                "7"
-              ]
+              "values": ["7"]
             },
             {
               "name": "ntp-failed",
-              "values": [
-                "8"
-              ]
+              "values": ["8"]
             }
           ]
         }
@@ -227,22 +191,15 @@
         "schedulable": false,
         "functionInstance": "check-filter",
         "_opts": {
-          "values": [
-            "alerting",
-            "normal"
-          ],
+          "values": ["alerting", "normal"],
           "categoryValues": [
             {
               "name": "alerting",
-              "values": [
-                "1"
-              ]
+              "values": ["1"]
             },
             {
               "name": "normal",
-              "values": [
-                "0"
-              ]
+              "values": ["0"]
             }
           ]
         }
@@ -253,22 +210,15 @@
         "schedulable": false,
         "functionInstance": "eeprom",
         "_opts": {
-          "values": [
-            "alerting",
-            "normal"
-          ],
+          "values": ["alerting", "normal"],
           "categoryValues": [
             {
               "name": "alerting",
-              "values": [
-                "1"
-              ]
+              "values": ["1"]
             },
             {
               "name": "normal",
-              "values": [
-                "0"
-              ]
+              "values": ["0"]
             }
           ]
         }
@@ -279,22 +229,15 @@
         "schedulable": false,
         "functionInstance": "water-tray-full",
         "_opts": {
-          "values": [
-            "alerting",
-            "normal"
-          ],
+          "values": ["alerting", "normal"],
           "categoryValues": [
             {
               "name": "alerting",
-              "values": [
-                "1"
-              ]
+              "values": ["1"]
             },
             {
               "name": "normal",
-              "values": [
-                "0"
-              ]
+              "values": ["0"]
             }
           ]
         }
@@ -305,22 +248,15 @@
         "schedulable": false,
         "functionInstance": "evaporator-temperature-sensor-failed",
         "_opts": {
-          "values": [
-            "alerting",
-            "normal"
-          ],
+          "values": ["alerting", "normal"],
           "categoryValues": [
             {
               "name": "alerting",
-              "values": [
-                "1"
-              ]
+              "values": ["1"]
             },
             {
               "name": "normal",
-              "values": [
-                "0"
-              ]
+              "values": ["0"]
             }
           ]
         }
@@ -331,22 +267,15 @@
         "schedulable": false,
         "functionInstance": "indoor-temperature-sensor-failed",
         "_opts": {
-          "values": [
-            "alerting",
-            "normal"
-          ],
+          "values": ["alerting", "normal"],
           "categoryValues": [
             {
               "name": "alerting",
-              "values": [
-                "1"
-              ]
+              "values": ["1"]
             },
             {
               "name": "normal",
-              "values": [
-                "0"
-              ]
+              "values": ["0"]
             }
           ]
         }
@@ -383,22 +312,15 @@
         "schedulable": false,
         "functionInstance": null,
         "_opts": {
-          "values": [
-            "on",
-            "off"
-          ],
+          "values": ["on", "off"],
           "categoryValues": [
             {
               "name": "on",
-              "values": [
-                "1"
-              ]
+              "values": ["1"]
             },
             {
               "name": "off",
-              "values": [
-                "0"
-              ]
+              "values": ["0"]
             }
           ]
         }
@@ -422,22 +344,15 @@
         "schedulable": true,
         "functionInstance": "dehumidifier-fan-speed",
         "_opts": {
-          "values": [
-            "fan-speed-2-100",
-            "fan-speed-2-050"
-          ],
+          "values": ["fan-speed-2-100", "fan-speed-2-050"],
           "categoryValues": [
             {
               "name": "fan-speed-2-100",
-              "values": [
-                "3"
-              ]
+              "values": ["3"]
             },
             {
               "name": "fan-speed-2-050",
-              "values": [
-                "1"
-              ]
+              "values": ["1"]
             }
           ]
         }
@@ -448,36 +363,23 @@
         "schedulable": true,
         "functionInstance": "dehumidifier-mode",
         "_opts": {
-          "values": [
-            "comfort",
-            "dryer",
-            "continuous",
-            "set"
-          ],
+          "values": ["comfort", "dryer", "continuous", "set"],
           "categoryValues": [
             {
               "name": "comfort",
-              "values": [
-                "3"
-              ]
+              "values": ["3"]
             },
             {
               "name": "dryer",
-              "values": [
-                "2"
-              ]
+              "values": ["2"]
             },
             {
               "name": "continuous",
-              "values": [
-                "1"
-              ]
+              "values": ["1"]
             },
             {
               "name": "set",
-              "values": [
-                "0"
-              ]
+              "values": ["0"]
             }
           ]
         }
@@ -488,22 +390,15 @@
         "schedulable": true,
         "functionInstance": null,
         "_opts": {
-          "values": [
-            "on",
-            "off"
-          ],
+          "values": ["on", "off"],
           "categoryValues": [
             {
               "name": "on",
-              "values": [
-                "1"
-              ]
+              "values": ["1"]
             },
             {
               "name": "off",
-              "values": [
-                "0"
-              ]
+              "values": ["0"]
             }
           ]
         }
