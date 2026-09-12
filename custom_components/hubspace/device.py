@@ -18,6 +18,23 @@ if TYPE_CHECKING:
     from .bridge import HubspaceBridge  # pragma: nocover
 
 
+def get_device_by_identifier(
+    device_reg: dr.DeviceRegistry,
+    identifier: tuple[str, str],
+    config_entry_id: str,
+) -> dr.DeviceEntry | None:
+    """Look up a device by identifier, scoped to a config entry when supported.
+
+    Home Assistant 2026.8+ deprecates ``async_get_device`` because identifiers
+    are only unique per config entry. Prefer the scoped lookup; fall back on
+    2026.7 which does not yet expose ``async_get_device_by_identifier``.
+    """
+    getter = getattr(device_reg, "async_get_device_by_identifier", None)
+    if getter is not None:
+        return getter(identifier, config_entry_id)
+    return device_reg.async_get_device(identifiers={identifier})
+
+
 async def async_setup_devices(bridge: HubspaceBridge):
     """Manage setup of devices."""
     entry = bridge.config_entry
@@ -56,7 +73,9 @@ async def async_setup_devices(bridge: HubspaceBridge):
     @callback
     def remove_device(device_id: str) -> None:
         """Remove device from registry."""
-        if device := dev_reg.async_get_device(identifiers={(DOMAIN, device_id)}):
+        if device := get_device_by_identifier(
+            dev_reg, (DOMAIN, device_id), entry.entry_id
+        ):
             # note: removal of any underlying entities is handled by core
             dev_reg.async_remove_device(device.id)
 

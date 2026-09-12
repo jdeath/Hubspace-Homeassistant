@@ -9,6 +9,7 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 from custom_components import hubspace
 from custom_components.hubspace import const
 from custom_components.hubspace.const import CONF_REFRESH_TOKEN, LEGACY_CONF_TOKEN
+from custom_components.hubspace.device import get_device_by_identifier
 
 from .utils import create_devices_from_data, get_mocked_bridge, get_mocked_entry
 
@@ -302,8 +303,10 @@ async def test_reload(hass, mocker):
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     device_reg = dr.async_get(hass)
-    device = device_reg.async_get_device(
-        identifiers={(const.DOMAIN, "2a3572cb-3fbf-4094-846e-f2ebcb10521a")}
+    device = get_device_by_identifier(
+        device_reg,
+        (const.DOMAIN, "2a3572cb-3fbf-4094-846e-f2ebcb10521a"),
+        entry.entry_id,
     )
     assert device is not None
     assert device.name == "friendly-device-2"
@@ -326,8 +329,10 @@ async def test_reload(hass, mocker):
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     device_reg = dr.async_get(hass)
-    device = device_reg.async_get_device(
-        identifiers={(const.DOMAIN, "2a3572cb-3fbf-4094-846e-f2ebcb10521a")}
+    device = get_device_by_identifier(
+        device_reg,
+        (const.DOMAIN, "2a3572cb-3fbf-4094-846e-f2ebcb10521a"),
+        entry.entry_id,
     )
     assert device is not None
     assert device.name == "friendly-device-2"
