@@ -46,6 +46,7 @@ PLATFORMS: Final[list[Platform]] = [
     Platform.BUTTON,
     Platform.CLIMATE,
     Platform.FAN,
+    Platform.HUMIDIFIER,
     Platform.LIGHT,
     Platform.LOCK,
     Platform.SENSOR,
@@ -204,6 +205,25 @@ BINARY_SENSORS = {
     "error|indoor-coil-temperature-sensor-failed": BinarySensorEntityDescription(
         key="error|indoor-coil-temperature-sensor-failed",
         name="Water Tray Full",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    # dehumidifier
+    "error|check-filter": BinarySensorEntityDescription(
+        key="error|check-filter",
+        name="Check Filter",
+        device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "error|eeprom": BinarySensorEntityDescription(
+        key="error|eeprom",
+        name="EEPROM Error",
+        device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "error|evaporator-temperature-sensor-failed": BinarySensorEntityDescription(
+        key="error|evaporator-temperature-sensor-failed",
+        name="Evaporator Temperature Sensor Failed",
+        device_class=BinarySensorDeviceClass.PROBLEM,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     # Security System
