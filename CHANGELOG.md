@@ -4,7 +4,7 @@ All notable changes to the Hubspace Home Assistant integration are documented he
 Release notes on GitHub Releases are kept in sync for recent versions so HACS update
 notifications stay useful.
 
-## 8.1.1.dev0
+## 8.1.1
 
 - Pin aioafero to git branch `fix/device-splits` (pre-release): split clones
   carry `SplitDeviceId` so toggles whose instance names contain the split
