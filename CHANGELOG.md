@@ -4,6 +4,16 @@ All notable changes to the Hubspace Home Assistant integration are documented he
 Release notes on GitHub Releases are kept in sync for recent versions so HACS update
 notifications stay useful.
 
+## 8.1.1.dev0
+
+- Pin aioafero to git branch `fix/device-splits` (pre-release): split clones
+  carry `SplitDeviceId` so toggles whose instance names contain the split
+  token (e.g. `light-sensor-enabled`) poll and write the parent metadevice
+  instead of a synthetic `{id}-light` path
+  ([#254](https://github.com/jdeath/Hubspace-Homeassistant/issues/254))
+- Fix split entity display names to use `resource.instance` instead of
+  parsing the synthetic id with `rsplit`
+
 ## 8.1.0
 
 - Add dehumidifier support (Vissani `VAD50PS1AWTS`, Hubspace device class
