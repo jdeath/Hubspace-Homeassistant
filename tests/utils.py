@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from aioafero import AferoCapability, AferoDevice, AferoState, TemperatureUnit, v1
+from aioafero.device import SplitDeviceId
 from aioafero.v1.auth import TokenData
 from aioafero.v1.controllers.base import dataclass_to_afero
 from homeassistant.const import CONF_TIMEOUT, CONF_USERNAME
@@ -59,6 +60,10 @@ def create_devices_from_data(file_name: str) -> list[AferoDevice]:
         ]
         if "children" not in device:
             device["children"] = []
+        device.pop("split_identifier", None)
+        raw_split = device.get("split")
+        if isinstance(raw_split, dict):
+            device["split"] = SplitDeviceId(**raw_split)
         processed.append(AferoDevice(**device))
     return processed
 
