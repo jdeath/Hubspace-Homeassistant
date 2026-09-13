@@ -10,9 +10,7 @@ from custom_components.hubspace.entity import HubspaceBaseEntity
 def _mock_resource(*, split: SplitDeviceId | None = None, name: str = "Device"):
     resource = MagicMock()
     resource.id = (
-        str(split)
-        if split is not None
-        else "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+        str(split) if split is not None else "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
     )
     resource.type.value = "light"
     resource.split = split
@@ -34,7 +32,7 @@ def test_split_entity_name_uses_instance_not_rsplit():
         instance="light-sensor-enabled",
     )
     entity = HubspaceBaseEntity(bridge, MagicMock(), _mock_resource(split=split))
-    assert entity._attr_name == "light-sensor-enabled"
+    assert entity._attr_name == "light-sensor-enabled"  # noqa: SLF001
 
 
 def test_unsplit_entity_has_no_name_override():
@@ -42,4 +40,4 @@ def test_unsplit_entity_has_no_name_override():
     bridge = MagicMock()
     bridge.logger.getChild.return_value = MagicMock()
     entity = HubspaceBaseEntity(bridge, MagicMock(), _mock_resource())
-    assert entity._attr_name is None
+    assert entity._attr_name is None  # noqa: SLF001

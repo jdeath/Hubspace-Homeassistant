@@ -10,7 +10,7 @@
   "issue_tracker": "https://github.com/jdeath/Hubspace-Homeassistant/issues",
   "loggers": ["aioafero"],
   "requirements": [
-    "aioafero@git+https://github.com/Expl0dingBanana/aioafero.git@fix/device-splits",
+    "aioafero@git+https://github.com/Expl0dingBanana/aioafero.git@9c192969440a94885d21157b2436eab8ad8b5b49",
     "aiofiles",
     "packaging"
   ],
