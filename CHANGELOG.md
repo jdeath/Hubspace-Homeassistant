@@ -4,6 +4,12 @@ All notable changes to the Hubspace Home Assistant integration are documented he
 Release notes on GitHub Releases are kept in sync for recent versions so HACS update
 notifications stay useful.
 
+## 8.2.1
+
+- Fix: Hide brightness while **Night Light Mode** is active (`supported_color_modes`
+  narrows to on/off) so HA no longer shows a no-op slider
+  ([#253](https://github.com/jdeath/Hubspace-Homeassistant/issues/253))
+
 ## 8.2.0
 
 - Break: Night Light is no longer a separate `light.*` entity. Fixtures that

@@ -82,7 +82,8 @@ config_flow / migrations → HubspaceBridge → AferoBridgeV1 (aioafero)
   `light.py` and the README FAQ.
 - **Night light:** API `color-mode: night-light` maps to the **Night Light Mode**
   HA effect on the main light (not a second entity). Sequence effects such as
-  `nightlight` stay separate in the effect list.
+  `nightlight` stay separate in the effect list. While that mode is active,
+  `supported_color_modes` is only `ONOFF` so HA hides brightness.
 
 ## Layout
 

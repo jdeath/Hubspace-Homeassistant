@@ -71,7 +71,8 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
             and self.resource.channel_brightness(self._channel) is not None
         ):
             supported_color_modes.add(ColorMode.BRIGHTNESS)
-        self._attr_supported_color_modes = filter_supported_color_modes(
+        # Base capability set; night-light temporarily narrows this via the property.
+        self._base_supported_color_modes = filter_supported_color_modes(
             supported_color_modes
         )
 
@@ -85,14 +86,18 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
             return False
         return self.resource.supports_color_temperature
 
+    def _in_night_light_mode(self) -> bool:
+        """Return True when API color-mode is night-light on the combined light."""
+        return (
+            self._channel is None
+            and self.resource.color_mode is not None
+            and self.resource.color_mode.mode == NIGHT_LIGHT_MODE
+        )
+
     @property
     def brightness(self) -> int | None:
         """The brightness of this light between 1..255."""
-        if (
-            self._channel is None
-            and self.resource.color_mode
-            and self.resource.color_mode.mode == NIGHT_LIGHT_MODE
-        ):
+        if self._in_night_light_mode():
             return None
         pct = displayed_brightness_pct(self.resource, channel=self._channel)
         if pct is None:
@@ -115,7 +120,7 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
     def color_mode(self) -> ColorMode:
         """Get the current color mode for the light."""
         return get_color_mode(
-            self.resource, self._attr_supported_color_modes, channel=self._channel
+            self.resource, self.supported_color_modes, channel=self._channel
         )
 
     @property
@@ -123,10 +128,7 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
         """Get the current color temperature for the light."""
         if self._channel == "color" or not self.resource.color_temperature:
             return None
-        if (
-            self.resource.color_mode
-            and self.resource.color_mode.mode == NIGHT_LIGHT_MODE
-        ):
+        if self._in_night_light_mode():
             return None
         return self.resource.color_temperature.temperature
 
@@ -176,10 +178,7 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
             self.resource
         ):
             return None
-        if (
-            self.resource.color_mode
-            and self.resource.color_mode.mode == NIGHT_LIGHT_MODE
-        ):
+        if self._in_night_light_mode():
             return None
         return (
             self.resource.color.red,
@@ -189,8 +188,14 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
 
     @property
     def supported_color_modes(self) -> set[ColorMode]:
-        """Get all supported color modes."""
-        return self._attr_supported_color_modes
+        """Get all supported color modes.
+
+        While API night-light (no-brightness) is active, advertise only
+        ``ONOFF`` so Home Assistant hides the brightness slider.
+        """
+        if self._in_night_light_mode():
+            return {ColorMode.ONOFF}
+        return self._base_supported_color_modes
 
     @property
     def supported_features(self) -> LightEntityFeature:
@@ -231,7 +236,10 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
                 )
         if self._channel and color_mode is None:
             color_mode = "color" if self._channel == "color" else "white"
-        if color_mode == NIGHT_LIGHT_MODE:
+        # Night-light is no-brightness; drop brightness when entering or staying.
+        if color_mode == NIGHT_LIGHT_MODE or (
+            self._in_night_light_mode() and color_mode is None
+        ):
             brightness = None
         await self.bridge.async_request_call(
             self.controller.set_state,

@@ -832,6 +832,37 @@ async def test_penrose_reports_night_light_effect_when_active(mocked_penrose):
     assert main_ent.effect == light.NIGHT_LIGHT_EFFECT
     assert main_ent.color_mode == ColorMode.ONOFF
     assert main_ent.brightness is None
+    assert main_ent.supported_color_modes == {ColorMode.ONOFF}
+
+
+@pytest.mark.asyncio
+async def test_penrose_supported_modes_restore_after_night_light(mocked_penrose):
+    """Leaving night-light restores the fixture's normal color modes."""
+    hass, _, bridge = mocked_penrose
+    resource = bridge.lights[penrose_light.id]
+    resource.on.on = True
+    resource.color_mode.mode = "night-light"
+    main_ent = _get_hubspace_light(hass, penrose_main_entity_id)
+    assert main_ent.supported_color_modes == {ColorMode.ONOFF}
+    resource.color_mode.mode = "white"
+    assert ColorMode.ONOFF not in main_ent.supported_color_modes
+    assert ColorMode.COLOR_TEMP in main_ent.supported_color_modes
+
+
+@pytest.mark.asyncio
+async def test_turn_on_brightness_ignored_while_night_light(mocked_penrose, mocker):
+    """Brightness-only turn_on while in night-light must not send brightness."""
+    hass, _, bridge = mocked_penrose
+    resource = bridge.lights[penrose_light.id]
+    resource.on.on = True
+    resource.color_mode.mode = "night-light"
+    sent = mocker.spy(bridge.lights, "set_state")
+    main_ent = _get_hubspace_light(hass, penrose_main_entity_id)
+    await main_ent.async_turn_on(**{ATTR_BRIGHTNESS: 128})
+    await bridge.async_block_until_done()
+    assert sent.call_args.kwargs["on"] is True
+    assert sent.call_args.kwargs.get("brightness") is None
+    assert sent.call_args.kwargs.get("color_mode") is None
 
 
 @pytest.mark.asyncio
