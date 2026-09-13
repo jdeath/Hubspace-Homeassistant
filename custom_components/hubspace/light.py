@@ -26,6 +26,8 @@ from .const import DOMAIN
 from .entity import HubspaceBaseEntity
 
 NIGHT_LIGHT_MODE = "night-light"
+# HA effect label — distinct from sequence effect names such as ``nightlight``.
+NIGHT_LIGHT_EFFECT = "Night Light Mode"
 
 
 class HubspaceLight(HubspaceBaseEntity, LightEntity):
@@ -86,6 +88,12 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
     @property
     def brightness(self) -> int | None:
         """The brightness of this light between 1..255."""
+        if (
+            self._channel is None
+            and self.resource.color_mode
+            and self.resource.color_mode.mode == NIGHT_LIGHT_MODE
+        ):
+            return None
         pct = displayed_brightness_pct(self.resource, channel=self._channel)
         if pct is None:
             return None
@@ -115,41 +123,28 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
         """Get the current color temperature for the light."""
         if self._channel == "color" or not self.resource.color_temperature:
             return None
+        if (
+            self.resource.color_mode
+            and self.resource.color_mode.mode == NIGHT_LIGHT_MODE
+        ):
+            return None
         return self.resource.color_temperature.temperature
 
     @property
     def effect(self) -> str | None:
         """Get the current effect for the light."""
-        if self._channel == "white":
-            return None
-        return (
-            self.resource.effect.effect
-            if (self.resource.effect and self.resource.color_mode.mode == "sequence")
-            else None
-        )
+        return current_ha_effect(self.resource, channel=self._channel)
 
     @property
     def effect_list(self) -> list[str] | None:
         """Get all available effects for the light."""
-        if self._channel == "white" or not self.resource.effect:
+        if self._channel == "white":
             return None
-        all_effects = []
-        for effects in self.resource.effect.effects.values() or []:
-            all_effects.extend(effects)
-        return all_effects or None
+        return build_effect_list(self.resource)
 
     @property
     def is_on(self) -> bool | None:
-        """Determine if the light is currently on.
-
-        When night-light mode is active the dedicated night-light entity owns
-        that state, so the main / channel lights report off.
-        """
-        if (
-            self.resource.color_mode
-            and self.resource.color_mode.mode == NIGHT_LIGHT_MODE
-        ):
-            return False
+        """Determine if the light is currently on."""
         if self._channel:
             channel_on = self.resource.channel_on(self._channel)
             if channel_on is not None:
@@ -181,6 +176,11 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
             self.resource
         ):
             return None
+        if (
+            self.resource.color_mode
+            and self.resource.color_mode.mode == NIGHT_LIGHT_MODE
+        ):
+            return None
         return (
             self.resource.color.red,
             self.resource.color.green,
@@ -197,7 +197,7 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
         """Get all supported light features."""
         if self._channel == "white":
             return LightEntityFeature(0)
-        if self.resource.effect:
+        if build_effect_list(self.resource):
             return LightEntityFeature(0) | LightEntityFeature.EFFECT
         return LightEntityFeature(0)
 
@@ -213,6 +213,9 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
         color_mode: str | None = None
         if color:
             color_mode = "color"
+        elif effect == NIGHT_LIGHT_EFFECT:
+            color_mode = NIGHT_LIGHT_MODE
+            effect = None
         elif effect:
             color_mode = "sequence"
         elif (
@@ -228,29 +231,8 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
                 )
         if self._channel and color_mode is None:
             color_mode = "color" if self._channel == "color" else "white"
-        leaving_night_light = (
-            self.resource.color_mode is not None
-            and self.resource.color_mode.mode == NIGHT_LIGHT_MODE
-        )
-        # Stored mode is night-light while that entity is active; restore the
-        # prior mode so the main light does not resume night-light on power-on.
-        if leaving_night_light and color_mode is None:
-            color_mode = self.bridge.night_light_previous_modes.get(
-                self.resource.id, "white"
-            )
-        # aioafero only mode-before-powers for no-brightness *targets*; restoring
-        # to white/color/sequence while off needs an explicit mode PUT first.
-        if (
-            leaving_night_light
-            and not self.resource.is_on
-            and color_mode
-            and color_mode != NIGHT_LIGHT_MODE
-        ):
-            await self.bridge.async_request_call(
-                self.controller.set_state,
-                device_id=self.resource.id,
-                color_mode=color_mode,
-            )
+        if color_mode == NIGHT_LIGHT_MODE:
+            brightness = None
         await self.bridge.async_request_call(
             self.controller.set_state,
             device_id=self.resource.id,
@@ -273,70 +255,35 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
         )
 
 
-class HubspaceNightLight(HubspaceBaseEntity, LightEntity):
-    """Night-light color-mode as a separate on/off light."""
-
-    _attr_supported_color_modes = {ColorMode.ONOFF}
-    _attr_color_mode = ColorMode.ONOFF
-
-    def __init__(
-        self,
-        bridge: HubspaceBridge,
-        controller: LightController,
-        resource: Light,
-    ) -> None:
-        """Initialize an Afero night light."""
-        super().__init__(bridge, controller, resource, instance=NIGHT_LIGHT_MODE)
-        self._attr_name = "Night Light"
-
-    @property
-    def is_on(self) -> bool | None:
-        """Return True when powered on in night-light color-mode."""
-        if self.resource.color_mode is None:
-            return None
-        return self.resource.is_on and self.resource.color_mode.mode == NIGHT_LIGHT_MODE
-
-    async def async_turn_on(self, **kwargs) -> None:
-        """Enable night-light color-mode."""
-        self.bridge.night_light_was_on[self.resource.id] = self.resource.is_on
-        if (
-            self.resource.color_mode
-            and self.resource.color_mode.mode != NIGHT_LIGHT_MODE
-        ):
-            self.bridge.night_light_previous_modes[self.resource.id] = (
-                self.resource.color_mode.mode
-            )
-        await self.bridge.async_request_call(
-            self.controller.set_state,
-            device_id=self.resource.id,
-            on=True,
-            color_mode=NIGHT_LIGHT_MODE,
-        )
-
-    async def async_turn_off(self, **kwargs) -> None:
-        """Leave night-light without flashing another mode on turn-off."""
-        previous = self.bridge.night_light_previous_modes.get(self.resource.id, "white")
-        # After reload / external enable we may lack was_on; prefer staying on in
-        # a normal mode over unexpectedly powering the fixture off.
-        was_on = self.bridge.night_light_was_on.get(self.resource.id, True)
-        if was_on:
-            await self.bridge.async_request_call(
-                self.controller.set_state,
-                device_id=self.resource.id,
-                on=True,
-                color_mode=previous,
-            )
-        else:
-            await self.bridge.async_request_call(
-                self.controller.set_state,
-                device_id=self.resource.id,
-                on=False,
-            )
-
-
 def has_night_light_mode(resource: Light) -> bool:
     """Return True when the light advertises night-light color-mode."""
     return NIGHT_LIGHT_MODE in (resource.color_modes or [])
+
+
+def build_effect_list(resource: Light) -> list[str] | None:
+    """Return HA effect names, including night-light mode when supported."""
+    effects: list[str] = []
+    if has_night_light_mode(resource):
+        effects.append(NIGHT_LIGHT_EFFECT)
+    if resource.effect:
+        for group in resource.effect.effects.values() or []:
+            effects.extend(group)
+    return effects or None
+
+
+def current_ha_effect(resource: Light, *, channel: str | None = None) -> str | None:
+    """Map API color-mode / sequence state to the HA effect name."""
+    if channel == "white" or resource.color_mode is None:
+        return None
+    if resource.color_mode.mode == NIGHT_LIGHT_MODE:
+        return NIGHT_LIGHT_EFFECT
+    if (
+        resource.color_mode.mode == "sequence"
+        and resource.effect
+        and resource.effect.effect
+    ):
+        return resource.effect.effect
+    return None
 
 
 def should_split_dual_channel_light(resource: Light) -> bool:
@@ -352,18 +299,14 @@ def should_split_dual_channel_light(resource: Light) -> bool:
 
 def entities_for_light(
     bridge: HubspaceBridge, controller: LightController, resource: Light
-) -> list[HubspaceLight | HubspaceNightLight]:
-    """Build light entities for a resource (channels + optional night-light)."""
+) -> list[HubspaceLight]:
+    """Build light entities for a resource (optional dual-channel split)."""
     if should_split_dual_channel_light(resource):
-        entities: list[HubspaceLight | HubspaceNightLight] = [
+        return [
             HubspaceLight(bridge, controller, resource, channel="color"),
             HubspaceLight(bridge, controller, resource, channel="white"),
         ]
-    else:
-        entities = [HubspaceLight(bridge, controller, resource)]
-    if has_night_light_mode(resource):
-        entities.append(HubspaceNightLight(bridge, controller, resource))
-    return entities
+    return [HubspaceLight(bridge, controller, resource)]
 
 
 def api_color_mode_is_mixed(resource: Light) -> bool:
@@ -449,6 +392,8 @@ def get_color_mode(
         return ColorMode.ONOFF
     if not resource.color_mode:
         return _preferred_supported_color_mode(supported_modes)
+    if resource.color_mode.mode == NIGHT_LIGHT_MODE:
+        return ColorMode.ONOFF
     if resource.color_mode.mode == "color":
         return ColorMode.RGB
     if resource.color_mode.mode == "mixed":
@@ -500,7 +445,7 @@ async def async_setup_entry(
         """Add an entity."""
         async_add_entities(make_entities(resource))
 
-    entities: list[HubspaceLight | HubspaceNightLight] = []
+    entities: list[HubspaceLight] = []
     for resource in controller:
         entities.extend(make_entities(resource))
     async_add_entities(entities)

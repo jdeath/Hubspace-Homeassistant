@@ -39,7 +39,8 @@ resources are still created.
 - Humidifier [`humidifier`] — Dehumidifiers — on/off, mode, current/target
   humidity; fan speed and pump appear as selects
 - Light [`light`] — On/off, brightness, color temp, RGB, effects; dual-channel
-  fixtures present as separate color/white lights; night-light when exposed
+  fixtures present as separate color/white lights; **Night Light Mode** as an
+  effect when the fixture exposes API `night-light` color-mode
 - Lock [`lock`] — Lock / unlock
 - Number / Select [`number` / `select`] — Numeric settings and mode pickers
   (common on exhaust fans and similar)
