@@ -7,7 +7,8 @@
           "username": "[%key:common::config_flow::data::username%]",
           "password": "[%key:common::config_flow::data::password%]",
           "timeout": "[%key:common::config_flow::data::timeout%]",
-          "polling_time": "[%key:component::hubspace::step::step::init::polling_time%]"
+          "polling_time": "[%key:component::hubspace::step::step::init::polling_time%]",
+          "enable_conclave": "Enable Conclave push updates"
         }
       },
       "reauth_confirm": {
@@ -41,7 +42,9 @@
     "step": {
       "init": {
         "data": {
-          "polling_time": "[%key:component::hubspace::options::step::init::polling_time%]"
+          "polling_time": "[%key:component::hubspace::options::step::init::polling_time%]",
+          "timeout": "[%key:common::config_flow::data::timeout%]",
+          "enable_conclave": "Enable Conclave push updates"
         }
       }
     },

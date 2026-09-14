@@ -10,7 +10,7 @@ import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.hubspace import POLLING_TIME_STR, const
-from custom_components.hubspace.const import CONF_REFRESH_TOKEN
+from custom_components.hubspace.const import CONF_ENABLE_CONCLAVE, CONF_REFRESH_TOKEN
 
 
 @pytest.fixture
@@ -73,6 +73,7 @@ def mocked_config_flow(mocker):
             {
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                CONF_ENABLE_CONCLAVE: True,
             },
         ),
         # Happy path without CONF_TIMEOUT or POLLING_TIME_STR
@@ -94,6 +95,30 @@ def mocked_config_flow(mocker):
             {
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                CONF_ENABLE_CONCLAVE: True,
+            },
+        ),
+        # Opt out of Conclave at setup
+        (
+            {
+                CONF_USERNAME: "cool",
+                CONF_PASSWORD: "beans",
+                POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
+                CONF_ENABLE_CONCLAVE: False,
+            },
+            None,
+            None,
+            {
+                CONF_USERNAME: "cool",
+                CONF_REFRESH_TOKEN: "mock-refresh-token",
+                const.CONF_CLIENT: const.DEFAULT_CLIENT,
+            },
+            {
+                POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                CONF_ENABLE_CONCLAVE: False,
             },
         ),
         # Poll cycle is too short
@@ -228,6 +253,7 @@ async def test_HubspaceConfigFlow_async_step_user(
             {
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                CONF_ENABLE_CONCLAVE: True,
             },
             "reauth_successful",
             None,
@@ -304,6 +330,30 @@ async def test_HubspaceConfigFlow_async_step_user_reauth(
             {
                 POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
                 CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                CONF_ENABLE_CONCLAVE: True,
+            },
+            None,
+        ),
+        # Opt out of Conclave via options
+        (
+            {
+                "data": {CONF_USERNAME: "cool", CONF_PASSWORD: "beans"},
+                "options": {
+                    POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                    CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                    CONF_ENABLE_CONCLAVE: True,
+                },
+                "unique_id": "cool",
+            },
+            {
+                POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                CONF_ENABLE_CONCLAVE: False,
+            },
+            {
+                POLLING_TIME_STR: const.DEFAULT_POLLING_INTERVAL_SEC,
+                CONF_TIMEOUT: const.DEFAULT_TIMEOUT,
+                CONF_ENABLE_CONCLAVE: False,
             },
             None,
         ),
@@ -431,4 +481,5 @@ async def test_HubspaceConfigFlow_otp_flow(hass, mocker, mocked_config_flow):
     assert result["options"] == {
         POLLING_TIME_STR: user_data[POLLING_TIME_STR],
         CONF_TIMEOUT: user_data[CONF_TIMEOUT],
+        CONF_ENABLE_CONCLAVE: True,
     }

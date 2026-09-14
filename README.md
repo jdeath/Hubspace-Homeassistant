@@ -72,8 +72,10 @@ on the navigation bar, then select `Devices & services`, ensure you are on the
 of the page. Search for `Hubspace` and enter your username and password and
 click `SUBMIT`. Entities should start appearing shortly after clicking submit.
 
-After discovered, the poll time can be configured for quicker or longer
-polling intervals. By default, Hubspace is polled once every 30 seconds.
+After setup, Conclave push updates are enabled by default for near real-time
+device changes. REST polling remains as a true-up (default every 15 minutes /
+900 seconds) and can be changed in the integration options. If you disable
+Conclave, lower the polling interval for faster updates.
 
 ### Configuration Troubleshooting
 
