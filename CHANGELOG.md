@@ -4,6 +4,10 @@ All notable changes to the Hubspace Home Assistant integration are documented he
 Release notes on GitHub Releases are kept in sync for recent versions so HACS update
 notifications stay useful.
 
+## 8.2.1
+
+ - Actually 8.2.0 but has the correct release number.
+
 ## 8.2.0
 
 - Break: Night Light is no longer a separate `light.*` entity. Fixtures that
