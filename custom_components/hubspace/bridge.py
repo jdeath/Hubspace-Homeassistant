@@ -18,7 +18,15 @@ from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers import aiohttp_client
 from homeassistant.util.unit_system import METRIC_SYSTEM
 
-from .const import CONF_CLIENT, CONF_REFRESH_TOKEN, DOMAIN, PLATFORMS, POLLING_TIME_STR
+from .const import (
+    CONF_CLIENT,
+    CONF_ENABLE_CONCLAVE,
+    CONF_REFRESH_TOKEN,
+    DEFAULT_ENABLE_CONCLAVE,
+    DOMAIN,
+    PLATFORMS,
+    POLLING_TIME_STR,
+)
 from .device import async_setup_devices
 
 
@@ -76,6 +84,10 @@ class HubspaceBridge:
             polling_interval=polling_interval,
             afero_client=self.config_entry.data[CONF_CLIENT],
             temperature_unit=temp_unit,
+            # Opt-out: on by default; disable via integration options.
+            enable_conclave=self.config_entry.options.get(
+                CONF_ENABLE_CONCLAVE, DEFAULT_ENABLE_CONCLAVE
+            ),
         )
         # store (this) bridge object in hass data
         hass.data.setdefault(DOMAIN, {})[self.config_entry.entry_id] = self
