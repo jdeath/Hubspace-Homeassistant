@@ -20,13 +20,16 @@ from homeassistant.config_entries import (
 from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_USERNAME
 from homeassistant.core import callback
 from homeassistant.helpers import aiohttp_client
+from homeassistant.helpers.selector import BooleanSelector
 import voluptuous as vol
 
 from .const import (
     CONF_CLIENT,
+    CONF_ENABLE_CONCLAVE,
     CONF_OTP,
     CONF_REFRESH_TOKEN,
     DEFAULT_CLIENT,
+    DEFAULT_ENABLE_CONCLAVE,
     DEFAULT_POLLING_INTERVAL_SEC,
     DEFAULT_TIMEOUT,
     DOMAIN,
@@ -51,6 +54,10 @@ REAUTH_REQS = {
 OPTIONAL = {
     vol.Required(CONF_TIMEOUT): int,
     vol.Required(POLLING_TIME_STR): int,
+    # BooleanSelector always submits true/false (plain bool can omit when unchecked).
+    vol.Required(
+        CONF_ENABLE_CONCLAVE, default=DEFAULT_ENABLE_CONCLAVE
+    ): BooleanSelector(),
 }
 LOGIN_SCHEMA = vol.Schema(LOGIN_REQS | OPTIONAL)
 RECONFIG_SCHEMA = vol.Schema(OPTIONAL)
@@ -71,6 +78,7 @@ class AferoConfigFlow(ConfigFlow, domain=DOMAIN):
         self._password: str | None = None
         self._polling: int | None = DEFAULT_POLLING_INTERVAL_SEC
         self._timeout: int | None = DEFAULT_TIMEOUT
+        self._enable_conclave: bool = DEFAULT_ENABLE_CONCLAVE
         self._client: str | None = None
 
     async def _async_afero_login(
@@ -136,6 +144,7 @@ class AferoConfigFlow(ConfigFlow, domain=DOMAIN):
         options = {
             CONF_TIMEOUT: self._timeout or DEFAULT_TIMEOUT,
             POLLING_TIME_STR: self._polling or DEFAULT_POLLING_INTERVAL_SEC,
+            CONF_ENABLE_CONCLAVE: self._enable_conclave,
         }
         # Password is only used for the login handshake; never persist it.
         self._password = None
@@ -171,6 +180,9 @@ class AferoConfigFlow(ConfigFlow, domain=DOMAIN):
         self._client = user_input[CONF_CLIENT]
         self._timeout = user_input[CONF_TIMEOUT]
         self._polling = user_input[POLLING_TIME_STR]
+        self._enable_conclave = user_input.get(
+            CONF_ENABLE_CONCLAVE, DEFAULT_ENABLE_CONCLAVE
+        )
         return await self._async_afero_login("user", LOGIN_SCHEMA)
 
     async def async_step_otp(
@@ -194,6 +206,9 @@ class AferoConfigFlow(ConfigFlow, domain=DOMAIN):
         self._timeout = current.options.get(CONF_TIMEOUT, DEFAULT_TIMEOUT)
         self._polling = current.options.get(
             POLLING_TIME_STR, DEFAULT_POLLING_INTERVAL_SEC
+        )
+        self._enable_conclave = current.options.get(
+            CONF_ENABLE_CONCLAVE, DEFAULT_ENABLE_CONCLAVE
         )
         return await self.async_step_reauth_confirm()
 
@@ -243,24 +258,34 @@ class AferoOptionsFlowHandler(OptionsFlow):
             POLLING_TIME_STR, DEFAULT_POLLING_INTERVAL_SEC
         )
         tmout = self.config_entry.options.get(CONF_TIMEOUT, DEFAULT_TIMEOUT)
+        enable_conclave = self.config_entry.options.get(
+            CONF_ENABLE_CONCLAVE, DEFAULT_ENABLE_CONCLAVE
+        )
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema(
                 {
                     vol.Optional(CONF_TIMEOUT, default=tmout): int,
                     vol.Optional(POLLING_TIME_STR, default=poll_time): int,
+                    vol.Required(
+                        CONF_ENABLE_CONCLAVE, default=enable_conclave
+                    ): BooleanSelector(),
                 },
             ),
             errors=errors,
         )
 
 
-def validate_options(user_input: dict[str, Any]) -> dict[str, str]:
-    """Validate the user input allows us to connect."""
+def validate_options(user_input: dict[str, Any]) -> dict[str, Any]:
+    """Validate optional settings shared by setup and the options flow."""
     validated = {
         POLLING_TIME_STR: user_input.get(POLLING_TIME_STR, DEFAULT_POLLING_INTERVAL_SEC)
         or DEFAULT_POLLING_INTERVAL_SEC,
         CONF_TIMEOUT: user_input.get(CONF_TIMEOUT, DEFAULT_TIMEOUT) or DEFAULT_TIMEOUT,
+        # Default on (opt-out). Absent key = legacy entries / tests without the field.
+        CONF_ENABLE_CONCLAVE: user_input.get(
+            CONF_ENABLE_CONCLAVE, DEFAULT_ENABLE_CONCLAVE
+        ),
     }
     if validated[POLLING_TIME_STR] < 2:
         raise ValueError("polling_too_short")

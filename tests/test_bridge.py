@@ -1,10 +1,66 @@
 """Test the bridge between Home Assistant and Afero."""
 
 from aiohttp import ClientError
+from homeassistant.const import CONF_TIMEOUT, CONF_USERNAME
 from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 import pytest
+from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.hubspace.bridge import HubspaceBridge, InvalidAuth
+from custom_components.hubspace.const import (
+    CONF_CLIENT,
+    CONF_ENABLE_CONCLAVE,
+    CONF_REFRESH_TOKEN,
+    DEFAULT_CLIENT,
+    DEFAULT_POLLING_INTERVAL_SEC,
+    DOMAIN,
+    POLLING_TIME_STR,
+    VERSION_MAJOR,
+    VERSION_MINOR,
+)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("options", "expected"),
+    [
+        ({}, True),
+        ({CONF_ENABLE_CONCLAVE: True}, True),
+        ({CONF_ENABLE_CONCLAVE: False}, False),
+    ],
+)
+async def test_bridge_enable_conclave_option(
+    options, expected, hass, mocker, mocked_bridge
+):
+    """Conclave is on by default; options can opt out."""
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        data={
+            CONF_USERNAME: "username",
+            CONF_REFRESH_TOKEN: "mock-token",
+            CONF_CLIENT: DEFAULT_CLIENT,
+        },
+        options={
+            CONF_TIMEOUT: 30,
+            POLLING_TIME_STR: DEFAULT_POLLING_INTERVAL_SEC,
+            **options,
+        },
+        version=VERSION_MAJOR,
+        minor_version=VERSION_MINOR,
+    )
+    entry.add_to_hass(hass)
+    captured: dict = {}
+
+    def _capture(*args, **kwargs):
+        captured["kwargs"] = kwargs
+        return mocked_bridge
+
+    mocker.patch(
+        "custom_components.hubspace.bridge.AferoBridgeV1",
+        side_effect=_capture,
+    )
+    HubspaceBridge(hass, entry)
+    assert captured["kwargs"].get("enable_conclave") is expected
 
 
 @pytest.mark.asyncio

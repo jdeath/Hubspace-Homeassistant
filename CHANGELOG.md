@@ -4,9 +4,19 @@ All notable changes to the Hubspace Home Assistant integration are documented he
 Release notes on GitHub Releases are kept in sync for recent versions so HACS update
 notifications stay useful.
 
+## 8.3.0
+
+- Enable near real-time updates via Conclave (websocket). Configurable in
+  integration options and enabled by default. Discovery and writes still use
+  REST.
+- Reduce the default REST polling interval to 15 minutes (900s); with Conclave
+  on, polls are mainly true-ups. Existing installs keep their stored interval —
+  change it in options if you want the new default. If you disable Conclave,
+  lower the polling interval for faster updates.
+
 ## 8.2.1
 
- - Actually 8.2.0 but has the correct release number.
+- Actually 8.2.0 but has the correct release number.
 
 ## 8.2.0
 

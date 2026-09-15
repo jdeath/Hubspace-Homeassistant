@@ -28,8 +28,11 @@ CONF_DEBUG: Final = "debug"
 UPDATE_INTERVAL_OBSERVATION = timedelta(seconds=30)
 HUB_IDENTIFIER: Final[str] = "hubspace_debug"
 DEFAULT_TIMEOUT: Final[int] = 10000
-DEFAULT_POLLING_INTERVAL_SEC: Final[int] = 30
+DEFAULT_POLLING_INTERVAL_SEC: Final[int] = 900
 POLLING_TIME_STR: Final[str] = "polling_time"
+# Conclave push is on by default; users can disable it in options.
+DEFAULT_ENABLE_CONCLAVE: Final[bool] = True
+CONF_ENABLE_CONCLAVE: Final[str] = "enable_conclave"
 DEFAULT_CLIENT: Final[str] = "hubspace"
 CONF_CLIENT: Final[str] = "client"
 CONF_OTP: Final[str] = "otp_code"
