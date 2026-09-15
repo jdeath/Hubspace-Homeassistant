@@ -100,17 +100,18 @@ async def test_service_valid_no_username(
         )
         await bridge.async_block_until_done()
         await hass.async_block_till_done()
-        # Now generate update event by emitting the json we've sent as incoming event
-        light_update = create_devices_from_data("fan-ZandraFan.json")[1]
+        # Re-emit the full dump (parent + fan + light). A light-only payload would
+        # RESOURCE_DELETED the parent ceiling-fan and drop light.friendly_device_2.
+        devices_update = create_devices_from_data("fan-ZandraFan.json")
         modify_state(
-            light_update,
+            devices_update[1],
             AferoState(
                 functionClass="power",
                 functionInstance="light-power",
                 value="off",
             ),
         )
-        await bridge.generate_devices_from_data([light_update])
+        await bridge.generate_devices_from_data(devices_update)
         await bridge.async_block_until_done()
         await hass.async_block_till_done()
         assert hass.states.get(fan_zandra_light_id).state == "off"

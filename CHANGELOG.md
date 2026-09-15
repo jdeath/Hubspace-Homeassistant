@@ -8,8 +8,7 @@ notifications stay useful.
 
 - Enable near real-time updates via Conclave (websocket). Configurable in
   integration options and enabled by default. Discovery and writes still use
-  REST. Pin aioafero to git branch `feat/conclave-support` until that work is
-  on PyPI.
+  REST.
 - Reduce the default REST polling interval to 15 minutes (900s); with Conclave
   on, polls are mainly true-ups. Existing installs keep their stored interval —
   change it in options if you want the new default. If you disable Conclave,
