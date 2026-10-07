@@ -4,6 +4,14 @@ All notable changes to the Hubspace Home Assistant integration are documented he
 Release notes on GitHub Releases are kept in sync for recent versions so HACS update
 notifications stay useful.
 
+## 8.3.1.dev0
+
+- Pin aioafero to git branch `fix/conclave-resolve-type-correctly` (pre-release):
+  Conclave pushes follow the function type in device semantics, so numeric
+  values such as dehumidifier current humidity stay integers instead of
+  flipping to strings
+  ([aioafero #107](https://github.com/Expl0dingBanana/aioafero/issues/107)).
+
 ## 8.3.0
 
 - Enable near real-time updates via Conclave (websocket). Configurable in
