@@ -11,8 +11,7 @@
   "loggers": ["aioafero"],
   "requirements": [
     "aioafero@git+https://github.com/Expl0dingBanana/aioafero.git@fix/conclave-resolve-type-correctly",
-    "aiofiles",
-    "packaging"
+    "aiofiles"
   ],
   "single_config_entry": true,
   "version": "8.3.1.dev0"
