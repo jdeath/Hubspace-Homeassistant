@@ -1,11 +1,11 @@
-"""Home Assistant entity for interacting with Afero dehumidifiers."""
+"""Home Assistant entity for interacting with Afero humidifiers and dehumidifiers."""
 
 from functools import partial
 from typing import Any
 
-from aioafero.v1 import AferoBridgeV1, DehumidifierController
+from aioafero.v1 import AferoBridgeV1, DehumidifierController, HumidifierController
 from aioafero.v1.controllers.event import EventType
-from aioafero.v1.models import Dehumidifier
+from aioafero.v1.models import Dehumidifier, Humidifier
 from homeassistant.components.humidifier import (
     HumidifierDeviceClass,
     HumidifierEntity,
@@ -29,10 +29,10 @@ class HubspaceDehumidifier(HubspaceBaseEntity, HumidifierEntity):
     def __init__(
         self,
         bridge: HubspaceBridge,
-        controller: DehumidifierController,
-        resource: Dehumidifier,
+        controller: DehumidifierController | HumidifierController,
+        resource: Dehumidifier | Humidifier,
     ) -> None:
-        """Initialize an Afero dehumidifier."""
+        """Initialize an Afero humidifier or dehumidifier."""
         super().__init__(bridge, controller, resource)
         if self.resource.mode:
             self._attr_supported_features = HumidifierEntityFeature.MODES
@@ -109,6 +109,16 @@ class HubspaceDehumidifier(HubspaceBaseEntity, HumidifierEntity):
         )
 
 
+class HubspaceHumidifier(HubspaceDehumidifier):
+    """Representation of an Afero humidifier.
+
+    The target humidity is only used by the unit while it is in ``auto`` mode.
+    """
+
+    _attr_device_class = HumidifierDeviceClass.HUMIDIFIER
+    _attr_translation_key = "humidifier"
+
+
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
@@ -117,11 +127,27 @@ async def async_setup_entry(
     """Set up entities."""
     bridge: HubspaceBridge = hass.data[DOMAIN][config_entry.entry_id]
     api: AferoBridgeV1 = bridge.api
-    controller: DehumidifierController = api.dehumidifiers
-    make_entity = partial(HubspaceDehumidifier, bridge, controller)
+    for controller, entity_cls in (
+        (api.dehumidifiers, HubspaceDehumidifier),
+        (api.humidifiers, HubspaceHumidifier),
+    ):
+        setup_controller(
+            config_entry, async_add_entities, partial(entity_cls, bridge, controller)
+        )
+
+
+def setup_controller(
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+    make_entity: partial,
+) -> None:
+    """Add a controller's current entities and listen for new ones."""
+    controller: DehumidifierController | HumidifierController = make_entity.args[1]
 
     @callback
-    def async_add_entity(event_type: EventType, resource: Dehumidifier) -> None:
+    def async_add_entity(
+        event_type: EventType, resource: Dehumidifier | Humidifier
+    ) -> None:
         """Add an entity."""
         async_add_entities([make_entity(resource)])
 

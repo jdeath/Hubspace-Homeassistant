@@ -90,6 +90,15 @@ DEVICE_CLASS_TO_ENTITY_MAP: Final[dict[str, str]] = {
     DEVICE_CLASS_WATER_TIMER: ENTITY_VALVE,
 }
 
+# Selects whose options have display labels in strings.json, keyed by
+# (functionClass, functionInstance)
+SELECT_TRANSLATION_KEYS: Final[dict[tuple[str, str | None], str]] = {
+    ("atomization-level", "humidifier"): "mist_level",
+    ("dark-mode", None): "dark_mode",
+    ("humidity", "plant-care-target"): "plant_care_target",
+    ("humidity", "wellness-target"): "wellness_target",
+}
+
 UNMAPPED_DEVICE_CLASSES: Final[list[str]] = [
     # Parent device for a fan / light combo
     "ceiling-fan",
@@ -226,6 +235,31 @@ BINARY_SENSORS = {
     "error|evaporator-temperature-sensor-failed": BinarySensorEntityDescription(
         key="error|evaporator-temperature-sensor-failed",
         name="Evaporator Temperature Sensor Failed",
+        device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    # humidifier
+    "error|low-water-alert": BinarySensorEntityDescription(
+        key="error|low-water-alert",
+        name="Low Water",
+        device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "error|water-tank-lifted": BinarySensorEntityDescription(
+        key="error|water-tank-lifted",
+        name="Water Tank Lifted",
+        device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "error|humidifier-filter-replacement-needed": BinarySensorEntityDescription(
+        key="error|humidifier-filter-replacement-needed",
+        name="Filter Replacement Needed",
+        device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "error|tank-cleaning-needed": BinarySensorEntityDescription(
+        key="error|tank-cleaning-needed",
+        name="Tank Cleaning Needed",
         device_class=BinarySensorDeviceClass.PROBLEM,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
