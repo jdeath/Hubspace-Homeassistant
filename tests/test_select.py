@@ -1,8 +1,12 @@
 """Test the integration between Home Assistant Selects and Afero devices."""
 
 from aioafero import AferoState
+from aioafero.errors import DeviceNotFound
 from homeassistant.helpers import entity_registry as er
 import pytest
+
+from custom_components.hubspace import select
+from custom_components.hubspace.const import DOMAIN
 
 from .utils import create_devices_from_data, modify_state
 
@@ -150,3 +154,90 @@ async def test_security_sensor_select(mocked_entry):
     )
     await bridge.async_block_until_done()
     await hass.async_block_till_done()
+
+
+christmas_tree = create_devices_from_data("light-christmas-tree.json")[0]
+tree_brightness_id = "select.christmas_tree_brightness"
+
+
+@pytest.fixture
+async def mocked_tree(mocked_entry):
+    """Initialize a mocked pre-lit tree with brightness presets."""
+    hass, entry, bridge = mocked_entry
+    await bridge.generate_devices_from_data([christmas_tree])
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    yield hass, entry, bridge
+    await bridge.close()
+
+
+@pytest.mark.asyncio
+async def test_brightness_preset_select(mocked_tree):
+    """Lights with brightness-presets get a Brightness select, dimmest first."""
+    hass, _, _ = mocked_tree
+    entity = hass.states.get(tree_brightness_id)
+    assert entity is not None
+    assert entity.state == "Low"
+    assert entity.attributes["options"] == ["Low", "Medium", "High"]
+
+
+@pytest.mark.asyncio
+async def test_brightness_preset_select_option(mocked_tree, mocker):
+    """Selecting a preset sends the raw brightness-presets value to the API."""
+    hass, _, bridge = mocked_tree
+    update_api = mocker.patch.object(
+        bridge.lights, "update_afero_api", new=mocker.AsyncMock(return_value=False)
+    )
+    await hass.services.async_call(
+        "select",
+        "select_option",
+        {"entity_id": tree_brightness_id, "option": "High"},
+        blocking=True,
+    )
+    await bridge.async_block_until_done()
+    update_api.assert_awaited_once()
+    device_id, states = update_api.await_args.args
+    assert device_id == christmas_tree.id
+    assert [(state["functionClass"], state["value"]) for state in states] == [
+        ("brightness-presets", "high")
+    ]
+
+
+@pytest.mark.asyncio
+async def test_brightness_preset_added_with_new_light(mocked_entry):
+    """A light discovered after setup also gets its Brightness select."""
+    hass, entry, bridge = mocked_entry
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    assert hass.states.get(tree_brightness_id) is None
+    await bridge.generate_devices_from_data([christmas_tree])
+    await hass.async_block_till_done()
+    assert er.async_get(hass).async_get(tree_brightness_id) is not None
+
+
+@pytest.mark.asyncio
+async def test_brightness_preset_helpers(mocked_tree, mocker):
+    """Helpers cope with untracked devices, missing state and unknown presets."""
+    hass, _, bridge = mocked_tree
+    hs_bridge = hass.data[DOMAIN][next(iter(hass.data[DOMAIN]))]
+    assert select.get_raw_device(hs_bridge, "not-a-device") is None
+    assert select.get_brightness_presets(None) == []
+    assert sorted(["high", "turbo", "low"], key=select.brightness_preset_sort_key) == [
+        "low",
+        "high",
+        "turbo",
+    ]
+    entity = next(
+        ent
+        for ent in hass.data["select"].entities
+        if ent.entity_id == tree_brightness_id
+    )
+    device = bridge.get_afero_device(christmas_tree.id)
+    device.states = [
+        state
+        for state in device.states
+        if state.functionClass != select.BRIGHTNESS_PRESET_CLASS
+    ]
+    assert entity.current_option is None
+    mocker.patch.object(bridge, "get_afero_device", side_effect=DeviceNotFound("gone"))
+    assert entity.current_option is None

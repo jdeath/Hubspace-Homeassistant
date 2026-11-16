@@ -30,6 +30,47 @@ NIGHT_LIGHT_MODE = "night-light"
 NIGHT_LIGHT_EFFECT = "Night Light Mode"
 
 
+# Some devices (e.g. Home Decorators Collection pre-lit trees) run their effects
+# on the device MCU and report them as raw ids such as ``steady-warm-white-mcu``.
+# Show readable names in Home Assistant and send the raw id back to the API.
+# Only ``-mcu`` sequences are renamed so existing effect names are unchanged.
+MCU_EFFECT_SUFFIX = "-mcu"
+MCU_EFFECT_NAMES = {
+    "twinkle-warm-white-mcu": "Twinkle",
+    "steady-warm-white-mcu": "Warm white",
+    "steady-multi-mcu": "Multicolour",
+    "slow-fade-multi-mcu": "Multicolour fade",
+    "slow-color-variable-mcu": "Colour change",
+    "slow-fade-warm-white-mcu": "Warm white fade",
+    "slow-flip-mcu": "Slow flip",
+    "fast-flip-mcu": "Fast flip",
+    "slow-fade-mcu": "Fade",
+}
+# Store-display loop; not useful as a selectable effect.
+HIDDEN_EFFECTS = {"demo-mcu"}
+
+
+def pretty_effect(name: str | None) -> str | None:
+    """Return the Home Assistant name for an API effect."""
+    if not name or not name.endswith(MCU_EFFECT_SUFFIX):
+        return name
+    if name in MCU_EFFECT_NAMES:
+        return MCU_EFFECT_NAMES[name]
+    base = name.removesuffix(MCU_EFFECT_SUFFIX).replace("-", " ").strip()
+    return base[:1].upper() + base[1:]
+
+
+def raw_effect(resource: Light, name: str | None) -> str | None:
+    """Map a Home Assistant effect name back to the API effect."""
+    if not name or not resource.effect:
+        return name
+    for group in resource.effect.effects.values() or []:
+        for raw in group:
+            if raw == name or pretty_effect(raw) == name:
+                return raw
+    return name
+
+
 class HubspaceLight(HubspaceBaseEntity, LightEntity):
     """Representation of an Afero light."""
 
@@ -217,6 +258,7 @@ class HubspaceLight(HubspaceBaseEntity, LightEntity):
             color_mode = NIGHT_LIGHT_MODE
             effect = None
         elif effect:
+            effect = raw_effect(self.resource, effect)
             color_mode = "sequence"
         elif (
             temperature and self.resource.supports_color_temperature
@@ -267,7 +309,7 @@ def build_effect_list(resource: Light) -> list[str] | None:
         effects.append(NIGHT_LIGHT_EFFECT)
     if resource.effect:
         for group in resource.effect.effects.values() or []:
-            effects.extend(group)
+            effects.extend(pretty_effect(e) for e in group if e not in HIDDEN_EFFECTS)
     return effects or None
 
 
@@ -282,7 +324,7 @@ def current_ha_effect(resource: Light, *, channel: str | None = None) -> str | N
         and resource.effect
         and resource.effect.effect
     ):
-        return resource.effect.effect
+        return pretty_effect(resource.effect.effect)
     return None
 
 
