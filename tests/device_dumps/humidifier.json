@@ -1,0 +1,1565 @@
+[
+  {
+    "id": "b8e4fe3c-1342-4476-af6b-91d897ff94af",
+    "device_id": "c3a35e0c-366a-467a-a8b1-e457b5a1196e",
+    "model": "VK-8529",
+    "device_class": "humidifier",
+    "default_name": "Smart Humidifier",
+    "default_image": "voke-6-gallon-humidifier-icon",
+    "friendly_name": "Humid",
+    "capabilities": [
+      {
+        "functionClass": "available",
+        "type": "boolean",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "visible",
+        "type": "boolean",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "direct",
+        "type": "boolean",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "ble-mac-address",
+        "type": "string",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "geo-coordinates",
+        "type": "object",
+        "schedulable": null,
+        "functionInstance": "system-device-location",
+        "_opts": {}
+      },
+      {
+        "functionClass": "scheduler-flags",
+        "type": "numeric",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "wifi-ssid",
+        "type": "string",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "wifi-rssi",
+        "type": "numeric",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "wifi-steady-state",
+        "type": "category",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {
+          "values": [
+            "not-connected",
+            "pending",
+            "connected",
+            "unknown-failure",
+            "association-failure",
+            "handshake-failed",
+            "echo-failed",
+            "ssid-not-found",
+            "ntp-failed"
+          ],
+          "categoryValues": [
+            {
+              "name": "not-connected",
+              "values": ["0"]
+            },
+            {
+              "name": "pending",
+              "values": ["1"]
+            },
+            {
+              "name": "connected",
+              "values": ["2"]
+            },
+            {
+              "name": "unknown-failure",
+              "values": ["3"]
+            },
+            {
+              "name": "association-failure",
+              "values": ["4"]
+            },
+            {
+              "name": "handshake-failed",
+              "values": ["5"]
+            },
+            {
+              "name": "echo-failed",
+              "values": ["6"]
+            },
+            {
+              "name": "ssid-not-found",
+              "values": ["7"]
+            },
+            {
+              "name": "ntp-failed",
+              "values": ["8"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "wifi-setup-state",
+        "type": "category",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {
+          "values": [
+            "not-connected",
+            "pending",
+            "connected",
+            "unknown-failure",
+            "association-failure",
+            "handshake-failed",
+            "echo-failed",
+            "ssid-not-found",
+            "ntp-failed"
+          ],
+          "categoryValues": [
+            {
+              "name": "not-connected",
+              "values": ["0"]
+            },
+            {
+              "name": "pending",
+              "values": ["1"]
+            },
+            {
+              "name": "connected",
+              "values": ["2"]
+            },
+            {
+              "name": "unknown-failure",
+              "values": ["3"]
+            },
+            {
+              "name": "association-failure",
+              "values": ["4"]
+            },
+            {
+              "name": "handshake-failed",
+              "values": ["5"]
+            },
+            {
+              "name": "echo-failed",
+              "values": ["6"]
+            },
+            {
+              "name": "ssid-not-found",
+              "values": ["7"]
+            },
+            {
+              "name": "ntp-failed",
+              "values": ["8"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "wifi-mac-address",
+        "type": "string",
+        "schedulable": null,
+        "functionInstance": null,
+        "_opts": {}
+      },
+      {
+        "functionClass": "error",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": "low-water-alert",
+        "_opts": {
+          "values": ["normal", "alerting"],
+          "categoryValues": [
+            {
+              "name": "normal",
+              "values": ["0"]
+            },
+            {
+              "name": "alerting",
+              "values": ["1"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "tank-clean-reset",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": null,
+        "_opts": {
+          "values": ["normal", "reset"],
+          "categoryValues": [
+            {
+              "name": "normal",
+              "values": ["0"]
+            },
+            {
+              "name": "reset",
+              "values": ["1"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "error",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": "humidifier-filter-replacement-needed",
+        "_opts": {
+          "values": ["normal", "alerting"],
+          "categoryValues": [
+            {
+              "name": "normal",
+              "values": ["0"]
+            },
+            {
+              "name": "alerting",
+              "values": ["1"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "humidity",
+        "type": "numeric",
+        "schedulable": true,
+        "functionInstance": "auto-target",
+        "_opts": {
+          "range": {
+            "min": 30,
+            "max": 80,
+            "step": 5
+          }
+        }
+      },
+      {
+        "functionClass": "humidity",
+        "type": "category",
+        "schedulable": true,
+        "functionInstance": "wellness-target",
+        "_opts": {
+          "values": [
+            "skin-hydration",
+            "wellness-sleep",
+            "cold-flu",
+            "congestion-cough"
+          ],
+          "categoryValues": [
+            {
+              "name": "skin-hydration",
+              "values": ["60"]
+            },
+            {
+              "name": "wellness-sleep",
+              "values": ["40"]
+            },
+            {
+              "name": "cold-flu",
+              "values": ["50"]
+            },
+            {
+              "name": "congestion-cough",
+              "values": ["55"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "error",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": "water-tank-lifted",
+        "_opts": {
+          "values": ["normal", "alerting"],
+          "categoryValues": [
+            {
+              "name": "normal",
+              "values": ["0"]
+            },
+            {
+              "name": "alerting",
+              "values": ["1"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "drying-mode",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": null,
+        "_opts": {
+          "values": ["on", "off"],
+          "categoryValues": [
+            {
+              "name": "on",
+              "values": ["1"]
+            },
+            {
+              "name": "off",
+              "values": ["0"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "humidity",
+        "type": "numeric",
+        "schedulable": false,
+        "functionInstance": "current",
+        "_opts": {
+          "range": {
+            "min": 0,
+            "max": 100,
+            "step": 1
+          }
+        }
+      },
+      {
+        "functionClass": "power",
+        "type": "category",
+        "schedulable": true,
+        "functionInstance": null,
+        "_opts": {
+          "values": ["on", "off"],
+          "categoryValues": [
+            {
+              "name": "on",
+              "values": ["1"]
+            },
+            {
+              "name": "off",
+              "values": ["0"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "error",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": "tank-cleaning-needed",
+        "_opts": {
+          "values": ["alerting", "normal"],
+          "categoryValues": [
+            {
+              "name": "alerting",
+              "values": ["1"]
+            },
+            {
+              "name": "normal",
+              "values": ["0"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "filter-reset",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": null,
+        "_opts": {
+          "values": ["normal", "reset"],
+          "categoryValues": [
+            {
+              "name": "normal",
+              "values": ["0"]
+            },
+            {
+              "name": "reset",
+              "values": ["1"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "humidity",
+        "type": "category",
+        "schedulable": true,
+        "functionInstance": "plant-care-target",
+        "_opts": {
+          "values": [
+            "adaptables",
+            "cacti-succulents",
+            "sub-tropical",
+            "tropical"
+          ],
+          "categoryValues": [
+            {
+              "name": "adaptables",
+              "values": ["50"]
+            },
+            {
+              "name": "cacti-succulents",
+              "values": ["35"]
+            },
+            {
+              "name": "sub-tropical",
+              "values": ["65"]
+            },
+            {
+              "name": "tropical",
+              "values": ["75"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "dark-mode",
+        "type": "category",
+        "schedulable": true,
+        "functionInstance": null,
+        "_opts": {
+          "values": ["off", "on"],
+          "categoryValues": [
+            {
+              "name": "off",
+              "values": ["0"]
+            },
+            {
+              "name": "on",
+              "values": ["1"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "mode",
+        "type": "category",
+        "schedulable": true,
+        "functionInstance": "humidifier-mode",
+        "_opts": {
+          "values": ["wellness", "sleep", "auto", "manual", "plant-care"],
+          "categoryValues": [
+            {
+              "name": "wellness",
+              "values": ["6"]
+            },
+            {
+              "name": "sleep",
+              "values": ["4"]
+            },
+            {
+              "name": "auto",
+              "values": ["3"]
+            },
+            {
+              "name": "manual",
+              "values": ["0"]
+            },
+            {
+              "name": "plant-care",
+              "values": ["5"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "power-off-timer",
+        "type": "numeric",
+        "schedulable": false,
+        "functionInstance": null,
+        "_opts": {
+          "range": {
+            "min": 0,
+            "max": 1440,
+            "step": 60
+          }
+        }
+      },
+      {
+        "functionClass": "atomization-level",
+        "type": "category",
+        "schedulable": true,
+        "functionInstance": "humidifier",
+        "_opts": {
+          "values": ["level-2", "level-1", "level-3"],
+          "categoryValues": [
+            {
+              "name": "level-2",
+              "values": ["2"]
+            },
+            {
+              "name": "level-1",
+              "values": ["1"]
+            },
+            {
+              "name": "level-3",
+              "values": ["3"]
+            }
+          ]
+        }
+      },
+      {
+        "functionClass": "indication",
+        "type": "category",
+        "schedulable": false,
+        "functionInstance": "filter-drying-mode",
+        "_opts": {
+          "values": ["inactive", "active"],
+          "categoryValues": [
+            {
+              "name": "inactive",
+              "values": ["0"]
+            },
+            {
+              "name": "active",
+              "values": ["1"]
+            }
+          ]
+        }
+      }
+    ],
+    "functions": [
+      {
+        "id": "f26f8617-0356-41fd-bb24-6e24ec6f2578",
+        "createdTimestampMs": 1771863613910,
+        "updatedTimestampMs": 1771863613910,
+        "functionClass": "error",
+        "functionInstance": "low-water-alert",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "ff103a6b-b90c-4e3c-b131-0178a9cdaed0",
+            "createdTimestampMs": 1771863613933,
+            "updatedTimestampMs": 1771863613933,
+            "name": "normal",
+            "deviceValues": [
+              {
+                "id": "446a7357-3f2b-4586-8b88-15a09ce298f3",
+                "createdTimestampMs": 1771863613957,
+                "updatedTimestampMs": 1771863613957,
+                "type": "attribute",
+                "key": "412",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "a675fc8c-9017-4cdd-94f8-81e41551aef5",
+            "createdTimestampMs": 1771863613973,
+            "updatedTimestampMs": 1771863613973,
+            "name": "alerting",
+            "deviceValues": [
+              {
+                "id": "f2d4fbcb-8085-41f0-8107-8905721882f0",
+                "createdTimestampMs": 1771863613997,
+                "updatedTimestampMs": 1771863613997,
+                "type": "attribute",
+                "key": "412",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "40a0a6fb-96a3-4f1d-9612-f513e6ac7063",
+        "createdTimestampMs": 1771863613803,
+        "updatedTimestampMs": 1771863613803,
+        "functionClass": "tank-clean-reset",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "2bc04899-7eed-4bbe-86bb-4e3592179b55",
+            "createdTimestampMs": 1771863613827,
+            "updatedTimestampMs": 1771863613827,
+            "name": "normal",
+            "deviceValues": [
+              {
+                "id": "a5ecdf7a-7a33-4a59-9345-8e6be2c624c0",
+                "createdTimestampMs": 1771863613850,
+                "updatedTimestampMs": 1771863613850,
+                "type": "attribute",
+                "key": "202",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "8cde236d-444b-45f7-9d91-b0b97d7b1490",
+            "createdTimestampMs": 1771863613868,
+            "updatedTimestampMs": 1771863613868,
+            "name": "reset",
+            "deviceValues": [
+              {
+                "id": "3ba23de0-7093-45b8-947b-c541650d988b",
+                "createdTimestampMs": 1771863613893,
+                "updatedTimestampMs": 1771863613893,
+                "type": "attribute",
+                "key": "202",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "92433fa7-f86c-42a0-8f78-ce5bd2b56993",
+        "createdTimestampMs": 1771863614151,
+        "updatedTimestampMs": 1771863614151,
+        "functionClass": "error",
+        "functionInstance": "humidifier-filter-replacement-needed",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "e9b760a0-eb31-4189-a193-171c006ed7bb",
+            "createdTimestampMs": 1771863614175,
+            "updatedTimestampMs": 1771863614175,
+            "name": "normal",
+            "deviceValues": [
+              {
+                "id": "5fa562b7-3d63-42d6-9b2e-9dd482d8e5bc",
+                "createdTimestampMs": 1771863614199,
+                "updatedTimestampMs": 1771863614199,
+                "type": "attribute",
+                "key": "414",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "26eb7d21-1faa-4aaa-95f3-7ff983b1d811",
+            "createdTimestampMs": 1771863614215,
+            "updatedTimestampMs": 1771863614215,
+            "name": "alerting",
+            "deviceValues": [
+              {
+                "id": "0cad9565-64f1-4f28-9f0f-ad32198402c1",
+                "createdTimestampMs": 1771863614239,
+                "updatedTimestampMs": 1771863614239,
+                "type": "attribute",
+                "key": "414",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "987e9ed1-2686-428c-aaf0-582fc5e35a0f",
+        "createdTimestampMs": 1771863613040,
+        "updatedTimestampMs": 1771863613040,
+        "functionClass": "humidity",
+        "functionInstance": "auto-target",
+        "type": "numeric",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "bef9bd8a-4a24-4a84-83c5-7641015f2747",
+            "createdTimestampMs": 1771863613063,
+            "updatedTimestampMs": 1771863613063,
+            "name": "target",
+            "deviceValues": [
+              {
+                "id": "2b4eb1b3-255e-47aa-b96f-4ca11deada86",
+                "createdTimestampMs": 1771863613086,
+                "updatedTimestampMs": 1771863613086,
+                "type": "attribute",
+                "key": "12"
+              }
+            ],
+            "range": {
+              "min": 30,
+              "max": 80,
+              "step": 5
+            }
+          }
+        ]
+      },
+      {
+        "id": "3a6077e4-f084-45ad-8ac3-9f0afbf10250",
+        "createdTimestampMs": 1771863613344,
+        "updatedTimestampMs": 1771863613344,
+        "functionClass": "humidity",
+        "functionInstance": "wellness-target",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "a3574d49-e10d-4b08-8d21-ef11842afedb",
+            "createdTimestampMs": 1771863613492,
+            "updatedTimestampMs": 1771863613492,
+            "name": "skin-hydration",
+            "deviceValues": [
+              {
+                "id": "66ee22fd-01bc-4a70-96ea-309aca033417",
+                "createdTimestampMs": 1771863613516,
+                "updatedTimestampMs": 1771863613516,
+                "type": "attribute",
+                "key": "14",
+                "value": "60"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "1521cdf9-1cb5-4eb6-97c5-bafd4dae92b4",
+            "createdTimestampMs": 1771863613370,
+            "updatedTimestampMs": 1771863613370,
+            "name": "wellness-sleep",
+            "deviceValues": [
+              {
+                "id": "aca86235-f0b3-4617-82a7-c7c4462506b3",
+                "createdTimestampMs": 1771863613396,
+                "updatedTimestampMs": 1771863613396,
+                "type": "attribute",
+                "key": "14",
+                "value": "40"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "22d0506b-4053-446e-b8d5-a8f510329bbc",
+            "createdTimestampMs": 1771863613413,
+            "updatedTimestampMs": 1771863613413,
+            "name": "cold-flu",
+            "deviceValues": [
+              {
+                "id": "46a43417-a2af-4c05-b2a6-02792d50a6c7",
+                "createdTimestampMs": 1771863613437,
+                "updatedTimestampMs": 1771863613437,
+                "type": "attribute",
+                "key": "14",
+                "value": "50"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "1f0cd4eb-05d0-4461-8836-38d2dce959dd",
+            "createdTimestampMs": 1771863613453,
+            "updatedTimestampMs": 1771863613453,
+            "name": "congestion-cough",
+            "deviceValues": [
+              {
+                "id": "374e342b-5fea-4efa-8505-7611efad4ac7",
+                "createdTimestampMs": 1771863613476,
+                "updatedTimestampMs": 1771863613476,
+                "type": "attribute",
+                "key": "14",
+                "value": "55"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "9417687a-c364-467d-ac0c-c0ba4e5f1e74",
+        "createdTimestampMs": 1771863614014,
+        "updatedTimestampMs": 1771863614014,
+        "functionClass": "error",
+        "functionInstance": "water-tank-lifted",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "24234504-e037-420d-939e-735c5afe3990",
+            "createdTimestampMs": 1771863614071,
+            "updatedTimestampMs": 1771863614071,
+            "name": "normal",
+            "deviceValues": [
+              {
+                "id": "ddc9820c-2f48-482b-ad88-f57af46bbb93",
+                "createdTimestampMs": 1771863614095,
+                "updatedTimestampMs": 1771863614095,
+                "type": "attribute",
+                "key": "413",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "cb87b8ec-417b-413a-83ee-259d031ca769",
+            "createdTimestampMs": 1771863614110,
+            "updatedTimestampMs": 1771863614110,
+            "name": "alerting",
+            "deviceValues": [
+              {
+                "id": "05c8da13-b52b-4a27-89ab-3826e79d83db",
+                "createdTimestampMs": 1771863614134,
+                "updatedTimestampMs": 1771863614134,
+                "type": "attribute",
+                "key": "413",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "d1db474e-ed6c-4c1a-9dc8-7a33c8b7892c",
+        "createdTimestampMs": 1771863614472,
+        "updatedTimestampMs": 1771863614472,
+        "functionClass": "drying-mode",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "0cba2fbf-2617-40be-b365-0831bb60ffb1",
+            "createdTimestampMs": 1771863614545,
+            "updatedTimestampMs": 1771863614545,
+            "name": "on",
+            "deviceValues": [
+              {
+                "id": "825017b6-5eba-4144-935a-59d9808b92e9",
+                "createdTimestampMs": 1771863614572,
+                "updatedTimestampMs": 1771863614572,
+                "type": "attribute",
+                "key": "22",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "ed487361-b9d3-42f7-937e-2f3f42d6d20b",
+            "createdTimestampMs": 1771863614496,
+            "updatedTimestampMs": 1771863614496,
+            "name": "off",
+            "deviceValues": [
+              {
+                "id": "027138fe-e808-4b37-ba3a-2e178083ad11",
+                "createdTimestampMs": 1771863614527,
+                "updatedTimestampMs": 1771863614527,
+                "type": "attribute",
+                "key": "22",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "f6d69f27-762d-4862-a121-445ce5c0f31b",
+        "createdTimestampMs": 1771863613535,
+        "updatedTimestampMs": 1771863613535,
+        "functionClass": "humidity",
+        "functionInstance": "current",
+        "type": "numeric",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "5823271d-c985-467d-af2c-259170121bfb",
+            "createdTimestampMs": 1771863613558,
+            "updatedTimestampMs": 1771863613558,
+            "name": "current",
+            "deviceValues": [
+              {
+                "id": "65a4f1af-ab5b-4fc6-bdf2-f4862e8e8b39",
+                "createdTimestampMs": 1771863613583,
+                "updatedTimestampMs": 1771863613583,
+                "type": "attribute",
+                "key": "21"
+              }
+            ],
+            "range": {
+              "min": 0,
+              "max": 100,
+              "step": 1
+            }
+          }
+        ]
+      },
+      {
+        "id": "bf43d99f-2801-4af2-aa54-84f7d46e76d1",
+        "createdTimestampMs": 1771863612048,
+        "updatedTimestampMs": 1771863612048,
+        "functionClass": "power",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "53d0e47a-ae7e-4c76-ae0f-1bce7afd1f15",
+            "createdTimestampMs": 1771863612431,
+            "updatedTimestampMs": 1771863612431,
+            "name": "on",
+            "deviceValues": [
+              {
+                "id": "fd23dc6a-07a4-4b82-aa23-5a1b05ae3711",
+                "createdTimestampMs": 1771863612456,
+                "updatedTimestampMs": 1771863612456,
+                "type": "attribute",
+                "key": "1",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "68592d52-2eec-45ff-9e2b-96b23be18ac2",
+            "createdTimestampMs": 1771863612180,
+            "updatedTimestampMs": 1771863612180,
+            "name": "off",
+            "deviceValues": [
+              {
+                "id": "1092cf58-63f0-4fbd-888b-23e7fd35a33d",
+                "createdTimestampMs": 1771863612328,
+                "updatedTimestampMs": 1771863612328,
+                "type": "attribute",
+                "key": "1",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "76cc8c3f-2422-40bc-a193-0ea50fe65c03",
+        "createdTimestampMs": 1771863614256,
+        "updatedTimestampMs": 1771863614256,
+        "functionClass": "error",
+        "functionInstance": "tank-cleaning-needed",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "004b0d18-f8a7-4b90-8dce-9f50787af8ec",
+            "createdTimestampMs": 1771863614320,
+            "updatedTimestampMs": 1771863614320,
+            "name": "alerting",
+            "deviceValues": [
+              {
+                "id": "68eefefe-050a-48d4-a92e-bf0cebc20066",
+                "createdTimestampMs": 1771863614343,
+                "updatedTimestampMs": 1771863614343,
+                "type": "attribute",
+                "key": "415",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "020b2369-341a-44e9-8c99-e7d1f4f6dc42",
+            "createdTimestampMs": 1771863614280,
+            "updatedTimestampMs": 1771863614280,
+            "name": "normal",
+            "deviceValues": [
+              {
+                "id": "02431d0e-a6de-4088-aa4d-b666db4df795",
+                "createdTimestampMs": 1771863614304,
+                "updatedTimestampMs": 1771863614304,
+                "type": "attribute",
+                "key": "415",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "90b9c2b0-6df9-4b9b-887d-62e7ed8f834d",
+        "createdTimestampMs": 1771863613702,
+        "updatedTimestampMs": 1771863613702,
+        "functionClass": "filter-reset",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "35288fea-26f1-4fa1-9259-a65aa63af699",
+            "createdTimestampMs": 1771863613726,
+            "updatedTimestampMs": 1771863613726,
+            "name": "normal",
+            "deviceValues": [
+              {
+                "id": "b05cdb73-1e83-45e2-978b-59ba98fa56b5",
+                "createdTimestampMs": 1771863613748,
+                "updatedTimestampMs": 1771863613748,
+                "type": "attribute",
+                "key": "201",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "7de4c325-1d18-4042-be41-8a59a24075c3",
+            "createdTimestampMs": 1771863613764,
+            "updatedTimestampMs": 1771863613764,
+            "name": "reset",
+            "deviceValues": [
+              {
+                "id": "9ce69435-8bfb-4514-926d-6088cfa81504",
+                "createdTimestampMs": 1771863613787,
+                "updatedTimestampMs": 1771863613787,
+                "type": "attribute",
+                "key": "201",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "264a66da-9b2d-40c3-9b60-d178ccd7f081",
+        "createdTimestampMs": 1771863613101,
+        "updatedTimestampMs": 1771863613101,
+        "functionClass": "humidity",
+        "functionInstance": "plant-care-target",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "7ff84bcd-024c-40be-93b2-53fe60592587",
+            "createdTimestampMs": 1771863613223,
+            "updatedTimestampMs": 1771863613223,
+            "name": "adaptables",
+            "deviceValues": [
+              {
+                "id": "2bca3ceb-d8e9-4170-92b7-e5a57fcf7b84",
+                "createdTimestampMs": 1771863613248,
+                "updatedTimestampMs": 1771863613248,
+                "type": "attribute",
+                "key": "13",
+                "value": "50"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "8cbc9627-6cb9-42a8-b5e6-99e37b504844",
+            "createdTimestampMs": 1771863613126,
+            "updatedTimestampMs": 1771863613126,
+            "name": "cacti-succulents",
+            "deviceValues": [
+              {
+                "id": "f4e24d2c-1a59-4e39-b2d8-feb8ddba804a",
+                "createdTimestampMs": 1771863613184,
+                "updatedTimestampMs": 1771863613184,
+                "type": "attribute",
+                "key": "13",
+                "value": "35"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "5b7e071e-15ac-40ce-8ab5-3bee02d767a7",
+            "createdTimestampMs": 1771863613265,
+            "updatedTimestampMs": 1771863613265,
+            "name": "sub-tropical",
+            "deviceValues": [
+              {
+                "id": "d10335a9-8ef0-4e3e-8da5-b60ec98582d4",
+                "createdTimestampMs": 1771863613289,
+                "updatedTimestampMs": 1771863613289,
+                "type": "attribute",
+                "key": "13",
+                "value": "65"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "8a716668-c7d1-4897-87fb-118fd10aae83",
+            "createdTimestampMs": 1771863613305,
+            "updatedTimestampMs": 1771863613305,
+            "name": "tropical",
+            "deviceValues": [
+              {
+                "id": "8a0be920-6ac9-4da5-b56f-e9e642cbf22f",
+                "createdTimestampMs": 1771863613328,
+                "updatedTimestampMs": 1771863613328,
+                "type": "attribute",
+                "key": "13",
+                "value": "75"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "5e19e7a5-4d5b-47d6-af09-97ae090b0a8f",
+        "createdTimestampMs": 1771863613600,
+        "updatedTimestampMs": 1771863613600,
+        "functionClass": "dark-mode",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "189a2fbe-f8f9-4903-8d58-d4d5ea742408",
+            "createdTimestampMs": 1771863613623,
+            "updatedTimestampMs": 1771863613623,
+            "name": "off",
+            "deviceValues": [
+              {
+                "id": "8d55c7e5-a5f2-44ff-bfec-f515454ca730",
+                "createdTimestampMs": 1771863613646,
+                "updatedTimestampMs": 1771863613646,
+                "type": "attribute",
+                "key": "200",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "44fb2356-054b-4de0-837d-5ae2e2f222c3",
+            "createdTimestampMs": 1771863613662,
+            "updatedTimestampMs": 1771863613662,
+            "name": "on",
+            "deviceValues": [
+              {
+                "id": "8e908d9f-57ed-4e3a-94da-985f1daa5b46",
+                "createdTimestampMs": 1771863613685,
+                "updatedTimestampMs": 1771863613685,
+                "type": "attribute",
+                "key": "200",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "f6080a09-4350-4a5a-8e6a-617aa4b5e0d7",
+        "createdTimestampMs": 1771863612474,
+        "updatedTimestampMs": 1771863612474,
+        "functionClass": "mode",
+        "functionInstance": "humidifier-mode",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "79a22b41-ecf2-49ab-9e98-e79aeb619da2",
+            "createdTimestampMs": 1771863612755,
+            "updatedTimestampMs": 1771863612755,
+            "name": "wellness",
+            "deviceValues": [
+              {
+                "id": "0f08178f-9e2f-411c-bdb1-141e8b08a207",
+                "createdTimestampMs": 1771863612779,
+                "updatedTimestampMs": 1771863612779,
+                "type": "attribute",
+                "key": "2",
+                "value": "6"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "1853384e-89b0-48fe-8125-c4c72f1a510e",
+            "createdTimestampMs": 1771863612675,
+            "updatedTimestampMs": 1771863612675,
+            "name": "sleep",
+            "deviceValues": [
+              {
+                "id": "96aae5c7-8e8d-475a-a676-a772dc1d2578",
+                "createdTimestampMs": 1771863612700,
+                "updatedTimestampMs": 1771863612700,
+                "type": "attribute",
+                "key": "2",
+                "value": "4"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "c6ee6468-0807-407e-918b-b13d5a2a1fe0",
+            "createdTimestampMs": 1771863612635,
+            "updatedTimestampMs": 1771863612635,
+            "name": "auto",
+            "deviceValues": [
+              {
+                "id": "917e711b-c6b3-4cbd-bfe0-cb4c21996c3f",
+                "createdTimestampMs": 1771863612658,
+                "updatedTimestampMs": 1771863612658,
+                "type": "attribute",
+                "key": "2",
+                "value": "3"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "34c1d1f7-6351-4a1c-b72a-6a59c0a1e4f3",
+            "createdTimestampMs": 1771863612538,
+            "updatedTimestampMs": 1771863612538,
+            "name": "manual",
+            "deviceValues": [
+              {
+                "id": "09cdc7ee-98b9-4fe8-9d9b-f6c97d4b8928",
+                "createdTimestampMs": 1771863612596,
+                "updatedTimestampMs": 1771863612596,
+                "type": "attribute",
+                "key": "2",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "f46e03cc-e275-4120-a6a6-44b82e84d6f0",
+            "createdTimestampMs": 1771863612716,
+            "updatedTimestampMs": 1771863612716,
+            "name": "plant-care",
+            "deviceValues": [
+              {
+                "id": "39d86064-3796-4d29-9084-5a632cc1be79",
+                "createdTimestampMs": 1771863612739,
+                "updatedTimestampMs": 1771863612739,
+                "type": "attribute",
+                "key": "2",
+                "value": "5"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "7b807d5c-7915-4891-9a07-ff630352937a",
+        "createdTimestampMs": 1771863612975,
+        "updatedTimestampMs": 1771863612975,
+        "functionClass": "power-off-timer",
+        "type": "numeric",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "f3983269-bba8-48e7-8def-60fd782a2a1b",
+            "createdTimestampMs": 1771863612999,
+            "updatedTimestampMs": 1771863612999,
+            "name": "timer",
+            "deviceValues": [
+              {
+                "id": "967c389d-8337-4a20-a141-0d258b8340d3",
+                "createdTimestampMs": 1771863613023,
+                "updatedTimestampMs": 1771863613023,
+                "type": "attribute",
+                "key": "6"
+              }
+            ],
+            "range": {
+              "min": 0,
+              "max": 1440,
+              "step": 60
+            }
+          }
+        ]
+      },
+      {
+        "id": "bbda3429-50b3-4a91-a221-b2b2ef4536c8",
+        "createdTimestampMs": 1771863612796,
+        "updatedTimestampMs": 1771863612796,
+        "functionClass": "atomization-level",
+        "functionInstance": "humidifier",
+        "type": "category",
+        "schedulable": true,
+        "values": [
+          {
+            "id": "6e18b1a6-0219-4b85-8d5e-ed9b67edeca7",
+            "createdTimestampMs": 1771863612895,
+            "updatedTimestampMs": 1771863612895,
+            "name": "level-2",
+            "deviceValues": [
+              {
+                "id": "e348d63d-df22-4928-9c6d-5e4d17f3e5c1",
+                "createdTimestampMs": 1771863612918,
+                "updatedTimestampMs": 1771863612918,
+                "type": "attribute",
+                "key": "4",
+                "value": "2"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "f5158f64-c6a2-4ae2-a1ee-563330640b86",
+            "createdTimestampMs": 1771863612854,
+            "updatedTimestampMs": 1771863612854,
+            "name": "level-1",
+            "deviceValues": [
+              {
+                "id": "3c5d0ac7-9131-4fef-84f2-a1003e99e8af",
+                "createdTimestampMs": 1771863612878,
+                "updatedTimestampMs": 1771863612878,
+                "type": "attribute",
+                "key": "4",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "21f950fc-5bf6-4a09-8e0d-d7c476597514",
+            "createdTimestampMs": 1771863612934,
+            "updatedTimestampMs": 1771863612934,
+            "name": "level-3",
+            "deviceValues": [
+              {
+                "id": "69c0c200-6840-429d-9a27-f6c07aef6860",
+                "createdTimestampMs": 1771863612958,
+                "updatedTimestampMs": 1771863612958,
+                "type": "attribute",
+                "key": "4",
+                "value": "3"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      },
+      {
+        "id": "e8175089-0508-4590-bfc6-15ca788d5b57",
+        "createdTimestampMs": 1771863614359,
+        "updatedTimestampMs": 1771863614359,
+        "functionClass": "indication",
+        "functionInstance": "filter-drying-mode",
+        "type": "category",
+        "schedulable": false,
+        "values": [
+          {
+            "id": "ef30270d-600f-4e85-b567-8ab8fab8627e",
+            "createdTimestampMs": 1771863614382,
+            "updatedTimestampMs": 1771863614382,
+            "name": "inactive",
+            "deviceValues": [
+              {
+                "id": "6c29dda2-4e05-4471-bbb7-cf227456a996",
+                "createdTimestampMs": 1771863614407,
+                "updatedTimestampMs": 1771863614407,
+                "type": "attribute",
+                "key": "417",
+                "value": "0"
+              }
+            ],
+            "range": {}
+          },
+          {
+            "id": "a84a9c42-db35-4941-b0f3-d51f8fe0252b",
+            "createdTimestampMs": 1771863614424,
+            "updatedTimestampMs": 1771863614424,
+            "name": "active",
+            "deviceValues": [
+              {
+                "id": "46c6e24e-e6a4-4b28-9f11-95a4e82e3d35",
+                "createdTimestampMs": 1771863614447,
+                "updatedTimestampMs": 1771863614447,
+                "type": "attribute",
+                "key": "417",
+                "value": "1"
+              }
+            ],
+            "range": {}
+          }
+        ]
+      }
+    ],
+    "states": [
+      {
+        "functionClass": "error",
+        "value": "normal",
+        "lastUpdateTime": 0,
+        "functionInstance": "low-water-alert"
+      },
+      {
+        "functionClass": "error",
+        "value": "normal",
+        "lastUpdateTime": 0,
+        "functionInstance": "humidifier-filter-replacement-needed"
+      },
+      {
+        "functionClass": "humidity",
+        "value": 60,
+        "lastUpdateTime": 0,
+        "functionInstance": "auto-target"
+      },
+      {
+        "functionClass": "humidity",
+        "value": "wellness-sleep",
+        "lastUpdateTime": 0,
+        "functionInstance": "wellness-target"
+      },
+      {
+        "functionClass": "error",
+        "value": "normal",
+        "lastUpdateTime": 0,
+        "functionInstance": "water-tank-lifted"
+      },
+      {
+        "functionClass": "drying-mode",
+        "value": "off",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "humidity",
+        "value": 58,
+        "lastUpdateTime": 0,
+        "functionInstance": "current"
+      },
+      {
+        "functionClass": "power",
+        "value": "on",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "error",
+        "value": "normal",
+        "lastUpdateTime": 0,
+        "functionInstance": "tank-cleaning-needed"
+      },
+      {
+        "functionClass": "filter-reset",
+        "value": "normal",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "humidity",
+        "value": "adaptables",
+        "lastUpdateTime": 0,
+        "functionInstance": "plant-care-target"
+      },
+      {
+        "functionClass": "dark-mode",
+        "value": "off",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "mode",
+        "value": "manual",
+        "lastUpdateTime": 0,
+        "functionInstance": "humidifier-mode"
+      },
+      {
+        "functionClass": "power-off-timer",
+        "value": 0,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "atomization-level",
+        "value": "level-2",
+        "lastUpdateTime": 0,
+        "functionInstance": "humidifier"
+      },
+      {
+        "functionClass": "indication",
+        "value": "inactive",
+        "lastUpdateTime": 0,
+        "functionInstance": "filter-drying-mode"
+      },
+      {
+        "functionClass": "wifi-ssid",
+        "value": "050e7037-0760-4317-86de-4b2400014b36",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-rssi",
+        "value": -37,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-steady-state",
+        "value": "connected",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-setup-state",
+        "value": "connected",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "wifi-mac-address",
+        "value": "10b3a1b1-0de0-433b-91ac-47775470a12d",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "geo-coordinates",
+        "value": {
+          "geo-coordinates": {
+            "latitude": "0",
+            "longitude": "0"
+          }
+        },
+        "lastUpdateTime": 0,
+        "functionInstance": "system-device-location"
+      },
+      {
+        "functionClass": "scheduler-flags",
+        "value": 0,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "available",
+        "value": true,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "visible",
+        "value": true,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "direct",
+        "value": true,
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      },
+      {
+        "functionClass": "ble-mac-address",
+        "value": "83d975fe-e2dd-4594-90b3-6f1731e2a1b9",
+        "lastUpdateTime": 0,
+        "functionInstance": null
+      }
+    ],
+    "children": [],
+    "manufacturerName": "Vissani",
+    "split": null,
+    "version_data": null
+  }
+]

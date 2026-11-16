@@ -229,6 +229,31 @@ BINARY_SENSORS = {
         device_class=BinarySensorDeviceClass.PROBLEM,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
+    # humidifier
+    "error|low-water-alert": BinarySensorEntityDescription(
+        key="error|low-water-alert",
+        name="Low Water",
+        device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "error|water-tank-lifted": BinarySensorEntityDescription(
+        key="error|water-tank-lifted",
+        name="Water Tank Lifted",
+        device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "error|humidifier-filter-replacement-needed": BinarySensorEntityDescription(
+        key="error|humidifier-filter-replacement-needed",
+        name="Filter Replacement Needed",
+        device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "error|tank-cleaning-needed": BinarySensorEntityDescription(
+        key="error|tank-cleaning-needed",
+        name="Tank Cleaning Needed",
+        device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
     # Security System
     "tampered|None": BinarySensorEntityDescription(
         key="tampered|None",

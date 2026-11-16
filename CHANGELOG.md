@@ -4,6 +4,18 @@ All notable changes to the Hubspace Home Assistant integration are documented he
 Release notes on GitHub Releases are kept in sync for recent versions so HACS update
 notifications stay useful.
 
+## 8.4.0
+
+- Add humidifier support (Vissani `VK-8529`, Hubspace device class
+  `humidifier`) as a `humidifier` entity: power, mode, current humidity, and
+  the target humidity used by `auto` mode, plus `Mist Level`,
+  `Wellness Target`, `Plant Care Target`, `Dark Mode`, and `Drying Mode`
+  selects and a `Power Off Timer` number
+  ([#277](https://github.com/jdeath/Hubspace-Homeassistant/issues/277)).
+- Add `Low Water`, `Water Tank Lifted`, `Filter Replacement Needed`, and
+  `Tank Cleaning Needed` diagnostic binary sensors reported by the humidifier.
+- Require `aioafero==9.4.0`.
+
 ## 8.3.0
 
 - Enable near real-time updates via Conclave (websocket). Configurable in
