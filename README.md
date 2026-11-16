@@ -38,7 +38,7 @@ resources are still created.
 - Fan [`fan`] — On/off, speed, direction, preset (e.g. breeze) when exposed
 - Humidifier [`humidifier`] — Dehumidifiers and humidifiers — on/off, mode,
   current/target humidity; extras such as fan speed, pump, and mist level
-  appear as selects, and the humidifier power-off timer as a number
+  appear as selects
 - Light [`light`] — On/off, brightness, color temp, RGB, effects; dual-channel
   fixtures present as separate color/white lights; **Night Light Mode** as an
   effect when the fixture exposes API `night-light` color-mode

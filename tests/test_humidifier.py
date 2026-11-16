@@ -15,11 +15,6 @@ from homeassistant.components.humidifier import (
     SERVICE_SET_HUMIDITY,
     SERVICE_SET_MODE,
 )
-from homeassistant.components.number import (
-    ATTR_VALUE,
-    DOMAIN as NUMBER_DOMAIN,
-    SERVICE_SET_VALUE,
-)
 from homeassistant.components.select import (
     ATTR_OPTION,
     DOMAIN as SELECT_DOMAIN,
@@ -46,7 +41,6 @@ dehumidifier_id = "humidifier.server_closet_dehumidifier"
 humidifier = create_devices_from_data("humidifier.json")[0]
 humidifier_id = "humidifier.humid"
 humidifier_mist_level_id = "select.humid_mist_level"
-humidifier_timer_id = "number.humid_power_off_timer"
 
 
 @pytest.fixture
@@ -200,7 +194,7 @@ async def _call_humidifier(hass, bridge, domain, service, entity_id, data):
 
 @pytest.mark.asyncio
 async def test_humidifier_async_setup_entry(mocked_humidifier):
-    """Ensure humidifiers are discovered with their selects, number and state."""
+    """Ensure humidifiers are discovered with their selects and state."""
     hass, _, _ = mocked_humidifier
     assert er.async_get(hass).async_get(humidifier_id) is not None
     entity = hass.states.get(humidifier_id)
@@ -223,7 +217,6 @@ async def test_humidifier_async_setup_entry(mocked_humidifier):
     assert hass.states.get("select.humid_wellness_target").state == "wellness-sleep"
     assert hass.states.get("select.humid_plant_care_target").state == "adaptables"
     assert hass.states.get("select.humid_dark_mode").state == "off"
-    assert hass.states.get(humidifier_timer_id).state == "0"
 
 
 @pytest.mark.asyncio
@@ -245,8 +238,8 @@ async def test_humidifier_services(mocked_humidifier):
 
 
 @pytest.mark.asyncio
-async def test_humidifier_select_and_number(mocked_humidifier):
-    """Ensure the mist level select and timer number reach the controller."""
+async def test_humidifier_select(mocked_humidifier):
+    """Ensure the mist level select reaches the controller."""
     hass, _, bridge = mocked_humidifier
     resource = bridge.humidifiers[humidifier.id]
     entity = await _call_humidifier(
@@ -259,16 +252,6 @@ async def test_humidifier_select_and_number(mocked_humidifier):
     )
     assert entity.state == "level-3"
     assert resource.selects[("atomization-level", "humidifier")].selected == "level-3"
-    entity = await _call_humidifier(
-        hass,
-        bridge,
-        NUMBER_DOMAIN,
-        SERVICE_SET_VALUE,
-        humidifier_timer_id,
-        {ATTR_VALUE: 120},
-    )
-    assert float(entity.state) == 120
-    assert resource.numbers[("power-off-timer", None)].value == 120
 
 
 @pytest.mark.asyncio
