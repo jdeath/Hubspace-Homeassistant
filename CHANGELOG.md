@@ -9,8 +9,9 @@ notifications stay useful.
 - Add humidifier support (Vissani `VK-8529`, Hubspace device class
   `humidifier`) as a `humidifier` entity: power, mode, current humidity, and
   the target humidity used by `auto` mode, plus `Mist Level`,
-  `Wellness Target`, `Plant Care Target`, `Dark Mode`, and `Drying Mode`
-  selects and a `Power Off Timer` number
+  `Wellness Target`, `Plant Care Target`, and `Dark Mode` selects and a
+  `Power Off Timer` number. Modes and select options have display labels;
+  their state values are unchanged
   ([#277](https://github.com/jdeath/Hubspace-Homeassistant/issues/277)).
 - Add `Low Water`, `Water Tank Lifted`, `Filter Replacement Needed`, and
   `Tank Cleaning Needed` diagnostic binary sensors reported by the humidifier.

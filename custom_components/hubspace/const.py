@@ -90,6 +90,15 @@ DEVICE_CLASS_TO_ENTITY_MAP: Final[dict[str, str]] = {
     DEVICE_CLASS_WATER_TIMER: ENTITY_VALVE,
 }
 
+# Selects whose options have display labels in strings.json, keyed by
+# (functionClass, functionInstance)
+SELECT_TRANSLATION_KEYS: Final[dict[tuple[str, str | None], str]] = {
+    ("atomization-level", "humidifier"): "mist_level",
+    ("dark-mode", None): "dark_mode",
+    ("humidity", "plant-care-target"): "plant_care_target",
+    ("humidity", "wellness-target"): "wellness_target",
+}
+
 UNMAPPED_DEVICE_CLASSES: Final[list[str]] = [
     # Parent device for a fan / light combo
     "ceiling-fan",

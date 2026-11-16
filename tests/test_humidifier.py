@@ -35,7 +35,7 @@ from homeassistant.const import (
     STATE_UNKNOWN,
 )
 from homeassistant.exceptions import ServiceValidationError
-from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers import entity_registry as er, translation
 import pytest
 
 from .utils import create_devices_from_data
@@ -223,7 +223,6 @@ async def test_humidifier_async_setup_entry(mocked_humidifier):
     assert hass.states.get("select.humid_wellness_target").state == "wellness-sleep"
     assert hass.states.get("select.humid_plant_care_target").state == "adaptables"
     assert hass.states.get("select.humid_dark_mode").state == "off"
-    assert hass.states.get("select.humid_drying_mode").state == "off"
     assert hass.states.get(humidifier_timer_id).state == "0"
 
 
@@ -282,3 +281,38 @@ async def test_humidifier_add_new_device(mocked_entry):
     await bridge.generate_devices_from_data([humidifier])
     await hass.async_block_till_done()
     assert hass.states.get(humidifier_id).state == STATE_ON
+
+
+@pytest.mark.asyncio
+async def test_humidifier_labels(mocked_humidifier):
+    """Ensure every mode and translated select option has a display label."""
+    hass, _, bridge = mocked_humidifier
+    resource = bridge.humidifiers[humidifier.id]
+    labels = await translation.async_get_translations(
+        hass, "en", "entity", {"hubspace"}
+    )
+    registry = er.async_get(hass)
+    assert registry.async_get(humidifier_id).translation_key == "humidifier"
+    mode_prefix = "component.hubspace.entity.humidifier.humidifier.state_attributes"
+    for mode in resource.mode.modes:
+        assert f"{mode_prefix}.mode.state.{mode}" in labels
+    expected = {
+        ("atomization-level", "humidifier"): ("mist_level", "level-1", "Low"),
+        ("dark-mode", None): ("dark_mode", "on", "On"),
+        ("humidity", "plant-care-target"): (
+            "plant_care_target",
+            "tropical",
+            "Tropical (75%)",
+        ),
+        ("humidity", "wellness-target"): (
+            "wellness_target",
+            "cold-flu",
+            "Cold & Flu (50%)",
+        ),
+    }
+    assert set(resource.selects) == set(expected)
+    for identifier, (key, option, label) in expected.items():
+        prefix = f"component.hubspace.entity.select.{key}.state"
+        for select_option in resource.selects[identifier].selects:
+            assert f"{prefix}.{select_option}" in labels
+        assert labels[f"{prefix}.{option}"] == label

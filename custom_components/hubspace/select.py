@@ -10,7 +10,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .bridge import HubspaceBridge
-from .const import DOMAIN
+from .const import DOMAIN, SELECT_TRANSLATION_KEYS
 from .entity import HubspaceBaseEntity
 
 
@@ -29,6 +29,7 @@ class AferoSelectEntitiy(HubspaceBaseEntity, SelectEntity):
         super().__init__(bridge, controller, resource, instance=str(identifier))
         self._identifier: tuple[str, str] = identifier
         self._attr_name = resource.selects[identifier].name
+        self._attr_translation_key = SELECT_TRANSLATION_KEYS.get(identifier)
 
     @property
     def current_option(self) -> str:

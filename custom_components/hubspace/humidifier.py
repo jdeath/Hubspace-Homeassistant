@@ -116,6 +116,7 @@ class HubspaceHumidifier(HubspaceDehumidifier):
     """
 
     _attr_device_class = HumidifierDeviceClass.HUMIDIFIER
+    _attr_translation_key = "humidifier"
 
 
 async def async_setup_entry(
