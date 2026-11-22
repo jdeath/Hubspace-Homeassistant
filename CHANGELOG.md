@@ -4,6 +4,15 @@ All notable changes to the Hubspace Home Assistant integration are documented he
 Release notes on GitHub Releases are kept in sync for recent versions so HACS update
 notifications stay useful.
 
+## Unreleased
+
+- Pin aioafero to git commit `faeaaaf` (dev build, version 9.4.0) until 9.4.0
+  is on PyPI. It keeps Conclave numeric values such as dehumidifier current
+  humidity as integers instead of flipping to strings
+  ([aioafero #107](https://github.com/Expl0dingBanana/aioafero/issues/107)), and
+  exposes a ceiling fan's auto-off timer as a number
+  ([aioafero #113](https://github.com/Expl0dingBanana/aioafero/pull/113)).
+
 ## 8.3.0
 
 - Enable near real-time updates via Conclave (websocket). Configurable in
