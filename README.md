@@ -15,6 +15,7 @@ These `deviceClass` values (and close variants) are expected to discover into HA
 
 - Ceiling / exhaust fans
 - Dehumidifiers
+- Humidifiers
 - Freezers / related error binary sensors when present
 - Lights (including dual-channel color + white fixtures)
 - Locks
@@ -36,8 +37,9 @@ resources are still created.
 - Climate [`climate`] — Thermostats and portable ACs — HVAC modes, fan mode,
   current/target temperature (and range when supported)
 - Fan [`fan`] — On/off, speed, direction, preset (e.g. breeze) when exposed
-- Humidifier [`humidifier`] — Dehumidifiers — on/off, mode, current/target
-  humidity; fan speed and pump appear as selects
+- Humidifier [`humidifier`] — Humidifiers and dehumidifiers — on/off, mode,
+  current/target humidity; fan speed, pump, mist level and similar appear as
+  selects
 - Light [`light`] — On/off, brightness, color temp, RGB, effects; dual-channel
   fixtures present as separate color/white lights; **Night Light Mode** as an
   effect when the fixture exposes API `night-light` color-mode

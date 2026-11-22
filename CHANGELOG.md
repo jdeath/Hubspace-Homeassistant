@@ -12,6 +12,15 @@ notifications stay useful.
   ([aioafero #107](https://github.com/Expl0dingBanana/aioafero/issues/107)), and
   exposes a ceiling fan's auto-off timer as a number
   ([aioafero #113](https://github.com/Expl0dingBanana/aioafero/pull/113)).
+- Add humidifier support
+  ([#277](https://github.com/jdeath/Hubspace-Homeassistant/issues/277)). The
+  `humidifier` platform now serves both humidifiers and dehumidifiers. Mist
+  level, wellness target, plant care target and dark mode appear as selects.
+  Modes and select options have display labels; their state values are
+  unchanged. Low Water, Water Tank Lifted, Filter Replacement Needed and Tank
+  Cleaning Needed appear as diagnostic binary sensors (thanks to
+  [@jclusso](https://github.com/jclusso),
+  [#280](https://github.com/jdeath/Hubspace-Homeassistant/pull/280)).
 
 ## 8.3.0
 
