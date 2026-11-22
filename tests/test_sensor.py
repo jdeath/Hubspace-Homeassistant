@@ -13,6 +13,9 @@ transformer_watts = "sensor.friendly_device_6_watts"
 transformer_rssi = "sensor.friendly_device_6_wifi_rssi"
 lock = create_devices_from_data("door-lock-TBD.json")[0]
 lock_battery = "sensor.friendly_device_0_battery_level"
+blinds_gateway = create_devices_from_data("blinds-gateway.json")[0]
+blinds_gateway_steady = "sensor.smart_blinds_gateway_wifi_steady_state"
+blinds_gateway_setup = "sensor.smart_blinds_gateway_wifi_setup_state"
 
 
 @pytest.fixture
@@ -42,6 +45,13 @@ async def mocked_entity(mocked_entry):
             },
         ),
         (lock, {lock_battery: ("80", "%")}),
+        (
+            blinds_gateway,
+            {
+                blinds_gateway_steady: ("connected", None),
+                blinds_gateway_setup: ("connected", None),
+            },
+        ),
     ],
 )
 async def test_async_setup_entry(dev, expected_entities, mocked_entry):

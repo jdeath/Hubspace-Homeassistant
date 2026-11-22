@@ -48,6 +48,7 @@ PLATFORMS: Final[list[Platform]] = [
     Platform.BINARY_SENSOR,
     Platform.BUTTON,
     Platform.CLIMATE,
+    Platform.COVER,
     Platform.FAN,
     Platform.HUMIDIFIER,
     Platform.LIGHT,
@@ -127,6 +128,15 @@ SENSORS_GENERAL = {
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=UnitOfPower.WATT,
         state_class=SensorStateClass.MEASUREMENT,
+    ),
+    # Smart Blinds Gateway
+    "wifi-steady-state": SensorEntityDescription(
+        key="wifi-steady-state",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "wifi-setup-state": SensorEntityDescription(
+        key="wifi-setup-state",
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
     "wifi-rssi": SensorEntityDescription(
         key="wifi-rssi",

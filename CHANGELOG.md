@@ -21,6 +21,12 @@ notifications stay useful.
   Cleaning Needed appear as diagnostic binary sensors (thanks to
   [@jclusso](https://github.com/jclusso),
   [#280](https://github.com/jdeath/Hubspace-Homeassistant/pull/280)).
+- Add Smart Blinds support
+  ([#272](https://github.com/jdeath/Hubspace-Homeassistant/issues/272)). Each
+  blinds zone is a `cover` (device class blind) with open, close, set position
+  and stop. A zone is unavailable while its gateway is offline. The gateway
+  exposes `wifi-steady-state` and `wifi-setup-state` diagnostic sensors.
+  Gateway settings (limits, motor direction, jog) are not exposed yet.
 
 ## 8.3.0
 
