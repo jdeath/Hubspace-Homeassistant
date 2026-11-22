@@ -18,6 +18,10 @@ rgbw_led_strip_from_file = create_devices_from_data("rgbw-led-strip.json")
 rgbw_led_strip = rgbw_led_strip_from_file[0]
 rgbw_led_strip_speed_id = "number.friendly_device_6_effect_speed"
 
+ceiling_fan_from_file = create_devices_from_data("fan-ZandraFan.json")
+ceiling_fan = ceiling_fan_from_file[0]
+ceiling_fan_timer_id = "number.friendly_device_2_timer"
+
 
 @pytest.fixture
 async def mocked_entity(mocked_entry):
@@ -173,3 +177,50 @@ async def test_add_new_device(mocked_entry):
     entity_reg = er.async_get(hass)
     for entity in expected_entities:
         assert entity_reg.async_get(entity) is not None
+
+
+@pytest.mark.asyncio
+async def test_ceiling_fan_timer_update(mocked_entry):
+    """Ensure the ceiling fan timer is discovered and cloud updates reach it."""
+    hass, entry, bridge = mocked_entry
+    await bridge.generate_devices_from_data(ceiling_fan_from_file)
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    # The timer is named after the ceiling-fan parent, so it needs the full dump
+    assert er.async_get(hass).async_get(ceiling_fan_timer_id) is not None
+    assert hass.states.get(ceiling_fan_timer_id).state == "0"
+    # A discovery poll lists every device, including the ceiling-fan parent
+    hs_new_devs = create_devices_from_data("fan-ZandraFan.json")
+    modify_state(
+        hs_new_devs[0],
+        AferoState(functionClass="timer", functionInstance="fan-power", value=90),
+    )
+    await bridge.generate_devices_from_data(hs_new_devs)
+    await hass.async_block_till_done()
+    number = hass.states.get(ceiling_fan_timer_id)
+    assert number.state == "90"
+    assert number.attributes["min"] == 0
+    assert number.attributes["max"] == 1440
+    assert number.attributes["step"] == 1
+    assert number.attributes["unit_of_measurement"] == "minutes"
+
+
+@pytest.mark.asyncio
+async def test_ceiling_fan_timer_set_value(mocked_entry):
+    """Ensure set_value sends whole minutes as an int, which the cloud requires."""
+    hass, entry, bridge = mocked_entry
+    await bridge.generate_devices_from_data(ceiling_fan_from_file)
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    await hass.services.async_call(
+        "number",
+        "set_value",
+        {"entity_id": ceiling_fan_timer_id, "value": 30},
+        blocking=True,
+    )
+    await bridge.async_block_until_done()
+    await hass.async_block_till_done()
+    value = bridge.fans[ceiling_fan.id].numbers[("timer", "fan-power")].value
+    assert value == 30
+    assert isinstance(value, int)
+    assert hass.states.get(ceiling_fan_timer_id).state == "30"
