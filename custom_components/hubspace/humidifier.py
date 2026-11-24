@@ -1,11 +1,11 @@
-"""Home Assistant entity for interacting with Afero dehumidifiers."""
+"""Home Assistant entity for interacting with Afero humidifiers and dehumidifiers."""
 
 from functools import partial
 from typing import Any
 
-from aioafero.v1 import AferoBridgeV1, DehumidifierController
+from aioafero.v1 import AferoBridgeV1, DehumidifierController, HumidifierController
 from aioafero.v1.controllers.event import EventType
-from aioafero.v1.models import Dehumidifier
+from aioafero.v1.models import Dehumidifier, Humidifier
 from homeassistant.components.humidifier import (
     HumidifierDeviceClass,
     HumidifierEntity,
@@ -21,19 +21,23 @@ from .const import DOMAIN
 from .entity import HubspaceBaseEntity
 
 
-class HubspaceDehumidifier(HubspaceBaseEntity, HumidifierEntity):
-    """Representation of an Afero dehumidifier."""
-
-    _attr_device_class = HumidifierDeviceClass.DEHUMIDIFIER
+class HubspaceHumidifier(HubspaceBaseEntity, HumidifierEntity):
+    """Representation of an Afero humidifier or dehumidifier."""
 
     def __init__(
         self,
         bridge: HubspaceBridge,
-        controller: DehumidifierController,
-        resource: Dehumidifier,
+        controller: DehumidifierController | HumidifierController,
+        resource: Dehumidifier | Humidifier,
     ) -> None:
-        """Initialize an Afero dehumidifier."""
+        """Initialize an Afero humidifier or dehumidifier."""
         super().__init__(bridge, controller, resource)
+        if isinstance(resource, Humidifier):
+            self._attr_device_class = HumidifierDeviceClass.HUMIDIFIER
+            # Display labels for the modes live in strings.json
+            self._attr_translation_key = "humidifier"
+        else:
+            self._attr_device_class = HumidifierDeviceClass.DEHUMIDIFIER
         if self.resource.mode:
             self._attr_supported_features = HumidifierEntityFeature.MODES
         if self.resource.target_humidity:
@@ -41,7 +45,7 @@ class HubspaceDehumidifier(HubspaceBaseEntity, HumidifierEntity):
 
     @property
     def is_on(self) -> bool | None:
-        """Return whether the dehumidifier is powered on."""
+        """Return whether the unit is powered on."""
         return self.resource.on.on if self.resource.on else None
 
     @property
@@ -78,13 +82,13 @@ class HubspaceDehumidifier(HubspaceBaseEntity, HumidifierEntity):
         return sorted(self.resource.mode.modes) if self.resource.mode else None
 
     async def async_turn_on(self, **kwargs: Any) -> None:
-        """Turn the dehumidifier on."""
+        """Turn the unit on."""
         await self.bridge.async_request_call(
             self.controller.set_state, device_id=self.resource.id, on=True
         )
 
     async def async_turn_off(self, **kwargs: Any) -> None:
-        """Turn the dehumidifier off."""
+        """Turn the unit off."""
         await self.bridge.async_request_call(
             self.controller.set_state, device_id=self.resource.id, on=False
         )
@@ -117,11 +121,24 @@ async def async_setup_entry(
     """Set up entities."""
     bridge: HubspaceBridge = hass.data[DOMAIN][config_entry.entry_id]
     api: AferoBridgeV1 = bridge.api
-    controller: DehumidifierController = api.dehumidifiers
-    make_entity = partial(HubspaceDehumidifier, bridge, controller)
+
+    for controller in (api.dehumidifiers, api.humidifiers):
+        _setup_controller(bridge, controller, config_entry, async_add_entities)
+
+
+def _setup_controller(
+    bridge: HubspaceBridge,
+    controller: DehumidifierController | HumidifierController,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Add a controller's current entities and listen for new ones."""
+    make_entity = partial(HubspaceHumidifier, bridge, controller)
 
     @callback
-    def async_add_entity(event_type: EventType, resource: Dehumidifier) -> None:
+    def async_add_entity(
+        event_type: EventType, resource: Dehumidifier | Humidifier
+    ) -> None:
         """Add an entity."""
         async_add_entities([make_entity(resource)])
 

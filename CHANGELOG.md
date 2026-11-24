@@ -4,6 +4,32 @@ All notable changes to the Hubspace Home Assistant integration are documented he
 Release notes on GitHub Releases are kept in sync for recent versions so HACS update
 notifications stay useful.
 
+## 8.4.0
+
+- Require aioafero 9.4.0.
+- Fix RGB lights losing state sync when Conclave pushes a color change
+  ([#278](https://github.com/jdeath/Hubspace-Homeassistant/issues/278)).
+- Keep Conclave numeric values such as dehumidifier current humidity as
+  integers instead of flipping to strings
+  ([aioafero #107](https://github.com/Expl0dingBanana/aioafero/issues/107)).
+- Expose a ceiling fan's auto-off timer as a number
+  ([aioafero #113](https://github.com/Expl0dingBanana/aioafero/pull/113)).
+- Add humidifier support
+  ([#277](https://github.com/jdeath/Hubspace-Homeassistant/issues/277)). The
+  `humidifier` platform now serves both humidifiers and dehumidifiers. Mist
+  level, wellness target, plant care target and dark mode appear as selects.
+  Modes and select options have display labels; their state values are
+  unchanged. Low Water, Water Tank Lifted, Filter Replacement Needed and Tank
+  Cleaning Needed appear as diagnostic binary sensors (thanks to
+  [@jclusso](https://github.com/jclusso),
+  [#280](https://github.com/jdeath/Hubspace-Homeassistant/pull/280)).
+- Add Smart Blinds support
+  ([#272](https://github.com/jdeath/Hubspace-Homeassistant/issues/272)). Each
+  blinds zone is a `cover` (device class blind) with open, close, set position
+  and stop. A zone is unavailable while its gateway is offline. The gateway
+  exposes `wifi-steady-state` and `wifi-setup-state` diagnostic sensors.
+  Gateway settings (limits, motor direction, jog) are not exposed yet.
+
 ## 8.3.0
 
 - Enable near real-time updates via Conclave (websocket). Configurable in

@@ -7,6 +7,7 @@ from .utils import create_devices_from_data
 
 freezer = create_devices_from_data("freezer.json")[0]
 dehumidifier = create_devices_from_data("dehumidifier.json")[0]
+humidifier = create_devices_from_data("humidifier.json")[0]
 
 
 @pytest.fixture
@@ -44,6 +45,15 @@ async def mocked_entity(mocked_entry):
                 "binary_sensor.server_closet_dehumidifier_water_tray_full": "off",
                 "binary_sensor.server_closet_dehumidifier_evaporator_temperature_sensor_failed": "off",
                 "binary_sensor.server_closet_dehumidifier_indoor_temperature_sensor_failed": "off",
+            },
+        ),
+        (
+            humidifier,
+            {
+                "binary_sensor.humid_low_water": "off",
+                "binary_sensor.humid_water_tank_lifted": "off",
+                "binary_sensor.humid_filter_replacement_needed": "off",
+                "binary_sensor.humid_tank_cleaning_needed": "off",
             },
         ),
     ],

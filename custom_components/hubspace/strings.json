@@ -52,6 +52,54 @@
       "polling_too_short": "[%key:component::hubspace::options::error::polling_too_short%]"
     }
   },
+  "entity": {
+    "humidifier": {
+      "humidifier": {
+        "state_attributes": {
+          "mode": {
+            "state": {
+              "auto": "Auto",
+              "manual": "Manual",
+              "plant-care": "Plant Care",
+              "sleep": "Sleep",
+              "wellness": "Wellness"
+            }
+          }
+        }
+      }
+    },
+    "select": {
+      "dark_mode": {
+        "state": {
+          "off": "Off",
+          "on": "On"
+        }
+      },
+      "mist_level": {
+        "state": {
+          "level-1": "Low",
+          "level-2": "Medium",
+          "level-3": "High"
+        }
+      },
+      "plant_care_target": {
+        "state": {
+          "adaptables": "Adaptables (50%)",
+          "cacti-succulents": "Cacti & Succulents (35%)",
+          "sub-tropical": "Sub-Tropical (65%)",
+          "tropical": "Tropical (75%)"
+        }
+      },
+      "wellness_target": {
+        "state": {
+          "cold-flu": "Cold & Flu (50%)",
+          "congestion-cough": "Congestion & Cough (55%)",
+          "skin-hydration": "Skin Hydration (60%)",
+          "wellness-sleep": "Sleep (40%)"
+        }
+      }
+    }
+  },
   "services": {
     "send_command": {
       "name": "[%key:component::hubspace::services::send_command::name%]",
