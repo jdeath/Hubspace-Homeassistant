@@ -892,3 +892,74 @@ async def test_turn_off_all_does_not_turn_penrose_back_on(mocked_penrose, mocker
     assert sent.call_count == 1
     assert sent.call_args.kwargs["on"] is False
     assert sent.call_args.kwargs.get("color_mode") is None
+
+
+christmas_tree = create_devices_from_data("light-christmas-tree.json")[0]
+christmas_tree_id = "light.christmas_tree"
+
+
+@pytest.fixture
+async def mocked_tree(mocked_entry):
+    """Initialize a mocked pre-lit tree (MCU effects) within Home Assistant."""
+    hass, entry, bridge = mocked_entry
+    await bridge.generate_devices_from_data([christmas_tree])
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    yield hass, entry, bridge
+    await bridge.close()
+
+
+@pytest.mark.asyncio
+async def test_mcu_effects_use_friendly_names(mocked_tree):
+    """MCU sequences are listed by friendly name and demo-mcu is hidden."""
+    hass, _, _ = mocked_tree
+    entity = hass.states.get(christmas_tree_id)
+    assert entity is not None
+    effects = entity.attributes["effect_list"]
+    assert sorted(effects) == sorted(light.MCU_EFFECT_NAMES.values())
+    assert not any(effect.endswith("-mcu") for effect in effects)
+    assert entity.attributes[ATTR_EFFECT] == "Warm white"
+
+
+@pytest.mark.parametrize("effect", ["Twinkle", "twinkle-warm-white-mcu"])
+@pytest.mark.asyncio
+async def test_turn_on_mcu_effect(mocked_tree, effect):
+    """Friendly and raw names both send the raw MCU sequence to the API."""
+    hass, _, bridge = mocked_tree
+    await hass.services.async_call(
+        "light",
+        "turn_on",
+        {"entity_id": christmas_tree_id, ATTR_EFFECT: effect},
+        blocking=True,
+    )
+    await bridge.async_block_until_done()
+    await hass.async_block_till_done()
+    assert bridge.lights[christmas_tree.id].effect.effect == "twinkle-warm-white-mcu"
+    assert bridge.lights[christmas_tree.id].color_mode.mode == "sequence"
+    entity = hass.states.get(christmas_tree_id)
+    assert entity.attributes[ATTR_EFFECT] == "Twinkle"
+
+
+@pytest.mark.parametrize(
+    ("raw", "expected"),
+    [
+        (None, None),
+        ("rainbow", "rainbow"),
+        ("steady-multi-mcu", "Multicolour"),
+        ("new-sparkle-mcu", "New sparkle"),
+    ],
+)
+def test_pretty_effect(raw, expected):
+    """Only -mcu sequences are renamed; unknown ones get a generic name."""
+    assert light.pretty_effect(raw) == expected
+
+
+@pytest.mark.asyncio
+async def test_raw_effect_passthrough(mocked_bridge):
+    """Names that don't match a known effect are passed through unchanged."""
+    tree = await _load_light_resource(mocked_bridge, christmas_tree)
+    assert light.raw_effect(tree, "Fade") == "slow-fade-mcu"
+    assert light.raw_effect(tree, "not-an-effect") == "not-an-effect"
+    assert light.raw_effect(tree, None) is None
+    dimmer = await _load_light_resource(mocked_bridge, switch_dimmer_light)
+    assert light.raw_effect(dimmer, "Twinkle") == "Twinkle"
