@@ -9,7 +9,10 @@
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/jdeath/Hubspace-Homeassistant/issues",
   "loggers": ["aioafero"],
-  "requirements": ["aioafero==9.4.0", "aiofiles"],
+  "requirements": [
+    "aioafero@git+https://github.com/Expl0dingBanana/aioafero.git@154fdc8ee6c0ad98e790412d1e3b110dbb91f0eb",
+    "aiofiles"
+  ],
   "single_config_entry": true,
-  "version": "8.4.0"
+  "version": "8.4.1.dev0"
 }
