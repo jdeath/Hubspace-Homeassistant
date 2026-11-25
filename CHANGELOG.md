@@ -4,6 +4,15 @@ All notable changes to the Hubspace Home Assistant integration are documented he
 Release notes on GitHub Releases are kept in sync for recent versions so HACS update
 notifications stay useful.
 
+## Unreleased
+
+- Pin aioafero to git commit `ee9e9e5` on branch `feat/brightness-presets-281`
+  (dev build) to add brightness control for lights that only offer
+  Low/Medium/High presets, such as the Grand Duchess Christmas tree
+  ([#281](https://github.com/jdeath/Hubspace-Homeassistant/issues/281)). The
+  light now has a brightness slider that snaps to the nearest preset, and
+  preset changes made in the Hubspace app show up in Home Assistant.
+
 ## 8.4.0
 
 - Require aioafero 9.4.0.
