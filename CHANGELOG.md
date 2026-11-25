@@ -4,6 +4,16 @@ All notable changes to the Hubspace Home Assistant integration are documented he
 Release notes on GitHub Releases are kept in sync for recent versions so HACS update
 notifications stay useful.
 
+## Unreleased
+
+- Pin aioafero to git commit `154fdc8` on branch `fix/first-poll-hang-275`
+  (dev build) to fix setup hanging and then being cancelled when the first
+  device poll fails
+  ([#275](https://github.com/jdeath/Hubspace-Homeassistant/issues/275)). A
+  device whose version info can't be fetched no longer blocks setup, retries
+  wait at most 30 seconds until the first poll succeeds, and the error behind
+  "Lost connection to the Afero IoT API" is now logged.
+
 ## 8.4.0
 
 - Require aioafero 9.4.0.
